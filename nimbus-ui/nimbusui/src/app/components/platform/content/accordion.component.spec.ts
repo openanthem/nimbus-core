@@ -63,7 +63,7 @@ import { Menu } from '../menu.component';
 import { Form } from '../form.component';
 import { Label } from './label.component';
 import { CardDetailsFieldGroupComponent } from '../card/card-details-field-group.component';
-import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { ValueStylesDirective } from '../../../directives/value-styles.directive';
 import { InputLabel } from '../form/elements/input-label.component';
 import { TreeGrid } from '../tree-grid/tree-grid.component';
 import { FormGridFiller } from '../form/form-grid-filler.component';
@@ -131,7 +131,7 @@ describe('Accordion', () => {
           Form,
           Label,
           CardDetailsFieldGroupComponent,
-          DisplayValueDirective,
+          ValueStylesDirective,
           InputLabel,
           TreeGrid,
           FormGridFiller,

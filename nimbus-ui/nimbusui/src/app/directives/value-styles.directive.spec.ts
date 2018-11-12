@@ -1,6 +1,6 @@
 import { TestBed, async } from '@angular/core/testing';
 
-import { DisplayValueDirective } from './display-value.directive';
+import { ValueStylesDirective } from './value-styles.directive';
 import { ElementRef, Renderer2 } from '@angular/core';
 
 class MockElementRef {
@@ -22,7 +22,7 @@ describe('DisplayValueDirective', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
           declarations: [
-            DisplayValueDirective
+            ValueStylesDirective
            ],
            providers: [
                {provide: ElementRef, useClass: MockElementRef},
@@ -31,7 +31,7 @@ describe('DisplayValueDirective', () => {
         }).compileComponents();
         elementRef = TestBed.get(ElementRef);
         renderer = TestBed.get(Renderer2);
-        directive = new DisplayValueDirective(elementRef, renderer)
+        directive = new ValueStylesDirective(elementRef, renderer)
       }));
 
     it('should create an instance', () => {

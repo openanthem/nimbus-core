@@ -68,7 +68,7 @@ import { ViewComponent } from '../../../shared/param-annotations.enum';
 import { HeaderCheckBox } from '../form/elements/header-checkbox.component';
 import { SvgComponent } from '../svg/svg.component';
 import { Image } from '../image.component';
-import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { ValueStylesDirective } from '../../../directives/value-styles.directive';
 import { InputSwitch } from '../../platform/form/elements/input-switch.component';
 import { TreeGrid } from '../../platform/tree-grid/tree-grid.component';
 import { Label } from '../../platform/content/label.component';
@@ -150,7 +150,7 @@ describe('DataTable', () => {
           HeaderCheckBox,
           SvgComponent,
           Image,
-          DisplayValueDirective,
+          ValueStylesDirective,
           InputSwitch,
           TreeGrid,
           Label,

@@ -63,7 +63,7 @@ import { TreeGrid } from '../platform/tree-grid/tree-grid.component';
 import { InputText } from '../platform/form/elements/textbox.component';
 import { InPlaceEditorComponent } from '../platform/form/elements/inplace-editor.component';
 import { TextArea } from '../platform/form/elements/textarea.component';
-import { DisplayValueDirective } from '../../directives/display-value.directive';
+import { ValueStylesDirective } from '../../directives/value-styles.directive';
 import { FormGridFiller } from '../platform/form/form-grid-filler.component';
 import { Header } from '../platform/content/header.component';
 import { Signature } from '../platform/form/elements/signature.component';
@@ -275,7 +275,7 @@ describe('DomainFlowCmp', () => {
           InputText,
           InPlaceEditorComponent,
           TextArea,
-          DisplayValueDirective,
+          ValueStylesDirective,
           ActionLink,
           FormGridFiller,
           Header,
@@ -449,7 +449,7 @@ describe('DomainFlowCmp', () => {
             InputText,
             InPlaceEditorComponent,
             TextArea,
-            DisplayValueDirective,
+            ValueStylesDirective,
             ActionLink,
             FormGridFiller,
             Header,

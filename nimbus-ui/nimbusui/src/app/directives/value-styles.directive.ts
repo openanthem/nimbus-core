@@ -25,10 +25,10 @@ import { ParamConfig } from '../shared/param-config';
  * 
  */
 @Directive({
-  selector: '[nmDisplayValue]'
+  selector: '[nmValueStyles]'
 })
-export class DisplayValueDirective {
-    @Input('nmDisplayValue') displayValue: any;
+export class ValueStylesDirective {
+    @Input('nmValueStyles') displayValue: any;
     @Input('config') config: ParamConfig;
     static placeholder: string = 'placeholder';
 
@@ -47,7 +47,7 @@ export class DisplayValueDirective {
                                 || this.displayValue === '')) {
                 this.renderer.addClass(this.el.nativeElement, this.getValue(this.displayValue)); // Field Value
             } else {
-                this.renderer.addClass(this.el.nativeElement, DisplayValueDirective.placeholder); // placeholder Value
+                this.renderer.addClass(this.el.nativeElement, ValueStylesDirective.placeholder); // placeholder Value
             }
         }
     }
@@ -59,7 +59,7 @@ export class DisplayValueDirective {
         if (this.config && this.config.uiStyles.attributes.applyValueStyles) {
             // Remove the previous value styles
             if (changes.displayValue.previousValue === undefined) {
-                this.renderer.removeClass(this.el.nativeElement, DisplayValueDirective.placeholder);
+                this.renderer.removeClass(this.el.nativeElement, ValueStylesDirective.placeholder);
             } else {
                 this.renderer.removeClass(this.el.nativeElement, this.getValue(changes.displayValue.previousValue));
             }
@@ -67,7 +67,7 @@ export class DisplayValueDirective {
             if (changes.displayValue.currentValue === undefined || changes.displayValue.currentValue === '' ||
                 (changes.displayValue.currentValue instanceof String && changes.displayValue.currentValue.trim() === '') ||
                 changes.displayValue.currentValue === null) {
-                this.renderer.addClass(this.el.nativeElement, DisplayValueDirective.placeholder);
+                this.renderer.addClass(this.el.nativeElement, ValueStylesDirective.placeholder);
             } else {
                 this.renderer.addClass(this.el.nativeElement, this.getValue(changes.displayValue.currentValue));
             }

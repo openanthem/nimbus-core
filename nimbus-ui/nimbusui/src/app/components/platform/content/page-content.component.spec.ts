@@ -73,7 +73,7 @@ import { InputSwitch } from '../form/elements/input-switch.component';
 import { TreeGrid } from '../tree-grid/tree-grid.component';
 import { InputLabel } from '../form/elements/input-label.component';
 import { CardDetailsFieldGroupComponent } from '../card/card-details-field-group.component';
-import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { ValueStylesDirective } from '../../../directives/value-styles.directive';
 import { FormGridFiller } from '../form/form-grid-filler.component';
 import { InputLegend } from '../form/elements/input-legend.component';
 
@@ -194,7 +194,7 @@ describe('PageContent', () => {
         TreeGrid,
         InputLabel,
         CardDetailsFieldGroupComponent,
-        DisplayValueDirective,
+        ValueStylesDirective,
         FormGridFiller,
         InputLegend
        ],

@@ -67,7 +67,7 @@ import { Label } from '../platform/content/label.component';
 import { TreeGrid } from '../platform/tree-grid/tree-grid.component';
 import { InputSwitch } from '../platform/form/elements/input-switch.component';
 import { CardDetailsFieldGroupComponent } from '../platform/card/card-details-field-group.component';
-import { DisplayValueDirective } from '../../directives/display-value.directive';
+import { ValueStylesDirective } from '../../directives/value-styles.directive';
 import { FormGridFiller } from '../platform/form/form-grid-filler.component';
 import { InputLegend } from '../platform/form/elements/input-legend.component';
 
@@ -136,7 +136,7 @@ describe('Tile', () => {
         TreeGrid,
         InputSwitch,
         CardDetailsFieldGroupComponent,
-        DisplayValueDirective,
+        ValueStylesDirective,
         FormGridFiller,
         InputLegend
        ],

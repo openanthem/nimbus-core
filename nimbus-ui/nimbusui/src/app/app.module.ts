@@ -147,7 +147,7 @@ import { LoaderComponent } from './components/platform/loader/loader.component';
 import { SubDomainFlowCmp } from './components/domain/subdomain-flow.component';
 import { PageResolver } from './components/platform/content/page-resolver.service';
 import {DateTimeFormatPipe} from './pipes/date.pipe';
-import { DisplayValueDirective } from './directives/display-value.directive';
+import { ValueStylesDirective } from './directives/value-styles.directive';
 import { NmPanelMenu, NmPanelMenuSub } from './components/platform/panelmenu.component';
 import { MenuRouteLink } from './directives/routes/route-link.component';
 import { MenuRouterLinkActive } from './directives/routes/route-active.component';
@@ -215,7 +215,7 @@ export function init_app(appinitservice: AppInitService) {
         DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
         Modal, ActionDropdown, ActionLink,
-        GridMouseEventDirective, DisplayValueDirective, PrintDirective,
+        GridMouseEventDirective, ValueStylesDirective, PrintDirective,
         HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, LoaderComponent, MessageComponent,

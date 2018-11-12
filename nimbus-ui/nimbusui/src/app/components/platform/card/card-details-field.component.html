@@ -26,7 +26,7 @@
                 [element]="element" 
                 [required]="false">
             </nm-input-label>
-            <div class="textWrapBreakWord" [nmDisplayValue]='element.leafState' [config]='element.config'>
+            <div class="textWrapBreakWord" [nmValueStyles]='element.leafState' [config]='element.config'>
                 <span class="fieldValue">{{value ? value : placeholder}}&nbsp;</span>
             </div>    
         </div>

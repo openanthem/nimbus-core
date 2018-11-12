@@ -14,7 +14,7 @@ import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { TooltipComponent } from '../tooltip/tooltip.component';
 import { SelectItemPipe } from '../../../pipes/select-item.pipe';
 import { CustomHttpClient } from '../../../services/httpclient.service';
-import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { ValueStylesDirective } from '../../../directives/value-styles.directive';
 import { InputLabel } from '../../platform/form/elements/input-label.component';
 import { CardDetailsFieldGroupComponent } from './card-details-field-group.component';
 import { WebContentSvc } from '../../../services/content-management.service';
@@ -34,7 +34,7 @@ describe('CardDetailsFieldGroupComponent', () => {
         DateTimeFormatPipe,
         TooltipComponent,
         SelectItemPipe,
-        DisplayValueDirective,
+        ValueStylesDirective,
         InputLabel
       ],
       imports: [

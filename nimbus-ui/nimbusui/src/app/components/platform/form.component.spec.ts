@@ -66,7 +66,7 @@ import { Image } from './image.component';
 import { TreeGrid } from './tree-grid/tree-grid.component';
 import { InputSwitch } from './form/elements/input-switch.component';
 import { FormGridFiller } from './form/form-grid-filler.component';
-import { DisplayValueDirective } from '../../directives/display-value.directive';
+import { ValueStylesDirective } from '../../directives/value-styles.directive';
 import { InputLabel } from './form/elements/input-label.component';
 import { Label } from './content/label.component';
 import { CardDetailsFieldGroupComponent } from './card/card-details-field-group.component';
@@ -144,7 +144,7 @@ describe('Form', () => {
           TreeGrid,
           InputSwitch,
           FormGridFiller,
-          DisplayValueDirective,
+          ValueStylesDirective,
           InputLabel,
           Label,
           CardDetailsFieldGroupComponent,

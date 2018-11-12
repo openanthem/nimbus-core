@@ -25,7 +25,7 @@ import { CardDetailsFieldGroupComponent } from './card-details-field-group.compo
 import { Paragraph } from '../content/paragraph.component';
 import { ButtonGroup } from '../../platform/form/elements/button-group.component';
 import { Label } from '../content/label.component';
-import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { ValueStylesDirective } from '../../../directives/value-styles.directive';
 import { InputLabel } from '../../platform/form/elements/input-label.component';
 import { Button } from '../../platform/form/elements/button.component';
 import { Image } from '../../platform/image.component';
@@ -54,7 +54,7 @@ describe('CardDetailsComponent', () => {
         Paragraph,
         ButtonGroup,
         Label,
-        DisplayValueDirective,
+        ValueStylesDirective,
         InputLabel,
         Button,
         Image,
