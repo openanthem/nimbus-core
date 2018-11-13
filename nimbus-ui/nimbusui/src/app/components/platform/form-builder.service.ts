@@ -49,8 +49,7 @@ export class FormElementsService {
   buildFormGroup(elements: Param[]): {} {
     let group: any = {};
     elements.forEach(element => {
-      if(element.config!= null && ((element.config.uiStyles != null && element.config.uiStyles.attributes!= null && element.config.uiStyles.attributes.alias !== 'Button'
-          && element.config.uiStyles.attributes.alias !== 'ButtonGroup') || element.config.uiStyles==null)){
+      if(element.config!= null && ((element.config.uiStyles != null && element.config.uiStyles.attributes!= null && element.config.uiStyles.attributes.dataEntryField) || element.config.uiStyles==null)){
         var checks: ValidatorFn[] = [];
         checks = ValidationUtils.buildStaticValidations(element);
         //if the form element's state is a collection we do not create a form group for it

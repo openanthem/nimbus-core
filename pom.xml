@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.antheminc.oss</groupId>
 	<artifactId>nimbus-parent</artifactId>
-	<version>1.1.7.BUILD-SNAPSHOT</version>
+	<version>1.1.10.BUILD-SNAPSHOT</version>
 	<name>nimbus-parent</name>
 	<packaging>pom</packaging>
 	<description>Anthem open source nimbus project </description>
@@ -71,7 +71,7 @@
         <jacoco.maven.plugin.version>0.8.2</jacoco.maven.plugin.version>
         <!-- nimbus-core -->
         <parentDir>..</parentDir>
-        <nimbus.version>1.1.7.BUILD-SNAPSHOT</nimbus.version>
+        <nimbus.version>1.1.10.BUILD-SNAPSHOT</nimbus.version>
         <nimbus.core.version>${nimbus.version}</nimbus.core.version>
         <nimbus.ui.version>${nimbus.version}</nimbus.ui.version>
         <nimbus.dsl.version>${nimbus.core.version}</nimbus.dsl.version> <!-- DSL matches core's version -->

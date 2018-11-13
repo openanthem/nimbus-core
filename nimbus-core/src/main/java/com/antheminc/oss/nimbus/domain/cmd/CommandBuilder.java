@@ -109,14 +109,21 @@ public class CommandBuilder {
 		logit.debug(() -> "params: " + splits[1]);
 
 		String pSplits[] = StringUtils.split(splits[1], '&');
-		Arrays.asList(pSplits).forEach(kv -> {
-			String pair[] = StringUtils.split(kv, "=", 2);
-            String key = pair[0];
-			String val[] = (rParams.containsKey(key)) ? ArrayUtils.add(rParams.get(key), pair[1])
-					: new String[] { pair[1] };
-
-			rParams.put(key, val);
-		});
+		String key = null;
+		for(String pSplit: pSplits) {
+			String pair[] = StringUtils.split(pSplit, "=", 2);
+			String val[] = null;
+			if(pair.length == 2) {
+				key = pair[0];
+				val = (rParams.containsKey(key)) ? ArrayUtils.add(rParams.get(key), pair[1])
+						: new String[] { pair[1] };
+			}else {
+				val = rParams.get(key);
+				val[val.length-1] = val[val.length-1]+"&"+pair[0];
+			}
+			
+			rParams.put(key, val);		
+		}
 
 		addParams(rParams);
 		return this;

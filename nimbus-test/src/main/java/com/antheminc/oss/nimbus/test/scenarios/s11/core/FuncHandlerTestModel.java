@@ -27,7 +27,7 @@ public class FuncHandlerTestModel extends IdLong{
 	//		fixed where a string version of null - "null" was getting saved for attr: parameter)
 	//
 	@ConfigConditional(config = {
-			@Config (url="/p/sample_functestB/_new?fn=_initEntity&target=/parameter&json=\"<!/../parameter3!>\"&target=/parameter2&json=\"abc\"")
+			@Config (url="/p/sample_functestB/_new?fn=_initEntity&target=/parameter&json=  \"<!/../parameter3!>\"  &target=/parameter2&json=\"TestABC\"")
 	})
 	private String parameter2;
 	

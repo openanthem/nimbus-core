@@ -600,11 +600,12 @@ export class PageService {
         traverseFlowConfig(eventModel: ModelEvent, flowName: string) {
                 let viewRoot: ViewRoot = this.configService.getFlowConfig(flowName);
                 if(viewRoot == undefined) {
-                        throw "Response cannot be processed for the path " + eventModel.value.path + " as there is no get/new done on the viewroot "+flowName;
-                }
-                let flowConfig: Model = viewRoot.model;
-                if (flowConfig) {
-                        this.traverseConfig(flowConfig.params, eventModel);
+                        this.logger.warn("Response cannot be processed for the path " + eventModel.value.path + " as there is no get/new done on the viewroot "+flowName);
+                } else {
+                        let flowConfig: Model = viewRoot.model;
+                        if (flowConfig) {
+                                this.traverseConfig(flowConfig.params, eventModel);
+                        }
                 }
         }
 
@@ -702,7 +703,7 @@ export class PageService {
                                 let p = new Param(this.configService).deserialize(param, gridParam.path);
                                 if (p != null) {
                                         // build the gridList data
-                                        if (p.leafState !== null && p.leafState.nestedGridParam) {
+                                        if (p.leafState && p.leafState.nestedGridParam) {
                                                 collectionParams = collectionParams.concat(p.leafState.nestedGridParam);
                                         }
                                         // let leafState = p.leafState;
@@ -789,7 +790,7 @@ export class PageService {
                 } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === ViewComponent.cardDetailsGrid.toString()) {
                         if (param.config.type.collection === true) {
                                 let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
-                                if(payload.type.model) // TODO - need to handle updates for each collection item in a card detail grid
+                                if(payload.type.model && payload.path == param.path) // TODO - need to handle updates for each collection item in a card detail grid
                                         param.type.model['params'] = payload.type.model.params;
                         } else {
                                 this.traverseParam(param, eventModel);
@@ -845,7 +846,7 @@ export class PageService {
                         // find's and return the element based on the nestedelement.config.code and index
                         if (this.matchNode(element, tree[index])) {
                                 let matchFoundOnGrid = false;
-                                if (element.gridData.leafState && element.gridData.leafState.length >0){
+                                if (element.gridData && element.gridData.leafState && element.gridData.leafState.length >0){
                                         // if there is a gridlist, match the elemntId
                                         // and look into nested element of the gridlist.
                                         for(let  i = 0; i < element.gridData.leafState.length; i++){

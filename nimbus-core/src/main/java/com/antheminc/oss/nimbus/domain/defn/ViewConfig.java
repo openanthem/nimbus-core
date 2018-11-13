@@ -218,6 +218,8 @@ public class ViewConfig {
 		 * <p>This can be used to apply additional styling, if necessary.
 		 */
 		String cssClass() default "";
+		
+		boolean dataEntryField() default true;
 	}
 	
 	
@@ -257,7 +259,21 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Button {
 		public enum Style {
-			DESTRUCTIVE, PLAIN, PRIMARY, SECONDARY, VALIDATION;
+			DESTRUCTIVE, 
+			PLAIN, 
+			PRIMARY,
+			
+			/**
+			 * <p>Opens a print dialog with the rendered HTML content represented 
+			 * by this button's {@link Button#printPath()}.
+			 * <p>A path should be provided to a component that supports printing. 
+			 * See {@link PrintConfig} for details on which components are 
+			 * supported. 
+			 * @see PrintConfig
+			 */
+			PRINT,
+			SECONDARY, 
+			VALIDATION;
 		}
 
 		public enum Type {
@@ -285,6 +301,17 @@ public class ViewConfig {
 		String method() default "GET";
 
 		String payload() default "";
+		
+		/**
+		 * <p>Used to determine the HTML DOM content to print when
+		 * {@link #style()} is set to {@link Style#PRINT}. <p>The format of
+		 * {@code printPath} should start with {@code /} and the domain value
+		 * ({@code refId} is not needed). For example:
+		 * {@code "/domain/page/tile/section"} <p>If {@code printPath} is not
+		 * provided, the top most page that this button is declared within will
+		 * be used as the printable content.
+		 */
+		String printPath() default "";
 
 		Style style() default Style.PLAIN;
 
@@ -374,6 +401,8 @@ public class ViewConfig {
 		String yearRange() default "1910:2050";
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
 
 	}
 
@@ -550,6 +579,8 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
 
 	}
 
@@ -586,6 +617,9 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
+		
 
 	}
 	
@@ -643,6 +677,8 @@ public class ViewConfig {
 		 * 
 		 */
 		InputSwitch.Type orientation() default InputSwitch.Type.DEFAULT;
+		
+		boolean dataEntryField() default true;
 	}
 
 	/**
@@ -681,6 +717,8 @@ public class ViewConfig {
 		boolean readOnly() default false;
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
 
 	}
 
@@ -884,6 +922,8 @@ public class ViewConfig {
 		String url() default "";
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
 
 	}
 
@@ -1156,6 +1196,12 @@ public class ViewConfig {
 		 */
 		String cssClass() default "";
 
+		/**
+		 * <p>As of release 1.1.9, {@code dataKey} is no longer needed to
+		 * support grid row expansion. This attribute will be removed in the
+		 * future releases.
+		 */
+		@Deprecated
 		String dataKey() default "id";
 
 		boolean expandableRows() default false;
@@ -1189,6 +1235,8 @@ public class ViewConfig {
 		boolean showHeader() default true;
 
 		String url() default "";
+		
+		boolean dataEntryField() default true;
 	}
 
 	/**
@@ -1339,6 +1387,11 @@ public class ViewConfig {
 		 * Enables sorting on the column
 		 */
 		boolean sortable() default true;
+		
+		/**
+		 * Custom Style for column
+		 */
+		String cssClass() default "";
 
 		SortAs sortAs() default SortAs.DEFAULT; // number, text
 	}
@@ -1566,6 +1619,7 @@ public class ViewConfig {
 		String url() default "";
 
 		Type value() default Type.DEFAULT;
+		
 	}
 
 	/**
@@ -1808,7 +1862,7 @@ public class ViewConfig {
 	
 	/**
 	 * <p>Renders a popup window with content defined by the nested fields
-	 * within the field that is decorated with <tt>&#64;Modal</tt>.
+	 * within the field that is decorated with &#64;{@code Modal}.
 	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
@@ -1816,7 +1870,7 @@ public class ViewConfig {
 	 * following components: <ul> <li>{@link Tile}</li> </ul>
 	 * 
 	 * <p><b>Notes:</b> <ul> <li>Default contextual properties are set by
-	 * <tt>ModalStateEventHandler</tt> during the <tt>OnStateLoad</tt>
+	 * <tt>ModalStateEventHandler</tt> during the {@code OnStateLoad}
 	 * event.</li> </ul>
 	 * 
 	 * @since 1.0
@@ -1947,6 +2001,8 @@ public class ViewConfig {
 		 * <p>This can be used to apply additional styling, if necessary.
 		 */
 		String cssClass() default "";
+		
+		boolean dataEntryField() default true;
 	}
 
 	/**
@@ -2078,6 +2134,8 @@ public class ViewConfig {
 		boolean showTargetControls() default false;
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
 
 	}
 	
@@ -2111,6 +2169,82 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>Defines print configuration for a {@link ViewStyle} component.
+	 * 
+	 * <p>{@code PrintConfig} currently supports the following components: <ul>
+	 * <li>{@link Accordion}</li> <li>{@link CardDetails}</li>
+	 * <li>{@link CardDetailsGrid}</li> <li>{@link Form}</li>
+	 * <li>{@link Grid}</li> <li>{@link Modal}</li> <li>{@link Page}</li>
+	 * <li>{@link Section}</li> <li>{@link Tile}</li> </ul>
+	 * 
+	 * <p><b>Sample Usage</b>
+	 * 
+	 * <pre>
+	 * &#64;Modal
+	 * &#64;PrintConfig
+	 * private VMSampleModal vmSampleModal;
+	 * </pre>
+	 * 
+	 * @author Tony Lopez
+	 * @since 1.1
+	 *
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewParamBehavior
+	public @interface PrintConfig {
+
+		/**
+		 * <p>Whether or not to open the print dialog immediately after the
+		 * print window/tab is opened.
+		 */
+		boolean autoPrint() default true;
+
+		/**
+		 * <p>Whether or not to close the opened browser window/tab containing
+		 * the printable content after the user completes actions within the
+		 * native browser print dialog.
+		 */
+		boolean closeAfterPrint() default true;
+
+		/**
+		 * <p>The delay (in milliseconds) between when the browser opens a new
+		 * window/tab containing the printable content and when the browser
+		 * opens the native print dialog. <p>The {@code delay} will be applied
+		 * only when {@link #useDelay()} is {@code true}.
+		 */
+		int delay() default 300;
+
+		/**
+		 * <p>A relative URI of a stylesheet that should be applied to the
+		 * printable content. The URI's provided are relative to the server
+		 * context of the client application. For example,
+		 * {@code "/styles/sheet1.css"} would resolve to:
+		 * {@code http://localhost:8080/appcontext/styles/sheet1.css} <p>*Note:
+		 * The protocol, host, port, and context are client specific. <p>If
+		 * providing a very large stylesheet, it may be necessary to modify the
+		 * {@link delay} property so that the stylesheet have time to load prior
+		 * to the print actions taking place.
+		 */
+		String stylesheet() default "";
+
+		/**
+		 * <p>Whether or not to include the single page application styles with
+		 * the printable content.
+		 * <p>This feature is experimental and may be removed in the future.
+		 */
+		boolean useAppStyles() default false;
+		
+		/**
+		 * <p>Whether or not to use the {@link delay} setting. <p>If
+		 * {@link #stylesheet()} is provided as a non-empty array,
+		 * {@code useDelay} will be set to {@code true} regardless of the value
+		 * set.
+		 */
+		boolean useDelay() default true;
+	}
+	
+	/**
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Radio will be rendered when annotating a field nested under one of the
@@ -2143,6 +2277,8 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
 
 	}
 	
@@ -2279,6 +2415,10 @@ public class ViewConfig {
 		 * <p>The width of the signature canvas. 
 		 */
 		String width() default "345";
+		/**
+		 * <p>Tells that the control is eligible for form validations. 
+		 */	
+		boolean dataEntryField() default true;
 	}
 
 	/**
@@ -2396,6 +2536,10 @@ public class ViewConfig {
 		String type() default "textarea";
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
+		
+		
 	}
 
 	/**
@@ -2436,6 +2580,8 @@ public class ViewConfig {
 		String type() default "text";
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
 
 	}
 

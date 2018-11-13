@@ -95,9 +95,14 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 		final String resolvedRepAlias = resolveEntityAliasByRepo(rootDomainConfig);
 		
 		// db - entity
-		if(Repo.Database.exists(repo) && refId != null) { // root (view or core) is persistent
-			entity = getRepositoryFactory().get(rootDomainConfig.getRepo())
+		if(Repo.Database.exists(repo) ) {
+			if (refId != null) { // root (view or core) is persistent
+				entity = getRepositoryFactory().get(rootDomainConfig.getRepo())
 						._get(refId, rootDomainConfig.getReferredClass(), resolvedRepAlias, eCtx.getCommandMessage().getCommand().getAbsoluteUri());
+			} else {
+				/* Cannot make a get call without a entity reference Id */
+				throw new InvalidConfigException("Get call received for domain - " + rootDomainConfig.getAlias() + " without a refId. Execution Context: " + eCtx);
+			}
 			
 		} else {
 			entity = instantiateEntity(eCtx, rootDomainConfig);

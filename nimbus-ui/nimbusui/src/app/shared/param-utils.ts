@@ -16,12 +16,11 @@
  */
 'use strict';
 
-import { ConfigService } from './../services/config.service';
-import { SortAs } from '../components/platform/grid/sortas.interface';
-import { PageService } from '../services/page.service';
-import { GridService } from '../services/grid.service';
 import { ServiceConstants } from '../services/service.constants';
 import { Param } from './param-state';
+import { LabelConfig } from './param-config';
+import { UiNature } from './param-config';
+
 /**
  * \@author Tony.Lopez
  * \@whatItDoes 
@@ -269,5 +268,68 @@ export class ParamUtils {
         }
     
         return true;
+    }
+
+    static getHelpText(labelConfig: LabelConfig) {
+        if (!labelConfig) {
+            return undefined;
+        }
+        return labelConfig.helpText;
+    }
+
+    static getLabelText(labelConfig: LabelConfig) {
+        if (!labelConfig) {
+            return undefined;
+        }
+        return labelConfig.text;
+    }
+
+    /**
+     * Retrieve a UiNature by name from uiNatures. If not uiNatures is undefined or the uiNature 
+     * by name is not found, undefined is returned.
+     * @param param The param to inspect
+     * @param name The name of the uiNature on this param to find
+     */
+    static getUiNature(param: Param, name: string): UiNature {
+        let uiNatures = ParamUtils.getUiNatures(param);
+        return !uiNatures ? undefined : uiNatures.find(uiNature => uiNature.name === name);
+    }
+    
+    /**
+     * Get the UiNature[] if it exists and is non-empty on this instance
+     * @param param The param to inspect
+     */
+    static getUiNatures(param: Param): UiNature[] {
+        if (param.config && param.config.uiNatures && param.config.uiNatures.length > 0) {
+            return param.config.uiNatures;
+        } else {
+            return undefined;
+        }
+    }
+
+    static getDomainIdFromPath(path: string): string {
+        if (!path) {
+            return undefined;
+        }
+        return path.split('/')[1];
+    }
+
+    static getPageIdFromPath(path: string): string {
+        if (!path) {
+            return undefined;
+        }
+        return path.split('/')[2];
+    }
+
+    static getDomainPageFromPath(path: string): string {
+        let domain = ParamUtils.getDomainIdFromPath(path);
+        if (!domain) {
+            return undefined;
+        }
+        let page = ParamUtils.getPageIdFromPath(path);
+        if (!page) {
+            return undefined;
+        }
+        return `/${domain}/${page}`;
     }
 }
