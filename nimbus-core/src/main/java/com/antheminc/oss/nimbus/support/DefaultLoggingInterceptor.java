@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -75,16 +74,16 @@ public class DefaultLoggingInterceptor {
 		}
 	}
 	
-	public static String format(String key, String cmdExecId, String methodName) {
-		return new StringBuilder().append(key).append(cmdExecId).append(K_SPACE).append(methodName).toString();
+	public static String format(String key, String methodName) {
+		return new StringBuilder().append(key).append(methodName).toString();
 	}
 	
-	public static String format(String key, String cmdExecId, String methodName, SimpleStopWatch sw) {
-		return new StringBuilder().append(key).append(cmdExecId).append(K_SPACE).append(methodName).append(K_SPACE).append(sw.toString()).append(K_MILLI_SECS).toString();
+	public static String format(String key, String methodName, SimpleStopWatch sw) {
+		return new StringBuilder().append(key).append(methodName).append(K_SPACE).append(sw.toString()).append(K_MILLI_SECS).toString();
 	}
 
-	public static String format(String key, String cmdExecId, String methodName, String args) {
-		return new StringBuilder().append(key).append(cmdExecId).append(K_SPACE).append(methodName).append(K_SPACE).append(args).toString();
+	public static String format(String key, String methodName, String args) {
+		return new StringBuilder().append(key).append(methodName).append(K_SPACE).append(args).toString();
 	}
 	
 	@Around("@within(com.antheminc.oss.nimbus.support.EnableAPIMetricCollection)")
@@ -93,15 +92,14 @@ public class DefaultLoggingInterceptor {
 		SimpleStopWatch sw = new SimpleStopWatch();
 		
 		checkAndInjectProxyReferenceToTarget(proceedingJoinPoint);
-		String cmdExecId = UUID.randomUUID().toString();
+		
 		try {
 			EnableAPIMetricCollection configuredAnnotation = nullSafeLoggingLevel(proceedingJoinPoint);
-			
 			if(logArgs(configuredAnnotation, LogLevel.info)) {
-				logit.info(()->format(K_METHOD_ARGS, cmdExecId, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
+				logit.info(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
 			} else {
-				logit.info(()->format(K_METHOD_ENTRY, cmdExecId, methodName));
-				logit.debug(()->format(K_METHOD_ARGS, cmdExecId, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
+				logit.info(()->format(K_METHOD_ENTRY, methodName));
+				logit.debug(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
 			}
 			
 			sw.start();
@@ -109,10 +107,10 @@ public class DefaultLoggingInterceptor {
 			sw.stop();
 			
 			if(logResp(configuredAnnotation, LogLevel.info)) {
-				logit.info(()->format(K_METHOD_RESP, cmdExecId, methodName, nullSafeResp(result)));
+				logit.info(()->format(K_METHOD_RESP, methodName, nullSafeResp(result)));
 			} else {
-				logit.debug(()->format(K_METHOD_RESP, cmdExecId, methodName, nullSafeResp(result)));
-				logit.info(()->format(K_METHOD_EXIT, cmdExecId, methodName, sw));
+				logit.debug(()->format(K_METHOD_RESP, methodName, nullSafeResp(result)));
+				logit.info(()->format(K_METHOD_EXIT, methodName, sw));
 			}
 			
 			return result;
@@ -120,7 +118,7 @@ public class DefaultLoggingInterceptor {
 		} catch (Throwable t) {
 			sw.stop();
 			
-			nullSafeLogError(proceedingJoinPoint, cmdExecId, methodName, t, sw);
+			nullSafeLogError(proceedingJoinPoint, methodName, t, sw);
 			
 			throw t;
 		}
@@ -164,9 +162,9 @@ public class DefaultLoggingInterceptor {
 					.orElse("method-name-not-found");
 	}
 	
-	private static void nullSafeLogError(ProceedingJoinPoint proceedingJoinPoint, String cmdExecId, String methodName, Throwable t, SimpleStopWatch sw) {
-		logit.error(()->format(K_METHOD_ARGS, cmdExecId, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
-		logit.error(()->format(K_METHOD_EXCEPTION, cmdExecId, methodName, sw), t);
+	private static void nullSafeLogError(ProceedingJoinPoint proceedingJoinPoint, String methodName, Throwable t, SimpleStopWatch sw) {
+		logit.error(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
+		logit.error(()->format(K_METHOD_EXCEPTION, methodName, sw), t);
 	}
 	
 	private static String nullSafeArgs(ProceedingJoinPoint proceedingJoinPoint, String methodName) {
