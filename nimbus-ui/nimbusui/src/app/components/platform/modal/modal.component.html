@@ -1,5 +1,5 @@
 <ng-template [ngIf]="type == componentTypes.dialog.toString()">
-    <p-dialog [(visible)]="display" 
+    <p-dialog #modal [(visible)]="display" 
     [closable]="closable"
     [closeOnEscape]="false" 
     [focusOnShow]="false"
