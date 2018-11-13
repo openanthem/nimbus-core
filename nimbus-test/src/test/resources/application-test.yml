@@ -48,6 +48,9 @@ domain:
       - com.antheminc.oss.nimbus.**.view
       - com.antheminc.oss.nimbus.domain.bpm
       - com.antheminc.oss.nimbus.domain.rules
+    basePackagesToExclude:
+      - com.antheminc.oss.nimbus.test.exclude.core.*
+      
     typeClassMappings:
       java.time.LocalDate : 
         date
