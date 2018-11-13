@@ -5,31 +5,31 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Image } from './image.component';
 import { ServiceConstants } from './../../services/service.constants';
 import { SvgComponent } from './svg/svg.component';
+import { setup, TestContext } from './../../setup.spec';
+import { configureTestSuite } from 'ng-bullet';
+
+const declarations = [
+  Image,
+  SvgComponent
+ ];
+const imports = [  AngularSvgIconModule ];
+const providers = [];
 
 describe('Image', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        Image,
-        SvgComponent
-       ],
-       imports: [
-        AngularSvgIconModule
-       ]
-    }).compileComponents();
-  }));
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(Image);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+  configureTestSuite();
+  setup(Image, declarations, imports, providers);
 
-  it('ngOnInit() should update the imagesPath', async(() => {
-    const fixture = TestBed.createComponent(Image);
-    const app = fixture.debugElement.componentInstance;
-    app.ngOnInit();
-    expect(app.imagesPath).not.toEqual(null);
-  }));
+  beforeEach(async function(this: TestContext<Image>){
+  });
+
+  it('should create the Image', function(this: TestContext<Image>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
+
+  it('ngOnInit() should update the imagesPath', function(this: TestContext<Image>) {
+    this.hostComponent.ngOnInit();
+    expect(this.hostComponent.imagesPath).not.toEqual(null);
+  });
 
 });

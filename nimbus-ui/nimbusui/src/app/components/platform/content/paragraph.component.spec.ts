@@ -5,6 +5,12 @@ import { HttpModule } from '@angular/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { Paragraph } from './paragraph.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
+import * as data from '../../../payload.json';
+import { Param } from '../../../shared/param-state';
+
+let param: Param;
 
 class MockDomSanitizer {
     bypassSecurityTrustHtml(a:any) {
@@ -12,32 +18,34 @@ class MockDomSanitizer {
     }
 }
 
+const declarations = [
+  Paragraph
+ ];
+ const imports = [
+  HttpClientModule,
+  HttpModule
+ ];
+ const providers = [
+     { provide: DomSanitizer, useClass: MockDomSanitizer }
+ ];
+
+
 describe('Paragraph', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        Paragraph
-       ],
-       imports: [
-        HttpClientModule,
-        HttpModule
-       ],
-       providers: [
-           { provide: DomSanitizer, useClass: MockDomSanitizer }
-       ]
-    }).compileComponents();
-  }));
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(Paragraph);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+  configureTestSuite();
+  setup(Paragraph, declarations, imports, providers);
+  param = (<any>data).payload;
 
-  it('get htmlContent() should get content DomSanitizer.bypassSecurityTrustHtml()', async(() => {
-    const fixture = TestBed.createComponent(Paragraph);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.htmlContent).toEqual('test');
-  }));
+  beforeEach(async function(this: TestContext<Paragraph>){
+    this.hostComponent.element = param;
+  });
+
+  it('should create the Paragraph', async function (this: TestContext<Paragraph>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
+
+  it('get htmlContent() should get content DomSanitizer.bypassSecurityTrustHtml()', async function (this: TestContext<Paragraph>) {
+    expect(this.hostComponent.htmlContent).toEqual('test');
+  });
 
 });

@@ -69,6 +69,13 @@ import { CardDetailsFieldGroupComponent } from '../platform/card/card-details-fi
 import { DisplayValueDirective } from '../../directives/display-value.directive';
 import { FormGridFiller } from '../platform/form/form-grid-filler.component';
 import { InputLegend } from '../platform/form/elements/input-legend.component';
+import { FormErrorMessage } from './form-error-message.component';
+import { setup, TestContext } from './../../setup.spec';
+import { configureTestSuite } from 'ng-bullet';
+import * as data from '../../payload.json';
+import { Param } from '../../shared/param-state';
+
+let param: Param;
 
 class MockPageService {
     processEvent() {
@@ -82,127 +89,120 @@ class MockLoggerService {
   error() { }
 }
 
+const declarations = [
+  Section,
+  ComboBox,
+  InputText,
+  ButtonGroup,
+  Button,
+  InfiniteScrollGrid,
+  Menu,
+  Link,
+  Form,
+  StaticText,
+  Paragraph,
+  CardDetailsComponent,
+  CardDetailsGrid,
+  MessageComponent,
+  TooltipComponent,
+  SelectItemPipe,
+  ActionDropdown,
+  DateTimeFormatPipe,
+  FrmGroupCmp,
+  Accordion,
+  CardDetailsFieldComponent,
+  ActionLink,
+  FormElement,
+  InPlaceEditorComponent,
+  TextArea,
+  FileUploadComponent,
+  OrderablePickList,
+  MultiselectCard,
+  MultiSelectListBox,
+  CheckBox,
+  CheckBoxGroup,
+  RadioButton,
+  Calendar,
+  DateControl,
+  Signature,
+  Header,
+  DataTable,
+  HeaderCheckBox,
+  SvgComponent,
+  Image,
+  InputLabel,
+  Label,
+  TreeGrid,
+  InputSwitch,
+  CardDetailsFieldGroupComponent,
+  DisplayValueDirective,
+  FormGridFiller,
+  InputLegend,
+  FormErrorMessage
+ ];
+const imports = [
+  FormsModule,
+  DropdownModule,
+  DataTableModule,
+  AccordionModule,
+  ReactiveFormsModule,
+  GrowlModule,
+  PickListModule,
+  FileUploadModule,
+  ListboxModule,
+  CheckboxModule,
+  RadioButtonModule,
+  CalendarModule,
+  HttpModule,
+  HttpClientModule,
+  TableModule,
+  KeyFilterModule,
+  StorageServiceModule,
+  AngularSvgIconModule,
+  ToastModule,
+  TreeTableModule,
+  InputSwitchModule
+ ];
+const providers = [
+  { provide: PageService, useClass: MockPageService },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  {provide: LoggerService, useClass: MockLoggerService},
+  WebContentSvc,
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  AppInitService
+ ];
 
 describe('Section', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        Section,
-        ComboBox,
-        InputText,
-        ButtonGroup,
-        Button,
-        InfiniteScrollGrid,
-        Menu,
-        Link,
-        Form,
-        StaticText,
-        Paragraph,
-        CardDetailsComponent,
-        CardDetailsGrid,
-        MessageComponent,
-        TooltipComponent,
-        SelectItemPipe,
-        ActionDropdown,
-        DateTimeFormatPipe,
-        FrmGroupCmp,
-        Accordion,
-        CardDetailsFieldComponent,
-        ActionLink,
-        FormElement,
-        InPlaceEditorComponent,
-        TextArea,
-        FileUploadComponent,
-        OrderablePickList,
-        MultiselectCard,
-        MultiSelectListBox,
-        CheckBox,
-        CheckBoxGroup,
-        RadioButton,
-        Calendar,
-        DateControl,
-        Signature,
-        Header,
-        DataTable,
-        HeaderCheckBox,
-        SvgComponent,
-        Image,
-        InputLabel,
-        Label,
-        TreeGrid,
-        InputSwitch,
-        CardDetailsFieldGroupComponent,
-        DisplayValueDirective,
-        FormGridFiller,
-        InputLegend
-       ],
-       imports: [
-        FormsModule,
-        DropdownModule,
-        DataTableModule,
-        AccordionModule,
-        ReactiveFormsModule,
-        GrowlModule,
-        PickListModule,
-        FileUploadModule,
-        ListboxModule,
-        CheckboxModule,
-        RadioButtonModule,
-        CalendarModule,
-        HttpModule,
-        HttpClientModule,
-        TableModule,
-        KeyFilterModule,
-        StorageServiceModule,
-        AngularSvgIconModule,
-        ToastModule,
-        TreeTableModule,
-        InputSwitchModule
-       ],
-       providers: [
-        { provide: PageService, useClass: MockPageService },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        {provide: LoggerService, useClass: MockLoggerService},
-        WebContentSvc,
-        CustomHttpClient,
-        LoaderService,
-        ConfigService,
-        AppInitService
-       ]
-    }).compileComponents();
-  }));
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(Section);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+  configureTestSuite();
+  setup(Section, declarations, imports, providers);
+  param = (<any>data).payload;
 
-  it('ngOnInit() should call pageSvc.processEvent()', async(() => {
-    const fixture = TestBed.createComponent(Section);
-    const app = fixture.debugElement.componentInstance;
-    const service = TestBed.get(PageService);
-    app.element = {
-        config: {
-            initializeComponent: () => {
-                return 'true';
-            }
-        }
-    }
+  beforeEach(async function(this: TestContext<Section>){
+      this.hostComponent.element = param;
+  });
+
+  it('should create the Section', function(this: TestContext<Section>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
+
+  it('ngOnInit() should call pageSvc.processEvent()', function(this: TestContext<Section>) {
+   const service = TestBed.get(PageService);
+    this.hostComponent.element.config.initializeComponent = () => {return true};
     spyOn(service, 'processEvent').and.callThrough();
-    app.ngOnInit();
+    this.hostComponent.ngOnInit();
     expect(service.processEvent).toHaveBeenCalled();
-  }));
+  });
 
-  it('ngOnInit() should not call pageSvc.processEvent()', async(() => {
-    const fixture = TestBed.createComponent(Section);
-    const app = fixture.debugElement.componentInstance;
+  it('ngOnInit() should not call pageSvc.processEvent()', function(this: TestContext<Section>) {
     const service = TestBed.get(PageService);
-    app.element = { }
+    this.hostComponent.element = { } as Param;
     spyOn(service, 'processEvent').and.callThrough();
-    app.ngOnInit();
+    this.hostComponent.ngOnInit();
     expect(service.processEvent).not.toHaveBeenCalled();
-  }));
+  });
 
 });

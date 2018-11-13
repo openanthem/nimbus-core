@@ -21,8 +21,11 @@ import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+import * as data from '../../../../payload.json';
 
-let fixture, app, pageService;
+let param, pageService;
 
 class MockPageService {
     eventUpdate$: Subject<any>;
@@ -36,57 +39,65 @@ class MockPageService {
     }
 }
 
+const declarations = [
+  InputSwitch,
+  InputLabel,
+  TooltipComponent
+ ];
+const imports = [
+     HttpModule,
+     HttpClientTestingModule,
+     StorageServiceModule,
+     DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
+FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
+ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule,
+FormsModule
+ ];
+const providers = [
+    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+    { provide: 'JSNLOG', useValue: JL },
+    {provide: PageService, useClass: MockPageService},
+     CustomHttpClient,
+     LoaderService,
+     ConfigService,
+     LoggerService,
+     AppInitService,
+     SessionStoreService
+ ];
+
 describe('InputSwitch', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        InputSwitch,
-        InputLabel,
-        TooltipComponent
-       ],
-       imports: [
-           HttpModule,
-           HttpClientTestingModule,
-           StorageServiceModule,
-           DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
-    FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule,
-    FormsModule
-       ],
-       providers: [
-          { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-          { provide: 'JSNLOG', useValue: JL },
-          {provide: PageService, useClass: MockPageService},
-           CustomHttpClient,
-           LoaderService,
-           ConfigService,
-           LoggerService,
-           AppInitService,
-           SessionStoreService
-       ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(InputSwitch);
-    app = fixture.debugElement.componentInstance;
+  configureTestSuite();
+  setup(InputSwitch, declarations, imports, providers);
+  param = (<any>data).payload;
+
+  beforeEach(async function(this: TestContext<InputSwitch>){
+    this.hostComponent.element = param;
     pageService = TestBed.get(PageService);
-  }));
+  });
 
-    it('should create the app', async(() => {
-      expect(app).toBeTruthy();
-    }));
+  it('should create the InputSwitch', async function (this: TestContext<InputSwitch>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
 
-    it('orientation should be left', async(() => {
-      app.element = { config: { uiStyles: { attributes: { orientation: 'LEFT' } } } };
-      expect(app.orientation).toEqual('left');
-    }));
+  it('orientation should be left', async function (this: TestContext<InputSwitch>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.orientation = 'LEFT';
+      expect(this.hostComponent.orientation).toEqual('left');
+    });
+  });
 
-    it('orientation should be right', async(() => {
-      app.element = { config: { uiStyles: { attributes: { orientation: 'RIGHT' } } } };
-      expect(app.orientation).toEqual('right');
-    }));
+  it('orientation should be right', async function (this: TestContext<InputSwitch>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.orientation = 'RIGHT';
+      expect(this.hostComponent.orientation).toEqual('right');
+    });
+  });
 
-    it('orientation should be empty string', async(() => {
-      app.element = { config: { uiStyles: { attributes: { orientation: '' } } } };
-      expect(app.orientation).toEqual('');
-    }));
+  it('orientation should be empty string', async function (this: TestContext<InputSwitch>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.orientation = '';
+      expect(this.hostComponent.orientation).toEqual('');
+    });
+  });
 
 });

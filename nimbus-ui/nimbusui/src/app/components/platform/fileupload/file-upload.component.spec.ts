@@ -14,8 +14,11 @@ import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoggerService } from './../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from './../../../services/session.store';
 import { AppInitService } from './../../../services/app.init.service';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
+import * as data from '../../../payload.json';
 
-let fixture, app, fileservice;
+let fixture, app, fileservice, param;
 
 class MockFileService {
     public addFile$: Subject<any>;
@@ -33,109 +36,121 @@ class MockFileService {
     }
 }
 
+const declarations = [ FileUploadComponent ];
+const imports = [
+   FileUploadModule,
+   HttpClientModule,
+   HttpModule,
+   StorageServiceModule
+];
+const providers = [
+   {provide: FileService, useClass: MockFileService},
+   { provide: 'JSNLOG', useValue: JL },
+   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+   WebContentSvc,
+   CustomHttpClient,
+   LoggerService,
+   AppInitService
+];
+
 describe('FileUploadComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-          FileUploadComponent
-       ],
-       imports: [
-           FileUploadModule,
-           HttpClientModule,
-           HttpModule,
-           StorageServiceModule
-       ],
-       providers: [
-           {provide: FileService, useClass: MockFileService},
-           { provide: 'JSNLOG', useValue: JL },
-           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-           WebContentSvc,
-           CustomHttpClient,
-           LoggerService,
-           AppInitService
-       ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(FileUploadComponent);
-    app = fixture.debugElement.componentInstance;
+
+  configureTestSuite();
+  setup(FileUploadComponent, declarations, imports, providers);
+  param = (<any>data).payload;
+
+  beforeEach(async function(this: TestContext<FileUploadComponent>){
+    this.hostComponent.element = param;
     fileservice = TestBed.get(FileService);
-  }));
+  });
 
-  it('should create the app', async(() => {
-    expect(app).toBeTruthy();
-  }));
+  it('should create the FileUploadComponent', async function (this: TestContext<FileUploadComponent>) {
+      expect(this.hostComponent).toBeTruthy();
+  });
 
-  it('get _value should return value', async(() => {
-    app.value = 123;
-    expect(app.value).toEqual(123);
-  }));
+  it('get _value should return value', async function (this: TestContext<FileUploadComponent>) {
+    this.hostComponent.value = 123;
+    expect(this.hostComponent.value).toEqual(123);
+  });
 
-  it('registerOnTouched should update app.onTouched', async(() => {
-    app.registerOnTouched(123);
-    expect(app.onTouched).toEqual(123);
-  }));
+  it('registerOnTouched should update onTouched property', async function (this: TestContext<FileUploadComponent>) {
+    this.hostComponent.registerOnTouched(123);
+    expect(this.hostComponent.onTouched).toEqual(123);
+  });
 
-  it('registerOnChange should update app.onChange', async(() => {
-    app.registerOnChange(456);
-    expect(app.onChange).toEqual(456);
-  }));
+  it('registerOnChange should update onChange property', async function (this: TestContext<FileUploadComponent>) {
+    this.hostComponent.registerOnChange(456);
+    expect(this.hostComponent.onChange).toEqual(456);
+  });
 
-  it('ngOnInit should update fileservice.metaData', async(() => {
-    app.element = { config: { uiStyles: { attributes: { metaData: 'test' } } } };
-    app.ngOnInit();
-    expect(fileservice.metaData).toEqual('test');
-  }));
+  it('ngOnInit() should update fileservice.metaData', async function (this: TestContext<FileUploadComponent>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.metaData = 'test';
+      this.hostComponent.ngOnInit();
+      expect(fileservice.metaData).toEqual('test');
+    });
+  });
 
-  it('hasfile() should return 0', async(() => {
-    const file = { name: 'testt', size: 321 };
-    app.selectedFiles = [{ name: 'testt', size: 321 }, {}, {}];
-    app.hasFile(file);
-    expect(app.hasFile(file)).toEqual(0);
-  }));
+  it('hasfile() should return 0', async function (this: TestContext<FileUploadComponent>) {
+    const file: File = { name: 'testt', size: 321 } as File;
+    this.hostComponent.selectedFiles = [file];
+    this.hostComponent.hasFile(file);
+    expect(this.hostComponent.hasFile(file)).toEqual(0);
+  });
 
-  it('removeFiles() should update app.value and app.selectedFiles', async(() => {
+  it('removeFiles() should update value and selectedFiles properties', async function (this: TestContext<FileUploadComponent>) {
     const eve = { file: '' };
-    spyOn(app, 'hasFile').and.returnValue('-1');
-    app.selectedFiles = 'test';
-    app.removeFiles(eve);
-    expect(app.value).toEqual(app.selectedFiles);
-  }));
+    spyOn(this.hostComponent, 'hasFile').and.returnValue('-1');
+    const file: File = { name: 'testt', size: 321 } as File;
+    this.hostComponent.selectedFiles = [file];
+    this.hostComponent.removeFiles(eve);
+    expect(this.hostComponent.value).toEqual(this.hostComponent.selectedFiles);
+  });
 
-  it('removeFiles() should update app.value', async(() => {
+  it('removeFiles() should update value property', async function (this: TestContext<FileUploadComponent>) {
     const eve = { file: '' };
-    spyOn(app, 'hasFile').and.returnValue('0');
-    app.selectedFiles = [1, 2];
-    app.removeFiles(eve);
-    expect(app.value).toEqual([2]);
-  }));
+    spyOn(this.hostComponent, 'hasFile').and.returnValue('0');
+    const file: File = { name: 'testt', size: 321 } as File;
+    this.hostComponent.selectedFiles = [file];
+    this.hostComponent.removeFiles(eve);
+    expect(this.hostComponent.selectedFiles).toEqual([]);
+  });
 
-  it('addFiles() should update selectedFiles as []', async(() => {
-    const eve = { originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } } };
-    app.element = { config: { uiStyles: { attributes: { url: '/test.com' } } } };
-    app.multipleFiles = false;
-    spyOn(app, 'hasFile').and.returnValue('-1');
-    spyOn(app.pfu, 'isFileTypeValid').and.returnValue(false);
-    app.addFiles(eve);
-    expect(app.selectedFiles).toEqual([]);
-  }));
+  it('addFiles() should update selectedFiles as []', async function (this: TestContext<FileUploadComponent>) {
+    this.fixture.whenStable().then(() => {
+      const eve = { originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } } };
+      this.hostComponent.element.config.uiStyles.attributes.url = '/test.com';
+      this.hostComponent.multipleFiles = false;
+      spyOn(this.hostComponent, 'hasFile').and.returnValue('-1');
+      spyOn(this.hostComponent.pfu, 'isFileTypeValid').and.returnValue(false);
+      this.hostComponent.addFiles(eve);
+      expect(this.hostComponent.selectedFiles).toEqual([]);
+    });
+  });
 
-  it('addFiles() should update selectedFiles[]', async(() => {
-    const eve = { originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } } };
-    app.element = { config: { uiStyles: { attributes: { url: '/test.com' } } } };
-    app.multipleFiles = true;
-    app.selectedFiles = [];
-    spyOn(app, 'hasFile').and.returnValue('-1');
-    spyOn(app.pfu, 'isFileTypeValid').and.returnValue(true);
-    app.addFiles(eve);
-    expect(app.selectedFiles).toEqual([{ postUrl: '/test.com' }]);
-  }));
+  it('addFiles() should update selectedFiles[]', async function (this: TestContext<FileUploadComponent>) {
+    this.fixture.whenStable().then(() => {
+      const eve = { originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } } };
+      this.hostComponent.element.config.uiStyles.attributes.url = '/test.com';
+      this.hostComponent.multipleFiles = true;
+      this.hostComponent.selectedFiles = [];
+      spyOn(this.hostComponent, 'hasFile').and.returnValue('-1');
+      spyOn(this.hostComponent.pfu, 'isFileTypeValid').and.returnValue(true);
+      this.hostComponent.addFiles(eve);
+      const res: any = { postUrl: '/test.com' };
+      expect(this.hostComponent.selectedFiles).toEqual([res]);
+    });
+  });
 
-  it('addFiles() should not call fileservice.uploadFile', async(() => {
-    const eve = { originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } } };
-    app.element = { config: { uiStyles: { attributes: { url: '/test.com' } } } };
-    spyOn(app, 'hasFile').and.returnValue('1');
-    spyOn(fileservice, 'uploadFile').and.callThrough();
-    app.addFiles(eve);
-    expect(fileservice.uploadFile).not.toHaveBeenCalled();
-  }));
+  it('addFiles() should not call fileservice.uploadFile', async function (this: TestContext<FileUploadComponent>) {
+    this.fixture.whenStable().then(() => {
+      const eve = { originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } } };
+      this.hostComponent.element.config.uiStyles.attributes.url = '/test.com';
+      spyOn(this.hostComponent, 'hasFile').and.returnValue('1');
+      spyOn(fileservice, 'uploadFile').and.callThrough();
+      this.hostComponent.addFiles(eve);
+      expect(fileservice.uploadFile).not.toHaveBeenCalled();
+    });
+  });
 
 });

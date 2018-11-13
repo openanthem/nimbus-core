@@ -6,26 +6,30 @@ import { ButtonGroup } from './button-group.component';
 import { Button } from './button.component';
 import { SvgComponent } from '../../svg/svg.component';
 import { Image } from '../../image.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+
+const declarations = [
+  ButtonGroup,
+  Button,
+  SvgComponent,
+  Image
+ ];
+ const imports = [
+   AngularSvgIconModule
+ ];
+ const providers = []
 
 describe('ButtonGroup', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        ButtonGroup,
-        Button,
-        SvgComponent,
-        Image
-       ],
-       imports: [
-         AngularSvgIconModule
-       ]
-    }).compileComponents();
-  }));
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(ButtonGroup);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+  configureTestSuite();
+  setup(ButtonGroup, declarations, imports, providers);
+
+  beforeEach(async function(this: TestContext<ButtonGroup>){
+  });
+
+  it('should create the ButtonGroup', async function (this: TestContext<ButtonGroup>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
 
 });

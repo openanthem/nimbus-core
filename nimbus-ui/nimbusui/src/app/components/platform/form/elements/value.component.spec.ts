@@ -2,20 +2,23 @@
 import { TestBed, async } from '@angular/core/testing';
 
 import { Value } from './value.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+
+const declarations = [Value];
+const imports = [];
+const providers = [];
 
 describe('Value', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        Value
-       ]
-    }).compileComponents();
-  }));
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(Value);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+  configureTestSuite();
+  setup(Value, declarations, imports, providers);
+
+  beforeEach(async function(this: TestContext<Value>) {
+  });
+
+  it('should create the Value', async function (this: TestContext<Value>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
 
 });

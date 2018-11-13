@@ -15,8 +15,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
-import { FormsModule } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, FormControl } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 
 import { DomainFlowCmp } from './domain-flow.component';
@@ -79,8 +78,11 @@ import { OrderablePickList } from '../platform/form/elements/picklist.component'
 import { InputLabel } from '../platform/form/elements/input-label.component';
 import { SelectItemPipe } from '../../pipes/select-item.pipe';
 import { InputLegend } from '../platform/form/elements/input-legend.component';
+import { FormErrorMessage } from '../platform/form-error-message.component';
+import { setup, TestContext } from '../../setup.spec';
+import { configureTestSuite } from 'ng-bullet';
 
-let app, fixture, layoutservice, pageservice, router, route;
+let layoutservice, pageservice, router, route;
 
 @Component({
     template: '<div></div>',
@@ -211,13 +213,12 @@ export class MockActivatedRoute implements ActivatedRoute {
                 }
             }
         }]
-    };    
+    };
     parent: ActivatedRoute;
     firstChild: ActivatedRoute;
     children: ActivatedRoute[];
     pathFromRoot: ActivatedRoute[];
     data = observableOf({
-            
       });
     paramMap: Observable<ParamMap>;
     queryParamMap: Observable<ParamMap>;
@@ -233,307 +234,192 @@ export class MockActivatedRoute implements ActivatedRoute {
     navigate() {    }
   }
 
+  const declarations = [
+    DomainFlowCmp,
+    BreadcrumbComponent,
+    SubHeaderCmp,
+    DateTimeFormatPipe,
+    ActionTray,
+    Button,
+    SvgComponent,
+    Accordion,
+    Modal,
+    NmPanelMenu,
+    Image,
+    CardDetailsGrid,
+    CardDetailsComponent,
+    DataTable,
+    ButtonGroup,
+    FrmGroupCmp,
+    Label,
+    Section,
+    TooltipComponent,
+    NmPanelMenuSub,
+    MenuRouteLink,
+    Link,
+    CardDetailsFieldComponent,
+    CardDetailsFieldGroupComponent,
+    Paragraph,
+    StaticText,
+    ActionDropdown,
+    HeaderCheckBox,
+    FormElement,
+    InputSwitch,
+    ComboBox,
+    MessageComponent,
+    Form,
+    Menu,
+    TreeGrid,
+    InputText,
+    InPlaceEditorComponent,
+    TextArea,
+    DisplayValueDirective,
+    ActionLink,
+    FormGridFiller,
+    Header,
+    Signature,
+    DateControl,
+    Calendar,
+    RadioButton,
+    CheckBoxGroup,
+    CheckBox,
+    MultiSelectListBox,
+    MultiselectCard,
+    FileUploadComponent,
+    OrderablePickList,
+    InputLabel,
+    SelectItemPipe,
+    InputLegend,
+    FormErrorMessage
+ ];
+ const imports =  [
+     RouterTestingModule,
+     HttpClientModule,
+     HttpModule,
+     StorageServiceModule,
+     AngularSvgIconModule,
+     DataTableModule, 
+     SharedModule, 
+     OverlayPanelModule, 
+     PickListModule, 
+     DragDropModule, 
+     CalendarModule, 
+     FileUploadModule, 
+     ListboxModule, 
+     DialogModule, 
+     CheckboxModule, 
+     DropdownModule, 
+     RadioButtonModule, 
+     ProgressBarModule, 
+     ProgressSpinnerModule, 
+     AccordionModule, 
+     GrowlModule, 
+     InputSwitchModule, 
+     TreeTableModule,
+     TableModule,
+     KeyFilterModule,
+     FormsModule,
+     ReactiveFormsModule,
+     ToastModule
+ ];
+ const providers = [
+     {provide: LayoutService, useClass: MockLayoutService},
+     {provide: ActivatedRoute, useClass: MockActivatedRoute},
+     {provide: PageService, useClass: MockPageService},
+     {provide: Router, useClass: MockRouter},
+     { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+     { provide: 'JSNLOG', useValue: JL },
+     {provide: LoggerService, useClass: MockLoggerService},
+     CustomHttpClient,
+     WebContentSvc,
+     LoaderService,
+     ConfigService,
+     BreadcrumbService,
+     SessionStoreService,
+     AppInitService
+  ];
+
 describe('DomainFlowCmp', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-          DomainFlowCmp,
-          BreadcrumbComponent,
-          SubHeaderCmp,
-          DateTimeFormatPipe,
-          ActionTray,
-          Button,
-          SvgComponent,
-          Accordion,
-          Modal,
-          NmPanelMenu,
-          Image,
-          CardDetailsGrid,
-          CardDetailsComponent,
-          DataTable,
-          ButtonGroup,
-          FrmGroupCmp,
-          Label,
-          Section,
-          TooltipComponent,
-          NmPanelMenuSub,
-          MenuRouteLink,
-          Link,
-          CardDetailsFieldComponent,
-          CardDetailsFieldGroupComponent,
-          Paragraph,
-          StaticText,
-          ActionDropdown,
-          HeaderCheckBox,
-          FormElement,
-          InputSwitch,
-          ComboBox,
-          MessageComponent,
-          Form,
-          Menu,
-          TreeGrid,
-          InputText,
-          InPlaceEditorComponent,
-          TextArea,
-          DisplayValueDirective,
-          ActionLink,
-          FormGridFiller,
-          Header,
-          Signature,
-          DateControl,
-          Calendar,
-          RadioButton,
-          CheckBoxGroup,
-          CheckBox,
-          MultiSelectListBox,
-          MultiselectCard,
-          FileUploadComponent,
-          OrderablePickList,
-          InputLabel,
-          SelectItemPipe,
-          InputLegend
-       ],
-       imports: [
-           RouterTestingModule,
-           HttpClientModule,
-           HttpModule,
-           StorageServiceModule,
-           AngularSvgIconModule,
-           DataTableModule, 
-           SharedModule, 
-           OverlayPanelModule, 
-           PickListModule, 
-           DragDropModule, 
-           CalendarModule, 
-           FileUploadModule, 
-           ListboxModule, 
-           DialogModule, 
-           CheckboxModule, 
-           DropdownModule, 
-           RadioButtonModule, 
-           ProgressBarModule, 
-           ProgressSpinnerModule, 
-           AccordionModule, 
-           GrowlModule, 
-           InputSwitchModule, 
-           TreeTableModule,
-           TableModule,
-           KeyFilterModule,
-           FormsModule,
-           ReactiveFormsModule,
-           ToastModule
-       ],
-       providers: [
-           {provide: LayoutService, useClass: MockLayoutService},
-           {provide: ActivatedRoute, useClass: MockActivatedRoute},
-           {provide: PageService, useClass: MockPageService},
-           {provide: Router, useClass: MockRouter},
-           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-           { provide: 'JSNLOG', useValue: JL },
-           {provide: LoggerService, useClass: MockLoggerService},
-           CustomHttpClient,
-           WebContentSvc,
-           LoaderService,
-           ConfigService,
-           BreadcrumbService,
-           SessionStoreService,
-           AppInitService
-        ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(DomainFlowCmp);
-    app = fixture.debugElement.componentInstance;
+
+    configureTestSuite();
+    setup(DomainFlowCmp, declarations, imports, providers);
+
+  beforeEach(async function(this: TestContext<DomainFlowCmp>) {
     layoutservice = TestBed.get(LayoutService);
     pageservice = TestBed.get(PageService);
     router = TestBed.get(Router);
     route = TestBed.get(ActivatedRoute);
-  }));
+  });
 
-  it('should create the app', async(() => {
-    expect(app).toBeTruthy();
-  }));
+  it('should create the app', function(this: TestContext<DomainFlowCmp>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
 
-  it('ngOnInit() should not update main-content', async(() => {
-    spyOn(document, 'getElementById').and.returnValue({ 
-        classList: {
-            add: () => {
-            }
-        }
-     });
-    const res = {
-      topBar: {
-        headerMenus: 'theaderMenus',
-      }
-    };
-    app.ngOnInit();
+  it('ngOnInit() should not update main-content', function(this: TestContext<DomainFlowCmp>) {
+    spyOn(document, 'getElementById').and.callThrough();
+    const res = { topBar: { headerMenus: 'theaderMenus' } };
+    this.hostComponent.ngOnInit();
     layoutservice.parseLayoutConfig(res);
     expect(document.getElementById).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('ngOnInit() should call router.navigate', async(() => {
-    spyOn(document, 'getElementById').and.returnValue({ 
-        classList: {
-            remove: () => {
-            },
-            add: () => {
-            }
-        }
-    });
-   const res = {
-      pageConfig: {
-        config: {
-          code: 321
-        }
-      }
-    };
+  it('ngOnInit() should call router.navigate', function(this: TestContext<DomainFlowCmp>) {
+    const res = { pageConfig: { config: { code: 321 } } };
     spyOn(router, 'navigate').and.callThrough();
-    app.ngOnInit();
+    this.hostComponent.ngOnInit();
     pageservice.logError(res);
     expect(router.navigate).toHaveBeenCalled();
-  }));
+  });
 
-  it('ngOnInit() should not call router.navigate', async(() => {
+  it('ngOnInit() should not call router.navigate', function(this: TestContext<DomainFlowCmp>) {
+    const res = {};
+    spyOn(router, 'navigate').and.callThrough();
+    this.hostComponent.ngOnInit();
+    pageservice.logError(res);
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+});
+
+const secondProviders = [
+    {provide: LayoutService, useClass: MockLayoutService},
+    {provide: ActivatedRoute, useClass: MockActivatedRoute1},
+    {provide: PageService, useClass: MockPageService},
+    {provide: Router, useClass: MockRouter},
+    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+    { provide: 'JSNLOG', useValue: JL },
+    {provide: LoggerService, useClass: MockLoggerService},
+    CustomHttpClient,
+    WebContentSvc,
+    LoaderService,
+    ConfigService,
+    BreadcrumbService,
+    SessionStoreService,
+    AppInitService
+ ];
+
+describe('DomainFlowCmp', () => {
+
+    configureTestSuite();
+    setup(DomainFlowCmp, declarations, imports, secondProviders);
+
+  beforeEach(async function(this: TestContext<DomainFlowCmp>) {
+    layoutservice = TestBed.get(LayoutService);
+    pageservice = TestBed.get(PageService);
+    router = TestBed.get(Router);
+    route = TestBed.get(ActivatedRoute);
+  });
+
+  it('ngOnInit should not call layoutservice.getLayout()', function(this: TestContext<DomainFlowCmp>) {
+    spyOn(layoutservice, 'getLayout').and.callThrough();
     spyOn(document, 'getElementById').and.returnValue({
       classList: {
         remove: () => {},
         add: () => {}
       }
     });
-    const res = {};
-    spyOn(router, 'navigate').and.callThrough();
-    app.ngOnInit();
-    pageservice.logError(res);
-    expect(router.navigate).not.toHaveBeenCalled();
-  }));
-
-});
-
-describe('DomainFlowCmp', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-        declarations: [
-            DomainFlowCmp,
-            BreadcrumbComponent,
-            SubHeaderCmp,
-            DateTimeFormatPipe,
-            ActionTray,
-            Button,
-            SvgComponent,
-            Accordion,
-            Modal,
-            NmPanelMenu,
-            Image,
-            CardDetailsGrid,
-            CardDetailsComponent,
-            DataTable,
-            ButtonGroup,
-            FrmGroupCmp,
-            Label,
-            Section,
-            TooltipComponent,
-            NmPanelMenuSub,
-            MenuRouteLink,
-            Link,
-            CardDetailsFieldComponent,
-            CardDetailsFieldGroupComponent,
-            Paragraph,
-            StaticText,
-            ActionDropdown,
-            HeaderCheckBox,
-            FormElement,
-            InputSwitch,
-            ComboBox,
-            MessageComponent,
-            Form,
-            Menu,
-            TreeGrid,
-            InputText,
-            InPlaceEditorComponent,
-            TextArea,
-            DisplayValueDirective,
-            ActionLink,
-            FormGridFiller,
-            Header,
-            Signature,
-            DateControl,
-            Calendar,
-            RadioButton,
-            CheckBoxGroup,
-            CheckBox,
-            MultiSelectListBox,
-            MultiselectCard,
-            FileUploadComponent,
-            OrderablePickList,
-            InputLabel,
-            SelectItemPipe,
-            InputLegend
-         ],
-         imports: [
-             RouterTestingModule,
-             HttpClientModule,
-             HttpModule,
-             StorageServiceModule,
-             AngularSvgIconModule,
-             DataTableModule, 
-             SharedModule, 
-             OverlayPanelModule, 
-             PickListModule, 
-             DragDropModule, 
-             CalendarModule, 
-             FileUploadModule, 
-             ListboxModule, 
-             DialogModule, 
-             CheckboxModule, 
-             DropdownModule, 
-             RadioButtonModule, 
-             ProgressBarModule, 
-             ProgressSpinnerModule, 
-             AccordionModule, 
-             GrowlModule, 
-             InputSwitchModule, 
-             TreeTableModule,
-             TableModule,
-             KeyFilterModule,
-             FormsModule,
-             ReactiveFormsModule,
-             ToastModule
-         ],       
-         providers: [
-           {provide: LayoutService, useClass: MockLayoutService},
-           {provide: ActivatedRoute, useClass: MockActivatedRoute1},
-           {provide: PageService, useClass: MockPageService},
-           {provide: Router, useClass: MockRouter},
-           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-           { provide: 'JSNLOG', useValue: JL },
-           {provide: LoggerService, useClass: MockLoggerService},
-           CustomHttpClient,
-           WebContentSvc,
-           LoaderService,
-           ConfigService,
-           BreadcrumbService,
-           SessionStoreService,
-           AppInitService
-        ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(DomainFlowCmp);
-    app = fixture.debugElement.componentInstance;
-    layoutservice = TestBed.get(LayoutService);
-    pageservice = TestBed.get(PageService);
-    router = TestBed.get(Router);
-    route = TestBed.get(ActivatedRoute);
-  }));
-
-  it('ngOnInit should not call layoutservice.getLayout()', async(() => {
-    spyOn(layoutservice, 'getLayout').and.callThrough();
-    spyOn(document, 'getElementById').and.returnValue({
-      classList: {
-          remove: () => {
-          },
-          add: () => {
-          }
-      }
-  });
-    app.ngOnInit();
+    this.hostComponent.ngOnInit();
     expect(layoutservice.getLayout).not.toHaveBeenCalled();
-  }));
+  });
 
 });

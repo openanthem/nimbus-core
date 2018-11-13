@@ -18,61 +18,66 @@ import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
 import { InputLabel } from './input-label.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+import * as data from '../../../../payload.json';
 
-let fixture, app;
+let fixture, app, param;
+
+const declarations = [
+  Calendar,
+  TooltipComponent,
+  InputLabel
+ ];
+ const imports = [
+  CalendarModule,
+  FormsModule,
+  HttpModule,
+  HttpClientModule,
+  StorageServiceModule
+ ];
+ const providers = [
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: LocationStrategy, useClass: HashLocationStrategy },
+  Location,
+  PageService,
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  LoggerService,
+  SessionStoreService,
+  AppInitService
+ ];
 
 describe('Calendar', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        Calendar,
-        TooltipComponent,
-        InputLabel
-       ],
-       imports: [
-        CalendarModule,
-        FormsModule,
-        HttpModule,
-        HttpClientModule,
-        StorageServiceModule
-       ],
-       providers: [
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        Location,
-        PageService,
-        CustomHttpClient,
-        LoaderService,
-        ConfigService,
-        LoggerService,
-        SessionStoreService,
-        AppInitService
-       ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(Calendar);
-    app = fixture.debugElement.componentInstance;
-  }));
 
-    it('should create the app', async(() => {
-      expect(app).toBeTruthy();
-    }));
+  configureTestSuite();
+  setup(Calendar, declarations, imports, providers);
+  param = (<any>data).payload;
 
-    it('ngOnInit() should call applyDateConstraint()', async(() => {
-      app.element = { leafState: '' };
-      spyOn(app, 'applyDateConstraint').and.returnValue('');
-      app.ngOnInit();
-      expect(app.applyDateConstraint).toHaveBeenCalled();
-    }));
+  beforeEach(async function(this: TestContext<Calendar>) {
+    this.hostComponent.element = param;
+  });
 
-    it('ngOnInit() should update minDate and maxDate', async(() => {
-      app.getConstraint = () => {
-        return true;
-      };
-      app.applyDateConstraint();
-      const presentTime = new Date();
-      expect(app.minDate).toEqual(presentTime);
-      expect(app.maxDate).toEqual(presentTime);
-    }));
+  it('should create the Calendar', async function (this: TestContext<Calendar>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
+
+  it('ngOnInit() should call applyDateConstraint()', async function (this: TestContext<Calendar>) {
+    const spy = spyOn((this.hostComponent as any), 'applyDateConstraint').and.returnValue('');
+    this.hostComponent.ngOnInit();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('ngOnInit() should update minDate and maxDate', async function (this: TestContext<Calendar>) {
+    (this.hostComponent as any).getConstraint = () => {
+      return true;
+    };
+    (this.hostComponent as any).applyDateConstraint();
+    const presentTime = new Date();
+    expect(this.hostComponent.minDate).toEqual(presentTime);
+    expect(this.hostComponent.maxDate).toEqual(presentTime);
+  });
 
 });

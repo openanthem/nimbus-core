@@ -16,48 +16,55 @@ import { LoaderService } from '../../../services/loader.service';
 import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
 import { AppInitService } from '../../../services/app.init.service';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
+import * as data from '../../../payload.json';
+import { Param } from '../../../shared/param-state';
 
-let fixture, app;
+let param: Param;
 
-describe('Header', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-          Label,
-          TooltipComponent
-       ],
-       imports: [
-           HttpClientModule,
-            HttpModule,
-            StorageServiceModule
-       ],
-       providers: [
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        WebContentSvc,
-        PageService,
-        CustomHttpClient,
-        SessionStoreService,
-        LoaderService,
-        ConfigService,
-        LoggerService,
-        AppInitService,
-        Location
-       ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(Label);
-    app = fixture.debugElement.componentInstance;
-  }));
+const declarations = [
+  Label,
+  TooltipComponent
+];
+const imports = [
+   HttpClientModule,
+    HttpModule,
+    StorageServiceModule
+];
+const providers = [
+{ provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+{ provide: 'JSNLOG', useValue: JL },
+{ provide: LocationStrategy, useClass: HashLocationStrategy },
+WebContentSvc,
+PageService,
+CustomHttpClient,
+SessionStoreService,
+LoaderService,
+ConfigService,
+LoggerService,
+AppInitService,
+Location
+];
 
-  it('should create the app', async(() => {
-    expect(app).toBeTruthy();
-  }));
+describe('Label', () => {
 
-  it('app.cssClass should return labelClass', async(() => {
-      app.labelClass = 'test';
-      app.getCssClass = () => { return 'a' }
-    expect(app.cssClass).toEqual('test');
-  }));
+  configureTestSuite();
+  setup(Label, declarations, imports, providers);
+  param = (<any>data).payload;
+
+  beforeEach(async function(this: TestContext<Label>){
+    this.hostComponent.element = param;
+  });
+
+  it('should create the Label', async function (this: TestContext<Label>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
+
+  it('app.cssClass should return labelClass', async function (this: TestContext<Label>) {
+    this.hostComponent.labelClass = 'test';
+    this.hostComponent.getCssClass = () => { return 'a' }
+    expect(this.hostComponent.cssClass).toEqual('test')
+  });
 
 });

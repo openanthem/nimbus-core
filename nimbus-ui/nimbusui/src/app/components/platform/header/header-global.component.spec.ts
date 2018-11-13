@@ -12,8 +12,10 @@ import { Button } from '../../platform/form/elements/button.component';
 import { ActionDropdown, ActionLink } from '../../platform/form/elements/action-dropdown.component';
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
 
-let fixture, app, breadcrumbService;
+let breadcrumbService;
 
 class MockBreadcrumbService {
     getHomeBreadcrumb() {
@@ -24,60 +26,61 @@ class MockBreadcrumbService {
     }
 }
 
+const declarations = [
+  HeaderGlobal,
+  Link,
+  Value,
+  Paragraph,
+  Button,
+  ActionDropdown,
+  Image,
+  ActionLink,
+  SvgComponent
+  ];
+  const imports = [ 
+    RouterTestingModule,
+    AngularSvgIconModule 
+  ];
+  const providers = [ { provide: BreadcrumbService, useClass: MockBreadcrumbService} ];
+
 describe(' HeaderGlobal', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        HeaderGlobal,
-        Link,
-        Value,
-        Paragraph,
-        Button,
-        ActionDropdown,
-        Image,
-        ActionLink,
-        SvgComponent
-        ],
-        imports: [ 
-          RouterTestingModule,
-          AngularSvgIconModule 
-        ],
-        providers: [ { provide: BreadcrumbService, useClass: MockBreadcrumbService} ]
-    }).compileComponents();
-    fixture = TestBed.createComponent( HeaderGlobal);
-    app = fixture.debugElement.componentInstance;
+  configureTestSuite();
+  setup(HeaderGlobal, declarations, imports, providers);
+
+  beforeEach(async function(this: TestContext<HeaderGlobal>){
     breadcrumbService = TestBed.get(BreadcrumbService);
-  }));
+  });
 
-  it('should create the HeaderGlobal', async(() => {
-    expect(app).toBeTruthy();
-  }));
+  it('should create the HeaderGlobal', async function (this: TestContext<HeaderGlobal>) {
+      expect(this.hostComponent).toBeTruthy();
+  });
 
-  it('get homeRoute() should get home route', async(() => {
-    expect(app.homeRoute).toEqual('testing');
-  }));
+  it('get homeRoute() should get home route', async function (this: TestContext<HeaderGlobal>) {
+    expect(this.hostComponent.homeRoute).toEqual('testing');
+  });
 
-  it('homeRoute should be updated from breadcrumpservice.getHomeBreadcrump()', async(() => {
+  it('homeRoute should be updated from breadcrumpservice.getHomeBreadcrump()', async function (this: TestContext<HeaderGlobal>) {
     spyOn(breadcrumbService, 'getHomeBreadcrumb').and.returnValue('');
-    expect(app.homeRoute).toEqual('');
-  }));
+    expect(this.hostComponent.homeRoute).toEqual('');
+  });
 
-  it('ngOnDestroy() should call mouseEventSubscription.unsubscribe()', async(() => {
-    app.mouseEventSubscription = {
+  it('ngOnDestroy() should call mouseEventSubscription.unsubscribe()', async function (this: TestContext<HeaderGlobal>) {
+    const mouseEventSubscription: any = {
       unsubscribe: () => {}
     };
-    spyOn(app.mouseEventSubscription, 'unsubscribe').and.callThrough();
-    app.ngOnDestroy();
-    expect(app.mouseEventSubscription.unsubscribe).toHaveBeenCalled();
-  }));
+    this.hostComponent.mouseEventSubscription = mouseEventSubscription;
+    spyOn(this.hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
+    this.hostComponent.ngOnDestroy();
+    expect(this.hostComponent.mouseEventSubscription.unsubscribe).toHaveBeenCalled();  
+  });
 
-  it('toggleOpen() should call event.state as closedPanel and call mouseEventSubscription.unsubscribe()', async(() => {
+  it('toggleOpen() should call event.state as closedPanel and call mouseEventSubscription.unsubscribe()', async function (this: TestContext<HeaderGlobal>) {
     const event = {
       isOpen: true,
       state: 'openPanel',
       selectedItem: true
     };
-    app.dropDowns = {
+    const dropdowns: any = {
       toArray: () => {
         return [{
           selectedItem: false,
@@ -86,34 +89,38 @@ describe(' HeaderGlobal', () => {
         }]
       }
     };
-    app.mouseEventSubscription = {
+    this.hostComponent.dropDowns = dropdowns;
+    const mouseEventSubscription: any = {
       closed: false,
       unsubscribe: () => {}
     };
-    spyOn(app.mouseEventSubscription, 'unsubscribe').and.callThrough();
-    app.toggleOpen(event);
+    this.hostComponent.mouseEventSubscription = mouseEventSubscription;
+    spyOn(this.hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
+    this.hostComponent.toggleOpen(event);
     expect(event.state).toEqual('closedPanel');
-    expect(app.mouseEventSubscription.unsubscribe).toHaveBeenCalled();
-  }));
+    expect(this.hostComponent.mouseEventSubscription.unsubscribe).toHaveBeenCalled();  
+  });
 
-  it('toggleOpen() should call event.state as openPanel', async(() => {
+  it('toggleOpen() should call event.state as openPanel', async function (this: TestContext<HeaderGlobal>) {
     const event = {
       isOpen: true,
       state: 'closedPanel',
       selectedItem: true
     };
-    app.dropDowns = {
+    const dropDowns: any = {
       toArray: () => {
         return []
       }
     };
-    app.mouseEventSubscription = {
+    this.hostComponent.dropDowns = dropDowns;
+    const mouseEventSubscription: any = {
       closed: true,
       unsubscribe: () => {}
     };
-    app.toggleOpen(event);
-    expect(event.state).toEqual('openPanel');
-  }));
+    this.hostComponent.mouseEventSubscription = mouseEventSubscription;
+    this.hostComponent.toggleOpen(event);
+    expect(event.state).toEqual('openPanel');  
+  });
 
 });
 

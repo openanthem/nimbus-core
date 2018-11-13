@@ -18,72 +18,98 @@ import { DisplayValueDirective } from '../../../directives/display-value.directi
 import { InputLabel } from '../../platform/form/elements/input-label.component';
 import { CardDetailsFieldGroupComponent } from './card-details-field-group.component';
 import { WebContentSvc } from '../../../services/content-management.service';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
+import * as data from '../../../payload.json';
+import { Param } from '../../../shared/param-state';
 
-let fixture, app;
+let param: Param;
+
+const declarations = [
+  CardDetailsFieldGroupComponent,
+  CardDetailsFieldComponent,
+  InPlaceEditorComponent,
+  InputText,
+  TextArea,
+  ComboBox,
+  DateTimeFormatPipe,
+  TooltipComponent,
+  SelectItemPipe,
+  DisplayValueDirective,
+  InputLabel
+];
+const imports = [
+    FormsModule, 
+    DropdownModule, 
+    HttpClientModule, 
+    HttpModule
+  ];
+const providers = [
+    CustomHttpClient,
+    WebContentSvc
+  ];
 
 describe('CardDetailsFieldGroupComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        CardDetailsFieldGroupComponent,
-        CardDetailsFieldComponent,
-        InPlaceEditorComponent,
-        InputText,
-        TextArea,
-        ComboBox,
-        DateTimeFormatPipe,
-        TooltipComponent,
-        SelectItemPipe,
-        DisplayValueDirective,
-        InputLabel
-      ],
-      imports: [
-          FormsModule, 
-          DropdownModule, 
-          HttpClientModule, 
-          HttpModule
-        ],
-      providers: [
-          CustomHttpClient,
-          WebContentSvc
-        ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(CardDetailsFieldGroupComponent);
-    app = fixture.debugElement.componentInstance;
-  }));
+  configureTestSuite();
+  setup(CardDetailsFieldGroupComponent, declarations, imports, providers);
+  param = (<any>data).payload;
 
-    it('should create the app', async(() => {
-        expect(app).toBeTruthy();
-    }));
+  beforeEach(async function(this: TestContext<CardDetailsFieldGroupComponent>){
+    this.hostComponent.element = param;
+  });
 
-    it('getComponentClass() should return array [testClass, col-sm-12]', async(() => {
-      app.element = { config: { uiStyles: { attributes: { cols: '1', cssClass: 'testClass' } } } };
-      expect(app.getComponentClass()).toEqual(['testClass', 'col-sm-12']);
-    }));
+  it('should create the CardDetailsFieldGroupComponent', async function (this: TestContext<CardDetailsFieldGroupComponent>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
 
-    it('getComponentClass() should return array [testClass, col-sm-6]', async(() => {
-      app.element = { config: { uiStyles: { attributes: { cols: '2', cssClass: 'testClass' } } } };
-      expect(app.getComponentClass()).toEqual(['testClass', 'col-sm-6']);
-    }));
+  it('getComponentClass() should return array [testClass, col-sm-12]', async function (this: TestContext<CardDetailsFieldGroupComponent>) {
+    this.fixture.whenStable().then(() => {
+      const res = this.hostComponent.getComponentClass();
+      expect(res).toEqual(['testClass', 'col-sm-12']);
+    });
+  });
 
-    it('getComponentClass() should return array [testClass, col-sm-4]', async(() => {
-      app.element = { config: { uiStyles: { attributes: { cols: '3', cssClass: 'testClass' } } } };
-      expect(app.getComponentClass()).toEqual(['testClass', 'col-sm-4']);
-    }));
+  it('getComponentClass() should return array [testClass, col-sm-6]', async function (this: TestContext<CardDetailsFieldGroupComponent>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.cols = '2';
+      expect(this.hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-6']);
+    });
+  });
 
-    it('getComponentClass() should return array [testClass, col-sm-3]', async(() => {
-      app.element = { config: { uiStyles: { attributes: { cols: '4', cssClass: 'testClass' } } } };
-      expect(app.getComponentClass()).toEqual(['testClass', 'col-sm-3']);
-    }));
+  it('getComponentClass() should return array [testClass, col-sm-4]', async function (this: TestContext<CardDetailsFieldGroupComponent>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.cols = '3';
+      expect(this.hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-4']);
+    });
+  });
 
-    it('getComponentClass() should return array [testClass, col-sm-2]', async(() => {
-      app.element = { config: { uiStyles: { attributes: { cols: '6', cssClass: 'testClass' } } } };
-      expect(app.getComponentClass()).toEqual(['testClass', 'col-sm-2']);
-    }));
+  it('getComponentClass() should return array [testClass, col-sm-3]', async function (this: TestContext<CardDetailsFieldGroupComponent>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.cols = '4';
+      expect(this.hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-3']);
+    });
+  });
 
-    it('getComponentClass() should return array [testClass, col-sm-3] when cols is empty', async(() => {
-      app.element = { config: { uiStyles: { attributes: { cols: '', cssClass: 'testClass' } } } };
-      expect(app.getComponentClass()).toEqual(['testClass', 'col-sm-3']);
-    }));
+  it('getComponentClass() should return array [testClass, col-sm-2]', async function (this: TestContext<CardDetailsFieldGroupComponent>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.cols = '6';
+      expect(this.hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-2']);
+    });
+  });
+
+  it('getComponentClass() should return array [testClass, col-sm-3] when cols is empty', async function (this: TestContext<CardDetailsFieldGroupComponent>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.cols = '';
+      expect(this.hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-3']);
+    });
+  });
+
+  it('getComponentClass() should return array [col-sm-3] when cols and cssClass is empty', async function (this: TestContext<CardDetailsFieldGroupComponent>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.cols = '';
+      this.hostComponent.element.config.uiStyles.attributes.cssClass = '';
+      expect(this.hostComponent.getComponentClass()).toEqual(['col-sm-3']);
+    });
+  });
 
 });

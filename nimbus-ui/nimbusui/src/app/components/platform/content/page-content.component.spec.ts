@@ -76,8 +76,12 @@ import { CardDetailsFieldGroupComponent } from '../card/card-details-field-group
 import { DisplayValueDirective } from '../../../directives/display-value.directive';
 import { FormGridFiller } from '../form/form-grid-filler.component';
 import { InputLegend } from '../form/elements/input-legend.component';
+import { FormErrorMessage } from '../form-error-message.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
+import * as data from '../../../payload.json';
 
-let logger, pageService;
+let logger, pageService, param;
 
 export class MockActivatedRoute implements ActivatedRoute {
   snapshot: ActivatedRouteSnapshot;
@@ -141,134 +145,128 @@ class MockPageService {
   }
 }
 
+const declarations = [
+  PageContent,
+  Tile,
+  MessageComponent,
+  Modal,
+  Section,
+  Header,
+  TooltipComponent,
+  ComboBox,
+  InputText,
+  ButtonGroup,
+  InfiniteScrollGrid,
+  Accordion,
+  Menu,
+  Link,
+  Form,
+  StaticText,
+  Button,
+  Paragraph,
+  CardDetailsComponent,
+  CardDetailsGrid,
+  SelectItemPipe,
+  ActionDropdown,
+  DateTimeFormatPipe,
+  FrmGroupCmp,
+  Accordion,
+  CardDetailsFieldComponent,
+  ActionLink,
+  FormElement,
+  InPlaceEditorComponent,
+  TextArea,
+  FileUploadComponent,
+  OrderablePickList,
+  MultiselectCard,
+  MultiSelectListBox,
+  CheckBox,
+  CheckBoxGroup,
+  RadioButton,
+  Calendar,
+  DateControl,
+  Signature,
+  DataTable,
+  HeaderCheckBox,
+  SvgComponent,
+  Image,
+  Label,
+  InputSwitch,
+  TreeGrid,
+  InputLabel,
+  CardDetailsFieldGroupComponent,
+  DisplayValueDirective,
+  FormGridFiller,
+  InputLegend,
+  FormErrorMessage
+ ];
+ const imports = [
+  GrowlModule,
+  DialogModule,
+  FormsModule,
+  DropdownModule,
+  DataTableModule,
+  AccordionModule,
+  ReactiveFormsModule,
+  FileUploadModule,
+  PickListModule,
+  ListboxModule,
+  CheckboxModule,
+  RadioButtonModule,
+  CalendarModule,
+  RouterTestingModule,
+  HttpClientModule,
+  HttpModule,
+  TableModule,
+  KeyFilterModule,
+  StorageServiceModule,
+  AngularSvgIconModule,
+  ToastModule,
+  InputSwitchModule,
+  TreeTableModule
+ ];
+ const providers = [
+  {provide: WebContentSvc, useClass: MockWebContentSvc},
+  {provide: ActivatedRoute, useClass: MockActivatedRoute},
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: 'JSNLOG', useValue: JL },
+  {provide: LoggerService, useClass: MockLoggerService},
+  {provide: PageService, useClass: MockPageService},
+  AppInitService,
+  SessionStoreService,
+  CustomHttpClient,
+  LoaderService,
+  ConfigService
+ ];
+
 describe('PageContent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        PageContent,
-        Tile,
-        MessageComponent,
-        Modal,
-        Section,
-        Header,
-        TooltipComponent,
-        ComboBox,
-        InputText,
-        ButtonGroup,
-        InfiniteScrollGrid,
-        Accordion,
-        Menu,
-        Link,
-        Form,
-        StaticText,
-        Button,
-        Paragraph,
-        CardDetailsComponent,
-        CardDetailsGrid,
-        SelectItemPipe,
-        ActionDropdown,
-        DateTimeFormatPipe,
-        FrmGroupCmp,
-        Accordion,
-        CardDetailsFieldComponent,
-        ActionLink,
-        FormElement,
-        InPlaceEditorComponent,
-        TextArea,
-        FileUploadComponent,
-        OrderablePickList,
-        MultiselectCard,
-        MultiSelectListBox,
-        CheckBox,
-        CheckBoxGroup,
-        RadioButton,
-        Calendar,
-        DateControl,
-        Signature,
-        DataTable,
-        HeaderCheckBox,
-        SvgComponent,
-        Image,
-        Label,
-        InputSwitch,
-        TreeGrid,
-        InputLabel,
-        CardDetailsFieldGroupComponent,
-        DisplayValueDirective,
-        FormGridFiller,
-        InputLegend
-       ],
-       imports: [
-        GrowlModule,
-        DialogModule,
-        FormsModule,
-        DropdownModule,
-        DataTableModule,
-        AccordionModule,
-        ReactiveFormsModule,
-        FileUploadModule,
-        PickListModule,
-        ListboxModule,
-        CheckboxModule,
-        RadioButtonModule,
-        CalendarModule,
-        RouterTestingModule,
-        HttpClientModule,
-        HttpModule,
-        TableModule,
-        KeyFilterModule,
-        StorageServiceModule,
-        AngularSvgIconModule,
-        ToastModule,
-        InputSwitchModule,
-        TreeTableModule
-       ],
-       providers: [
-        {provide: WebContentSvc, useClass: MockWebContentSvc},
-        {provide: ActivatedRoute, useClass: MockActivatedRoute},
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        { provide: 'JSNLOG', useValue: JL },
-        {provide: LoggerService, useClass: MockLoggerService},
-        {provide: PageService, useClass: MockPageService},
-        AppInitService,
-        SessionStoreService,
-        CustomHttpClient,
-        LoaderService,
-        ConfigService
-       ]
-    }).compileComponents();
+
+  configureTestSuite();
+  setup(PageContent, declarations, imports, providers);
+  param = (<any>data).payload;
+
+  beforeEach(async function(this: TestContext<PageContent>){
+    this.hostComponent.element = param;
     logger = TestBed.get(LoggerService);
     pageService = TestBed.get(PageService)
-  }));
+  });
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(PageContent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+  it('should create the Header', async function (this: TestContext<PageContent>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
 
-  it('ngOnInit() should update the tilesList[]', async(() => {
-    const fixture = TestBed.createComponent(PageContent);
-    const app = fixture.debugElement.componentInstance;
-    app.element = {
-      path: 'a'
-    };
+  it('ngOnInit() should update the tilesList[]', async function (this: TestContext<PageContent>) {
     spyOn(logger, 'debug').and.callThrough();
-    spyOn(app, 'loadLabelConfig').and.callThrough();
-    app.ngOnInit();
+    const spy = spyOn((this.hostComponent as any), 'loadLabelConfig').and.callThrough();
+    this.hostComponent.ngOnInit();
     expect(logger.debug).toHaveBeenCalled();
-    expect(app.loadLabelConfig).toHaveBeenCalled();
-  }));
+    expect(spy).toHaveBeenCalled();
+  });
 
-  it('ngAfterViewInit() should update the errMsgArray[]', async(() => {
-    const fixture = TestBed.createComponent(PageContent);
-    const app = fixture.debugElement.componentInstance;
-    app.element = {
-      path: 'a'
-    };
-    app.ngAfterViewInit();
+  it('ngAfterViewInit() should update the errMsgArray[]', async function (this: TestContext<PageContent>) {
+    this.hostComponent.ngAfterViewInit();
     pageService.logError({message: 'test'});
-    expect(app.errMsgArray).toEqual([{severity: 'error', summary: 'Error Message', detail: 'test', life: 10000}]);
-  }));
+    expect(this.hostComponent.errMsgArray).toEqual([{severity: 'error', summary: 'Error Message', detail: 'test', life: 10000}]);
+  });
 
 });

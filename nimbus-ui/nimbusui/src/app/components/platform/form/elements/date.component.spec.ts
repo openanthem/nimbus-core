@@ -17,41 +17,50 @@ import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
 import { InputLabel } from './input-label.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+import * as data from '../../../../payload.json';
+import { Param } from '../../../../shared/param-state';
+
+let param: Param;
+
+const declarations = [
+  DateControl,
+  TooltipComponent,
+  InputLabel
+];
+const imports = [
+   StorageServiceModule,
+   FormsModule,
+   HttpClientModule,
+   HttpModule
+];
+const providers = [
+   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+   { provide: 'JSNLOG', useValue: JL },
+   { provide: LocationStrategy, useClass: HashLocationStrategy },
+   Location,
+   SessionStoreService,
+   PageService,
+   CustomHttpClient,
+   LoaderService,
+   ConfigService,
+   LoggerService,
+   AppInitService
+];
 
 describe('DateControl', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-          DateControl,
-          TooltipComponent,
-          InputLabel
-       ],
-       imports: [
-           StorageServiceModule,
-           FormsModule,
-           HttpClientModule,
-           HttpModule
-       ],
-       providers: [
-           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-           { provide: 'JSNLOG', useValue: JL },
-           { provide: LocationStrategy, useClass: HashLocationStrategy },
-           Location,
-           SessionStoreService,
-           PageService,
-           CustomHttpClient,
-           LoaderService,
-           ConfigService,
-           LoggerService,
-           AppInitService
-        ]
-    }).compileComponents();
-  }));
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(DateControl);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+  configureTestSuite();
+  setup(DateControl, declarations, imports, providers);
+  param = (<any>data).payload;
+
+  beforeEach(async function(this: TestContext<DateControl>){
+    this.hostComponent.element = param;
+  });
+
+  it('should create the DateControl', async function (this: TestContext<DateControl>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
 
 });

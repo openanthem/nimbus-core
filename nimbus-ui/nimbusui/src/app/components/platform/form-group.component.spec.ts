@@ -60,8 +60,13 @@ import { InputLabel } from './form/elements/input-label.component';
 import { Label } from './content/label.component';
 import { CardDetailsFieldGroupComponent } from './card/card-details-field-group.component';
 import { InputLegend } from './form/elements/input-legend.component';
+import { FormErrorMessage } from './form-error-message.component';
+import { setup, TestContext } from './../../setup.spec';
+import { configureTestSuite } from 'ng-bullet';
+import * as data from '../../payload.json';
+import { Param } from '../../shared/param-state';
 
-let fixture, app;
+let param: Param;
 
 class MockWebContentSvc {
     findLabelContent(param) {
@@ -73,107 +78,120 @@ class MockWebContentSvc {
     }
 }
 
+const declarations = [
+  FrmGroupCmp,
+  FormElement,
+  Button,
+  ButtonGroup,
+  Header,
+  Paragraph,
+  InputText,
+  TextArea,
+  DateControl,
+  Calendar,
+  ComboBox,
+  RadioButton,
+  CheckBoxGroup,
+  CheckBox,
+  MultiSelectListBox,
+  MultiselectCard,
+  OrderablePickList,
+  FileUploadComponent,
+  InfiniteScrollGrid,
+  TooltipComponent,
+  SelectItemPipe,
+  ActionDropdown,
+  DateTimeFormatPipe,
+  Section,
+  ActionLink,
+  MessageComponent,
+  CardDetailsGrid,
+  Accordion,
+  Menu,
+  CardDetailsComponent,
+  StaticText,
+  Form,
+  Link,
+  CardDetailsFieldComponent,
+  InPlaceEditorComponent,
+  Signature,
+  DataTable,
+  HeaderCheckBox,
+  SvgComponent,
+  Image,
+  TreeGrid,
+  InputSwitch,
+  FormGridFiller,
+  DisplayValueDirective,
+  InputLabel,
+  Label,
+  CardDetailsFieldGroupComponent,
+  InputLegend,
+  FormErrorMessage
+ ];
+ const imports = [
+     FormsModule,
+     ReactiveFormsModule,
+     CalendarModule,
+     DropdownModule,
+     RadioButtonModule,
+     CheckboxModule,
+     ListboxModule,
+     PickListModule,
+     FileUploadModule,
+     DataTableModule,
+     GrowlModule,
+     AccordionModule,
+     HttpModule,
+     HttpClientModule,
+     TableModule,
+     KeyFilterModule,
+     AngularSvgIconModule,
+     ToastModule,
+     InputSwitchModule, 
+     TreeTableModule
+ ];
+ const providers = [
+     { provide: WebContentSvc, useClass: MockWebContentSvc }
+ ];
+
 describe('FrmGroupCmp', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        FrmGroupCmp,
-        FormElement,
-        Button,
-        ButtonGroup,
-        Header,
-        Paragraph,
-        InputText,
-        TextArea,
-        DateControl,
-        Calendar,
-        ComboBox,
-        RadioButton,
-        CheckBoxGroup,
-        CheckBox,
-        MultiSelectListBox,
-        MultiselectCard,
-        OrderablePickList,
-        FileUploadComponent,
-        InfiniteScrollGrid,
-        TooltipComponent,
-        SelectItemPipe,
-        ActionDropdown,
-        DateTimeFormatPipe,
-        Section,
-        ActionLink,
-        MessageComponent,
-        CardDetailsGrid,
-        Accordion,
-        Menu,
-        CardDetailsComponent,
-        StaticText,
-        Form,
-        Link,
-        CardDetailsFieldComponent,
-        InPlaceEditorComponent,
-        Signature,
-        DataTable,
-        HeaderCheckBox,
-        SvgComponent,
-        Image,
-        TreeGrid,
-        InputSwitch,
-        FormGridFiller,
-        DisplayValueDirective,
-        InputLabel,
-        Label,
-        CardDetailsFieldGroupComponent,
-        InputLegend
-       ],
-       imports: [
-           FormsModule,
-           ReactiveFormsModule,
-           CalendarModule,
-           DropdownModule,
-           RadioButtonModule,
-           CheckboxModule,
-           ListboxModule,
-           PickListModule,
-           FileUploadModule,
-           DataTableModule,
-           GrowlModule,
-           AccordionModule,
-           HttpModule,
-           HttpClientModule,
-           TableModule,
-           KeyFilterModule,
-           AngularSvgIconModule,
-           ToastModule,
-           InputSwitchModule, 
-           TreeTableModule
-       ],
-       providers: [
-           { provide: WebContentSvc, useClass: MockWebContentSvc }
-       ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(FrmGroupCmp);
-    app = fixture.debugElement.componentInstance;
-  }));
 
-    it('should create the FrmGroupCmp', async(() => {
-      expect(app).toBeTruthy();
-    }));
+  configureTestSuite();
+  setup(FrmGroupCmp, declarations, imports, providers);
+  param = (<any>data).payload;
 
-    it('getCssClass() should return the element.config.uiStyles.attributes.cssClass', async(() => {
-      app.element = { config: { uiStyles: { attributes: { alias: 'FormElementGroup', cssClass: 'test' } } } };
-      expect(app.getCssClass()).toEqual('test');
-    }));
+  beforeEach(async function(this: TestContext<FrmGroupCmp>){
+    this.hostComponent.element = param;
+  });
 
-    it('getCssClass() should return elementCss', async(() => {
-      app.element = { config: { uiStyles: { attributes: { alias: 'FormElementGroup' } } } };
-      app.elementCss = 'test';
-      expect(app.getCssClass()).toEqual('test');
-    }));
+  it('should create the FrmGroupCmp', function(this: TestContext<FrmGroupCmp>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
 
-    it('getCssClass() should return empty string', async(() => {
-      app.element = { config: { uiStyles: { attributes: { alias: 'FormElementGroup1' } } } };
-      expect(app.getCssClass()).toEqual('');
-    }));
+  it('getCssClass() should return the element.config.uiStyles.attributes.cssClass', function(this: TestContext<FrmGroupCmp>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup';
+      this.hostComponent.element.config.uiStyles.attributes.cssClass = 'test';
+      expect(this.hostComponent.getCssClass()).toEqual('test');
+    });
+  });
+
+
+  it('getCssClass() should return elementCss', function(this: TestContext<FrmGroupCmp>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup';
+      this.hostComponent.elementCss = 'test1';
+      this.hostComponent.element.config.uiStyles.attributes.cssClass = null;
+      expect(this.hostComponent.getCssClass()).toEqual('test1');
+    });
+  });
+
+  it('getCssClass() should return empty string', function(this: TestContext<FrmGroupCmp>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup1';
+      expect(this.hostComponent.getCssClass()).toEqual('');
+    });
+  });
 
 });

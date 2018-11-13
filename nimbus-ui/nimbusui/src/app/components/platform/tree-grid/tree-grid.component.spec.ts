@@ -25,8 +25,11 @@ import { LoggerService } from '../../../services/logger.service';
 import { AppInitService } from '../../../services/app.init.service';
 import { GridUtils } from '../../../shared/grid-utils';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
+import * as data from '../../../payload.json';
 
-let fixture, app, pageService;
+let pageService, param;
 
 class MockPageService {
     public config$: Subject<any>;
@@ -48,151 +51,147 @@ class MockPageService {
   
   }
 
+const declarations = [
+    TreeGrid,
+    Button,
+    TooltipComponent,
+    Image,
+    SvgComponent
+ ];
+const imports = [
+     DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
+     FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
+     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule,
+     AngularSvgIconModule,
+     HttpClientModule,
+     StorageServiceModule,
+     HttpModule
+ ];
+const providers = [
+     { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+     { provide: 'JSNLOG', useValue: JL },
+     { provide: LocationStrategy, useClass: HashLocationStrategy },
+     {provide: PageService, useClass: MockPageService},
+     Location,
+     CustomHttpClient,
+     SessionStoreService,
+     LoaderService,
+     ConfigService,
+     LoggerService,
+     AppInitService,
+     GridUtils,
+     DateTimeFormatPipe
+ ];
+
 describe('TreeGrid', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-          TreeGrid,
-          Button,
-          TooltipComponent,
-          Image,
-          SvgComponent
-       ],
-       imports: [
-           DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
-           FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-           ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule,
-           AngularSvgIconModule,
-           HttpClientModule,
-           StorageServiceModule,
-           HttpModule
-       ],
-       providers: [
-           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-           { provide: 'JSNLOG', useValue: JL },
-           { provide: LocationStrategy, useClass: HashLocationStrategy },
-           {provide: PageService, useClass: MockPageService},
-           Location,
-           CustomHttpClient,
-           SessionStoreService,
-           LoaderService,
-           ConfigService,
-           LoggerService,
-           AppInitService,
-           GridUtils,
-           DateTimeFormatPipe
-       ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(TreeGrid);
-    app = fixture.debugElement.componentInstance;
-    pageService = TestBed.get(PageService);
-  }));
 
-  it('should create the app', async(() => {
-    expect(app).toBeTruthy();
-  }));
+    configureTestSuite();
+    setup(TreeGrid, declarations, imports, providers);
+    param = (<any>data).payload;
+  
+    beforeEach(async function(this: TestContext<TreeGrid>){
+      this.hostComponent.element = param;
+      pageService = TestBed.get(PageService);
+    });
+    
+    it('should create the TreeGrid', async function (this: TestContext<TreeGrid>) {
+        expect(this.hostComponent).toBeTruthy();
+    });
 
-  it('registerOnChange() should update the onChange', async(() => {
-      const test = () => { };
-      app.registerOnChange(test);
-    expect(app.onChange).toEqual(test);
-  }));
+    it('registerOnChange() should update the onChange', async function (this: TestContext<TreeGrid>) {
+        const test = () => { };
+        this.hostComponent.registerOnChange(test);
+        expect(this.hostComponent.onChange).toEqual(test);
+    });
 
-  it('registerOnTouched() should update the onTouched', async(() => {
-    const test = () => { };
-    app.registerOnTouched(test);
-  expect(app.onTouched).toEqual(test);
-}));
+    it('registerOnTouched() should update the onTouched', async function (this: TestContext<TreeGrid>) {
+        const test = () => { };
+        this.hostComponent.registerOnTouched(test);
+        expect(this.hostComponent.onTouched).toEqual(test);
+    });
 
-it('isDisplayValueColumn() should return false if col.uiStyles is not available', async(() => {
-    const col = {
-        type: {
-            collection: false
-        }
-    };
-    expect(app.isDisplayValueColumn(col)).toBeFalsy();
-}));
-
-it('isDisplayValueColumn() should return false', async(() => {
-    const col = {
-        type: {
-            collection: []
-        },
-        uiStyles: 't'
-    };
-    expect(app.isDisplayValueColumn(col)).toBeFalsy();
-}));
-
-it('ngOnInit() should update collectionAlias, treeData and firstColumn', async(() => {
-    app.element = {
-        elemLabels : {
-            get: () => {
-                return '';
-            }
-        },
-        path: '',
-        config: {
+    it('isDisplayValueColumn() should return false if col.uiStyles is not available', async function (this: TestContext<TreeGrid>) {
+        const col: any = {
             type: {
-                elementConfig: {
-                    type: {
-                        model: {
-                            paramConfigs: [{
-                                code: 'test',
-                                uiStyles: {
-                                    attributes: {
-                                        alias: 'TreeGridChild',
-                                    }
-                                }
-                            }]
+                collection: false
+            }
+        };
+        expect(this.hostComponent.isDisplayValueColumn(col)).toBeFalsy();
+    });
+
+    it('isDisplayValueColumn() should return false', async function (this: TestContext<TreeGrid>) {
+        const col: any = {
+            type: {
+                collection: []
+            },
+            uiStyles: 't'
+        };
+        expect(this.hostComponent.isDisplayValueColumn(col)).toBeFalsy();
+    });
+
+    it('ngOnInit() should update collectionAlias, treeData and firstColumn', async function (this: TestContext<TreeGrid>) {
+        this.fixture.whenStable().then(() => {
+            const elemLabels: any = [];
+            this.hostComponent.element.elemLabels = elemLabels;
+            this.hostComponent.element.path = '';
+            const model: any = {
+                paramConfigs: [{
+                    code: 'test',
+                    uiStyles: {
+                        attributes: {
+                            alias: 'TreeGridChild',
                         }
                     }
+                }]
+            };
+            this.hostComponent.element.config.type.elementConfig.type.model = model;
+            const params: any = [{
+                uiStyles: {
+                    attributes: {
+                        hidden: false
+                    }
+                }
+            }];
+            this.hostComponent.params = params;
+            const event = {
+                path: '',
+                gridData: {
+                    leafState: 'testgridlist'
+                }
+            };
+            this.hostComponent.getTreeStructure = (a) => {
+                return a;
+            };
+            this.hostComponent.ngOnInit();
+            pageService.logError(event);
+            expect((this.hostComponent as any).collectionAlias).toEqual('test');
+            expect(this.hostComponent.firstColumn).not.toEqual(undefined);
+            expect(this.hostComponent.treeData).toEqual('testgridlist');
+        });
+    });
+
+    it('isRenderableComponent() should return true', async function (this: TestContext<TreeGrid>) {
+        const param1: any = {
+            uiStyles: {
+                attributes: {
+                    alias: 'Button'
                 }
             }
-        }
-    };
-    app.params = [{
-        uiStyles: {
-            attributes: {
-                hidden: false
+        };
+        expect(this.hostComponent.isRenderableComponent(param1)).toBeTruthy();
+    });
+
+    it('buildNestedCollectionPath() should return rowNode.node.data.elemId', async function (this: TestContext<TreeGrid>) {
+        const rowNode = {
+            level: 0,
+            node: {
+                data: {
+                    elemId: 123
+                }
             }
-        }
-    }];
-    const event = {
-        path: '',
-        gridList: 'testgridlist'
-    };
-    app.getTreeStructure = (a) => {
-        return a;
-    };
-    app.ngOnInit();
-    pageService.logError(event);
-    expect(app.collectionAlias).toEqual('test');
-    expect(app.firstColumn).not.toEqual(undefined);
-    expect(app.treeData).toEqual('testgridlist');
-  }));
-
-
-  it('isRenderableComponent() should return true', async(() => {
-      const param = {
-          uiStyles: {
-              attributes: {
-                  alias: 'Button'
-              }
-          }
-      };      
-    expect(app.isRenderableComponent(param)).toBeTruthy();
-  }));
-
-  it('buildNestedCollectionPath() should return rowNode.node.data.elemId', async(() => {
-      const rowNode = {
-          level: 0,
-          node: {
-              data: {
-                  elemId: 123
-              }
-          }
-      };
-    expect(app.buildNestedCollectionPath(rowNode)).toEqual(123);
-  }));
+        };
+        const res: any = 123;
+        expect(this.hostComponent.buildNestedCollectionPath(rowNode)).toEqual(res);
+    });
 
 });

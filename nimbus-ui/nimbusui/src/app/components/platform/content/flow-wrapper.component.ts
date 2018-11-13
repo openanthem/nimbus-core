@@ -37,7 +37,7 @@ import { LoggerService } from '../../../services/logger.service';
  */
 @Component({
     selector: 'nm-flow',
-    providers: [STOMPService],
+    // providers: [STOMPService],
     templateUrl: './flow-wrapper.component.html'
 })
 
@@ -49,7 +49,7 @@ export class FlowWrapper {
 
     constructor(private _pageSvc: PageService, 
         private _configSvc: ConfigService,
-        private _stompService: STOMPService, 
+        // private _stompService: STOMPService, 
         private _route: ActivatedRoute, 
         private _router: Router,
         private _logger: LoggerService) {
@@ -58,7 +58,7 @@ export class FlowWrapper {
                 this.routeParams = data;
         });
 
-        this.initWebSocket();
+        // this.initWebSocket();
     }
 
     ngOnInit() {
@@ -84,48 +84,50 @@ export class FlowWrapper {
     }
 
     /** Initialize the WebSocket */
-    initWebSocket() {
-        this._stompService.configure();
-        this._stompService.try_connect().then(this.on_connect).catch((err) => {
-            const errObj = {
-                message: 'error in intializing the webSocket',
-                error: err
-            };
-            this._logger.error(JSON.stringify(errObj));
-          });;
-    }
+    // initWebSocket() {
+    //     console.log('initWebSocket...is...callled...@@@', this._stompService);
+        
+    //     this._stompService.configure();
+    //     this._stompService.try_connect().then(this.on_connect).catch((err) => {
+    //         const errObj = {
+    //             message: 'error in intializing the webSocket',
+    //             error: err
+    //         };
+    //         this._logger.error(JSON.stringify(errObj));
+    //       });;
+    // }
 
     /** Cleanup on Destroy of Component */
-    ngOnDestroy() {
-        this._stompService.disconnect();
-    }
+    // ngOnDestroy() {
+    //     this._stompService.disconnect();
+    // }
 
     /** Callback on_connect to queue */
-    public on_connect = () => {
+    // public on_connect = () => {
 
-        // Store local reference to Observable
-        // for use with template ( | async )
-        this.messages = this._stompService.messages;
-        // Subscribe a function to be run on_next message
-        this.messages.subscribe(this.on_next);
-    }
+    //     // Store local reference to Observable
+    //     // for use with template ( | async )
+    //     this.messages = this._stompService.messages;
+    //     // Subscribe a function to be run on_next message
+    //     this.messages.subscribe(this.on_next);
+    // }
 
     /** Consume a message from the _stompService */
-    public on_next = (message: Message) => {
-        let executeOutput : ExecuteOutput = JSON.parse(message.body);
-        let outputModel : any = executeOutput.result;
-        let count = 0;
-        let _p = this;
-        //let foundMatchInCurrentPage: boolean = false;
-        //let ROOTNODE = 0;
-        // loop thru all the results and process 1 by 1.
-        while(outputModel[count]) {
-            let eventModel : ModelEvent = outputModel[count].result;
-            // Find flow name from eventmodel result path
-            let flowName = eventModel.value.path.split('/')[1];
-            _p._pageSvc.traverseFlowConfig(eventModel, flowName);
+    // public on_next = (message: Message) => {
+    //     let executeOutput : ExecuteOutput = JSON.parse(message.body);
+    //     let outputModel : any = executeOutput.result;
+    //     let count = 0;
+    //     let _p = this;
+    //     //let foundMatchInCurrentPage: boolean = false;
+    //     //let ROOTNODE = 0;
+    //     // loop thru all the results and process 1 by 1.
+    //     while(outputModel[count]) {
+    //         let eventModel : ModelEvent = outputModel[count].result;
+    //         // Find flow name from eventmodel result path
+    //         let flowName = eventModel.value.path.split('/')[1];
+    //         _p._pageSvc.traverseFlowConfig(eventModel, flowName);
 
-            count ++;
-        }
-    }
+    //         count ++;
+    //     }
+    // }
 }

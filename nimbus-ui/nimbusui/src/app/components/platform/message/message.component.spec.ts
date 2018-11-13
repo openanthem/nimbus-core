@@ -8,51 +8,53 @@ import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, Drag
     FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
 import { MessageService } from 'primeng/api';
-
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
 import { MessageComponent } from './message.component';
 
-let fixture, app, messageService;
+let messageService;
+
+const declarations = [
+  MessageComponent
+];
+const imports = [
+   ToastModule,
+   MessageModule,
+   FormsModule,
+   ReactiveFormsModule,
+   DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
+   FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
+   ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule
+];
+const providers = [
+MessageService
+];
 
 describe('MessageComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-          MessageComponent
-       ],
-       imports: [
-           ToastModule,
-           MessageModule,
-           FormsModule,
-           ReactiveFormsModule,
-           DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
-           FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-           ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule
-       ],
-       providers: [
-        MessageService
-       ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(MessageComponent);
-    app = fixture.debugElement.componentInstance;
+
+  configureTestSuite();
+  setup(MessageComponent, declarations, imports, providers);
+
+  beforeEach(async function(this: TestContext<MessageComponent>){
     messageService = TestBed.get(MessageService);
-  }));
+  });
 
-  it('should create the app', async(() => {
-    expect(app).toBeTruthy();
-  }));
+  it('should create the MessageComponent', async function (this: TestContext<MessageComponent>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
 
-  it('ngOnInit() should call updateMessageObject()', async(() => {
-      spyOn(app, 'updateMessageObject').and.callThrough();
-      app.ngOnInit();
-    expect(app.updateMessageObject).toHaveBeenCalled();
-  }));
+  it('ngOnInit() should call updateMessageObject()', async function (this: TestContext<MessageComponent>) {
+    spyOn(this.hostComponent, 'updateMessageObject').and.callThrough();
+    this.hostComponent.ngOnInit();
+    expect(this.hostComponent.updateMessageObject).toHaveBeenCalled();
+  });
 
-  it('updateMessageObject() should call messageService.addAll() for toast component', async(() => {
-      app.messageContext = 'TOAST';
-      app.messageArray = [{severity: 'error', summary: 'Error Message', detail: 'test', life: 10000}];
-      spyOn(messageService, 'addAll').and.callThrough();
-      app.ngOnInit();
-      expect(messageService.addAll).toHaveBeenCalled();
-  }));
+  it('updateMessageObject() should call messageService.addAll() for toast component', async function (this: TestContext<MessageComponent>) {
+    this.hostComponent.messageContext = 'TOAST';
+    this.hostComponent.messageArray = [{ severity: 'error', summary: 'Error Message', detail: 'test', life: 10000 }];
+    spyOn(messageService, 'addAll').and.callThrough();
+    this.hostComponent.ngOnInit();
+    expect(messageService.addAll).toHaveBeenCalled();
+  });
 
 });

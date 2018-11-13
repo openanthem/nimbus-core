@@ -19,8 +19,11 @@ import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/sessio
 import { AppInitService } from '../../../../services/app.init.service';
 import { InputLabel } from './input-label.component';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+import * as data from '../../../../payload.json';
 
-let app, fixture, logger;
+let logger, param;
 
 class MockControlSubscribers {
   onEnabledUpdateSubscriber(a, b, c) {  }
@@ -30,212 +33,243 @@ class MockLoggerService {
   debug(a) {  }
 }
 
+const declarations = [
+  Signature,
+  TooltipComponent,
+  InputLabel
+ ];
+ const imports = [
+  FormsModule,
+  HttpClientModule,
+  HttpModule,
+  StorageServiceModule
+ ];
+ const providers = [
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: LocationStrategy, useClass: HashLocationStrategy },
+  { provide: ControlSubscribers, useClass: MockControlSubscribers},
+  { provide: LoggerService, useClass: MockLoggerService},
+  Location,
+  SessionStoreService,
+  PageService,
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  KeyFilterModule,
+  AppInitService
+ ];
+
 describe('Signature', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        Signature,
-        TooltipComponent,
-        InputLabel
-       ],
-       imports: [
-        FormsModule,
-        HttpClientModule,
-        HttpModule,
-        StorageServiceModule
-       ],
-       providers: [
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        { provide: ControlSubscribers, useClass: MockControlSubscribers},
-        { provide: LoggerService, useClass: MockLoggerService},
-        Location,
-        SessionStoreService,
-        PageService,
-        CustomHttpClient,
-        LoaderService,
-        ConfigService,
-        KeyFilterModule,
-        AppInitService
-       ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(Signature);
-    app = fixture.debugElement.componentInstance;
+  configureTestSuite();
+  setup(Signature, declarations, imports, providers);
+  param = (<any>data).payload;
+
+  beforeEach(async function(this: TestContext<Signature>) {
+    this.hostComponent.element = param;
     logger = TestBed.get(LoggerService);
-  }));
+  });
 
-    it('should create the app', async(() => {
-      expect(app).toBeTruthy();
-    }));
+  it('should create the Signature', async function (this: TestContext<Signature>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
 
-    it('ngOnInit() should update the height and width properties', async(() => {
-      app.element = { config: { uiStyles: { attributes: { width: 100, height: 200 } } } };
-      app.ngOnInit();
-      expect(app.width).toEqual(100);
-      expect(app.height).toEqual(200);
-    }));
+  it('ngOnInit() should update the height and width properties', async function (this: TestContext<Signature>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.width = '100';
+      this.hostComponent.element.config.uiStyles.attributes.height = '200';
+      this.hostComponent.ngOnInit();
+      expect(this.hostComponent.width).toEqual(100);
+      expect(this.hostComponent.height).toEqual(200);
+    });
+  });
 
-    it('zoomCanvas() should update zoomFactor as 2 and zoomClass as zoom', async(() => {
-      app.zoomCanvas();
-      expect(app.zoomFactor).toEqual(2);
-      expect(app.zoomClass).toEqual('zoom');
-    }));
+  it('zoomCanvas() should update zoomFactor as 2 and zoomClass as zoom', async function (this: TestContext<Signature>) {
+    this.hostComponent.zoomCanvas();
+    expect(this.hostComponent.zoomFactor).toEqual(2);
+    expect(this.hostComponent.zoomClass).toEqual('zoom');
+  });
 
-    it('shrinkCanvas() should update zoomFactor as 1 and zoomClass as empty string', async(() => {
-      app.shrinkCanvas();
-      expect(app.zoomFactor).toEqual(1);
-      expect(app.zoomClass).toEqual('');
-    }));
+  it('shrinkCanvas() should update zoomFactor as 1 and zoomClass as empty string', async function (this: TestContext<Signature>) {
+    this.hostComponent.shrinkCanvas();
+    expect(this.hostComponent.zoomFactor).toEqual(1);
+    expect(this.hostComponent.zoomClass).toEqual('');
+  });
 
-    it('ngAfterViewInit() should call initCanvasElement()', async(() => {
-      app.initCanvasElement = () => {};
-      spyOn(app, 'initCanvasElement').and.callThrough();
-      app.ngAfterViewInit();
-      expect(app.initCanvasElement).toHaveBeenCalled();
-    }));
+  it('ngAfterViewInit() should call initCanvasElement()', async function (this: TestContext<Signature>) {
+    (this.hostComponent as any).initCanvasElement = () => { };
+    const spy = spyOn((this.hostComponent as any), 'initCanvasElement').and.callThrough();
+    this.hostComponent.ngAfterViewInit();
+    expect(spy).toHaveBeenCalled();
+  });
 
-    it('initCanvasElement() should call applyContextRules(), renderExistingSignature(), registerCaptureEvents()', async(() => {
-      app.applyContextRules = () => {};
-      app.renderExistingSignature = () => {};
-      app.registerCaptureEvents = () => {};
-      spyOn(app, 'applyContextRules').and.callThrough();
-      spyOn(app, 'renderExistingSignature').and.callThrough();
-      spyOn(app, 'registerCaptureEvents').and.callThrough();
-      app.initCanvasElement();
-      expect(app.applyContextRules).toHaveBeenCalled();
-      expect(app.renderExistingSignature).toHaveBeenCalled();
-      expect(app.registerCaptureEvents).toHaveBeenCalled();
-    }));
+  it('initCanvasElement() should call applyContextRules(), renderExistingSignature(), registerCaptureEvents()', async function (this: TestContext<Signature>) {
+    (this.hostComponent as any).applyContextRules = () => { };
+    (this.hostComponent as any).renderExistingSignature = () => { };
+    (this.hostComponent as any).registerCaptureEvents = () => { };
+    const spy1 = spyOn((this.hostComponent as any), 'applyContextRules').and.callThrough();
+    const spy2 = spyOn((this.hostComponent as any), 'renderExistingSignature').and.callThrough();
+    const spy3 = spyOn((this.hostComponent as any), 'registerCaptureEvents').and.callThrough();
+    (this.hostComponent as any).initCanvasElement();
+    expect(spy1).toHaveBeenCalled();
+    expect(spy2).toHaveBeenCalled();
+    expect(spy3).toHaveBeenCalled();
 
-    it('initCanvasElement() should update app.canvas.nativeElement.width, app.canvas.nativeElement.height', async(() => {
-      app.applyContextRules = () => {};
-      app.renderExistingSignature = () => {};
-      app.registerCaptureEvents = () => {};
-      app.canvas = { nativeElement: { width: '', height: '' } };
-      app.width = 10;
-      app.height = 20;
-      app.initCanvasElement();
-      expect(app.canvas.nativeElement.width).toEqual(10);
-      expect(app.canvas.nativeElement.height).toEqual(20);
-    }));
+  });
 
-    it('renderExistingSignature() should call logger.debug', async(() => {
-      app.value = 'mockValue';
-      app.canvasEl = { getContext: a => {
-          return { drawImage: (a, b, c, d, e) => {} };
-        } };
-      spyOn(logger, 'debug').and.callThrough();
-      app.renderExistingSignature();
-      expect(logger.debug).toHaveBeenCalled();
-    }));
+  it('initCanvasElement() should update this.hostComponent.canvas.nativeElement.width, this.hostComponent.canvas.nativeElement.height', async function (this: TestContext<Signature>) {
+    (this.hostComponent as any).applyContextRules = () => { };
+    (this.hostComponent as any).renderExistingSignature = () => { };
+    (this.hostComponent as any).registerCaptureEvents = () => { };
+    this.hostComponent.canvas = { nativeElement: { width: '', height: '' } };
+    this.hostComponent.width = 10;
+    this.hostComponent.height = 20;
+    (this.hostComponent as any).initCanvasElement();
+    expect(this.hostComponent.canvas.nativeElement.width).toEqual(10);
+    expect(this.hostComponent.canvas.nativeElement.height).toEqual(20);
+  });
 
-    it('applyContextRules() should return  {lineCap: round, lineWidth: 3, strokeStyle: #000}', async(() => {
-      app.canvasEl = { getContext: a => {
-          return { lineWidth: '', lineCap: '', strokeStyle: '' };
-        } };
-      expect(app.applyContextRules()).toEqual({
-        lineCap: 'round',
-        lineWidth: 3,
-        strokeStyle: '#000'
-      });
-    }));
+  it('renderExistingSignature() should call logger.debug', async function (this: TestContext<Signature>) {
+    this.hostComponent.value = 'mockValue';
+    const canvas: any = {
+      getContext: a => {
+        return { drawImage: (a, b, c, d, e) => { } };
+      }
+    };
+    this.hostComponent.canvasEl = canvas;
+    spyOn(logger, 'debug').and.callThrough();
+    (this.hostComponent as any).renderExistingSignature();
+    expect(logger.debug).toHaveBeenCalled();
+  });
 
-    it('save() should call clear()', async(() => {
-      app.canvasEl = { toDataURL: () => {
-          return 'test';
-        } };
-      app.defaultEmptyImage = 'test';
-      spyOn(app, 'clear').and.returnValue('');
-      app.save();
-      expect(app.clear).toHaveBeenCalled();
-    }));
+  it('applyContextRules() should return  {lineCap: round, lineWidth: 3, strokeStyle: #000}', async function (this: TestContext<Signature>) {
+    const canvas: any = {
+      getContext: a => {
+        return { lineWidth: '', lineCap: '', strokeStyle: '' };
+      }
+    };
+    this.hostComponent.canvasEl = canvas;
+    expect((this.hostComponent as any).applyContextRules()).toEqual({
+      lineCap: 'round',
+      lineWidth: 3,
+      strokeStyle: '#000'
+    });
 
-    it('save() should update isSaved without calling clear()', async(() => {
-      app.canvasEl = { toDataURL: () => {
-          return 'test';
-        } };
-      app.defaultEmptyImage = 'test1';
-      spyOn(app, 'clear').and.returnValue('');
-      app.save();
-      expect(app.clear).not.toHaveBeenCalled();
-      expect(app.isSaved).toBeTruthy();
-    }));
+  });
 
-    it('zoomCanvas() should update zoomfactor and zoomclass', async(() => {
-      app.zoomCanvas();
-      expect(app.zoomFactor).toEqual(2);
-      expect(app.zoomClass).toEqual('zoom');
-    }));
+  it('save() should call clear()', async function (this: TestContext<Signature>) {
+    const canvas: any = {
+      toDataURL: () => {
+        return 'test';
+      }
+    };
+    this.hostComponent.canvasEl = canvas;
+    this.hostComponent.defaultEmptyImage = 'test';
+    spyOn(this.hostComponent, 'clear').and.returnValue('');
+    this.hostComponent.save();
+    expect(this.hostComponent.clear).toHaveBeenCalled();
+  });
 
-    it('shrinkCanvas() should update zoomFactor and zoomclass', async(() => {
-      app.shrinkCanvas();
-      expect(app.zoomFactor).toEqual(1);
-      expect(app.zoomClass).toEqual('');
-    }));
+  it('save() should update isSaved without calling clear()', async function (this: TestContext<Signature>) {
+    const canvas: any = {
+      toDataURL: () => {
+        return 'test';
+      }
+    };
+    this.hostComponent.canvasEl = canvas
+    this.hostComponent.defaultEmptyImage = 'test1';
+    spyOn(this.hostComponent, 'clear').and.returnValue('');
+    this.hostComponent.save();
+    expect(this.hostComponent.clear).not.toHaveBeenCalled();
+    expect(this.hostComponent.isSaved).toBeTruthy();
+  });
 
-    it('drawOnCanvas() should call canvasEl.getBoundingClientRect()', async(() => {
-      const prevEvent = { clientX: 10, clientY: 20 };
-      const currentEvent = { clientX: 10, clientY: 20 };
-      app.canvasEl = { getBoundingClientRect: () => {
-          return { left: 5, top: 5 };
-        }, getContext: a => {
-          return { beginPath: () => {}, moveTo: (a, b) => {}, lineTo: (a, b) => {}, stroke: () => {} };
-        } };
-      app.zoomFactor = 1;
-      spyOn(app.canvasEl, 'getBoundingClientRect').and.callThrough();
-      app.drawOnCanvas(prevEvent, currentEvent);
-      expect(app.canvasEl.getBoundingClientRect).toHaveBeenCalled();
-    }));
+  it('zoomCanvas() should update zoomfactor and zoomclass', async function (this: TestContext<Signature>) {
+    this.hostComponent.zoomCanvas();
+    expect(this.hostComponent.zoomFactor).toEqual(2);
+    expect(this.hostComponent.zoomClass).toEqual('zoom');
+  });
 
-    it('clear() should update value, isSaved and call canvasEl.getContext', async(() => {
-      app.canvasEl = { getContext: a => {
-          return { clearRect: (a, b, c, d) => {} };
-        } };
-      spyOn(app.canvasEl, 'getContext').and.callThrough();
-      app.clear();
-      expect(app.value).toEqual('');
-      expect(app.isSaved).toBeFalsy();
-      expect(app.canvasEl.getContext).toHaveBeenCalled();
-    }));
+  it('shrinkCanvas() should update zoomFactor and zoomclass', async function (this: TestContext<Signature>) {
+    this.hostComponent.shrinkCanvas();
+    expect(this.hostComponent.zoomFactor).toEqual(1);
+    expect(this.hostComponent.zoomClass).toEqual('');
+  });
 
-    it('captureType should update from element.config.uiStyles.attributes.captureType', async(() => {
-      app.element = { config: { uiStyles: { attributes: { captureType: 'test' } } } };
-      expect(app.captureType).toEqual('test');
-    }));
+  it('drawOnCanvas() should call canvasEl.getBoundingClientRect()', async function (this: TestContext<Signature>) {
+    const prevEvent = { clientX: 10, clientY: 20 };
+    const currentEvent = { clientX: 10, clientY: 20 };
+    const canvas: any = {
+      getBoundingClientRect: () => {
+        return { left: 5, top: 5 };
+      }, getContext: a => {
+        return { beginPath: () => { }, moveTo: (a, b) => { }, lineTo: (a, b) => { }, stroke: () => { } };
+      }
+    };
+    this.hostComponent.canvasEl = canvas;
+    this.hostComponent.zoomFactor = 1;
+    spyOn(this.hostComponent.canvasEl, 'getBoundingClientRect').and.callThrough();
+    (this.hostComponent as any).drawOnCanvas(prevEvent, currentEvent);
+    expect(this.hostComponent.canvasEl.getBoundingClientRect).toHaveBeenCalled();
+  });
 
-    it('setIsCapturing() should update isCapturing and call logger.debug()', async(() => {
-      app.isEditable = () => {
-        return true;
-      };
-      spyOn(logger, 'debug').and.callThrough();
-      app.setIsCapturing(true);
-      expect(app.isCapturing).toBeTruthy();
-      expect(logger.debug).toHaveBeenCalled();
-    }));
+  it('clear() should update value, isSaved and call canvasEl.getContext', async function (this: TestContext<Signature>) {
+    const canvas: any = {
+      getContext: a => {
+        return { clearRect: (a, b, c, d) => { } };
+      }
+    };
+    this.hostComponent.canvasEl = canvas;
+    spyOn(this.hostComponent.canvasEl, 'getContext').and.callThrough();
+    this.hostComponent.clear();
+    expect(this.hostComponent.value).toEqual('');
+    expect(this.hostComponent.isSaved).toBeFalsy();
+    expect(this.hostComponent.canvasEl.getContext).toHaveBeenCalled();
+  });
 
-    it('isEditable should be true', async(() => {
-      app.disabled = false;
-      app.isSaved = false;
-      expect(app.isEditable).toBeTruthy();
-    }));
+  it('captureType should update from element.config.uiStyles.attributes.captureType', async function (this: TestContext<Signature>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.captureType = 'test';
+      expect(this.hostComponent.captureType).toEqual('test');
+    });
+  });
 
-    it('registerCaptureEvents() should call registerCaptureOnEvent() with mousedown, mouseup', async(() => {
-      app.element = { config: { uiStyles: { attributes: { captureType: 'DEFAULT' } } } };
-      app.registerCaptureOnEvent = (a, b) => {};
-      spyOn(app, 'registerCaptureOnEvent').and.callThrough();
-      app.registerCaptureEvents();
-      expect(app.registerCaptureOnEvent).toHaveBeenCalled();
-      expect(app.registerCaptureOnEvent).toHaveBeenCalledWith('mousedown', 'mouseup');
-    }));
+  it('setIsCapturing() should update isCapturing and call logger.debug()', async function (this: TestContext<Signature>) {
+    (this.hostComponent as any).isEditable = () => {
+      return true;
+    };
+    spyOn(logger, 'debug').and.callThrough();
+    (this.hostComponent as any).setIsCapturing(true);
+    expect(this.hostComponent.isCapturing).toBeTruthy();
+    expect(logger.debug).toHaveBeenCalled();
+  });
 
-    it('registerCaptureEvents() should call registerCaptureOnEvent() with click, click', async(() => {
-      app.element = { config: { uiStyles: { attributes: { captureType: 'ON_CLICK' } } } };
-      app.registerCaptureOnEvent = (a, b) => {};
-      spyOn(app, 'registerCaptureOnEvent').and.callThrough();
-      app.registerCaptureEvents();
-      expect(app.registerCaptureOnEvent).toHaveBeenCalled();
-      expect(app.registerCaptureOnEvent).toHaveBeenCalledWith('click', 'click');
-    }));
+  it('isEditable should be true', async function (this: TestContext<Signature>) {
+    this.hostComponent.disabled = false;
+    this.hostComponent.isSaved = false;
+    expect((this.hostComponent as any).isEditable).toBeTruthy();
+  });
+
+  it('registerCaptureEvents() should call registerCaptureOnEvent() with mousedown, mouseup', async function (this: TestContext<Signature>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.captureType = 'DEFAULT';
+      (this.hostComponent as any).registerCaptureOnEvent = (a, b) => { };
+      const spy = spyOn((this.hostComponent as any), 'registerCaptureOnEvent').and.callThrough();
+      (this.hostComponent as any).registerCaptureEvents();
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledWith('mousedown', 'mouseup');
+    });
+  });
+
+  it('registerCaptureEvents() should call registerCaptureOnEvent() with click, click', async function (this: TestContext<Signature>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.captureType = 'ON_CLICK';
+      (this.hostComponent as any).registerCaptureOnEvent = (a, b) => { };
+      const spy = spyOn((this.hostComponent as any), 'registerCaptureOnEvent').and.callThrough();
+      (this.hostComponent as any).registerCaptureEvents();
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledWith('click', 'click');
+    });
+  });
 
 });

@@ -23,8 +23,12 @@ import { InputLabel } from './input-label.component';
 import { TooltipComponent } from '../../tooltip/tooltip.component';
 import { GenericDomain } from '../../../../model/generic-domain.model';
 import { ValidationUtils } from './../../validators/ValidationUtils';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+import * as data from '../../../../payload.json';
+import { Validators, FormControl, ValidatorFn, FormGroup } from '@angular/forms';
 
-let fixture, app, pageService;
+let pageService, param;
 
 class MockPageService {
     eventUpdate$: Subject<any>;
@@ -48,314 +52,340 @@ class MockPageService {
     }
 }
 
+const declarations = [
+  OrderablePickList,
+  InputLabel,
+  TooltipComponent
+];
+const imports = [
+   PickListModule,
+   HttpModule,
+   HttpClientTestingModule,
+   StorageServiceModule
+];
+const providers = [
+   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+   { provide: 'JSNLOG', useValue: JL },
+   { provide: PageService, useClass: MockPageService },
+   CustomHttpClient,
+   LoaderService,
+   ConfigService,
+   LoggerService,
+   AppInitService,
+   SessionStoreService
+];
+
 describe('OrderablePickList', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-          OrderablePickList,
-          InputLabel,
-          TooltipComponent
-       ],
-       imports: [
-           PickListModule,
-           HttpModule,
-           HttpClientTestingModule,
-           StorageServiceModule
-       ],
-       providers: [
-           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-           { provide: 'JSNLOG', useValue: JL },
-           { provide: PageService, useClass: MockPageService },
-           CustomHttpClient,
-           LoaderService,
-           ConfigService,
-           LoggerService,
-           AppInitService,
-           SessionStoreService
-       ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(OrderablePickList);
-    app = fixture.debugElement.componentInstance;
+
+  configureTestSuite();
+  setup(OrderablePickList, declarations, imports, providers);
+  param = (<any>data).payload;
+
+  beforeEach(async function(this: TestContext<OrderablePickList>) {
+    const fg = new FormGroup({});
+    const checks: ValidatorFn[] = [];
+    checks.push(Validators.required);
+    fg.addControl(param.config.code, new FormControl(param.leafState, checks));
+    this.hostComponent.form = fg;
+    this.hostComponent.element = param;
     pageService = TestBed.get(PageService);
-  }));
+  });
 
-    it('should create the app', async(() => {
-      expect(app).toBeTruthy();
-    }));
+  it('should create the OrderablePickList', async function (this: TestContext<OrderablePickList>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
 
-    it('setState() should update the frmInp.element.leafState', async(() => {
-      const frmInp = { element: { leafState: '' } };
-      app.setState('t', frmInp);
-      expect(frmInp.element.leafState).toEqual('t');
-    }));
+  it('setState() should update the frmInp.element.leafState', async function (this: TestContext<OrderablePickList>) {
+    const frmInp = { element: { leafState: '' } };
+    this.hostComponent.setState('t', frmInp);
+    expect(frmInp.element.leafState).toEqual('t');
+  });
 
-    it('value property should be updated from set value()', async(() => {
-      app.value = 'test';
-      expect(app.value).toEqual('test');
-    }));
+  it('value property should be updated from set value()', async function (this: TestContext<OrderablePickList>) {
+    this.hostComponent.value = 'test';
+    expect(this.hostComponent.value).toEqual('test');
+  });
 
-    it('dragStart() should update the draggedItm property', async(() => {
-      app.element = { enabled: true };
-      app.dragStart('', 't');
-      expect(app.draggedItm).toEqual('t');
-    }));
 
-    it('findIndexInList() should return 0', async(() => {
-      const list = [{ code: 123 }];
-      const item = { code: 123 };
-      expect(app.findIndexInList(item, list)).toEqual(0);
-    }));
+  it('dragStart() should update the draggedItm property', async function (this: TestContext<OrderablePickList>) {
+    this.hostComponent.element.enabled = true;
+    this.hostComponent.dragStart('', 't');
+    expect((this.hostComponent as any).draggedItm).toEqual('t');
+  });
 
-    it('registerOnChange() should update the onChange property', async(() => {
-      const onChange = () => {};
-      app.registerOnChange(onChange);
-      expect(app.onChange).toEqual(onChange);
-    }));
+  it('findIndexInList() should return 0', async function (this: TestContext<OrderablePickList>) {
+    const list: any = [{ code: 123 }];
+    const item: any = { code: 123 };
+    expect(this.hostComponent.findIndexInList(item, list)).toEqual(0);
+  });
 
-    it('registerOnTouched() should update the onTouched property', async(() => {
-      const onTouched = () => {};
-      app.registerOnTouched(onTouched);
-      expect(app.onTouched).toEqual(onTouched);
-    }));
+  it('registerOnChange() should update the onChange property', async function (this: TestContext<OrderablePickList>) {
+    const onChange = () => {};
+    this.hostComponent.registerOnChange(onChange);
+    expect(this.hostComponent.onChange).toEqual(onChange);
+  });
 
-    it('setDisabledState() should update the disabled property', async(() => {
-      app.setDisabledState(false);
-      expect(app.disabled).toEqual(false);
-    }));
+  it('registerOnTouched() should update the onTouched property', async function (this: TestContext<OrderablePickList>) {
+    const onTouched = () => {};
+    this.hostComponent.registerOnTouched(onTouched);
+    expect(this.hostComponent.onTouched).toEqual(onTouched);
+  });
 
-    it('dragEnd() should update the pickListControl.target', async(() => {
-      app.draggedItm = true;
-      app.targetList = [];
-      app.pickListControl = { source: ['a', 'b'], target: [] };
-      spyOn(app, 'findIndexInList').and.returnValue(1);
-      app.dragEnd('');
-      expect(app.pickListControl.target).toEqual([true]);
-    }));
+  it('setDisabledState() should update the disabled property', async function (this: TestContext<OrderablePickList>) {
+    this.hostComponent.setDisabledState(false);
+    expect(this.hostComponent.disabled).toEqual(false);
+  });
 
-    it('dragEnd() should update the pickListControl.source', async(() => {
-      app.draggedItm = true;
-      app.targetList = [{ code: 'c' }];
-      app.pickListControl = { source: ['a', 'b'], target: [] };
-      app.findIndexInList = (a, b) => {
-        if (b === app.pickListControl.source) {
-          return -1;
-        }
-        return 1;
-      };
-      app.dragEnd('');
-      expect(app.pickListControl.source).toEqual(['a', 'b', true]);
-    }));
+  it('dragEnd() should update the pickListControl.target', async function (this: TestContext<OrderablePickList>) {
+    (this.hostComponent as any).draggedItm = true;
+    this.hostComponent.targetList = [];
+    const picklist: any = { source: ['a', 'b'], target: [] };
+    this.hostComponent.pickListControl = picklist;
+    spyOn(this.hostComponent, 'findIndexInList').and.returnValue(1);
+    this.hostComponent.dragEnd('');
+    expect(this.hostComponent.pickListControl.target).toEqual([true]);
+  });
 
-    it('emitValueChangedEvent() should update the controlValueChanged eventemitter', async(() => {
-      app.controlValueChanged = { emit: () => {} };
-      app.form = { controls: { a: { valid: true } } };
-      app.element = { config: { code: 'a' } };
-      spyOn(app.controlValueChanged, 'emit').and.callThrough();
-      app.emitValueChangedEvent();
-      expect(app.controlValueChanged.emit).toHaveBeenCalled();
-    }));
+  it('dragEnd() should update the pickListControl.source', async function (this: TestContext<OrderablePickList>) {
+    (this.hostComponent as any).draggedItm = true;
+    this.hostComponent.targetList = [{ code: 'c' }];
+    const picklist: any = { source: ['a', 'b'], target: [] };
+    this.hostComponent.pickListControl = picklist;
+    this.hostComponent.findIndexInList = (a, b) => {
+      if (b === this.hostComponent.pickListControl.source) {
+        return -1;
+      }
+      return 1;
+    };
+    this.hostComponent.dragEnd('');
+    expect(this.hostComponent.pickListControl.source).toEqual(['a', 'b', true]);
+  });
 
-    it('emitValueChangedEvent() should not update the controlValueChanged eventemitter', async(() => {
-      app.controlValueChanged = { emit: () => {} };
-      app.form = { controls: { a: { valid: false } } };
-      app.element = { config: { code: 'a' } };
-      spyOn(app.controlValueChanged, 'emit').and.callThrough();
-      app.emitValueChangedEvent();
-      expect(app.controlValueChanged.emit).not.toHaveBeenCalled();
-    }));
+  it('emitValueChangedEvent() should update the controlValueChanged eventemitter', async function (this: TestContext<OrderablePickList>) {
+    this.fixture.whenStable().then(() => {
+      const controlValueChanged: any = { emit: () => {} };
+      this.hostComponent.controlValueChanged = controlValueChanged;
+      spyOn(this.hostComponent.controlValueChanged, 'emit').and.callThrough();
+      this.hostComponent.emitValueChangedEvent();
+      expect(this.hostComponent.controlValueChanged.emit).toHaveBeenCalled();
+    });
+  });
 
-    it('updateListValues() should call updateData', async(() => {
-      app.updateData = () => {};
-      app.emitValueChangedEvent = () => {};
-      app.element = { leafState: [{ code: '2' }] };
-      spyOn(app, 'updateData').and.callThrough();
-      app.updateListValues('');
-      expect(app.updateData).toHaveBeenCalled();
-    }));
+  it('emitValueChangedEvent() should not update the controlValueChanged eventemitter', async function (this: TestContext<OrderablePickList>) {
+    this.fixture.whenStable().then(() => {
+      const controlValueChanged: any = { emit: () => {} };
+      this.hostComponent.controlValueChanged = controlValueChanged;
+      this.hostComponent.form.controls['firstName'].setErrors({'incorrect': true});
+      spyOn(this.hostComponent.controlValueChanged, 'emit').and.callThrough();
+      this.hostComponent.emitValueChangedEvent();
+      expect(this.hostComponent.controlValueChanged.emit).not.toHaveBeenCalled();
+    });
+  });
+  
+  it('updateListValues() should call updateData', async function (this: TestContext<OrderablePickList>) {
+    (this.hostComponent as any).updateData = () => {};
+    this.hostComponent.emitValueChangedEvent = () => {};
+    this.hostComponent.element.leafState = [{ code: '2' }];
+    const spy = spyOn((this.hostComponent as any), 'updateData').and.callThrough();
+    this.hostComponent.updateListValues('');
+    expect(spy).toHaveBeenCalled();
+  });
 
-    it('updateListValues should update element.leafState', async(() => {
-      app.emitValueChangedEvent = () => {};
-      app.updateData = () => {};
-      app.element = { leafState: false };
-      app.value = true;
-      app.updateListValues('');
-      expect(app.element.leafState).toBeTruthy();
-    }));
+  it('updateListValues should update element.leafState', async function (this: TestContext<OrderablePickList>) {
+    this.hostComponent.emitValueChangedEvent = () => {};
+    (this.hostComponent as any).updateData = () => {};
+    this.hostComponent.element.leafState = false;    
+    this.hostComponent.value = true;
+    this.hostComponent.updateListValues('');
+    expect(this.hostComponent.element.leafState).toBeTruthy();
+  });
 
-    it('getDesc() should return selectedvalues.label', async(() => {
-      app.selectedvalues = [{ code: 'test', label: 'tlabel' }];
-      expect(app.getDesc('test')).toEqual('tlabel');
-    }));
+  it('getDesc() should return selectedvalues.label', async function (this: TestContext<OrderablePickList>) {
+    const selectedvalues: any = [{ code: 'test', label: 'tlabel' }];
+    this.hostComponent.selectedvalues = selectedvalues;
+    expect(this.hostComponent.getDesc('test')).toEqual('tlabel');
+  });
 
-    it('getDesc() should return selectedvalues.code', async(() => {
-      app.selectedvalues = [{ code: 'test', label: undefined }];
-      expect(app.getDesc('test')).toEqual('test');
-    }));
+  it('getDesc() should return selectedvalues.code', async function (this: TestContext<OrderablePickList>) {
+    const selectedvalues: any = [{ code: 'test', label: undefined }];
+    this.hostComponent.selectedvalues = selectedvalues;
+    expect(this.hostComponent.getDesc('test')).toEqual('test');
+  });
 
-    it('refreshSourceList() should update targetList', async(() => {
-      app.element = { leafState: ['test'] };
-      app.parent = { values: [{ code: 't' }] };
-      app.refreshSourceList();
-      expect(app.targetList).toEqual(['test']);
-    }));
+  it('refreshSourceList() should update targetList', async function (this: TestContext<OrderablePickList>) {
+    this.hostComponent.element.leafState = ['test'] ;
+    const parent: any = { values: [{ code: 't' }] };
+    this.hostComponent.parent = parent;
+    (this.hostComponent as any).refreshSourceList();
+    expect(this.hostComponent.targetList).toEqual(['test']);
+  });
 
-    it('updateData() should update value to null', async(() => {
-      app.targetList = [];
-      app.updateData();
-      expect(app.value).toEqual(null);
-    }));
+  it('updateData() should update value to null', async function (this: TestContext<OrderablePickList>) {
+    this.hostComponent.targetList = [];
+    (this.hostComponent as any).updateData();
+    expect(this.hostComponent.value).toEqual(null);
+  });
 
-    it('updateData() should update value to array based on targetList', async(() => {
-      app.targetList = [{ code: 'test' }, { a: 'b' }];
-      app.updateData();
-      expect(app.value).toBeTruthy(['test', { a: 'b' }]);
-    }));
+  it('updateData() should update value to array based on targetList', async function (this: TestContext<OrderablePickList>) {
+    this.hostComponent.targetList = [{ code: 'test' }, { a: 'b' }];
+    (this.hostComponent as any).updateData();
+    expect(this.hostComponent.value).toBeTruthy(['test', { a: 'b' }]);
+  });
 
-    it('updateParentValue() should return GenericDomain based on element.config.code and targetList', async(() => {
-      app.targetList = [{ code: 'test' }, { a: 'b' }];
-      app.element = { config: { code: 'abc' } };
-      const selectedOptions = [];
-      selectedOptions.push(app.targetList[0].code);
-      selectedOptions.push(app.targetList[1]);
-      const item: GenericDomain = new GenericDomain();
-      item.addAttribute(app.element.config.code, selectedOptions);
-      expect(app.updateParentValue('')).not.toEqual(undefined);
-      expect(app.updateParentValue('')).toEqual(item);
-    }));
+  it('updateParentValue() should return GenericDomain based on element.config.code and targetList', async function (this: TestContext<OrderablePickList>) {
+    this.hostComponent.targetList = [{ code: 'test' }, { a: 'b' }];
+    const selectedOptions = [];
+    selectedOptions.push(this.hostComponent.targetList[0].code);
+    selectedOptions.push(this.hostComponent.targetList[1]);
+    const item: GenericDomain = new GenericDomain();
+    item.addAttribute(this.hostComponent.element.config.code, selectedOptions);
+    expect((this.hostComponent as any).updateParentValue('')).not.toEqual(undefined);
+    expect((this.hostComponent as any).updateParentValue('')).toEqual(item);
+  });
 
-    it('ngOnInit() should call refreshSourceList() two times', async(() => {
-      app.loadLabelConfigFromConfigs = () => {};
-      spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
-      app.form = null;
-      app.refreshSourceList = () => {};
-      app.element = { leafState: 'test' };
-      app.parent = { path: '/test', labels: '', config: { code: '' } };
-      spyOn(app, 'refreshSourceList').and.callThrough();
-      app.ngOnInit();
-      pageService.logError({ path: '/test' });
-      expect(app.refreshSourceList).toHaveBeenCalledTimes(2);
-    }));
+  it('ngOnInit() should call refreshSourceList() two times', async function (this: TestContext<OrderablePickList>) {
+    (this.hostComponent as any).loadLabelConfigFromConfigs = () => {};
+    spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
+    this.hostComponent.form = null;
+    (this.hostComponent as any).refreshSourceList = () => {};
+    this.hostComponent.element.leafState = 'test';
+    const parent: any = { path: '/test', labels: '', config: { code: '' } };
+    this.hostComponent.parent = parent;
+    const spy = spyOn((this.hostComponent as any), 'refreshSourceList').and.callThrough();
+    this.hostComponent.ngOnInit();
+    pageService.logError({ path: '/test' });
+    expect(spy).toHaveBeenCalledTimes(2);
+  });
 
-    it('ngOnInit() should call refreshSourceList() two times and update targetList', async(() => {
-      app.loadLabelConfigFromConfigs = () => {};
-      spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
-      app.form = null;
-      app.refreshSourceList = () => {};
-      app.element = { leafState: null };
-      app.parent = { path: '/test', labels: '', config: { code: '' } };
-      spyOn(app, 'refreshSourceList').and.callThrough();
-      app.ngOnInit();
-      pageService.logError({ path: '/test' });
-      expect(app.refreshSourceList).toHaveBeenCalledTimes(2);
-      expect(app.targetList).toEqual([]);
-    }));
+  it('ngOnInit() should call refreshSourceList() two times and update targetList', async function (this: TestContext<OrderablePickList>) {
+    (this.hostComponent as any).loadLabelConfigFromConfigs = () => {};
+    spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
+    this.hostComponent.form = null;
+    (this.hostComponent as any).refreshSourceList = () => {};
+    this.hostComponent.element.leafState = null;
+    const parent: any = { path: '/test', labels: '', config: { code: '' } };
+    this.hostComponent.parent = parent;
+    const spy = spyOn((this.hostComponent as any), 'refreshSourceList').and.callThrough();
+    this.hostComponent.ngOnInit();
+    pageService.logError({ path: '/test' });
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(this.hostComponent.targetList).toEqual([]);
+  });
 
-    it('ngOnInit() should call refreshSourceList() two times and update targetList, requiredCss', async(() => {
-      app.loadLabelConfigFromConfigs = () => {};
-      spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
-      const testSubject = new Subject();
-      app.form = { controls: { a: 'a1', b: { valueChanges: testSubject } } };
-      app.refreshSourceList = () => {};
-      app.element = { leafState: null, activeValidationGroups: ['abc'], config: { code: 'b' } };
-      app.parent = { path: '/test', labels: '', config: { code: 'a' } };
-
-      spyOn(app, 'refreshSourceList').and.callThrough();
-      spyOn(ValidationUtils, 'rebindValidations').and.returnValue('true');
-      app.ngOnInit();
-      pageService.logError({ path: '/test' });
-      expect(app.refreshSourceList).toHaveBeenCalledTimes(2);
-      expect(app.targetList).toEqual([]);
-      expect(app.requiredCss).toEqual('true');
-    }));
-
-    it('ngOnInit() should call refreshSourceList(), setState(), form.controls.a.setValue and update targetList, requiredCss', async(() => {
-      app.loadLabelConfigFromConfigs = () => {};
+  it('ngOnInit() should call refreshSourceList() two times and update targetList, requiredCss', async function (this: TestContext<OrderablePickList>) {
+    this.fixture.whenStable().then(() => {
+      (this.hostComponent as any).loadLabelConfigFromConfigs = () => {};
       spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
       const testSubject = new Subject();
-      app.form = { controls: { a: { setValue: (a, b) => {} }, b: { valueChanges: testSubject } } };
-      app.refreshSourceList = () => {};
-      app.element = { leafState: null, activeValidationGroups: ['abc'], config: { code: 'b' } };
-      app.parent = { path: '/test', labels: '', config: { code: 'a' } };
-      app.setState = (a, b) => {};
-      app.updateParentValue = a => {
+      (this.hostComponent as any).refreshSourceList = () => {};
+      this.hostComponent.element.leafState = null;
+      this.hostComponent.element.activeValidationGroups = ['abc'];
+      const parent: any = { path: '/test', labels: '', config: { code: 'a' } };
+      this.hostComponent.parent = parent;
+      const spy = spyOn((this.hostComponent as any), 'refreshSourceList').and.callThrough();
+      spyOn(ValidationUtils, 'rebindValidations').and.returnValue(true);
+      this.hostComponent.ngOnInit();
+      pageService.logError({ path: '/test' });
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(this.hostComponent.targetList).toEqual([]);
+      expect(this.hostComponent.requiredCss).toEqual(true);
+    });
+  });
+
+  it('ngOnInit() should call refreshSourceList(), setState(), form.controls.a.setValue and update targetList, requiredCss', async function (this: TestContext<OrderablePickList>) {
+    this.fixture.whenStable().then(() => {
+      (this.hostComponent as any).loadLabelConfigFromConfigs = () => {};
+      spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
+      (this.hostComponent as any).refreshSourceList = () => {};
+      this.hostComponent.element.leafState = null;
+      this.hostComponent.element.activeValidationGroups = ['abc'];
+      const parent: any = { path: '/test', labels: '', config: { code: 'firstName' } };
+      this.hostComponent.parent = parent;
+      this.hostComponent.setState = (a, b) => {};
+      (this.hostComponent as any).updateParentValue = a => {
         return a;
       };
-      spyOn(app, 'setState').and.callThrough();
-      spyOn(app.form.controls.a, 'setValue').and.callThrough();
-      spyOn(app, 'refreshSourceList').and.callThrough();
-      spyOn(ValidationUtils, 'rebindValidations').and.returnValue('true');
-      app.ngOnInit();
-      testSubject.next('');
+      spyOn(this.hostComponent, 'setState').and.callThrough();
+      spyOn(this.hostComponent.form.controls.firstName, 'setValue').and.callThrough();
+      const spy = spyOn((this.hostComponent as any), 'refreshSourceList').and.callThrough();
+      spyOn(ValidationUtils, 'rebindValidations').and.returnValue(true);
+      this.hostComponent.ngOnInit();
+      this.hostComponent.form.get('firstName').setValue('newValue');
       pageService.logError({ path: '/test' });
-      expect(app.refreshSourceList).toHaveBeenCalledTimes(2);
-      expect(app.targetList).toEqual([]);
-      expect(app.requiredCss).toEqual('true');
-      expect(app.setState).toHaveBeenCalled();
-      expect(app.form.controls.a.setValue).toHaveBeenCalled();
-    }));
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(this.hostComponent.targetList).toEqual([]);
+      expect(this.hostComponent.requiredCss).toEqual(true);
+      expect(this.hostComponent.setState).toHaveBeenCalled();
+      expect(this.hostComponent.form.controls.firstName.setValue).toHaveBeenCalled();  
+    });
+  });
 
-    it('ngOnInit() should call refreshSourceList(), form.controls.b.setValue() with element.path and update targetList', async(() => {
-      app.loadLabelConfigFromConfigs = () => {};
+  it('ngOnInit() should call refreshSourceList(), form.controls.b.setValue() with element.path and update targetList', async function (this: TestContext<OrderablePickList>) {
+    this.fixture.whenStable().then(() => {
+      (this.hostComponent as any).loadLabelConfigFromConfigs = () => {};
       spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
       const testSubject = new Subject();
-      app.form = { controls: { a: 'a1', b: { valueChanges: testSubject, setValue: a => {}, reset: () => {} } } };
-      app.refreshSourceList = () => {};
-      app.element = { leafState: null, activeValidationGroups: [], config: { code: 'b' }, path: 't' };
-      app.parent = { path: 'test', labels: '', config: { code: 'a' } };
-
-      spyOn(app, 'refreshSourceList').and.callThrough();
+      (this.hostComponent as any).refreshSourceList = () => {};
+      const parent: any = { path: 'test', labels: '', config: { code: 'firstName' } };
+      this.hostComponent.parent = parent;
+      const spy = spyOn((this.hostComponent as any), 'refreshSourceList').and.callThrough();
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('true');
-      spyOn(app.form.controls.b, 'setValue').and.callThrough();
-      app.ngOnInit();
+      spyOn(this.hostComponent.form.controls.firstName, 'setValue').and.callThrough();
+      this.hostComponent.element.path = 't';
+      this.hostComponent.ngOnInit();
       pageService.logError({ path: 'test', leafState: 't' });
-      expect(app.refreshSourceList).toHaveBeenCalledTimes(2);
-      expect(app.targetList).toEqual([]);
-      expect(app.form.controls.b.setValue).toHaveBeenCalled();
-      expect(app.form.controls.b.setValue).toHaveBeenCalledWith('t');
-    }));
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(this.hostComponent.targetList).toEqual([]);
+      expect(this.hostComponent.form.controls.firstName.setValue).toHaveBeenCalled();
+      expect(this.hostComponent.form.controls.firstName.setValue).toHaveBeenCalledWith('t');
+    });
+  });
 
-    it('ngOnInit() should call refreshSourceList(), form.controls.b.reset and update targetList', async(() => {
-      app.loadLabelConfigFromConfigs = () => {};
+  it('ngOnInit() should call refreshSourceList(), form.controls.b.reset and update targetList', async function (this: TestContext<OrderablePickList>) {
+    this.fixture.whenStable().then(() => {
+      (this.hostComponent as any).loadLabelConfigFromConfigs = () => {};
       spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
       const testSubject = new Subject();
-      app.form = { controls: { a: 'a1', b: { valueChanges: testSubject, setValue: a => {}, reset: () => {} } } };
-      app.refreshSourceList = () => {};
-      app.element = { leafState: null, activeValidationGroups: [], config: { code: 'b' }, path: 't' };
-      app.parent = { path: 'test', labels: '', config: { code: 'a' } };
-
-      spyOn(app, 'refreshSourceList').and.callThrough();
+      (this.hostComponent as any).refreshSourceList = () => {};
+      this.hostComponent.element.leafState = null;
+      this.hostComponent.element.activeValidationGroups = [];
+      this.hostComponent.element.path = 't';
+      const parent: any = { path: 'test', labels: '', config: { code: 'a' } };
+      this.hostComponent.parent = parent;
+      const spy = spyOn((this.hostComponent as any), 'refreshSourceList').and.callThrough();
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('true');
-      spyOn(app.form.controls.b, 'reset').and.callThrough();
-      app.ngOnInit();
+      spyOn(this.hostComponent.form.controls.firstName, 'reset').and.callThrough();
+      this.hostComponent.ngOnInit();
       pageService.logError({ path: 'test', leafState: null });
-      expect(app.refreshSourceList).toHaveBeenCalledTimes(2);
-      expect(app.targetList).toEqual([]);
-      expect(app.form.controls.b.reset).toHaveBeenCalled();
-    }));
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(this.hostComponent.targetList).toEqual([]);
+      expect(this.hostComponent.form.controls.firstName.reset).toHaveBeenCalled();
+    });
+  });
 
-    it('ngOnInit() should call refreshSourceList, ValidationUtils.rebindValidations, ValidationUtils.assessControlValidation and update targetList', async(() => {
-      app.loadLabelConfigFromConfigs = () => {};
-      spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
-      const testSubject = new Subject();
-      app.form = { controls: { a: 'a1', b: { valueChanges: testSubject, setValue: a => {}, reset: () => {} } } };
-      app.refreshSourceList = () => {};
-      app.element = { leafState: null, activeValidationGroups: [], config: { code: 'b' }, path: 'test' };
-      app.parent = { path: 'test', labels: '', config: { code: 'a' } };
-
-      spyOn(app, 'refreshSourceList').and.callThrough();
-      spyOn(ValidationUtils, 'rebindValidations').and.returnValue('true');
-      spyOn(ValidationUtils, 'assessControlValidation').and.returnValue('true');
-      spyOn(app.form.controls.b, 'reset').and.callThrough();
-      app.ngOnInit();
-      pageService.buildBaseURL({
-        path: 'test',
-        leafState: null,
-        activeValidationGroups: ['a']
-      });
-      expect(app.refreshSourceList).toHaveBeenCalled();
-      expect(app.targetList).toEqual([]);
-      expect(ValidationUtils.rebindValidations).toHaveBeenCalled();
-      expect(ValidationUtils.assessControlValidation).toHaveBeenCalled();
-    }));
+  it('ngOnInit() should call refreshSourceList, ValidationUtils.rebindValidations, ValidationUtils.assessControlValidation and update targetList', async function (this: TestContext<OrderablePickList>) {
+    (this.hostComponent as any).loadLabelConfigFromConfigs = () => {};
+    spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
+    const testSubject = new Subject();
+    (this.hostComponent as any).refreshSourceList = () => {};
+    this.hostComponent.element.leafState = null;
+    this.hostComponent.element.activeValidationGroups = [];
+    this.hostComponent.element.path = 'test'
+    const parent: any = { path: 'test', labels: '', config: { code: 'a' } };
+    this.hostComponent.parent = parent;
+    const spy = spyOn((this.hostComponent as any), 'refreshSourceList').and.callThrough();
+    spyOn(ValidationUtils, 'rebindValidations').and.returnValue('true');
+    spyOn(ValidationUtils, 'assessControlValidation').and.returnValue('true');
+    this.hostComponent.ngOnInit();
+    pageService.buildBaseURL({
+      path: 'test',
+      leafState: null,
+      activeValidationGroups: ['a']
+    });
+    expect(spy).toHaveBeenCalled();
+    expect(this.hostComponent.targetList).toEqual([]);
+    expect(ValidationUtils.rebindValidations).toHaveBeenCalled();
+    expect(ValidationUtils.assessControlValidation).toHaveBeenCalled();
+  });
 
 });

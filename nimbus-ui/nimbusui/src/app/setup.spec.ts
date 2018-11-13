@@ -28,7 +28,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
  * 
  */
 import { Type, ErrorHandler } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, getTestBed } from '@angular/core/testing';
 import { BreadcrumbService } from './components/platform/breadcrumb/breadcrumb.service';
 import { PageService } from './services/page.service';
 import { ConfigService } from './services/config.service';
@@ -65,15 +65,16 @@ import { MessageModule } from 'primeng/message';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser/';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing'
+
 
 export interface TestContext<H> {
-    create(testType: Type<H>, declarations: any[], imports?: any[], providers?: any[], componentWithTemplateUrl?: boolean): void;
     fixture: ComponentFixture<H>;
     hostComponent: H;
     hostElement: any;
 }
 
-export function setup(): void {
+export function setup(testType, declarations: any[], imports?: any[], providers?: any[]): void {
     
     let allproviders =  [ PageService, ConfigService, WebContentSvc, HttpClient, AppInitService,
         CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
@@ -120,31 +121,23 @@ export function setup(): void {
         StorageServiceModule,
         AngularSvgIconModule,
         ToastModule,
-        InputSwitchModule
+        InputSwitchModule,
+        RouterTestingModule
     ]
-    beforeEach(function<H>(this: TestContext<H>) {
-        this.create = (testType: Type<H>, declarations:any[], imports?: any[], providers?: any[], componentWithTemplateUrl?: boolean) => {
-            if(componentWithTemplateUrl) {
-                TestBed.configureTestingModule({
-                    declarations: declarations,
-                    providers: providers? providers: allproviders,
-                    imports: imports? imports : allimports
-    
-                }).compileComponents();
-            } else {
-                TestBed.configureTestingModule({
-                    declarations: declarations,
-                    providers: providers? providers: allproviders,
-                    imports: imports? imports : allimports
-    
-                });
-            }
-            this.fixture = TestBed.createComponent(testType);
-            this.hostComponent = this.fixture.componentInstance;
-            this.hostElement = this.fixture.nativeElement;
 
-        };
-        
+    beforeAll(done => (async () => {
+        TestBed.configureTestingModule({
+            declarations: declarations,
+            providers: providers ? providers : allproviders,
+            imports:  imports ? imports : allimports
+            })
+            await TestBed.compileComponents();
+    })().then(done).catch(done.fail));
+
+    beforeEach(function<H>(this: TestContext<H>) {
+        this.fixture = TestBed.createComponent(testType);
+        this.hostComponent = this.fixture.componentInstance;
+        this.hostElement = this.fixture.nativeElement;
     });
 
     afterEach(function<H>(this: TestContext<H>) {

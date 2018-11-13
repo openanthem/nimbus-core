@@ -8,7 +8,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { Subject } from 'rxjs/Rx';
 import { of as observableOf,  Observable } from 'rxjs';
-import { EventEmitter } from '@angular/core';
 import {
   ActivatedRoute,
   Route,
@@ -21,9 +20,9 @@ import {
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { Component, Input } from '@angular/core';
 
 import { HomeLayoutCmp } from './home-layout.component';
-import { STOMPService } from '../../services/stomp.service';
 import { FooterGlobal } from '../platform/footer/footer-global.component';
 import { HeaderGlobal } from '../platform/header/header-global.component';
 import { Link } from '../platform/link.component';
@@ -49,6 +48,28 @@ import { Button } from '../platform/form/elements/button.component';
 import { ActionDropdown, ActionLink } from '../platform/form/elements/action-dropdown.component';
 import { InputLabel } from '../platform/form/elements/input-label.component';
 import { Image } from '../platform/image.component';
+import { setup, TestContext } from '../../setup.spec';
+import { configureTestSuite } from 'ng-bullet';
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-panelMenuSub'
+})
+export class NmPanelMenuSub {
+  @Input() item: any;
+  @Input() expanded: boolean;
+}
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-panelMenu'
+})
+export class NmPanelMenu {
+  @Input() model: any[];
+  @Input() style: any;
+  @Input() styleClass: string;
+  @Input() multiple: boolean = true;  
+}
 
 class MockAuthenticationService {
   logout() {
@@ -113,68 +134,82 @@ export class MockActivatedRoute implements ActivatedRoute {
   queryParamMap: Observable<ParamMap>;
 }
 
-let component, layoutService, activatedRoute, pageService;
+class MockSTOMPService {
+  configure() {}
+  try_connect() {
+    return new Promise((resolve, reject) => {
+      resolve('abcd');
+    });
+  }
+  disconnect() {}
+}
+
+let layoutService, activatedRoute, pageService;
+
+const declarations= [
+    HomeLayoutCmp,
+    FooterGlobal,
+    HeaderGlobal,
+    Link,
+    Paragraph,
+    ComboBox,
+    KeysPipe,
+    Value,
+    SelectItemPipe,
+    TooltipComponent,
+    SvgComponent,
+    Button,
+    ActionDropdown,
+    InputLabel,
+    Image,
+    ActionLink,
+    NmPanelMenu,
+    NmPanelMenuSub
+  ];
+  const providers = [
+    { provide: AuthenticationService, useClass: MockAuthenticationService },
+    { provide: LayoutService, useClass: MockLayoutService },
+    { provide: ActivatedRoute, useClass: MockActivatedRoute },
+    { provide: PageService, useClass: MockPageService },
+    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+    { provide: 'JSNLOG', useValue: JL },
+    {provide: LoggerService, useClass: MockLoggerService},
+    CustomHttpClient,
+    WebContentSvc,
+    LoaderService,
+    ConfigService,
+    BreadcrumbService,
+    SessionStoreService,
+    AppInitService
+  ];
+  const imports = [
+    RouterTestingModule,
+    FormsModule,
+    DropdownModule,
+    HttpClientModule,
+    HttpModule,
+    StorageServiceModule,
+    AngularSvgIconModule
+  ];
 
 describe('HomeLayoutCmp', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        HomeLayoutCmp,
-        FooterGlobal,
-        HeaderGlobal,
-        Link,
-        Paragraph,
-        ComboBox,
-        KeysPipe,
-        Value,
-        SelectItemPipe,
-        TooltipComponent,
-        SvgComponent,
-        Button,
-        ActionDropdown,
-        InputLabel,
-        Image,
-        ActionLink
-      ],
-      providers: [
-        { provide: AuthenticationService, useClass: MockAuthenticationService },
-        { provide: LayoutService, useClass: MockLayoutService },
-        { provide: ActivatedRoute, useClass: MockActivatedRoute },
-        { provide: PageService, useClass: MockPageService },
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        { provide: 'JSNLOG', useValue: JL },
-        {provide: LoggerService, useClass: MockLoggerService},
-        CustomHttpClient,
-        WebContentSvc,
-        LoaderService,
-        ConfigService,
-        BreadcrumbService,
-        STOMPService,
-        // LoggerService,
-        SessionStoreService,
-        AppInitService
-      ],
-      imports: [
-        RouterTestingModule,
-        FormsModule,
-        DropdownModule,
-        HttpClientModule,
-        HttpModule,
-        StorageServiceModule,
-        AngularSvgIconModule
-      ]
-    }).compileComponents();
 
-    const fixture = TestBed.createComponent(HomeLayoutCmp);
-    component = fixture.debugElement.componentInstance;
+    configureTestSuite();
+    setup(HomeLayoutCmp, declarations, imports, providers);
+
+  beforeEach(async function(this: TestContext<HomeLayoutCmp>) {
     layoutService = TestBed.get(LayoutService);
     activatedRoute = TestBed.get(ActivatedRoute);
     pageService = TestBed.get(PageService);
-  }));
+  });
 
-  it('ngOnInint() should get layout from layout service', async(() => {
-    spyOn(component.layoutSvc, 'getLayout').and.callThrough();
-    component.ngOnInit();
+  it('should create the app', function (this: TestContext<HomeLayoutCmp>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
+
+  it('ngOnInint() should get layout from layout service', function (this: TestContext<HomeLayoutCmp>) {
+    spyOn(layoutService, 'getLayout').and.callThrough();
+    this.hostComponent.ngOnInit();
     const layout = {
       topBar: {
         branding: 'test',
@@ -184,13 +219,13 @@ describe('HomeLayoutCmp', () => {
       footer: 'FooterConfig',
     };
     layoutService.parseLayoutConfig(layout);
-    expect(component.layoutSvc.getLayout).toHaveBeenCalled();
-  }));
+    expect(layoutService.getLayout).toHaveBeenCalled();
+  });
 
-  it('ngOnInint() should not get layout from layout service', async(() => {
-    spyOn(component.layoutSvc, 'getLayout').and.callThrough();
+  it('ngOnInint() should not get layout from layout service', function (this: TestContext<HomeLayoutCmp>) {
+    spyOn(layoutService, 'getLayout').and.callThrough();
     activatedRoute.data['value']['layout'] = null;
-    component.ngOnInit();
+    this.hostComponent.ngOnInit();
     const layout = {
       topBar: {
         branding: 'test',
@@ -200,12 +235,12 @@ describe('HomeLayoutCmp', () => {
       footer: 'FooterConfig',
     };
     layoutService.parseLayoutConfig(layout);
-    expect(component.layoutSvc.getLayout).not.toHaveBeenCalled();
-  }));
+    expect(layoutService.getLayout).not.toHaveBeenCalled();
+  });
 
-  it('ngOnInint() should update the class properties', async(() => {
-    component.ngOnInit();
-    const layout = {
+  it('ngOnInint() should update the class properties', function (this: TestContext<HomeLayoutCmp>) {
+    this.hostComponent.ngOnInit();
+    const layout: any = {
       topBar: {
         branding: 'test',
         headerMenus: 'tHeaderMenus'
@@ -214,45 +249,40 @@ describe('HomeLayoutCmp', () => {
       footer: 'FooterConfig',
     };
     layoutService.parseLayoutConfig(layout);
-    expect(component.branding).toEqual('test');
-    expect(component.topMenuItems).toEqual('tHeaderMenus');
-    expect(component.navMenuBar).toEqual(true);
-    expect(component.organization).toEqual('torganization');
-    expect(component.menuItems).toEqual('tMenuItems');
-    expect(component.menuLinks).toEqual('tMenuLinks');
-  }));
+    const res: any = 'test';
+    expect(this.hostComponent.branding).toEqual(res);
+    expect(this.hostComponent.topMenuItems).toEqual(layout.topBar.headerMenus);
+  });
 
-  it('ngOnInint() should not update the class properties', async(() => {
-    component.ngOnInit();
+  it('ngOnInint() should not update the class properties', function (this: TestContext<HomeLayoutCmp>) {
+    this.hostComponent.ngOnInit();
     const layout = {};
     layoutService.parseLayoutConfig(layout);
-    expect(component.branding).not.toEqual('test');
-  }));
+    const res: any = 'test';
+    expect(this.hostComponent.branding).not.toEqual(res);
+  });
 
-  it('ngOnInint() should not update the class properties if layout is null', async(() => {
-    component.ngOnInit();
+  it('ngOnInint() should not update the class properties if layout is null', function (this: TestContext<HomeLayoutCmp>) {
+    this.hostComponent.ngOnInit();
     const layout = {};
     layoutService.parseLayoutConfig();
-    expect(component.branding).not.toEqual('test');
-  }));
+    const res: any = 'test';
+    expect(this.hostComponent.branding).not.toEqual(res);
+  });
 
-  it('should create the HomeLayoutCmp', async(() => {
-    expect(component).toBeTruthy();
-  }));
+  it('toggelSideNav should update collapse property', function (this: TestContext<HomeLayoutCmp>) {
+    this.hostComponent.collapse = true;
+    this.hostComponent.toggelSideNav();
+    expect(this.hostComponent.collapse).toEqual(false);
+  });
 
-  it('toggelSideNav should update collapse property', async(() => {
-    component.collapse = true;
-    component.toggelSideNav();
-    expect(component.collapse).toEqual(false);
-  }));
+  it('get activeTheme should return activeTheme property', function (this: TestContext<HomeLayoutCmp>) {
+    this.hostComponent.activeTheme = 'test';
+    this.hostComponent.activeTheme = 'test';
+    expect(this.hostComponent.activeTheme).toEqual('test');
+  });
 
-  it('get activeTheme should return activeTheme property', async(() => {
-    component.activeTheme = 'test';
-    component.activeTheme = 'test';
-    expect(component.activeTheme).toEqual('test');
-  }));
-
-  it('on_next() should call pageService.traverseFlowConfig()', async(() => {
+  it('on_next() should call pageService.traverseFlowConfig()', function (this: TestContext<HomeLayoutCmp>) {
     const test1 = JSON.stringify({
       result: [
         {
@@ -268,8 +298,8 @@ describe('HomeLayoutCmp', () => {
       body: test1
     };
     spyOn(pageService, 'traverseFlowConfig').and.callThrough();
-    component.on_next(test);
+    this.hostComponent.on_next(test);
     expect(pageService.traverseFlowConfig).toHaveBeenCalled();
-  }));
+  });
 
 });

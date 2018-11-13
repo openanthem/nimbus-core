@@ -6,34 +6,40 @@ import { HttpModule } from '@angular/http';
 import { SubHeaderCmp } from './sub-header.component';
 import { DateTimeFormatPipe } from '../../pipes/date.pipe';
 import { Param } from '../../shared/param-state';
+import { setup, TestContext } from './../../setup.spec';
+import { configureTestSuite } from 'ng-bullet';
+import * as data from '../../payload.json';
+
+let param: Param;
+
+const declarations = [
+  SubHeaderCmp,
+  DateTimeFormatPipe
+ ];
+const imports = [
+     HttpClientModule,
+     HttpModule
+ ];
+const providers = [];
 
 describe('SubHeaderCmp', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        SubHeaderCmp,
-        DateTimeFormatPipe
-       ],
-       imports: [
-           HttpClientModule,
-           HttpModule
-       ]
-    }).compileComponents();
-  }));
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(SubHeaderCmp);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+  configureTestSuite();
+  setup(SubHeaderCmp, declarations, imports, providers);
+  param = (<any>data).payload;
 
-  it('ngOnInit() should call loadLabelConfig()', async(() => {
-    const fixture = TestBed.createComponent(SubHeaderCmp);
-    const app = fixture.debugElement.componentInstance;
-    app.loadLabelConfig = (a:any) => {    }
-    spyOn(app, 'loadLabelConfig').and.callThrough();
-    app.ngOnInit();
-    expect(app.loadLabelConfig).toHaveBeenCalled();
-  }));
+  beforeEach(async function(this: TestContext<SubHeaderCmp>){
+      this.hostComponent.element = param;
+  });
+
+  it('should create the SubHeaderCmp', function(this: TestContext<SubHeaderCmp>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
+
+  it('ngOnInit() should call loadLabelConfig()', function(this: TestContext<SubHeaderCmp>) {
+    (this.hostComponent as any).loadLabelConfig = (a: any) => {    }
+    const spy = spyOn((this.hostComponent as any), 'loadLabelConfig').and.callThrough();
+    this.hostComponent.ngOnInit();
+    expect(spy).toHaveBeenCalled();  });
 
 });

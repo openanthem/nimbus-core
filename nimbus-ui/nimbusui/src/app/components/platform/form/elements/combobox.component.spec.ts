@@ -19,43 +19,52 @@ import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
 import { InputLabel } from './input-label.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+import * as data from '../../../../payload.json';
+import { Param } from '../../../../shared/param-state';
+
+let param: Param;
+
+const declarations = [
+  ComboBox,
+  TooltipComponent,
+  SelectItemPipe,
+  InputLabel
+ ];
+ const imports = [
+  DropdownModule,
+  FormsModule,
+  HttpClientModule,
+  HttpModule,
+  StorageServiceModule
+ ];
+ const providers = [
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: LocationStrategy, useClass: HashLocationStrategy },
+  Location,
+  PageService,
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  LoggerService,
+  SessionStoreService,
+  AppInitService
+ ];
 
 describe('ComboBox', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        ComboBox,
-        TooltipComponent,
-        SelectItemPipe,
-        InputLabel
-       ],
-       imports: [
-        DropdownModule,
-        FormsModule,
-        HttpClientModule,
-        HttpModule,
-        StorageServiceModule
-       ],
-       providers: [
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        Location,
-        PageService,
-        CustomHttpClient,
-        LoaderService,
-        ConfigService,
-        LoggerService,
-        SessionStoreService,
-        AppInitService
-       ]
-    }).compileComponents();
-  }));
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(ComboBox);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+  configureTestSuite();
+  setup(ComboBox, declarations, imports, providers);
+  param = (<any>data).payload;
+
+  beforeEach(async function(this: TestContext<ComboBox>){
+    this.hostComponent.element = param;
+  });
+
+  it('should create the ComboBox', async function (this: TestContext<ComboBox>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
 
 });

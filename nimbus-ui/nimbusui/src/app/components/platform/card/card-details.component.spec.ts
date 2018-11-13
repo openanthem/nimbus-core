@@ -30,113 +30,106 @@ import { InputLabel } from '../../platform/form/elements/input-label.component';
 import { Button } from '../../platform/form/elements/button.component';
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
+import * as data from '../../../payload.json';
+
+let param, pageService;
 
 class MockPageService {
     processEvent() {    }
 }
 
+const declarations = [
+  CardDetailsComponent,
+  Link,
+  CardDetailsFieldComponent,
+  StaticText,
+  InPlaceEditorComponent,
+  InputText,
+  TextArea,
+  ComboBox,
+  DateTimeFormatPipe,
+  TooltipComponent,
+  SelectItemPipe,
+  CardDetailsFieldGroupComponent,
+  Paragraph,
+  ButtonGroup,
+  Label,
+  DisplayValueDirective,
+  InputLabel,
+  Button,
+  Image,
+  SvgComponent
+];
+const imports = [
+  FormsModule,
+  DropdownModule,
+  HttpModule,
+  HttpClientModule,
+  AngularSvgIconModule
+];
+const providers = [
+  { provide: PageService, useClass: MockPageService },
+  CustomHttpClient,
+  LoaderService,
+  ConfigService
+];
+
 describe('CardDetailsComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        CardDetailsComponent,
-        Link,
-        CardDetailsFieldComponent,
-        StaticText,
-        InPlaceEditorComponent,
-        InputText,
-        TextArea,
-        ComboBox,
-        DateTimeFormatPipe,
-        TooltipComponent,
-        SelectItemPipe,
-        CardDetailsFieldGroupComponent,
-        Paragraph,
-        ButtonGroup,
-        Label,
-        DisplayValueDirective,
-        InputLabel,
-        Button,
-        Image,
-        SvgComponent
-    ],
-    imports: [
-        FormsModule,
-        DropdownModule,
-        HttpModule,
-        HttpClientModule,
-        AngularSvgIconModule
-    ],
-    providers: [
-        { provide: PageService, useClass: MockPageService },
-        CustomHttpClient,
-        LoaderService,
-        ConfigService
-    ]
-    }).compileComponents();
-  }));
 
-  it('should create the CardDetailsComponent', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+  configureTestSuite();
+  setup(CardDetailsComponent, declarations, imports, providers);
+  param = (<any>data).payload;
 
-  it('toggle() should updated opened property', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    app.opened = true;
-    app.toggle();
-    expect(app.opened).toEqual(false);
-  }));
+  beforeEach(async function(this: TestContext<CardDetailsComponent>){
+    this.hostComponent.element = param;
+    pageService = TestBed.get(PageService);
+  });
 
-it('processOnClick() should call pageSvc.processEvent', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    spyOn(app.pageSvc, 'processEvent').and.callThrough();
-    app.element = {
-        path: '/a'
-    };
-    app.processOnClick();
-    expect(app.pageSvc.processEvent).toHaveBeenCalled();
-  }));
+  it('should create the CardDetailsComponent', async function (this: TestContext<CardDetailsComponent>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
 
-it('getAllURLParams should return null matching the regexp', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.getAllURLParams('/webhp?hl=en')).toEqual(null);
-  }));
+  it('toggle() should updated opened property', async function (this: TestContext<CardDetailsComponent>) {
+    this.hostComponent.opened = true;
+    this.hostComponent.toggle();
+    expect(this.hostComponent.opened).toEqual(false);
+  });
 
-  it('getAllURLParams should return string matching the regexp', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.getAllURLParams('{ /webhp?hl=en}')).toEqual(['{ /webhp?hl=en}']);
-  }));
+  it('processOnClick() should call pageService.processEvent', async function (this: TestContext<CardDetailsComponent>) {
+    this.hostComponent.element.path = '/a';
+    spyOn(pageService, 'processEvent').and.callThrough();
+    this.hostComponent.processOnClick();
+    expect(pageService.processEvent).toHaveBeenCalled();
+  });
 
-  it('toggleState() should update isHidden and _state properties', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    app.state = 'closedPanel';
-    app.isHidden = true;
-    app.toggleState();
-    expect(app.isHidden).toBeFalsy();
-    expect(app._state).toEqual('openPanel');
-  }));
+  it('getAllURLParams should return null matching the regexp', async function (this: TestContext<CardDetailsComponent>) {
+    expect(this.hostComponent.getAllURLParams('/webhp?hl=en')).toEqual(null);
+  });
 
-  it('toggleState() should update _state property', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    app.state = 'openPanel';
-    app.toggleState();
-    expect(app._state).toEqual('closedPanel');
-  }));
+  it('getAllURLParams should return string matching the regexp', async function (this: TestContext<CardDetailsComponent>) {
+    expect(this.hostComponent.getAllURLParams('{ /webhp?hl=en}')).toEqual(['{ /webhp?hl=en}']);
+  });
 
-  it('animationDone() should update the isHidden property', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    app.state = 'closedPanel';
-    app.animationDone('a');
-    expect(app.isHidden).toBeTruthy();
-  }));
+  it('toggleState() should update isHidden and _state properties', async function (this: TestContext<CardDetailsComponent>) {
+    this.hostComponent.state = 'closedPanel';
+    this.hostComponent.isHidden = true;
+    this.hostComponent.toggleState();
+    expect(this.hostComponent.isHidden).toBeFalsy();
+    expect((this.hostComponent as any)._state).toEqual('openPanel');
+  });
+
+  it('toggleState() should update _state property', async function (this: TestContext<CardDetailsComponent>) {
+    this.hostComponent.state = 'openPanel';
+    this.hostComponent.toggleState();
+    expect((this.hostComponent as any)._state).toEqual('closedPanel');
+  });
+
+  it('animationDone() should update the isHidden property', async function (this: TestContext<CardDetailsComponent>) {
+    this.hostComponent.state = 'closedPanel';
+    this.hostComponent.animationDone('a');
+    expect(this.hostComponent.isHidden).toBeTruthy();
+  });
 
 });

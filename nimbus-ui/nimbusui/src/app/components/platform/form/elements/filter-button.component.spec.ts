@@ -14,142 +14,112 @@ import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+import * as data from '../../../../payload.json';
+import { Param, Type, Model } from '../../../../shared/param-state';
+import { ParamConfig, UiStyle, UiAttribute } from '../../../../shared/param-config';
 
-let fixture, app, pageservice;
+let pageService, param, configService;
+
+const declarations = [FilterButton];
+const imports = [
+       HttpModule,
+       HttpClientTestingModule,
+       StorageServiceModule
+];
+const providers = [
+    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+    { provide: 'JSNLOG', useValue: JL },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    Location,
+    PageService,
+    CustomHttpClient,
+    LoaderService,
+    ConfigService,
+    LoggerService,
+    SessionStoreService,
+    AppInitService
+];
 
 describe('FilterButton', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        FilterButton
-       ],
-       imports: [
-           HttpModule,
-           HttpClientTestingModule,
-           StorageServiceModule
-       ],
-       providers: [
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        Location,
-        PageService,
-        CustomHttpClient,
-        LoaderService,
-        ConfigService,
-        LoggerService,
-        SessionStoreService,
-        AppInitService
-       ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(FilterButton);
-    app = fixture.debugElement.componentInstance;
-    pageservice = TestBed.get(PageService);
-  }));
 
-  it('should create the app', async(() => {
-    expect(app).toBeTruthy();
-  }));
+    configureTestSuite();
+    setup(FilterButton, declarations, imports, providers);
+    param = (<any>data).payload;
 
-  it('ngOnInit() should call loadLabelConfig()', async(() => {
-      spyOn(app, 'loadLabelConfig').and.returnValue('');
-      app.filterButton = {
-        type: {
-            model: {
-                params: {
-                    t: {
-                        config: {
-                            uiStyles: {
-                                attributes: {
-                                    alias: 'Button'
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-      };
-    app.ngOnInit();
-    expect(app.loadLabelConfig).toHaveBeenCalled();
-  }));
+    beforeEach(async function(this: TestContext<FilterButton>){
+    this.hostComponent.element = param;
+    pageService = TestBed.get(PageService);
+    configService = TestBed.get(ConfigService);
+    });
 
-  it('ngOnInit() should update the fText property', async(() => {
-    spyOn(app, 'loadLabelConfig').and.returnValue('');
-    app.filterButton = {
-      type: {
-          model: {
-              params: {
-                  t: {
-                      config: {
-                          uiStyles: {
-                              attributes: {
-                                  alias: 'TextBox'
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      }
-    };
-    const test = {
-        config: {
-            uiStyles: {
-                attributes: {
-                    alias: 'TextBox'
-                }
-            }
-        }
-    };
-  app.ngOnInit();
-  expect(app.fText).toEqual(test);
-}));
+    it('should create the FilterButton', async function(this: TestContext<FilterButton>) {
+      expect(this.hostComponent).toBeTruthy();
+    });
 
-  it('ngOnInit() should subscribe to buttonClickEvent', async(() => {
-      spyOn(app.buttonClickEvent, 'subscribe').and.callThrough();
-      app.filterButton = {
-        type: {
-            model: {
-                params: ''
-            }
-        }
-      };
-      app.ngOnInit();
-    expect(app.buttonClickEvent.subscribe).toHaveBeenCalled();
-  }));
+    it('ngOnInit() should call loadLabelConfig()', async function(this: TestContext<FilterButton>) {
+      const spy = spyOn(this.hostComponent as any, 'loadLabelConfig').and.returnValue('');
+      const config = new ParamConfig(configService);
+      config.uiStyles = new UiStyle();
+      config.uiStyles.attributes = new UiAttribute();
+      config.uiStyles.attributes.alias = 'Button';
+      spyOn(configService, 'getViewConfigById').and.returnValue(config);
+      this.hostComponent.filterButton = new Param(configService);
+      const nestedParam = new Param(configService);
+      this.hostComponent.filterButton.type = new Type(configService);
+      this.hostComponent.filterButton.type.model = new Model(configService);
+      this.hostComponent.filterButton.type.model.params = [nestedParam];
+      this.hostComponent.ngOnInit();
+      expect(spy).toHaveBeenCalled();
+    });
 
-  it('ngOnInit() should call pageservice.processEvent()', async(() => {
-    spyOn(pageservice, 'processEvent').and.returnValue('');
-    app.filterButton = {
-      type: {
-          model: {
-              params: ''
-          }
-      }
-    };
-    app.ngOnInit();
-    const eve = {
-        fbutton: {
-            path: '',
-            config: {
-                uiStyles: {
-                    attributes: {
-                        b: '',
-                        method: ''
-                    }
-                }
-            }
-        }
-    }
-    app.buttonClickEvent.emit(eve);
-    expect(pageservice.processEvent).toHaveBeenCalled();
-  }));
+    it('ngOnInit() should update the fText property', async function(this: TestContext<FilterButton>) {
+      spyOn(this.hostComponent as any, 'loadLabelConfig').and.returnValue('');
+      const config = new ParamConfig(configService);
+      config.uiStyles = new UiStyle();
+      config.uiStyles.attributes = new UiAttribute();
+      config.uiStyles.attributes.alias = 'TextBox';
+      spyOn(configService, 'getViewConfigById').and.returnValue(config);
+      this.hostComponent.filterButton = new Param(configService);
+      const nestedParam = new Param(configService);
+      this.hostComponent.filterButton.type = new Type(configService);
+      this.hostComponent.filterButton.type.model = new Model(configService);
+      this.hostComponent.filterButton.type.model.params = [nestedParam];
+      const test = new Param(configService);
+      config.uiStyles = new UiStyle();
+      config.uiStyles.attributes = new UiAttribute();
+      config.uiStyles.attributes.alias = 'TextBox';
+      this.hostComponent.ngOnInit();
+      expect(this.hostComponent.fText).toEqual(test);
+    });
 
-  it('emitEvent() should call buttonClickEvent.emit()', async(() => {
-      spyOn(app.buttonClickEvent, 'emit').and.callThrough();
-      app.emitEvent('test');
-    expect(app.buttonClickEvent.emit).toHaveBeenCalled();
-  }));
+    it('ngOnInit() should subscribe to buttonClickEvent', async function(this: TestContext<FilterButton>) {
+      spyOn(this.hostComponent.buttonClickEvent, 'subscribe').and.callThrough();
+      this.hostComponent.filterButton = new Param(configService);
+      this.hostComponent.filterButton.type = new Type(configService);
+      this.hostComponent.filterButton.type.model = new Model(configService);
+      this.hostComponent.filterButton.type.model.params = [];
+      this.hostComponent.ngOnInit();
+      expect(this.hostComponent.buttonClickEvent.subscribe).toHaveBeenCalled();
+    });
+
+    it('ngOnInit() should call pageservice.processEvent()', async function(this: TestContext<FilterButton>) {
+      spyOn(pageService, 'processEvent').and.returnValue('');
+      this.hostComponent.filterButton = new Param(configService);
+      this.hostComponent.filterButton.type = new Type(configService);
+      this.hostComponent.filterButton.type.model = new Model(configService);
+      this.hostComponent.filterButton.type.model.params = [];
+      this.hostComponent.ngOnInit();
+      const eve = { fbutton: { path: '', config: { uiStyles: { attributes: { b: '', method: '' } } } } };
+      this.hostComponent.buttonClickEvent.emit(eve);
+      expect(pageService.processEvent).toHaveBeenCalled();
+    });
+
+    it('emitEvent() should call buttonClickEvent.emit()', async function(this: TestContext<FilterButton>) {
+      spyOn(this.hostComponent.buttonClickEvent, 'emit').and.callThrough();
+      this.hostComponent.emitEvent('test');
+      expect(this.hostComponent.buttonClickEvent.emit).toHaveBeenCalled();
+    });
 
 });

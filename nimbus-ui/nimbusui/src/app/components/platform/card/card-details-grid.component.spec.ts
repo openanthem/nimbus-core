@@ -32,6 +32,11 @@ import { Button } from '../../platform/form/elements/button.component';
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
 import { WebContentSvc } from '../../../services/content-management.service';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
+import * as data from '../../../payload.json';
+
+let param, pageService;
 
 class MockPageService {
     processEvent() {
@@ -39,87 +44,75 @@ class MockPageService {
     }
 }
 
+const declarations = [
+    CardDetailsGrid,
+    CardDetailsComponent,
+    Link,
+    CardDetailsFieldComponent,
+    StaticText,
+    InPlaceEditorComponent,
+    InputText,
+    TextArea,
+    ComboBox,
+    DateTimeFormatPipe,
+    TooltipComponent,
+    SelectItemPipe,
+    Label,
+    CardDetailsFieldGroupComponent,
+    Paragraph,
+    ButtonGroup,
+    DisplayValueDirective,
+    InputLabel,
+    Button,
+    Image,
+    SvgComponent
+    ];
+const imports = [ 
+    FormsModule,
+    DropdownModule,
+    HttpClientModule,
+    HttpModule,
+    AngularSvgIconModule
+];
+ const providers = [
+    { provide: PageService, useClass: MockPageService },
+     CustomHttpClient,
+     LoaderService,
+     ConfigService,
+     WebContentSvc
+     ];
+
 describe('CardDetailsGrid', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        CardDetailsGrid,
-        CardDetailsComponent,
-        Link,
-        CardDetailsFieldComponent,
-        StaticText,
-        InPlaceEditorComponent,
-        InputText,
-        TextArea,
-        ComboBox,
-        DateTimeFormatPipe,
-        TooltipComponent,
-        SelectItemPipe,
-        Label,
-        CardDetailsFieldGroupComponent,
-        Paragraph,
-        ButtonGroup,
-        DisplayValueDirective,
-        InputLabel,
-        Button,
-        Image,
-        SvgComponent
-        ],
-    imports: [ 
-        FormsModule,
-        DropdownModule,
-        HttpClientModule,
-        HttpModule,
-        AngularSvgIconModule
-    ],
-     providers: [
-        { provide: PageService, useClass: MockPageService },
-         CustomHttpClient,
-         LoaderService,
-         ConfigService,
-         WebContentSvc
-         ]
-    }).compileComponents();
-  }));
 
-  it('should create the CardDetailsGrid', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsGrid);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+    configureTestSuite();
+    setup(CardDetailsGrid, declarations, imports, providers);
+    param = (<any>data).payload;
 
-  it('ngonint() should call pageSvc.processEvent', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsGrid);
-    const app = fixture.debugElement.componentInstance;
-    app.element = {
-        config: {
-            uiStyles: {
-                attributes: {
-                    onLoad: true
-                }
-            }
-        }
-    };
-    spyOn(app.pageSvc, 'processEvent').and.callThrough();
-    app.ngOnInit();
-    expect(app.pageSvc.processEvent).toHaveBeenCalled();
-  }));
+  beforeEach(async function(this: TestContext<CardDetailsGrid>){
+    this.hostComponent.element = param;
+    pageService = TestBed.get(PageService);
+  });
 
-  it('ngonint() should not call pageSvc.processEvent', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsGrid);
-    const app = fixture.debugElement.componentInstance;
-    app.element = {
-        config: {
-            uiStyles: {
-                attributes: {
-                    onLoad: false
-                }
-            }
-        }
-    };
-    spyOn(app.pageSvc, 'processEvent').and.callThrough();
-    app.ngOnInit();
-    expect(app.pageSvc.processEvent).not.toHaveBeenCalled();
-  }));
+  it('should create the CardDetailsGrid', async function(this: TestContext<CardDetailsGrid>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
+
+  it('ngonint() should call pageService.processEvent', async function(this: TestContext<CardDetailsGrid>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.onLoad = true;
+      spyOn(pageService, 'processEvent').and.callThrough();
+      this.hostComponent.ngOnInit();
+      expect(pageService.processEvent).toHaveBeenCalled();
+    });
+  });
+
+  it('ngonint() should not call pageSvc.processEvent', async function(this: TestContext<CardDetailsFieldComponent>) {
+    this.fixture.whenStable().then(() => {
+      this.hostComponent.element.config.uiStyles.attributes.onLoad = false;
+      spyOn(pageService, 'processEvent').and.callThrough();
+      this.hostComponent.ngOnInit();
+      expect(pageService.processEvent).not.toHaveBeenCalled();
+    });
+  });
 
 });
