@@ -47,18 +47,18 @@ public class S7V_ViewMain {
 	
 	@Path
 	@ValuesConditionals({ @ValuesConditional(targetPath = "../v_attr_values_2", condition = {
-			@Condition(when = "state == 'test_0'", then = @Values(url = "/hooli/box/p/s7c_main/_search?fn=lookup&where=s7c_main.attr1_clone.eq('test_0')&projection.mapsTo=code:attr1,label:attr1")),
-			@Condition(when = "state != null && state != 'test_0'", then = @Values(url = "/hooli/box/p/s7c_main/_search?fn=lookup&where=s7c_main.attr1_clone.eq('<!/.d/attr1!>')&projection.mapsTo=code:attr1,label:attr1")) }) })
+			@Condition(when = "state == 'test_0'", then = @Values(url = "/p/s7c_main/_search?fn=lookup&where=s7c_main.attr1_clone.eq('test_0')&projection.mapsTo=code:attr1,label:attr1")),
+			@Condition(when = "state != null && state != 'test_0'", then = @Values(url = "/p/s7c_main/_search?fn=lookup&where=s7c_main.attr1_clone.eq('<!/.d/attr1!>')&projection.mapsTo=code:attr1,label:attr1")) }) })
 	private String attr1;
 	
 	private String v_attr_values_2;
 	
 	@Radio
-	@Values(url="/hooli/box/p/s7c_main/_search?fn=lookup&where=s7c_main.attr1_clone.eq('<!/.d/.m/attr1_clone!>')&projection.mapsTo=code:attr1_clone,label:attr1_clone")
+	@Values(url="/p/s7c_main/_search?fn=lookup&where=s7c_main.attr1_clone.eq('<!/.d/.m/attr1_clone!>')&projection.mapsTo=code:attr1_clone,label:attr1_clone")
 	private String attr3;
 	
 	@Radio
-	@Values(url="/hooli/box/p/s7c_corestatic/_search?fn=lookup&where=s7c_corestatic.staticAttr.eq('test_01')&projection.mapsTo=code:staticAttr,label:staticAttr")
+	@Values(url="/p/s7c_corestatic/_search?fn=lookup&where=s7c_corestatic.staticAttr.eq('test_01')&projection.mapsTo=code:staticAttr,label:staticAttr")
 	private String attr4;
 	
 }
