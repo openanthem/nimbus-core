@@ -73,7 +73,9 @@ export class PrintDirective {
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 
     execute(event: PrintEvent): void {
