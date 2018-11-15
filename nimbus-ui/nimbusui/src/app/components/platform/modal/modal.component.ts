@@ -21,7 +21,7 @@ import { Param, Model } from '../../../shared/param-state';
 import { DialogModule } from 'primeng/primeng';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
-import { Action, HttpMethod, Behavior} from './../../../shared/command.enum';
+import { HttpMethod, Behavior} from './../../../shared/command.enum';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { BaseElement } from '../base-element.component';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
@@ -49,6 +49,7 @@ import { DomHandler } from 'primeng/components/dom/domhandler';
     ]
 })
 export class Modal extends BaseElement implements OnInit, OnDestroy {
+    
     // width of modal window
     public _width: string;
     // closable to indicate whether modal window can be closed
@@ -60,6 +61,12 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     componentTypes = ComponentTypes;
     @ViewChild('modal') modal: Dialog;
 
+    readonly modalSize: { [id: string]: IModalSize } = {
+        SMALL: { width: '500' },
+        MEDIUM: { width: '700' },
+        LARGE: { width: '900' }
+    };
+    
     constructor(private wcsvc: WebContentSvc, public domHandler: DomHandler, private pageSvc: PageService) {
         super(wcsvc);
     }
@@ -113,17 +120,11 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
      */
     public get width(): string {
         let myWidth = this.element.config.uiStyles.attributes.width;
-
-        if(myWidth === 'small') {
-            return '500';
-        }else if(myWidth === 'medium') {
-            return '700';
-        }else if(myWidth === 'large') {
-            return '900';
-        }else {
-            return myWidth;
+        if (!myWidth) {
+            return undefined;
         }
-        
+        let modalSize = this.modalSize[myWidth.toUpperCase()];
+        return modalSize ? modalSize.width : myWidth;
     }
 
     /**
@@ -141,3 +142,7 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
         return this.element.config.uiStyles.attributes.resizable;
     }
 }
+
+export interface IModalSize {
+    width: string;
+};

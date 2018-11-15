@@ -27,6 +27,7 @@ import { ValidationUtils } from '../../validators/ValidationUtils';
 import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
 import { Subscription } from 'rxjs';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
+import { ParamUtils } from './../../../../shared/param-utils';
 
 /**
  * \@author Dinakar.Meda
@@ -144,20 +145,14 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
      * Get the tooltip help text for this element.
      */
     public get helpText(): string {
-        if (!this.labelConfig) {
-            return undefined;
-        }
-        return this.labelConfig.helpText;
+        return ParamUtils.getHelpText(this.labelConfig);
     }
 
     /**
      * Get the label text for this element.
      */
     public get label(): string {
-        if (!this.labelConfig) {
-            return undefined;
-        }
-        return this.labelConfig.text;
+        return ParamUtils.getLabelText(this.labelConfig);
     }
 
     /**

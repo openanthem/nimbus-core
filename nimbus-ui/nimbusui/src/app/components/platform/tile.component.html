@@ -20,13 +20,13 @@
 		<div class="viewport" >
 			<ng-template ngFor let-element [ngForOf]="nestedParams">
 				<ng-template [ngIf]="element.alias == viewComponent.tile.toString()">
-					<nm-tile [element]="element" tileType="subtile"></nm-tile>
+					<nm-tile [element]="element" tileType="subtile" [nmPrint]="element"></nm-tile>
 				</ng-template>
 				<ng-template [ngIf]="element.alias == viewComponent.section.toString()">
-					<nm-section [element]="element" [position]="position+1"></nm-section>	
+					<nm-section [element]="element" [position]="position+1" [nmPrint]="element"></nm-section>	
 				</ng-template>
 				<ng-template [ngIf]="element.alias == viewComponent.modal.toString()">
-					<nm-modal [element]="element"></nm-modal>	
+					<nm-modal [element]="element" [nmPrint]="element" [contentSelector]="'div.ui-dialog-content'"></nm-modal>
 				</ng-template>
 			</ng-template>	
 		</div>
