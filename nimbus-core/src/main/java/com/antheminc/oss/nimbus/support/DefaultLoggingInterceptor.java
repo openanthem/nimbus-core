@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -55,7 +56,11 @@ public class DefaultLoggingInterceptor {
 	public static final String K_METHOD_ARGS = "[Args] ";
 	public static final String K_METHOD_RESP = "[Resp] ";
 	
+	public static final String K_METHOD_EXEC_ID = "[ID] ";
+	
 	private Set<Class<?>> proxyProcessedBeans = new HashSet<>();
+	
+	private static final ThreadLocal<AtomicInteger> methodExecIdInThread = new InheritableThreadLocal<>();
 	
 	public static class SimpleStopWatch {
 		private long startTimeMillis;
@@ -74,17 +79,22 @@ public class DefaultLoggingInterceptor {
 		}
 	}
 	
-	public static String format(String key, String methodName) {
-		return new StringBuilder().append(key).append(methodName).toString();
+	public static String format(String key, int uniqueId, String methodContext) {
+		return new StringBuilder().append(key).append(K_METHOD_EXEC_ID).append(uniqueId).append(K_SPACE).append(methodContext).toString();
 	}
 	
-	public static String format(String key, String methodName, SimpleStopWatch sw) {
-		return new StringBuilder().append(key).append(methodName).append(K_SPACE).append(sw.toString()).append(K_MILLI_SECS).toString();
+	public static String format(String key, int uniqueId, String methodName, SimpleStopWatch sw) {
+		return new StringBuilder().append(key).append(K_METHOD_EXEC_ID).append(uniqueId).append(K_SPACE).append(methodName).append(K_SPACE).append(sw.toString()).append(K_MILLI_SECS).toString();
+	}
+	
+	public static String format(String key, int uniqueId, SimpleStopWatch sw) {
+		return new StringBuilder().append(key).append(K_METHOD_EXEC_ID).append(uniqueId).append(K_SPACE).append(sw.toString()).append(K_MILLI_SECS).toString();
 	}
 
-	public static String format(String key, String methodName, String args) {
-		return new StringBuilder().append(key).append(methodName).append(K_SPACE).append(args).toString();
+	public static String format(String key, int uniqueId, String methodName, String args) {
+		return new StringBuilder().append(key).append(K_METHOD_EXEC_ID).append(uniqueId).append(K_SPACE).append(methodName).append(K_SPACE).append(args).toString();
 	}
+	
 	
 	@Around("@within(com.antheminc.oss.nimbus.support.EnableAPIMetricCollection)")
 	public Object logMethods(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
@@ -93,13 +103,17 @@ public class DefaultLoggingInterceptor {
 		
 		checkAndInjectProxyReferenceToTarget(proceedingJoinPoint);
 		
+		if(methodExecIdInThread.get() == null) {
+			methodExecIdInThread.set(new AtomicInteger());
+		}
+		int execId = methodExecIdInThread.get().getAndIncrement();
 		try {
 			EnableAPIMetricCollection configuredAnnotation = nullSafeLoggingLevel(proceedingJoinPoint);
 			if(logArgs(configuredAnnotation, LogLevel.info)) {
-				logit.info(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
+				logit.info(()->format(K_METHOD_ARGS, execId, methodName, nullSafeArgs(proceedingJoinPoint)));
 			} else {
-				logit.info(()->format(K_METHOD_ENTRY, methodName));
-				logit.debug(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
+				logit.info(()->format(K_METHOD_ENTRY, execId, methodName));
+				logit.debug(()->format(K_METHOD_ARGS, execId, methodName, nullSafeArgs(proceedingJoinPoint)));
 			}
 			
 			sw.start();
@@ -107,10 +121,10 @@ public class DefaultLoggingInterceptor {
 			sw.stop();
 			
 			if(logResp(configuredAnnotation, LogLevel.info)) {
-				logit.info(()->format(K_METHOD_RESP, methodName, nullSafeResp(result)));
+				logit.info(()->format(K_METHOD_RESP, execId, nullSafeResp(result)));
 			} else {
-				logit.debug(()->format(K_METHOD_RESP, methodName, nullSafeResp(result)));
-				logit.info(()->format(K_METHOD_EXIT, methodName, sw));
+				logit.debug(()->format(K_METHOD_RESP, execId, nullSafeResp(result)));
+				logit.info(()->format(K_METHOD_EXIT, execId, sw));
 			}
 			
 			return result;
@@ -118,7 +132,7 @@ public class DefaultLoggingInterceptor {
 		} catch (Throwable t) {
 			sw.stop();
 			
-			nullSafeLogError(proceedingJoinPoint, methodName, t, sw);
+			nullSafeLogError(proceedingJoinPoint, execId, methodName, t, sw);
 			
 			throw t;
 		}
@@ -162,12 +176,12 @@ public class DefaultLoggingInterceptor {
 					.orElse("method-name-not-found");
 	}
 	
-	private static void nullSafeLogError(ProceedingJoinPoint proceedingJoinPoint, String methodName, Throwable t, SimpleStopWatch sw) {
-		logit.error(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
-		logit.error(()->format(K_METHOD_EXCEPTION, methodName, sw), t);
+	private static void nullSafeLogError(ProceedingJoinPoint proceedingJoinPoint, int uniqueId, String methodName, Throwable t, SimpleStopWatch sw) {
+		logit.error(()->format(K_METHOD_ARGS, uniqueId, methodName, nullSafeArgs(proceedingJoinPoint)));
+		logit.error(()->format(K_METHOD_EXCEPTION, uniqueId, methodName, sw), t);
 	}
 	
-	private static String nullSafeArgs(ProceedingJoinPoint proceedingJoinPoint, String methodName) {
+	private static String nullSafeArgs(ProceedingJoinPoint proceedingJoinPoint) {
 		try {
 			StringBuilder sb = new StringBuilder();
 			sb.append("");
