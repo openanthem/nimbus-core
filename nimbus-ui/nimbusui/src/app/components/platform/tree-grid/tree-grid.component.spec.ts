@@ -9,6 +9,10 @@ import { JL } from 'jsnlog';
 import { HttpModule } from '@angular/http';
 import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { Subject } from 'rxjs';
+import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, FormControl } from '@angular/forms';
+import {ToastModule} from 'primeng/toast';
+import { TableModule } from 'primeng/table';
+import { KeyFilterModule } from 'primeng/keyfilter';
 
 import { TreeGrid, RowNodeUtils } from './tree-grid.component';
 import { Button } from '../form/elements/button.component';
@@ -28,6 +32,48 @@ import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
 import * as data from '../../../payload.json';
+import { Section } from '../../platform/section.component';
+import { ActionDropdown } from '../form/elements/action-dropdown.component';
+import { Label } from '../content/label.component';
+import { MessageComponent } from '../message/message.component';
+import { CardDetailsGrid } from '../card/card-details-grid.component';
+import { CardDetailsComponent } from '../card/card-details.component';
+import { Paragraph } from '../content/paragraph.component';
+import { StaticText } from '../content/static-content.component';
+import { Form } from '../form.component';
+import { Link } from '../link.component';
+import { Menu } from '../menu.component';
+import { Accordion } from '../content/accordion.component';
+import { DataTable } from '../grid/table.component';
+import { ButtonGroup } from '../form/elements/button-group.component';
+import { InputText } from '../form/elements/textbox.component';
+import { ComboBox } from '../../platform/form/elements/combobox.component';
+import { InputSwitch } from '../../platform/form/elements/input-switch.component';
+import { PrintDirective } from '../../../directives/print.directive';
+import { ActionLink } from '../form/elements/action-dropdown.component';
+import { CardDetailsFieldComponent } from '../card/card-details-field.component';
+import { CardDetailsFieldGroupComponent } from '../../platform/card/card-details-field-group.component';
+import { FormErrorMessage } from '../form-error-message.component';
+import { FrmGroupCmp } from '../form-group.component';
+import { HeaderCheckBox } from '../form/elements/header-checkbox.component';
+import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { InputLabel } from '../../platform/form/elements/input-label.component';
+import { SelectItemPipe } from '../../../pipes/select-item.pipe';
+import { InPlaceEditorComponent } from '../form/elements/inplace-editor.component';
+import { TextArea } from '../form/elements/textarea.component';
+import { InputLegend } from '../../platform/form/elements/input-legend.component';
+import { FormElement } from '../form-element.component';
+import { FormGridFiller } from '../../platform/form/form-grid-filler.component';
+import { Header } from '../content/header.component';
+import { Signature } from '../form/elements/signature.component';
+import { Calendar } from '../form/elements/calendar.component';
+import { RadioButton } from '../form/elements/radio.component';
+import { CheckBox } from '../form/elements/checkbox.component';
+import { MultiSelectListBox } from '../form/elements/multi-select-listbox.component';
+import { MultiselectCard } from '../form/elements/multi-select-card.component';
+import { FileUploadComponent } from '../fileupload/file-upload.component';
+import { OrderablePickList } from '../form/elements/picklist.component';
+import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
 
 let pageService, param;
 
@@ -51,12 +97,55 @@ class MockPageService {
   
   }
 
-const declarations = [
+  const declarations = [
     TreeGrid,
     Button,
     TooltipComponent,
     Image,
-    SvgComponent
+    SvgComponent,
+    Section,
+    ActionDropdown,
+    Label,
+    MessageComponent,
+    CardDetailsGrid,
+    CardDetailsComponent,
+    Paragraph,
+    StaticText,
+    Form,
+    Link,
+    Menu,
+    Accordion,
+    DataTable,
+    ButtonGroup,
+    InputText,
+    ComboBox,
+    InputSwitch,
+    PrintDirective,
+    ActionLink,
+    CardDetailsFieldComponent,
+    CardDetailsFieldGroupComponent,
+    FormErrorMessage,
+    FrmGroupCmp,
+    HeaderCheckBox,
+    DisplayValueDirective,
+    InputLabel,
+    SelectItemPipe,
+    InPlaceEditorComponent,
+    TextArea,
+    InputLegend,
+    FormElement,
+    FormGridFiller,
+    Header,
+    Signature,
+    Calendar,
+    RadioButton,
+    CheckBox,
+    MultiSelectListBox,
+    MultiselectCard,
+    FileUploadComponent,
+    OrderablePickList,
+    CheckBoxGroup,
+    DateTimeFormatPipe
  ];
 const imports = [
      DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
@@ -65,7 +154,12 @@ const imports = [
      AngularSvgIconModule,
      HttpClientModule,
      StorageServiceModule,
-     HttpModule
+     HttpModule, 
+     FormsModule, 
+     ReactiveFormsModule, 
+     ToastModule,
+     TableModule,
+     KeyFilterModule
  ];
 const providers = [
      { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },

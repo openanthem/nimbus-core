@@ -84,6 +84,7 @@
 							"name": "ViewConfig.TextBox",
 							"value": null,
 							"attributes": {
+								"cssClass": "",
 								"hidden": false,
 								"readOnly": false,
 								"alias": "TextBox",

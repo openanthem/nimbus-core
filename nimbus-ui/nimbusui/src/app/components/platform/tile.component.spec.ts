@@ -25,7 +25,7 @@ import { StaticText } from '../platform/content/static-content.component';
 import { Form } from '../platform/form.component';
 import { Link } from '../platform/link.component';
 import { Menu } from '../platform/menu.component';
-import { InfiniteScrollGrid } from '../platform/grid/grid.component';
+// import { InfiniteScrollGrid } from '../platform/grid/grid.component';
 import { Button } from '../platform/form/elements/button.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
 import { InputText } from '../platform/form/elements/textbox.component';
@@ -49,7 +49,7 @@ import { CheckBox } from '../platform/form/elements/checkbox.component';
 import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.component';
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
-import { DateControl } from '../platform/form/elements/date.component';
+// import { DateControl } from '../platform/form/elements/date.component';
 import { Signature } from '../platform/form/elements/signature.component'
 import { PageService } from '../../services/page.service';
 import { CustomHttpClient } from '../../services/httpclient.service';
@@ -75,6 +75,7 @@ import { configureTestSuite } from 'ng-bullet';
 import * as data from '../../payload.json';
 import { Param } from '../../shared/param-state';
 import { FormErrorMessage } from './form-error-message.component';
+import { PrintDirective } from '../../directives/print.directive';
 
 let pageService, param: Param;;
 
@@ -103,7 +104,7 @@ const declarations = [
     Form,
     Link,
     Menu,
-    InfiniteScrollGrid,
+    // InfiniteScrollGrid,
     Button,
     ButtonGroup,
     InputText,
@@ -127,7 +128,7 @@ const declarations = [
     CheckBoxGroup,
     RadioButton,
     Calendar,
-    DateControl,
+    // DateControl,
     Signature,
     DataTable,
     HeaderCheckBox,
@@ -141,7 +142,8 @@ const declarations = [
     DisplayValueDirective,
     FormGridFiller,
     InputLegend,
-    FormErrorMessage
+    FormErrorMessage,
+    PrintDirective
    ];
 const imports = [
     FormsModule,

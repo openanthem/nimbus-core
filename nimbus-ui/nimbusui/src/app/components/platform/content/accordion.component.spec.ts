@@ -41,7 +41,7 @@ import { FormElement } from '../form-element.component';
 import { Button } from '../form/elements/button.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
 import { Signature } from '../form/elements/signature.component';
-import { DateControl } from '../form/elements/date.component';
+// import { DateControl } from '../form/elements/date.component';
 import { Calendar } from '../form/elements/calendar.component';
 import { RadioButton } from '../form/elements/radio.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
@@ -74,6 +74,7 @@ import { setup, TestContext } from '../../../setup.spec';
 import * as data from '../../../payload.json';
 import { FormErrorMessage } from '../form-error-message.component';
 import { Param } from '../../../shared/param-state';
+import { PrintDirective } from '../../../directives/print.directive';
 
 let pageService, param, webContentSvc, configService;
 
@@ -110,7 +111,7 @@ const declarations = [
   Button,
   ButtonGroup,
   Signature,
-  DateControl,
+  // DateControl,
   Calendar,
   RadioButton,
   CheckBoxGroup,
@@ -138,7 +139,8 @@ const declarations = [
   FormGridFiller,
   InputSwitch,
   InputLegend,
-  FormErrorMessage
+  FormErrorMessage,
+  PrintDirective
 ];
 const imports = [
   FormsModule,

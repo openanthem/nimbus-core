@@ -53,7 +53,7 @@ import { CheckBox } from '../form/elements/checkbox.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
 import { RadioButton } from '../form/elements/radio.component';
 import { Calendar } from '../form/elements/calendar.component';
-import { DateControl } from '../form/elements/date.component';
+// import { DateControl } from '../form/elements/date.component';
 import { Signature } from '../form/elements/signature.component';
 import { Header } from '../content/header.component';
 import { PageService } from '../../../services/page.service';
@@ -84,6 +84,7 @@ import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
 import * as data from '../../../payload.json';
 import { WebContentSvc } from '../../../services/content-management.service';
+import { PrintDirective } from '../../../directives/print.directive';
 
 let configService, pageService, elementRef, ngZone, objectUtils, domHandler, tableService, cd, param, webContentSvc;
 
@@ -155,7 +156,7 @@ const declarations = [
   CheckBoxGroup,
   RadioButton,
   Calendar,
-  DateControl,
+  // DateControl,
   Signature,
   Header,
   HeaderCheckBox,
@@ -169,7 +170,8 @@ const declarations = [
   CardDetailsFieldGroupComponent,
   FormGridFiller,
   InputLegend,
-  FormErrorMessage
+  FormErrorMessage,
+  PrintDirective
 ];
 const imports = [
    DialogModule,

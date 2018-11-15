@@ -31,7 +31,7 @@ import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.componen
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
-import { DateControl } from '../platform/form/elements/date.component';
+// import { DateControl } from '../platform/form/elements/date.component';
 import { TextArea } from '../platform/form/elements/textarea.component';
 import { Signature } from '../platform/form/elements/signature.component'
 import { InputText } from '../platform/form/elements/textbox.component';
@@ -76,6 +76,7 @@ import { setup, TestContext } from './../../setup.spec';
 import { configureTestSuite } from 'ng-bullet';
 import * as data from '../../payload.json';
 import { Param } from '../../shared/param-state';
+import { PrintDirective } from '../../directives/print.directive';
 
 let formElementsService, pageService, configService, param: Param;;
 
@@ -121,7 +122,7 @@ const declarations = [
   RadioButton,
   ComboBox,
   Calendar,
-  DateControl,
+  // DateControl,
   TextArea,
   Signature,
   InputText,
@@ -151,7 +152,8 @@ const declarations = [
   Label,
   CardDetailsFieldGroupComponent,
   InputLegend,
-  FormErrorMessage
+  FormErrorMessage,
+  PrintDirective
 ];
 const imports = [
    FormsModule, 

@@ -263,9 +263,9 @@ describe('PageService', () => {
       const evemodel = { value: { path: '' } };
       spyOn(service, 'traverseConfig').and.returnValue('');
       spyOn(configService, 'getFlowConfig').and.returnValue(undefined);
-      expect(() => {
-        service.traverseFlowConfig(evemodel, '');
-      }).toThrow();
+      spyOn(loggerService, 'warn').and.callThrough();
+      service.traverseFlowConfig(evemodel, '');
+      expect(loggerService.warn).toHaveBeenCalled();
     }));
 
     it('getFlowNameFromPath() should updated flow name', async(() => {

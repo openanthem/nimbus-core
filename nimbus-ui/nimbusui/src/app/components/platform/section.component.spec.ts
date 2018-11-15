@@ -18,7 +18,7 @@ import { ComboBox } from '../platform/form/elements/combobox.component';
 import { InputText } from '../platform/form/elements/textbox.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
 import { Button } from '../platform/form/elements/button.component';
-import { InfiniteScrollGrid } from '../platform/grid/grid.component';
+// import { InfiniteScrollGrid } from '../platform/grid/grid.component';
 import { Menu } from '../platform/menu.component';
 import { Link } from '../platform/link.component';
 import { Form } from '../platform/form.component';
@@ -46,7 +46,7 @@ import { CheckBox } from '../platform/form/elements/checkbox.component';
 import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.component';
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
-import { DateControl } from '../platform/form/elements/date.component';
+// import { DateControl } from '../platform/form/elements/date.component';
 import { Signature } from '../platform/form/elements/signature.component'
 import { Header } from '../platform/content/header.component';
 import { WebContentSvc } from '../../services/content-management.service';
@@ -74,6 +74,7 @@ import { setup, TestContext } from './../../setup.spec';
 import { configureTestSuite } from 'ng-bullet';
 import * as data from '../../payload.json';
 import { Param } from '../../shared/param-state';
+import { PrintDirective } from '../../directives/print.directive';
 
 let param: Param;
 
@@ -95,7 +96,7 @@ const declarations = [
   InputText,
   ButtonGroup,
   Button,
-  InfiniteScrollGrid,
+  // InfiniteScrollGrid,
   Menu,
   Link,
   Form,
@@ -123,7 +124,7 @@ const declarations = [
   CheckBoxGroup,
   RadioButton,
   Calendar,
-  DateControl,
+  // DateControl,
   Signature,
   Header,
   DataTable,
@@ -138,7 +139,8 @@ const declarations = [
   DisplayValueDirective,
   FormGridFiller,
   InputLegend,
-  FormErrorMessage
+  FormErrorMessage,
+  PrintDirective
  ];
 const imports = [
   FormsModule,

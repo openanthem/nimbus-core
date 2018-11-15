@@ -26,6 +26,8 @@ import { setup, TestContext } from '../../../../setup.spec';
 import * as data from '../../../../payload.json';
 import { UiAttribute } from '../../../../shared/param-config';
 import { FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms';
+import { PrintDirective } from '../../../../directives/print.directive';
+import { PrintService } from '../../../../services/print.service';
 
 let location, pageService, param, fileService;
 
@@ -59,7 +61,8 @@ class MockFileService {
 const declarations = [
   Button,
   SvgComponent,
-  Image
+  Image,
+  PrintDirective
 ];
 const imports = [
    HttpModule,
@@ -79,7 +82,8 @@ const providers = [
    ConfigService,
    LoggerService,
    AppInitService,
-   SessionStoreService
+   SessionStoreService,
+   PrintService
 ];
 
 describe('Button', () => {

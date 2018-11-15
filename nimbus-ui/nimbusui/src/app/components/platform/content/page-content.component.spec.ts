@@ -16,6 +16,7 @@ import { JL } from 'jsnlog';
 import { Subject } from 'rxjs';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ToastModule } from 'primeng/toast';
+import { Subscription } from 'rxjs';
 
 import { PageContent } from './page-content.component';
 import { Tile } from '../tile.component';
@@ -27,7 +28,7 @@ import { TooltipComponent } from '../tooltip/tooltip.component';
 import { ComboBox } from '../form/elements/combobox.component';
 import { InputText } from '../form/elements/textbox.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
-import { InfiniteScrollGrid } from '../grid/grid.component';
+// import { InfiniteScrollGrid } from '../grid/grid.component';
 import { Accordion } from './accordion.component';
 import { Menu } from '../menu.component';
 import { Link } from '../link.component';
@@ -54,7 +55,7 @@ import { CheckBox } from '../form/elements/checkbox.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
 import { RadioButton } from '../form/elements/radio.component';
 import { Calendar } from '../form/elements/calendar.component';
-import { DateControl } from '../form/elements/date.component';
+// import { DateControl } from '../form/elements/date.component';
 import { Signature } from '../form/elements/signature.component';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
@@ -80,8 +81,10 @@ import { FormErrorMessage } from '../form-error-message.component';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
 import * as data from '../../../payload.json';
+import { PrintDirective } from '../../../directives/print.directive';
+import { PrintService } from '../../../services/print.service';
 
-let logger, pageService, param;
+let logger, pageService, param, printService;
 
 export class MockActivatedRoute implements ActivatedRoute {
   snapshot: ActivatedRouteSnapshot;
@@ -145,6 +148,14 @@ class MockPageService {
   }
 }
 
+class MockPrintService {
+  printClickUpdate$: Subject<any>;
+
+  constructor() {
+    this.printClickUpdate$ = new Subject();
+  }
+}
+
 const declarations = [
   PageContent,
   Tile,
@@ -156,7 +167,7 @@ const declarations = [
   ComboBox,
   InputText,
   ButtonGroup,
-  InfiniteScrollGrid,
+  // InfiniteScrollGrid,
   Accordion,
   Menu,
   Link,
@@ -184,7 +195,7 @@ const declarations = [
   CheckBoxGroup,
   RadioButton,
   Calendar,
-  DateControl,
+  // DateControl,
   Signature,
   DataTable,
   HeaderCheckBox,
@@ -198,7 +209,8 @@ const declarations = [
   DisplayValueDirective,
   FormGridFiller,
   InputLegend,
-  FormErrorMessage
+  FormErrorMessage,
+  PrintDirective
  ];
  const imports = [
   GrowlModule,
@@ -232,6 +244,7 @@ const declarations = [
   { provide: 'JSNLOG', useValue: JL },
   {provide: LoggerService, useClass: MockLoggerService},
   {provide: PageService, useClass: MockPageService},
+  {provide: PrintService, useClass: MockPrintService},
   AppInitService,
   SessionStoreService,
   CustomHttpClient,
@@ -249,9 +262,11 @@ describe('PageContent', () => {
     this.hostComponent.element = param;
     logger = TestBed.get(LoggerService);
     pageService = TestBed.get(PageService)
+    printService = TestBed.get(PrintService);
   });
 
   it('should create the Header', async function (this: TestContext<PageContent>) {
+    console.log('this.printService..spec',printService);
     expect(this.hostComponent).toBeTruthy();
   });
 

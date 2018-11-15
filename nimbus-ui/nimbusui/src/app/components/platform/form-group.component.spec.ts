@@ -19,7 +19,7 @@ import { Header } from '../platform/content/header.component';
 import { Paragraph } from '../platform/content/paragraph.component';
 import { InputText } from '../platform/form/elements/textbox.component';
 import { TextArea } from '../platform/form/elements/textarea.component';
-import { DateControl } from '../platform/form/elements/date.component';
+// import { DateControl } from '../platform/form/elements/date.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
 import { RadioButton } from '../platform/form/elements/radio.component';
@@ -29,7 +29,7 @@ import { MultiSelectListBox } from '../platform/form/elements/multi-select-listb
 import { MultiselectCard } from '../platform/form/elements/multi-select-card.component';
 import { OrderablePickList } from '../platform/form/elements/picklist.component';
 import { FileUploadComponent } from '../platform/fileupload/file-upload.component';
-import { InfiniteScrollGrid } from '../platform/grid/grid.component';
+// import { InfiniteScrollGrid } from '../platform/grid/grid.component';
 import { TooltipComponent } from '../platform/tooltip/tooltip.component';
 import { SelectItemPipe } from '../../pipes/select-item.pipe';
 import { ActionDropdown } from '../platform/form/elements/action-dropdown.component';
@@ -65,6 +65,7 @@ import { setup, TestContext } from './../../setup.spec';
 import { configureTestSuite } from 'ng-bullet';
 import * as data from '../../payload.json';
 import { Param } from '../../shared/param-state';
+import { PrintDirective } from '../../directives/print.directive';
 
 let param: Param;
 
@@ -87,7 +88,7 @@ const declarations = [
   Paragraph,
   InputText,
   TextArea,
-  DateControl,
+  // DateControl,
   Calendar,
   ComboBox,
   RadioButton,
@@ -97,7 +98,7 @@ const declarations = [
   MultiselectCard,
   OrderablePickList,
   FileUploadComponent,
-  InfiniteScrollGrid,
+  // InfiniteScrollGrid,
   TooltipComponent,
   SelectItemPipe,
   ActionDropdown,
@@ -127,7 +128,8 @@ const declarations = [
   Label,
   CardDetailsFieldGroupComponent,
   InputLegend,
-  FormErrorMessage
+  FormErrorMessage,
+  PrintDirective
  ];
  const imports = [
      FormsModule,

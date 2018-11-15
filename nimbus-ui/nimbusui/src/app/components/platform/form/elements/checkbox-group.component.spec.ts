@@ -197,7 +197,7 @@ describe('CheckBoxGroup', () => {
     this.hostComponent.element.path = 'test';
     const eve = { activeValidationGroups: [1], leafState: 'tLeaf', path: 'test', config: { code: 'firstName' } };
     const frmCtrl = this.hostComponent.form.controls[eve.config.code];
-    spyOn(ValidationUtils, 'rebindValidations').and.callThrough();
+    spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
     this.hostComponent.ngOnInit();
     pageService.notifyErrorEvent(eve);
     expect(this.hostComponent.requiredCss).toBeFalsy();
@@ -220,6 +220,7 @@ describe('CheckBoxGroup', () => {
   it('ngOnInit() should call pageService.postOnChange', async function (this: TestContext<CheckBoxGroup>) {
     const eve = { config: { uiStyles: { attributes: { postEventOnChange: true } } } };
     spyOn(pageService, 'postOnChange').and.callThrough();
+    spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
     this.hostComponent.ngOnInit();
     this.hostComponent.controlValueChanged.next(eve);
     expect(pageService.postOnChange).toHaveBeenCalled();
@@ -228,6 +229,7 @@ describe('CheckBoxGroup', () => {
   it('ngOnInit() should not call pageService.postOnChange', async function (this: TestContext<CheckBoxGroup>) {
     const eve = { config: { uiStyles: { attributes: { postEventOnChange: false } } } };
     spyOn(pageService, 'postOnChange').and.callThrough();
+    spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
     this.hostComponent.ngOnInit();
     this.hostComponent.controlValueChanged.next(eve);
     expect(pageService.postOnChange).not.toHaveBeenCalled();

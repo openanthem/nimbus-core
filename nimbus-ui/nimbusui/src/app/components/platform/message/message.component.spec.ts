@@ -40,7 +40,9 @@ describe('MessageComponent', () => {
   });
 
   it('should create the MessageComponent', async function (this: TestContext<MessageComponent>) {
-    expect(this.hostComponent).toBeTruthy();
+    this.fixture.whenStable().then(() => {
+      expect(this.hostComponent).toBeTruthy();
+    });
   });
 
   it('ngOnInit() should call updateMessageObject()', async function (this: TestContext<MessageComponent>) {

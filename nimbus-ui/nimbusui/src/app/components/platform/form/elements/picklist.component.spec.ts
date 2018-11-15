@@ -91,6 +91,51 @@ describe('OrderablePickList', () => {
     pageService = TestBed.get(PageService);
   });
 
+  it('ngOnInit() should call refreshSourceList(), form.controls.b.reset and update targetList', async function (this: TestContext<OrderablePickList>) {
+    this.fixture.whenStable().then(() => {
+      (this.hostComponent as any).loadLabelConfigFromConfigs = () => {};
+      spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
+      (this.hostComponent as any).refreshSourceList = () => {};
+      this.hostComponent.element.leafState = null;
+      this.hostComponent.element.activeValidationGroups = [];
+      this.hostComponent.element.path = 't';
+      const parent: any = { values:[], path: 'test', labels: '', config: { code: 'a' } };
+      this.hostComponent.parent = parent;
+      const spy = spyOn((this.hostComponent as any), 'refreshSourceList').and.callThrough();
+      spyOn(ValidationUtils, 'rebindValidations').and.returnValue('true');
+      spyOn(this.hostComponent.form.controls.firstName, 'reset').and.callThrough();
+      this.hostComponent.ngOnInit();
+      pageService.logError({ path: 'test', leafState: null });
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(this.hostComponent.targetList).toEqual([]);
+      expect(this.hostComponent.form.controls.firstName.reset).toHaveBeenCalled();
+    });
+  });
+
+  it('ngOnInit() should call refreshSourceList, ValidationUtils.rebindValidations, ValidationUtils.assessControlValidation and update targetList', async function (this: TestContext<OrderablePickList>) {
+    (this.hostComponent as any).loadLabelConfigFromConfigs = () => {};
+    spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
+    (this.hostComponent as any).refreshSourceList = () => {};
+    this.hostComponent.element.leafState = null;
+    this.hostComponent.element.activeValidationGroups = [];
+    this.hostComponent.element.path = 'test'
+    const parent: any = { values:[], path: 'test', labels: '', config: { code: 'a' } };
+    this.hostComponent.parent = parent;
+    const spy = spyOn((this.hostComponent as any), 'refreshSourceList').and.callThrough();
+    spyOn(ValidationUtils, 'rebindValidations').and.returnValue('true');
+    spyOn(ValidationUtils, 'assessControlValidation').and.returnValue('true');
+    this.hostComponent.ngOnInit();
+    pageService.buildBaseURL({
+      path: 'test',
+      leafState: null,
+      activeValidationGroups: ['a']
+    });
+    expect(spy).toHaveBeenCalled();
+    expect(this.hostComponent.targetList).toEqual([]);
+    expect(ValidationUtils.rebindValidations).toHaveBeenCalled();
+    expect(ValidationUtils.assessControlValidation).toHaveBeenCalled();
+  });
+
   it('should create the OrderablePickList', async function (this: TestContext<OrderablePickList>) {
     expect(this.hostComponent).toBeTruthy();
   });
@@ -166,6 +211,7 @@ describe('OrderablePickList', () => {
       const controlValueChanged: any = { emit: () => {} };
       this.hostComponent.controlValueChanged = controlValueChanged;
       spyOn(this.hostComponent.controlValueChanged, 'emit').and.callThrough();
+      this.hostComponent.form.controls[this.hostElement.element.config.code].setValue('s');
       this.hostComponent.emitValueChangedEvent();
       expect(this.hostComponent.controlValueChanged.emit).toHaveBeenCalled();
     });
@@ -339,53 +385,6 @@ describe('OrderablePickList', () => {
       expect(this.hostComponent.form.controls.firstName.setValue).toHaveBeenCalled();
       expect(this.hostComponent.form.controls.firstName.setValue).toHaveBeenCalledWith('t');
     });
-  });
-
-  it('ngOnInit() should call refreshSourceList(), form.controls.b.reset and update targetList', async function (this: TestContext<OrderablePickList>) {
-    this.fixture.whenStable().then(() => {
-      (this.hostComponent as any).loadLabelConfigFromConfigs = () => {};
-      spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
-      const testSubject = new Subject();
-      (this.hostComponent as any).refreshSourceList = () => {};
-      this.hostComponent.element.leafState = null;
-      this.hostComponent.element.activeValidationGroups = [];
-      this.hostComponent.element.path = 't';
-      const parent: any = { path: 'test', labels: '', config: { code: 'a' } };
-      this.hostComponent.parent = parent;
-      const spy = spyOn((this.hostComponent as any), 'refreshSourceList').and.callThrough();
-      spyOn(ValidationUtils, 'rebindValidations').and.returnValue('true');
-      spyOn(this.hostComponent.form.controls.firstName, 'reset').and.callThrough();
-      this.hostComponent.ngOnInit();
-      pageService.logError({ path: 'test', leafState: null });
-      expect(spy).toHaveBeenCalledTimes(2);
-      expect(this.hostComponent.targetList).toEqual([]);
-      expect(this.hostComponent.form.controls.firstName.reset).toHaveBeenCalled();
-    });
-  });
-
-  it('ngOnInit() should call refreshSourceList, ValidationUtils.rebindValidations, ValidationUtils.assessControlValidation and update targetList', async function (this: TestContext<OrderablePickList>) {
-    (this.hostComponent as any).loadLabelConfigFromConfigs = () => {};
-    spyOn(ValidationUtils, 'applyelementStyle').and.returnValue(true);
-    const testSubject = new Subject();
-    (this.hostComponent as any).refreshSourceList = () => {};
-    this.hostComponent.element.leafState = null;
-    this.hostComponent.element.activeValidationGroups = [];
-    this.hostComponent.element.path = 'test'
-    const parent: any = { path: 'test', labels: '', config: { code: 'a' } };
-    this.hostComponent.parent = parent;
-    const spy = spyOn((this.hostComponent as any), 'refreshSourceList').and.callThrough();
-    spyOn(ValidationUtils, 'rebindValidations').and.returnValue('true');
-    spyOn(ValidationUtils, 'assessControlValidation').and.returnValue('true');
-    this.hostComponent.ngOnInit();
-    pageService.buildBaseURL({
-      path: 'test',
-      leafState: null,
-      activeValidationGroups: ['a']
-    });
-    expect(spy).toHaveBeenCalled();
-    expect(this.hostComponent.targetList).toEqual([]);
-    expect(ValidationUtils.rebindValidations).toHaveBeenCalled();
-    expect(ValidationUtils.assessControlValidation).toHaveBeenCalled();
   });
 
 });

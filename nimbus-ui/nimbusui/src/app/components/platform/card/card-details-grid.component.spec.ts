@@ -35,6 +35,7 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
 import * as data from '../../../payload.json';
+import { PrintDirective } from '../../../directives/print.directive';
 
 let param, pageService;
 
@@ -65,7 +66,8 @@ const declarations = [
     InputLabel,
     Button,
     Image,
-    SvgComponent
+    SvgComponent,
+    PrintDirective
     ];
 const imports = [ 
     FormsModule,

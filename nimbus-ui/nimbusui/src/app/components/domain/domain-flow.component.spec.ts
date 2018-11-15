@@ -66,7 +66,7 @@ import { DisplayValueDirective } from '../../directives/display-value.directive'
 import { FormGridFiller } from '../platform/form/form-grid-filler.component';
 import { Header } from '../platform/content/header.component';
 import { Signature } from '../platform/form/elements/signature.component';
-import { DateControl } from '../platform/form/elements/date.component';
+// import { DateControl } from '../platform/form/elements/date.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.component';
@@ -81,6 +81,7 @@ import { InputLegend } from '../platform/form/elements/input-legend.component';
 import { FormErrorMessage } from '../platform/form-error-message.component';
 import { setup, TestContext } from '../../setup.spec';
 import { configureTestSuite } from 'ng-bullet';
+import { PrintDirective } from '../../directives/print.directive';
 
 let layoutservice, pageservice, router, route;
 
@@ -278,7 +279,7 @@ export class MockActivatedRoute implements ActivatedRoute {
     FormGridFiller,
     Header,
     Signature,
-    DateControl,
+    // DateControl,
     Calendar,
     RadioButton,
     CheckBoxGroup,
@@ -290,7 +291,8 @@ export class MockActivatedRoute implements ActivatedRoute {
     InputLabel,
     SelectItemPipe,
     InputLegend,
-    FormErrorMessage
+    FormErrorMessage,
+    PrintDirective
  ];
  const imports =  [
      RouterTestingModule,
