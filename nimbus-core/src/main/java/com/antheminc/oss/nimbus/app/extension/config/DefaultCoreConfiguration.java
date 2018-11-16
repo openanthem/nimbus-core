@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.app.extension.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -49,6 +50,7 @@ import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerReflection;
  */
 @Configuration
 @ComponentScan(basePackageClasses = WebActionController.class)
+@EnableCaching
 public class DefaultCoreConfiguration {
 	
 	@Bean
