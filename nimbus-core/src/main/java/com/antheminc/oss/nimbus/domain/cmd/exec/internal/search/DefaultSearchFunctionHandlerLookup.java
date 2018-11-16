@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
@@ -45,6 +46,9 @@ import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunctionHandler<T, R> {
 
 	@Override
+	@Cacheable(value="staticcodevalues", 
+		key = "#executionContext.getCommandMessage().getCommand().getFirstParameterValue(\"where\")", 
+		condition= "T(org.apache.commons.lang3.StringUtils).equalsIgnoreCase(#executionContext.getCommandMessage().getCommand().getElementSafely(T(com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type).DomainAlias).getAlias(), \"staticCodeValue\")")
 	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
 		
 		ModelConfig<?> mConfig = getRootDomainConfig(executionContext);
