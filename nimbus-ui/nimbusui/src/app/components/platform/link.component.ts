@@ -116,7 +116,8 @@ export class Link extends BaseElement {
             this.linkClass = this.inClass;
         }
 
-        if (this.element.config && this.element.config.uiStyles.attributes && this.element.config.uiStyles.attributes.url) {
+        if (this.rowData && this.element.config && 
+            this.element.config.uiStyles.attributes && this.element.config.uiStyles.attributes.url) {
             let urlParams: string[] = this.getAllURLParams(this.element.config.uiStyles.attributes.url);
             if (urlParams && urlParams.length > 0) {
                 if(urlParams!=null) {

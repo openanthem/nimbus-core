@@ -19,7 +19,6 @@
 import { ServiceConstants } from '../services/service.constants';
 import { Param } from './param-state';
 import { LabelConfig } from './param-config';
-import { ViewConfig } from './param-annotations.enum';
 import { UiNature } from './param-config';
 
 /**
@@ -286,15 +285,6 @@ export class ParamUtils {
     }
 
     /**
-     * Get the @Printable UiNature if it exists on the param instance
-     * @param param The param to inspect
-     * @param name The name of the uiNature on this param to find
-     */
-    static getPrintable(param: Param): UiNature {
-        return ParamUtils.getUiNature(param, ViewConfig.printable.toString());
-    }
-
-    /**
      * Retrieve a UiNature by name from uiNatures. If not uiNatures is undefined or the uiNature 
      * by name is not found, undefined is returned.
      * @param param The param to inspect
@@ -315,5 +305,31 @@ export class ParamUtils {
         } else {
             return undefined;
         }
+    }
+
+    static getDomainIdFromPath(path: string): string {
+        if (!path) {
+            return undefined;
+        }
+        return path.split('/')[1];
+    }
+
+    static getPageIdFromPath(path: string): string {
+        if (!path) {
+            return undefined;
+        }
+        return path.split('/')[2];
+    }
+
+    static getDomainPageFromPath(path: string): string {
+        let domain = ParamUtils.getDomainIdFromPath(path);
+        if (!domain) {
+            return undefined;
+        }
+        let page = ParamUtils.getPageIdFromPath(path);
+        if (!page) {
+            return undefined;
+        }
+        return `/${domain}/${page}`;
     }
 }

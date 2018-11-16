@@ -600,11 +600,12 @@ export class PageService {
         traverseFlowConfig(eventModel: ModelEvent, flowName: string) {
                 let viewRoot: ViewRoot = this.configService.getFlowConfig(flowName);
                 if(viewRoot == undefined) {
-                        throw "Response cannot be processed for the path " + eventModel.value.path + " as there is no get/new done on the viewroot "+flowName;
-                }
-                let flowConfig: Model = viewRoot.model;
-                if (flowConfig) {
-                        this.traverseConfig(flowConfig.params, eventModel);
+                        this.logger.warn("Response cannot be processed for the path " + eventModel.value.path + " as there is no get/new done on the viewroot "+flowName);
+                } else {
+                        let flowConfig: Model = viewRoot.model;
+                        if (flowConfig) {
+                                this.traverseConfig(flowConfig.params, eventModel);
+                        }
                 }
         }
 
@@ -789,7 +790,7 @@ export class PageService {
                 } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === ViewComponent.cardDetailsGrid.toString()) {
                         if (param.config.type.collection === true) {
                                 let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
-                                if(payload.type.model) // TODO - need to handle updates for each collection item in a card detail grid
+                                if(payload.type.model && payload.path == param.path) // TODO - need to handle updates for each collection item in a card detail grid
                                         param.type.model['params'] = payload.type.model.params;
                         } else {
                                 this.traverseParam(param, eventModel);

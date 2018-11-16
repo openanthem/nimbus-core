@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 'use strict';
-import { Component, Input, Output, EventEmitter, KeyValueDiffer, KeyValueDiffers} from '@angular/core';
+import { Component, Input, Output, EventEmitter, KeyValueDiffer, KeyValueDiffers } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
 import { GenericDomain } from './../../../../model/generic-domain.model';
@@ -29,6 +29,9 @@ import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { ComponentTypes } from '../../../../shared/param-annotations.enum';
 import { PrintService } from './../../../../services/print.service';
+import { ViewConfig } from './../../../../shared/param-annotations.enum';
+import { ParamUtils } from './../../../../shared/param-utils';
+import { PrintConfig } from './../../../../shared/print-event';
 
 /**
  * \@author Dinakar.Meda
@@ -102,7 +105,7 @@ export class Button extends BaseElement {
         } else if(this.element.config.uiStyles != null && this.element.config.uiStyles.attributes.style === this.componentTypes.validation.toString()){
             this.validate(this.form);
         } else if(this.element.config.uiStyles != null && this.element.config.uiStyles.attributes.style === this.componentTypes.print.toString()) {
-            this.printService.emitPrintEvent(this.element.config.uiStyles.attributes.printPath, $event);
+            this.handlePrint($event);
         } else {
             this.buttonClickEvent.emit(this);
         }
@@ -168,6 +171,16 @@ export class Button extends BaseElement {
             }
         }
         return hasFile;
+    }
+
+    handlePrint($event: any) {
+        let printConfig = PrintConfig.fromNature(ParamUtils.getUiNature(this.element, ViewConfig.printConfig.toString()));
+        let printPath = this.element.config.uiStyles.attributes.printPath;
+        // If printPath is not provided, default is to use the page
+        if (!printPath) {
+            printPath = ParamUtils.getDomainPageFromPath(this.element.path);
+        }
+        this.printService.emitPrintEvent(printPath, $event, printConfig);
     }
 
     onSubmit() {

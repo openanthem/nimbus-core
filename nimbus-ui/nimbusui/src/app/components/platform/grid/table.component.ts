@@ -651,7 +651,11 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     getCellStyle(rowIndex, code): string {
-        let style: StyleState = this.element.gridData.stateMap[rowIndex][code].style;
+        let elemStateMap = this.element.gridData.stateMap[rowIndex];
+        if (!elemStateMap) {
+            return '';
+        }
+        let style: StyleState = elemStateMap[code].style;
         return style ? style.cssClass : '';
     }
 
