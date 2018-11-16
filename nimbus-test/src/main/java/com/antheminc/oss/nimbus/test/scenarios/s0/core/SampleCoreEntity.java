@@ -25,6 +25,7 @@ import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Modal;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditionals;
@@ -196,4 +197,27 @@ public class SampleCoreEntity extends IdLong {
 	private String testEntry;
 	
 	private List<String> attr_list_2_simple;
+	
+	//@Grid(postButtonUrl="/samplecore/page/gridPost")
+	private List<SampleCoreNestedEntity> grid1;
+	
+//	@Config(url="")
+//	@Config(url="", target=@Post)
+	// /p/domain:123/page/tile/section/grid/_get - on load
+	// /p/domain:123/page/tile/section/grid#postButton/_get - for postbutton
+//	@Grid(rowSelection=true, postButtonUrl="<!#this!>/../gridPost", @PostButton(url=""), )
+	private List<SampleCoreNestedEntity> grid2;
+	
+	// grid2  /samplecore/page/tile1/section1/grid2 -> ../../../tile2/section2/gridpost
+	// gridpost /samplecore/page/tile2/section2/gridpost
+	
+	@Grid(rowSelection=true, postButtonUrl="../gridPost")
+	//uri = relative path
+	// url - if complete path
+	private List<SampleCoreNestedEntity> grid3;
+	
+	private String gridUpdate;
+	
+	@Config(url="<!#this!>/../gridUpdate/_update?rawPayload=\"update grid test\"")
+	private String gridPost;
 }

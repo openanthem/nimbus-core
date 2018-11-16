@@ -1145,6 +1145,7 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
+	@OnStateLoad
 	public @interface Grid {
 		String alias() default "Grid";
 
@@ -1179,8 +1180,20 @@ public class ViewConfig {
 		String postButtonLabel() default "";
 
 		String postButtonTargetPath() default "";
-
+		
+		/**
+		 * @deprecated As of 1.1.10 onwards, {@code postButtonUrl} will no longer 
+		 * represent the absolute path to make a http call for rowselection from UI. 
+		 * Replaced with {@link postButtonUri} attribute instead.
+		 */
+		@Deprecated
 		String postButtonUrl() default "";
+		
+		/**
+		 * Represents the relative path of the postButton on a rowselection Grid. 
+		 * Can use similar notation as @Config url for relative path to param i.e, '../', <!#this!>
+		 */
+		String postButtonUri() default "";
 
 		boolean postEventOnChange() default false;
 

@@ -404,9 +404,12 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         this.selectedRows.forEach(element => {
             elemIds.push(element.elemId);
         });
-
+        const postButtonUri = this.element.config.uiStyles.attributes.postButtonUri;
+        const resolvedPostButtonUri = ParamUtils.resolveParamUri(this.element.path, postButtonUri);
         item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath, elemIds);
-        this.pageSvc.processEvent(this.element.config.uiStyles.attributes.postButtonUrl, null, item, 'POST');
+        // resolve the postbutton url relative to the current element path.
+        // Ex: (../, <!#this#!> , ./ , /p, .d, absolute path with current domain)
+        this.pageSvc.processEvent(resolvedPostButtonUri, null, item, 'POST');
     }
 
     onRowSelect(event) {

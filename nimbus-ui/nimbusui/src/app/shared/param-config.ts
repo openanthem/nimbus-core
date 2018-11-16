@@ -20,6 +20,7 @@ import { ConfigService } from './../services/config.service';
 import { Converter } from './object.conversion';
 import { Serializable } from './serializable';
 import { ViewConfig } from './param-annotations.enum';
+import { deprecate } from 'util';
 
 /**
  * \@author Sandeep.Mantha
@@ -170,6 +171,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     pageSize: number = 25; //server side has a default but defaulting here so that coverter can cast to number
     postButton: boolean;
     postButtonUrl: string;
+    postButtonUri: string;
     postButtonTargetPath: string;
     postButtonAlias : string;
     postButtonLabel: string;
