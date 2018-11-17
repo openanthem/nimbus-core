@@ -20,6 +20,7 @@ import { ServiceConstants } from '../services/service.constants';
 import { Param } from './param-state';
 import { LabelConfig } from './param-config';
 import { UiNature } from './param-config';
+import * as moment from 'moment';
 
 /**
  * \@author Tony.Lopez
@@ -35,7 +36,7 @@ export class ParamUtils {
         DATE:               { name: 'Date', defaultFormat: 'MM/dd/yyyy hh:mm a' },
         LOCAL_DATE:         { name: 'LocalDate', defaultFormat: 'MM/dd/yyyy' },
         LOCAL_DATE_TIME:    { name: 'LocalDateTime', defaultFormat: 'MM/dd/yyyy hh:mm a' },
-        ZONED_DATE_TIME:    { name: 'ZonedDateTime', defaultFormat: 'MM/dd/yyyy hh:mm a' },
+        ZONED_DATE_TIME:    { name: 'ZonedDateTime', defaultFormat: 'MM/dd/yyyy hh:mm a', useBrowserTimezone: true },
     };
 
     public static DEFAULT_DATE_FORMAT: string = 'MM/dd/yyyy hh:mm a';
@@ -109,7 +110,19 @@ export class ParamUtils {
                 break;
             }
         }
+        if (ParamUtils.shouldUseBrowserTimeZone(typeClassMapping)) {
+            ParamUtils.setDateJsonHandler(convertedDate);
+        }
         return convertedDate;
+    }
+
+    public static shouldUseBrowserTimeZone(typeClassMapping: string) {
+        let dateTypeMetadata = ParamUtils.getDateTypeConfig(typeClassMapping);
+        return dateTypeMetadata ? dateTypeMetadata.useBrowserTimezone : undefined;
+    }
+
+    public static setDateJsonHandler(date: Date): void {
+        date.toJSON = function() { return moment(this).format(); }
     }
 
     /**
