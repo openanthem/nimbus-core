@@ -399,7 +399,7 @@ export class PageService {
                                                 this.setViewRootAndNavigate(output,flow,navToDefault,refresh);
 
                                         } else {
-                                                this.logger.warn('Received an _get call without model or config ' + output.value.path);
+                                                this.logger.warn('Received a _get call without model or config ' + output.value.path);
                                         }
                                 } else if (output.action === Action._nav.value) {
                                         // Do Nothing. We will process _nav action in the end.
@@ -492,7 +492,7 @@ export class PageService {
                         }
                 }
                 if (!page) {
-                        this.logError('Page Configuration not found for Page ID: ' + pageId + ' in Flow: ' + flowName);
+                        this.logger.warn('Page Configuration not found for Page ID: ' + pageId + ' in Flow: ' + flowName);
                 }
                 return page;
         }
