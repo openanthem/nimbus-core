@@ -16,7 +16,7 @@
  */
 'use strict';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { LayoutService } from '../../services/layout.service';
 import { PageService } from '../../services/page.service';
 import { Layout, LinkConfig } from '../../model/menu-meta.interface';
@@ -38,6 +38,7 @@ import { MenuItem } from '../../shared/menuitem';
 
 export class DomainFlowCmp {
     public hasLayout: boolean = true;
+    public fixLayout: boolean = false;
     public infoClass: string = '';
     public leftMenuItems: LinkConfig[];
     public topMenuItems: Param[];
@@ -54,6 +55,7 @@ export class DomainFlowCmp {
         this.layoutSvc.layout$.subscribe(
             data => {
                 let layout: Layout = data;
+                this.fixLayout = layout['fixLayout'];
                 this.accordions = layout.topBar.accordions;
                 this.items = layout.menu;
                 this.topMenuItems = layout.topBar.headerMenus;
@@ -65,6 +67,7 @@ export class DomainFlowCmp {
                     document.getElementById('main-content').classList.add('withInfoBar');
                 }
 
+                this.setLayoutScroll();
             }
         );
 
@@ -97,19 +100,58 @@ export class DomainFlowCmp {
 
     }
 
+    /** Set the layout to fixed or scrollable based on the config param - fixLayout */
+    setLayoutScroll() {
+        if (this.fixLayout) {
+            document.body.classList.remove("browserScroll");
+            document.body.classList.add("browserFixed");
+            this.resetInfoCardScrollHeight();
+        } else {
+            document.body.classList.remove("browserFixed");
+            document.body.classList.add("browserScroll");
+            document.getElementById('page-content').style.height = 'auto';
+        }
+    }
+
+    /** Calculate the scroll height everytime the view changes */
+    resetInfoCardScrollHeight() {
+        if (this.fixLayout) {
+            var target = document.getElementById('page-content');
+            var h = target.getBoundingClientRect().top;
+            h = window.innerHeight - h - 50; // 50 is padding below viewport
+            target.style.height = h + 'px';    
+        }
+    }
+
     ngOnInit() {
         this._logger.debug('DomainFlowCmp-i ');
         this._route.data.subscribe((data: { layout: string }) => {
             let layout: string = data.layout;
             if (layout) {
                 this.hasLayout = true;
-                this.infoClass = 'info-card';
+                this.infoClass = 'info-card page-content';
                 this.layoutSvc.getLayout(layout);
             } else {
-                this.infoClass = '';
+                this.infoClass = 'page-content';
                 this.hasLayout = false;
                 document.getElementById('main-content').classList.remove('withInfoBar');
             }
         });
+    }
+
+    /** 
+     * Recalculate the scroll height everytime the view changes. 
+     * This can happen when elements are hidden/visible based on rules.
+     */
+    ngAfterViewChecked() {
+        this.resetInfoCardScrollHeight();
+    }
+
+    /** 
+     * Recalculate the scroll height everytime the window is resized.
+     */
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        this.resetInfoCardScrollHeight();
     }
 }
