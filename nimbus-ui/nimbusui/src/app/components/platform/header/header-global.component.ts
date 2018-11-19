@@ -118,5 +118,16 @@ export class HeaderGlobal {
         return false;
 
     }
+
+    get headerImageURL() {
+        if (!this.branding || !this.branding.logo.config || !this.branding.logo.config.uiStyles) {
+            return undefined;
+        }
+        let imgSrc = this.branding.logo.config.uiStyles.attributes.imgSrc;
+        if (!imgSrc) {
+            return undefined;
+        }
+        return this.imagesPath + this.branding.logo.config.uiStyles.attributes.imgSrc;
+    }
 }
 

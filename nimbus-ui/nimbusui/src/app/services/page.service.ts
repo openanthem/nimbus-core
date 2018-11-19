@@ -399,7 +399,7 @@ export class PageService {
                                                 this.setViewRootAndNavigate(output,flow,navToDefault,refresh);
 
                                         } else {
-                                                this.logger.warn('Received an _get call without model or config ' + output.value.path);
+                                                this.logger.warn('Received a _get call without model or config ' + output.value.path);
                                         }
                                 } else if (output.action === Action._nav.value) {
                                         // Do Nothing. We will process _nav action in the end.
@@ -492,7 +492,7 @@ export class PageService {
                         }
                 }
                 if (!page) {
-                        this.logError('Page Configuration not found for Page ID: ' + pageId + ' in Flow: ' + flowName);
+                        this.logger.warn('Page Configuration not found for Page ID: ' + pageId + ' in Flow: ' + flowName);
                 }
                 return page;
         }
@@ -536,7 +536,7 @@ export class PageService {
                          this.executeHttpPost(url, model);
                  } else {
                          this.invokeFinally(url);
-                         throw 'http method not supported';
+                         this.logger.error('http method not supported');
                  }
         }
         executeHttpGet(url) {
@@ -910,7 +910,7 @@ export class PageService {
                                 if(respKey !== ParamAttribute.config.toString() && respKey !== ParamAttribute.type.toString()) 
                                         Reflect.set(sourceParam, respKey, Reflect.get(responseParam, respKey)); 
                         } catch (e) { 
-                                throw e; 
+                                this.logger.error(JSON.stringify(e));
                         } 
                 });
         }
@@ -925,7 +925,7 @@ export class PageService {
                                 }
                         }catch (e) {
                                 this.logError('Could not find source param to update the nested payload param path'+ responseParam.path);
-                                throw e; 
+                                this.logger.error(JSON.stringify(e));
                         }
                 }
         }
