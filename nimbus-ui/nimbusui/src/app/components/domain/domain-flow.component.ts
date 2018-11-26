@@ -154,4 +154,13 @@ export class DomainFlowCmp {
     onResize(event) {
         this.resetInfoCardScrollHeight();
     }
+
+    @HostListener("scroll", ['$event'])
+    onPageContentScroll(event) {
+        if (document.getElementById('page-content').scrollTop >= 10) {
+            document.getElementById('scroll-div-to-top').setAttribute("style", "opacity:1; bottom:50px;")
+        } else if (document.getElementById('page-content').scrollTop < 10) {
+            document.getElementById('scroll-div-to-top').setAttribute("style", "opacity:0; bottom:-50px;")
+        }
+    }
 }

@@ -58,6 +58,12 @@ export class AppComponent {
         })();
     }
 
+    scrollDivToTop() {(
+        function smoothscroll() { 
+            document.getElementById('page-content').scrollTop = 0;
+        })();
+    }
+
     ngOnInit() {
     }
 

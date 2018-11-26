@@ -23,6 +23,6 @@
 	</ng-template>	
 
 </ng-template>
-<div id="page-content" class="{{infoClass}}">
+<div id="page-content" class="{{infoClass}}" (scroll)="onPageContentScroll($event)">
     <router-outlet></router-outlet>
 </div><!--  END Domain-content  -->
