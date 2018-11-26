@@ -36,6 +36,8 @@ https://anthemopensource.atlassian.net/wiki/spaces/OSS/pages
 [Nexus Sonatype](https://oss.sonatype.org/#nexus-search;quick~com.antheminc.oss)
 
 ## Issue Reporting
+Are you stuck on an implementation or do you think you might have found an issue within the framework?    
+Please create a post in the [OSS Discourse Forum](http://discourse.oss.antheminc.com/) so that we might take a look and validate the issue you're seeing. In the case that a framework change is needed, one of the project admins will create an associated issue in JIRA (Coming soon...) to address the required change.
 
 ## Unit Tests
 
