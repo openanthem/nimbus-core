@@ -302,9 +302,11 @@ export class PageService {
                 const PAGE_NODE = ROOT_NODE + 1;
                 const pageId = nodes[PAGE_NODE];
                 const pageParam: Param = this.findMatchingPageConfigById(pageId, flowName);
-                relativeParamPath = nodes.slice(PAGE_NODE + 1).join(ServiceConstants.PATH_SEPARATOR);
-                // This will find the param using the relative path
-                rootParam = ParamUtils.findParamByPath(pageParam, relativeParamPath);
+                if (pageParam) {
+                        // This will find the param using the relative path
+                        relativeParamPath = nodes.slice(PAGE_NODE + 1).join(ServiceConstants.PATH_SEPARATOR);
+                        rootParam = ParamUtils.findParamByPath(pageParam, relativeParamPath);
+                }
 
                 // making sure we indeed got the right param
                 if (rootParam && rootParam.path === path) {
@@ -492,7 +494,7 @@ export class PageService {
                         }
                 }
                 if (!page) {
-                        this.logger.warn('Page Configuration not found for Page ID: ' + pageId + ' in Flow: ' + flowName);
+                        this.logger.debug('Page Configuration not found for Page ID: ' + pageId + ' in Flow: ' + flowName);
                 }
                 return page;
         }
