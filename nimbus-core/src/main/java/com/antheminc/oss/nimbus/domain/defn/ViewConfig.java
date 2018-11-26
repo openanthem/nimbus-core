@@ -267,8 +267,13 @@ public class ViewConfig {
 			 * <p>Opens a print dialog with the rendered HTML content represented 
 			 * by this button's {@link Button#printPath()}.
 			 * <p>A path should be provided to a component that supports printing. 
-			 * See {@link PrintConfig} for details on which components are 
-			 * supported. 
+			 * The following components are supported to be targeted using 
+			 * {@code printPath}:
+			 * <ul>
+			 * <li>{@link Accordion}</li> <li>{@link CardDetails}</li>
+			 * <li>{@link CardDetailsGrid}</li> <li>{@link Form}</li>
+			 * <li>{@link Grid}</li> <li>{@link Modal}</li> <li>{@link Page}</li>
+			 * <li>{@link Section}</li> <li>{@link Tile}</li> </ul>
 			 * @see PrintConfig
 			 */
 			PRINT,
@@ -2171,18 +2176,15 @@ public class ViewConfig {
 	/**
 	 * <p>Defines print configuration for a {@link ViewStyle} component.
 	 * 
-	 * <p>{@code PrintConfig} currently supports the following components: <ul>
-	 * <li>{@link Accordion}</li> <li>{@link CardDetails}</li>
-	 * <li>{@link CardDetailsGrid}</li> <li>{@link Form}</li>
-	 * <li>{@link Grid}</li> <li>{@link Modal}</li> <li>{@link Page}</li>
-	 * <li>{@link Section}</li> <li>{@link Tile}</li> </ul>
+	 * <p>{@code PrintConfig} should decorate a field that is also 
+	 * decorated with {@link Button}.
 	 * 
 	 * <p><b>Sample Usage</b>
 	 * 
 	 * <pre>
-	 * &#64;Modal
-	 * &#64;PrintConfig
-	 * private VMSampleModal vmSampleModal;
+	 * &#64;Button(style = Button.Style.PRINT)
+	 * &#64;PrintConfig(autoPrint = false)
+	 * private String print;
 	 * </pre>
 	 * 
 	 * @author Tony Lopez
