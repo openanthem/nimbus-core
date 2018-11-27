@@ -134,6 +134,8 @@ export class DomainFlowCmp {
             } else {
                 this.infoClass = 'page-content';
                 this.hasLayout = false;
+                this.fixLayout = false;
+                this.setLayoutScroll();
                 document.getElementById('main-content').classList.remove('withInfoBar');
             }
         });

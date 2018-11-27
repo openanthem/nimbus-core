@@ -32,10 +32,23 @@ import { FooterConfig } from '../../../model/menu-meta.interface'
 export class FooterGlobal implements OnInit {
 
     @Input() footerConfig = <FooterConfig>{};
+    state: string = 'closed';
+    display: string = 'Open';
+
     constructor() {
     }
 
     ngOnInit() {
+    }
+
+    toggleFooter() {
+        if (this.state == 'open') {
+            this.state = '';
+            this.display = 'Open';
+        } else {
+            this.state = 'open';
+            this.display = 'Close';
+        }
     }
 
 }
