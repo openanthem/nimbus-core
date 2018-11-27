@@ -44,61 +44,67 @@ const declarations = [
      AppInitService
   ];
 
+let fixture, hostComponent;
+
 describe('LoginCmp', () => {
 
-    configureTestSuite();
-    setup(LoginCmp, declarations, imports, providers);
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
 
-    beforeEach(async function(this: TestContext<LoginCmp>){
-    });
 
-    it('should create the LoginCmp', async function(this: TestContext<LoginCmp>) {
-      expect(this.hostComponent).toBeTruthy();
-    });
+    beforeEach( async(() => {
+      fixture = TestBed.createComponent(LoginCmp);
+      hostComponent = fixture.debugElement.componentInstance;
+    }));
 
-    it('onSubmit() should navigate to /h/admindashboard for admin', async function(this: TestContext<LoginCmp>) {
-      this.hostComponent.loginForm = { value: { username: 'admin' } };
+    it('should create the LoginCmp',  async(() => {
+      expect(hostComponent).toBeTruthy();
+    }));
+
+    it('onSubmit() should navigate to /h/admindashboard for admin',  async(() => {
+      hostComponent.loginForm = { value: { username: 'admin' } };
       const _router = TestBed.get(Router);
       spyOn(_router, 'navigate');
-      this.hostComponent.onSubmit();
+      hostComponent.onSubmit();
       expect(_router.navigate).toHaveBeenCalledWith(['/h/admindashboard']);
-    });
+    }));
 
-    it('onSubmit() should navigate to /cs/a for supervisor', async function(this: TestContext<LoginCmp>) {
-      this.hostComponent.loginForm = { value: { username: 'supervisor' } };
+    it('onSubmit() should navigate to /cs/a for supervisor',  async(() => {
+      hostComponent.loginForm = { value: { username: 'supervisor' } };
       const _router = TestBed.get(Router);
       spyOn(_router, 'navigate');
-      this.hostComponent.onSubmit();
+      hostComponent.onSubmit();
       expect(_router.navigate).toHaveBeenCalledWith(['/cs/a']);
-    });
+    }));
 
-    it('onSubmit() should navigate to /pc/a for training', async function(this: TestContext<LoginCmp>) {
-      this.hostComponent.loginForm = { value: { username: 'training' } };
+    it('onSubmit() should navigate to /pc/a for training',  async(() => {
+      hostComponent.loginForm = { value: { username: 'training' } };
       const _router = TestBed.get(Router);
       spyOn(_router, 'navigate');
-      this.hostComponent.onSubmit();
+      hostComponent.onSubmit();
       expect(_router.navigate).toHaveBeenCalledWith(['/pc/a']);
-    });
+    }));
 
-    it('onSubmit() should navigate to /h/vrCSLandingPage for default', async function(this: TestContext<LoginCmp>) {
-      this.hostComponent.loginForm = { value: { username: '' } };
+    it('onSubmit() should navigate to /h/vrCSLandingPage for default',  async(() => {
+      hostComponent.loginForm = { value: { username: '' } };
       const _router = TestBed.get(Router);
       spyOn(_router, 'navigate');
-      this.hostComponent.onSubmit();
+      hostComponent.onSubmit();
       expect(_router.navigate).toHaveBeenCalledWith(['/h/vrCSLandingPage']);
-    });
+    }));
 
-    it('onSubmit() should navigate to member for member', async function(this: TestContext<LoginCmp>) {
-      this.hostComponent.loginForm = { value: { username: 'member' } };
+    it('onSubmit() should navigate to member for member',  async(() => {
+      hostComponent.loginForm = { value: { username: 'member' } };
       const _router = TestBed.get(Router);
       spyOn(_router, 'navigate');
-      this.hostComponent.onSubmit();
+      hostComponent.onSubmit();
       expect(_router.navigate).toHaveBeenCalledWith(['/mem/a']);
-    });
+    }));
 
-    it('LoginForm should be created', async function(this: TestContext<LoginCmp>) {
-      this.hostComponent.ngOnInit();
-      expect(this.hostComponent.loginForm).toBeTruthy();
-    });
+    // it('LoginForm should be created',  async(() => {
+    //   hostComponent.ngOnInit();
+    //   expect(hostComponent.loginForm).toBeTruthy();
+    // }));
 
 });

@@ -29,23 +29,27 @@ const declarations = [
      { provide: DomSanitizer, useClass: MockDomSanitizer }
  ];
 
-
+ let fixture, hostComponent;
 describe('Paragraph', () => {
 
-  configureTestSuite();
-  setup(Paragraph, declarations, imports, providers);
-  param = (<any>data).payload;
-
-  beforeEach(async function(this: TestContext<Paragraph>){
-    this.hostComponent.element = param;
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
   });
 
-  it('should create the Paragraph', async function (this: TestContext<Paragraph>) {
-    expect(this.hostComponent).toBeTruthy();
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(Paragraph);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = param;
   });
 
-  it('get htmlContent() should get content DomSanitizer.bypassSecurityTrustHtml()', async function (this: TestContext<Paragraph>) {
-    expect(this.hostComponent.htmlContent).toEqual('test');
-  });
+  it('should create the Paragraph', async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
+
+  it('get htmlContent() should get content DomSanitizer.bypassSecurityTrustHtml()', async(() => {
+    expect(hostComponent.htmlContent).toEqual('test');
+  }));
 
 });

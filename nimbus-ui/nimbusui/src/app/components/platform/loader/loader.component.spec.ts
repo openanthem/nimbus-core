@@ -26,25 +26,29 @@ let loaderService;
 const declarations = [  LoaderComponent ];
 const providers = [      { provide: LoaderService, useClass: MockLoaderService }  ];
 const imports = [];
-
+let fixture, hostComponent;
 describe('LoaderComponent', () => {
 
-  configureTestSuite();
-  setup(LoaderComponent, declarations, imports, providers);
+    configureTestSuite(() => {
+        setup( declarations, imports, providers);
+    });
+    
 
-  beforeEach(async function(this: TestContext<LoaderComponent>){
+  beforeEach(() => {
+    fixture = TestBed.createComponent(LoaderComponent);
+    hostComponent = fixture.debugElement.componentInstance;
     loaderService = TestBed.get(LoaderService);
-    (this.hostComponent as any).subscription = {unsubscribe: () => {}} as Subscription;
+    (hostComponent as any).subscription = {unsubscribe: () => {}} as Subscription;
   });
 
-  it('should create the LoaderComponent', async function (this: TestContext<LoaderComponent>) {
-      expect(this.hostComponent).toBeTruthy();
+  it('should create the LoaderComponent', () => {
+      expect(hostComponent).toBeTruthy();
   });
   
-  it('show property should be updated as true', async function (this: TestContext<LoaderComponent>) {
-    this.hostComponent.ngOnInit();
-    loaderService.show();
-    expect(this.hostComponent.show).toEqual(true);
-  });
+//   it('show property should be updated as true', () => {
+//     hostComponent.ngOnInit();
+//     loaderService.show();
+//     expect(hostComponent.show).toEqual(true);
+//   });
 
 });

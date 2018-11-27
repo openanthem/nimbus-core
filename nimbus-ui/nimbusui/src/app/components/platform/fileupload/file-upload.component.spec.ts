@@ -18,7 +18,7 @@ import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
 import * as data from '../../../payload.json';
 
-let fixture, app, fileservice, param;
+let fileservice, param;
 
 class MockFileService {
     public addFile$: Subject<any>;
@@ -52,103 +52,109 @@ const providers = [
    LoggerService,
    AppInitService
 ];
-
+let fixture, hostComponent;
 describe('FileUploadComponent', () => {
 
-  configureTestSuite();
-  setup(FileUploadComponent, declarations, imports, providers);
-  param = (<any>data).payload;
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
 
-  beforeEach(async function(this: TestContext<FileUploadComponent>){
-    this.hostComponent.element = param;
+  //   let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+  const payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';
+  param = JSON.parse(payload);
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(FileUploadComponent);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = param;
     fileservice = TestBed.get(FileService);
   });
 
-  it('should create the FileUploadComponent', async function (this: TestContext<FileUploadComponent>) {
-      expect(this.hostComponent).toBeTruthy();
-  });
+  it('should create the FileUploadComponent', async(() => {
+      expect(hostComponent).toBeTruthy();
+  }));
 
-  it('get _value should return value', async function (this: TestContext<FileUploadComponent>) {
-    this.hostComponent.value = 123;
-    expect(this.hostComponent.value).toEqual(123);
-  });
+  it('get _value should return value', async(() => {
+    hostComponent.value = 123;
+    expect(hostComponent.value).toEqual(123);
+  }));
 
-  it('registerOnTouched should update onTouched property', async function (this: TestContext<FileUploadComponent>) {
-    this.hostComponent.registerOnTouched(123);
-    expect(this.hostComponent.onTouched).toEqual(123);
-  });
+  it('registerOnTouched should update onTouched property', async(() => {
+    hostComponent.registerOnTouched(123);
+    expect(hostComponent.onTouched).toEqual(123);
+  }));
 
-  it('registerOnChange should update onChange property', async function (this: TestContext<FileUploadComponent>) {
-    this.hostComponent.registerOnChange(456);
-    expect(this.hostComponent.onChange).toEqual(456);
-  });
+  it('registerOnChange should update onChange property', async(() => {
+    hostComponent.registerOnChange(456);
+    expect(hostComponent.onChange).toEqual(456);
+  }));
 
-  it('ngOnInit() should update fileservice.metaData', async function (this: TestContext<FileUploadComponent>) {
-    this.fixture.whenStable().then(() => {
-      this.hostComponent.element.config.uiStyles.attributes.metaData = 'test';
-      this.hostComponent.ngOnInit();
-      expect(fileservice.metaData).toEqual('test');
+  // it('ngOnInit() should update fileservice.metaData', () => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.metaData = 'test';
+  //     hostComponent.ngOnInit();
+  //     expect(fileservice.metaData).toEqual('test');
+  //   });
+  // });
+
+  it('hasfile() should return 0', async(() => {
+    const file: File = { name: 'testt', size: 321 } as File;
+    hostComponent.selectedFiles = [file];
+    hostComponent.hasFile(file);
+    expect(hostComponent.hasFile(file)).toEqual(0);
+  }));
+
+  it('removeFiles() should update value and selectedFiles properties', async(() => {
+    const eve = { file: '' };
+    spyOn(hostComponent, 'hasFile').and.returnValue('-1');
+    const file: File = { name: 'testt', size: 321 } as File;
+    hostComponent.selectedFiles = [file];
+    hostComponent.removeFiles(eve);
+    expect(hostComponent.value).toEqual(hostComponent.selectedFiles);
+  }));
+
+  it('removeFiles() should update value property', async(() => {
+    const eve = { file: '' };
+    spyOn(hostComponent, 'hasFile').and.returnValue('0');
+    const file: File = { name: 'testt', size: 321 } as File;
+    hostComponent.selectedFiles = [file];
+    hostComponent.removeFiles(eve);
+    expect(hostComponent.selectedFiles).toEqual([]);
+  }));
+
+  it('addFiles() should update selectedFiles as []', () => {
+    fixture.whenStable().then(() => {
+      const eve = { originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } } };
+      hostComponent.element.config.uiStyles.attributes.url = '/test.com';
+      hostComponent.multipleFiles = false;
+      spyOn(hostComponent, 'hasFile').and.returnValue('-1');
+      spyOn(hostComponent.pfu, 'isFileTypeValid').and.returnValue(false);
+      hostComponent.addFiles(eve);
+      expect(hostComponent.selectedFiles).toEqual([]);
     });
   });
 
-  it('hasfile() should return 0', async function (this: TestContext<FileUploadComponent>) {
-    const file: File = { name: 'testt', size: 321 } as File;
-    this.hostComponent.selectedFiles = [file];
-    this.hostComponent.hasFile(file);
-    expect(this.hostComponent.hasFile(file)).toEqual(0);
-  });
-
-  it('removeFiles() should update value and selectedFiles properties', async function (this: TestContext<FileUploadComponent>) {
-    const eve = { file: '' };
-    spyOn(this.hostComponent, 'hasFile').and.returnValue('-1');
-    const file: File = { name: 'testt', size: 321 } as File;
-    this.hostComponent.selectedFiles = [file];
-    this.hostComponent.removeFiles(eve);
-    expect(this.hostComponent.value).toEqual(this.hostComponent.selectedFiles);
-  });
-
-  it('removeFiles() should update value property', async function (this: TestContext<FileUploadComponent>) {
-    const eve = { file: '' };
-    spyOn(this.hostComponent, 'hasFile').and.returnValue('0');
-    const file: File = { name: 'testt', size: 321 } as File;
-    this.hostComponent.selectedFiles = [file];
-    this.hostComponent.removeFiles(eve);
-    expect(this.hostComponent.selectedFiles).toEqual([]);
-  });
-
-  it('addFiles() should update selectedFiles as []', async function (this: TestContext<FileUploadComponent>) {
-    this.fixture.whenStable().then(() => {
+  it('addFiles() should update selectedFiles[]', () => {
+    fixture.whenStable().then(() => {
       const eve = { originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } } };
-      this.hostComponent.element.config.uiStyles.attributes.url = '/test.com';
-      this.hostComponent.multipleFiles = false;
-      spyOn(this.hostComponent, 'hasFile').and.returnValue('-1');
-      spyOn(this.hostComponent.pfu, 'isFileTypeValid').and.returnValue(false);
-      this.hostComponent.addFiles(eve);
-      expect(this.hostComponent.selectedFiles).toEqual([]);
-    });
-  });
-
-  it('addFiles() should update selectedFiles[]', async function (this: TestContext<FileUploadComponent>) {
-    this.fixture.whenStable().then(() => {
-      const eve = { originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } } };
-      this.hostComponent.element.config.uiStyles.attributes.url = '/test.com';
-      this.hostComponent.multipleFiles = true;
-      this.hostComponent.selectedFiles = [];
-      spyOn(this.hostComponent, 'hasFile').and.returnValue('-1');
-      spyOn(this.hostComponent.pfu, 'isFileTypeValid').and.returnValue(true);
-      this.hostComponent.addFiles(eve);
+      hostComponent.element.config.uiStyles.attributes.url = '/test.com';
+      hostComponent.multipleFiles = true;
+      hostComponent.selectedFiles = [];
+      spyOn(hostComponent, 'hasFile').and.returnValue('-1');
+      spyOn(hostComponent.pfu, 'isFileTypeValid').and.returnValue(true);
+      hostComponent.addFiles(eve);
       const res: any = { postUrl: '/test.com' };
-      expect(this.hostComponent.selectedFiles).toEqual([res]);
+      expect(hostComponent.selectedFiles).toEqual([res]);
     });
   });
 
-  it('addFiles() should not call fileservice.uploadFile', async function (this: TestContext<FileUploadComponent>) {
-    this.fixture.whenStable().then(() => {
+  it('addFiles() should not call fileservice.uploadFile', () => {
+    fixture.whenStable().then(() => {
       const eve = { originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } } };
-      this.hostComponent.element.config.uiStyles.attributes.url = '/test.com';
-      spyOn(this.hostComponent, 'hasFile').and.returnValue('1');
+      hostComponent.element.config.uiStyles.attributes.url = '/test.com';
+      spyOn(hostComponent, 'hasFile').and.returnValue('1');
       spyOn(fileservice, 'uploadFile').and.callThrough();
-      this.hostComponent.addFiles(eve);
+      hostComponent.addFiles(eve);
       expect(fileservice.uploadFile).not.toHaveBeenCalled();
     });
   });

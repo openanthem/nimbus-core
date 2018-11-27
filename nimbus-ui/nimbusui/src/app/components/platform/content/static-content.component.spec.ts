@@ -28,22 +28,26 @@ const declarations = [
  const providers = [
      { provide: DomSanitizer, useClass: MockDomSanitizer }
  ];
-
+ let fixture, hostComponent;
 describe('StaticText', () => {
-  configureTestSuite();
-  setup(StaticText, declarations, imports, providers);
-  param = (<any>data).payload;
+    configureTestSuite(() => {
+        setup( declarations, imports, providers);
+    });
+    
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
 
-  beforeEach(async function(this: TestContext<StaticText>){
-    this.hostComponent.element = param;
+  beforeEach(() => {
+    fixture = TestBed.createComponent(StaticText);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = param;
   });
 
-  it('should create the StaticText', async function (this: TestContext<StaticText>) {
-      expect(this.hostComponent).toBeTruthy();
-  });
+  it('should create the StaticText', async(() => {
+      expect(hostComponent).toBeTruthy();
+  }));
 
-  it('get htmlContent() should get content DomSanitizer.bypassSecurityTrustHtml()', async function (this: TestContext<StaticText>) {
-    expect(this.hostComponent.htmlContent).toEqual('test');
-  });
+  it('get htmlContent() should get content DomSanitizer.bypassSecurityTrustHtml()', async(() => {
+    expect(hostComponent.htmlContent).toEqual('test');
+  }));
 
 });

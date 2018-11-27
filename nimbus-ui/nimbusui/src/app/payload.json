@@ -36,6 +36,7 @@
 				"value": null,
 				"attributes": {
 					"cols": "1",
+					"dataEntryField": true,
 					"cssClass": "testClass",
 					"onLoad": true,
 					"lazyLoad": false,

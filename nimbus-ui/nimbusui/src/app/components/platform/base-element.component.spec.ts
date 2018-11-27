@@ -18,101 +18,106 @@ const imports = [
    HttpClientTestingModule
 ];
 const providers = [   ConfigService];
+let fixture, hostComponent;
 
 describe('BaseElement', () => {
 
-  configureTestSuite();
-  setup(BaseElement, declarations, imports, providers);
-  param = (<any>data).payload;
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
 
-  beforeEach(async function(this: TestContext<BaseElement>){
-    this.hostComponent.element = param;
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+
+  beforeEach( async(() => {
+    fixture = TestBed.createComponent(BaseElement);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = param;
     configService = TestBed.get(ConfigService);
-  });
+  }));
 
-  it('should create the BaseElement', async function(this: TestContext<BaseElement>) {
-    expect(this.hostComponent).toBeTruthy();
-  });
+  it('should create the BaseElement',  async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
 
-  it('nestedParams should update from element.type.model.params', async function(this: TestContext<BaseElement>) {
+  it('nestedParams should update from element.type.model.params',  async(() => {
     const params: any = 'test';
-    this.hostComponent.element.type.model.params = params;
-    expect(this.hostComponent.nestedParams).toEqual(params);
-  });
+    hostComponent.element.type.model.params = params;
+    expect(hostComponent.nestedParams).toEqual(params);
+  }));
 
-  it('nestedParams should return undefined', async function(this: TestContext<BaseElement>) {
-    this.hostComponent.element.type.model = null;
-    expect(this.hostComponent.nestedParams).toEqual(undefined);
-  });
+  it('nestedParams should return undefined',  async(() => {
+    hostComponent.element.type.model = null;
+    expect(hostComponent.nestedParams).toEqual(undefined);
+  }));
 
-  it('imgSrc should update from element.config.uiStyles.attributes.imgSrc', async function(this: TestContext<BaseElement>) {
-    this.hostComponent.element.config.uiStyles.attributes.imgSrc = 'src1';
-    expect(this.hostComponent.imgSrc).toEqual('src1');
-  });
+  it('imgSrc should update from element.config.uiStyles.attributes.imgSrc',  async(() => {
+    hostComponent.element.config.uiStyles.attributes.imgSrc = 'src1';
+    expect(hostComponent.imgSrc).toEqual('src1');
+  }));
 
-  it('code should update from element.config.code', async function(this: TestContext<BaseElement>) {
-    expect(this.hostComponent.code).toEqual('firstName');
-  });
+  it('code should update from element.config.code',  async(() => {
+    expect(hostComponent.code).toEqual('firstName');
+  }));
 
-  it('visible should update from element.visible', async function(this: TestContext<BaseElement>) {
-    this.hostComponent.element.visible = true;
-    expect(this.hostComponent.visible).toBeTruthy();
-  });
+  it('visible should update from element.visible',  async(() => {
+    hostComponent.element.visible = true;
+    expect(hostComponent.visible).toBeTruthy();
+  }));
 
-  it('enabled should update from element.enabled', async function(this: TestContext<BaseElement>) {
-    this.hostComponent.element.enabled = true;
-    expect(this.hostComponent.enabled).toBeTruthy();
-  });
+  it('enabled should update from element.enabled',  async(() => {
+    hostComponent.element.enabled = true;
+    expect(hostComponent.enabled).toBeTruthy();
+  }));
 
-  it('_visible should update from visible property', async function(this: TestContext<BaseElement>) {
-    this.hostComponent.visible = true;
-    expect((this.hostComponent as any)._visible).toEqual(true);    
-  });
+  it('_visible should update from visible property',  async(() => {
+    hostComponent.visible = true;
+    expect((hostComponent as any)._visible).toEqual(true);    
+  }));
 
-  it('_enabled should update from enabled property', async function(this: TestContext<BaseElement>) {
-    this.hostComponent.enabled = true;
-    expect((this.hostComponent as any)._enabled).toEqual(true);    
-  });
+  it('_enabled should update from enabled property',  async(() => {
+    hostComponent.enabled = true;
+    expect((hostComponent as any)._enabled).toEqual(true);    
+  }));
 
-  it('cssClass should update from element.config.uiStyles.attributes.cssClass', async function(this: TestContext<BaseElement>) {
-    this.hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
-    expect(this.hostComponent.cssClass).toEqual('testClass');
-  });
+  it('cssClass should update from element.config.uiStyles.attributes.cssClass',  async(() => {
+    hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
+    expect(hostComponent.cssClass).toEqual('testClass');
+  }));
 
-  it('type should update from element.config.uiStyles.attributes.type', async function(this: TestContext<BaseElement>) {
-    this.hostComponent.element.config.uiStyles.attributes.type = 'testType';
-    expect(this.hostComponent.type).toEqual('testType');  
-  });
+  it('type should update from element.config.uiStyles.attributes.type',  async(() => {
+    hostComponent.element.config.uiStyles.attributes.type = 'testType';
+    expect(hostComponent.type).toEqual('testType');  
+  }));
 
-  it('elementStyle should update based on element.config.validation.constraints[0].name', async function(this: TestContext<BaseElement>) {
+  it('elementStyle should update based on element.config.validation.constraints[0].name',  async(() => {
     const constraints: any = [{ name: 'NotNull' }];
-    this.hostComponent.element.config.validation.constraints = constraints;
-    expect(this.hostComponent.elementStyle).toEqual('required');
-  });
+    hostComponent.element.config.validation.constraints = constraints;
+    expect(hostComponent.elementStyle).toEqual('required');
+  }));
 
-  it('elementStyle should be empty string based on element.config.validation.constraints[0].name', async function(this: TestContext<BaseElement>) {
+  it('elementStyle should be empty string based on element.config.validation.constraints[0].name',  async(() => {
     const constraints: any = [{ name: 'test' }];
-    this.hostComponent.element.config.validation.constraints = constraints;
-    expect(this.hostComponent.elementStyle).toEqual('');
-  });
+    hostComponent.element.config.validation.constraints = constraints;
+    expect(hostComponent.elementStyle).toEqual('');
+  }));
 
-  it('elementStyle should be empty string if element.config.validation.constraints[0].name is not avialable', async function(this: TestContext<BaseElement>) {
-      this.hostComponent.element.config.validation = null;
-      expect(this.hostComponent.elementStyle).toEqual('');
-  });
+  it('elementStyle should be empty string if element.config.validation.constraints[0].name is not avialable',  async(() => {
+      hostComponent.element.config.validation = null;
+      expect(hostComponent.elementStyle).toEqual('');
+  }));
 
-  it('this.hostComponent.isDate() should return true', async function(this: TestContext<BaseElement>) {
-    expect(this.hostComponent.isDate('Date')).toBeTruthy();
-  });
+  it('hostComponent.isDate() should return true',  async(() => {
+    expect(hostComponent.isDate('Date')).toBeTruthy();
+  }));
 
-  it('placeholder should update from element.config.uiStyles.attributes.placeholder', async function(this: TestContext<BaseElement>) {
-    this.hostComponent.element.config.uiStyles.attributes.placeholder = 'test';
-    expect(this.hostComponent.placeholder).toEqual('test');
-  });
+  it('placeholder should update from element.config.uiStyles.attributes.placeholder',  async(() => {
+    hostComponent.element.config.uiStyles.attributes.placeholder = 'test';
+    expect(hostComponent.placeholder).toEqual('test');
+  }));
 
-  it('placeholder should be undefined if element.config.uiStyles.attributes is null', async function(this: TestContext<BaseElement>) {
-    this.hostComponent.element.config.uiStyles.attributes = null;
-    expect(this.hostComponent.placeholder).toEqual(undefined);
-  });
+  it('placeholder should be undefined if element.config.uiStyles.attributes is null',  async(() => {
+    hostComponent.element.config.uiStyles.attributes = null;
+    expect(hostComponent.placeholder).toEqual(undefined);
+  }));
 
 });

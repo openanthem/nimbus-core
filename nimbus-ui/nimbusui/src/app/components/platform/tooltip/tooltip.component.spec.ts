@@ -27,21 +27,25 @@ const providers = [
        {provide: DomSanitizer, useClass: MockDomSanitizer}
    ];
 const imports = [];
-
+let fixture, hostComponent;
 describe('TooltipComponent', () => {
 
-    configureTestSuite();
-    setup(TooltipComponent, declarations, imports, providers);
+    configureTestSuite(() => {
+        setup( declarations, imports, providers);
+      });
+    
 
-    beforeEach(async function(this: TestContext<TooltipComponent>){
-      domSanitizer = TestBed.get(DomSanitizer);
+    beforeEach(() => {
+        fixture = TestBed.createComponent(TooltipComponent);
+        hostComponent = fixture.debugElement.componentInstance;
+        domSanitizer = TestBed.get(DomSanitizer);
     });
 
-    it('should create the TooltipComponent', async function (this: TestContext<TooltipComponent>) {
-        expect(this.hostComponent).toBeTruthy();
-    });
+    it('should create the TooltipComponent', async(() => {
+        expect(hostComponent).toBeTruthy();
+    }));
 
-    it('closeCallout() should remove class of event', async function (this: TestContext<TooltipComponent>) {
+    it('closeCallout() should remove class of event', async(() => {
         const eve: any = {
             preventDefault: () => { },
             srcElement: {
@@ -56,12 +60,12 @@ describe('TooltipComponent', () => {
         };
         spyOn(eve, 'preventDefault').and.callThrough();
         spyOn(eve.srcElement.parentElement.parentElement.classList, 'remove').and.callThrough();
-        this.hostComponent.closeCallout(eve);
+        hostComponent.closeCallout(eve);
         expect(eve.preventDefault).toHaveBeenCalled();
         expect(eve.srcElement.parentElement.parentElement.classList.remove).toHaveBeenCalled();
-    });
+    }));
 
-    it('toggleOpen() should update the widgetPosition property to east', async function (this: TestContext<TooltipComponent>) {
+    it('toggleOpen() should update the widgetPosition property to east', async(() => {
         const eve: any = {
             preventDefault: () => { },
             clientX: 100,
@@ -73,11 +77,11 @@ describe('TooltipComponent', () => {
                 }
             }
         };
-        this.hostComponent.toggleOpen(eve);
-        expect(this.hostComponent.widgetPosition).toEqual('east');
-    });
+        hostComponent.toggleOpen(eve);
+        expect(hostComponent.widgetPosition).toEqual('east');
+    }));
 
-    it('toggleOpen() should update the widgetPosition property to west', async function (this: TestContext<TooltipComponent>) {
+    it('toggleOpen() should update the widgetPosition property to west', async(() => {
         const eve: any = {
             preventDefault: () => { },
             clientX: 900,
@@ -89,14 +93,14 @@ describe('TooltipComponent', () => {
                 }
             }
         };
-        this.hostComponent.toggleOpen(eve);
-        expect(this.hostComponent.widgetPosition).toEqual('west');
-    });
+        hostComponent.toggleOpen(eve);
+        expect(hostComponent.widgetPosition).toEqual('west');
+    }));
 
-    it('htmlContent property should be updated with /"DOM/" suffix', async function (this: TestContext<TooltipComponent>) {
-        this.hostComponent.helpText = 'test';
-        const test = this.hostComponent.htmlContent;
+    it('htmlContent property should be updated with /"DOM/" suffix', async(() => {
+        hostComponent.helpText = 'test';
+        const test = hostComponent.htmlContent;
         expect(test).toEqual('testDom');
-    });
+    }));
 
 });

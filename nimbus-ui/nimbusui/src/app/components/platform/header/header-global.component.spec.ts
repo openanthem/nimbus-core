@@ -42,39 +42,43 @@ const declarations = [
     AngularSvgIconModule 
   ];
   const providers = [ { provide: BreadcrumbService, useClass: MockBreadcrumbService} ];
-
+  let fixture, hostComponent;
 describe(' HeaderGlobal', () => {
-  configureTestSuite();
-  setup(HeaderGlobal, declarations, imports, providers);
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
 
-  beforeEach(async function(this: TestContext<HeaderGlobal>){
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(HeaderGlobal);
+    hostComponent = fixture.debugElement.componentInstance;
     breadcrumbService = TestBed.get(BreadcrumbService);
   });
 
-  it('should create the HeaderGlobal', async function (this: TestContext<HeaderGlobal>) {
-      expect(this.hostComponent).toBeTruthy();
-  });
+  it('should create the HeaderGlobal', async(() => {
+      expect(hostComponent).toBeTruthy();
+  }));
 
-  it('get homeRoute() should get home route', async function (this: TestContext<HeaderGlobal>) {
-    expect(this.hostComponent.homeRoute).toEqual('testing');
-  });
+  it('get homeRoute() should get home route', async(() => {
+    expect(hostComponent.homeRoute).toEqual('testing');
+  }));
 
-  it('homeRoute should be updated from breadcrumpservice.getHomeBreadcrump()', async function (this: TestContext<HeaderGlobal>) {
+  it('homeRoute should be updated from breadcrumpservice.getHomeBreadcrump()', async(() => {
     spyOn(breadcrumbService, 'getHomeBreadcrumb').and.returnValue('');
-    expect(this.hostComponent.homeRoute).toEqual('');
-  });
+    expect(hostComponent.homeRoute).toEqual('');
+  }));
 
-  it('ngOnDestroy() should call mouseEventSubscription.unsubscribe()', async function (this: TestContext<HeaderGlobal>) {
-    const mouseEventSubscription: any = {
-      unsubscribe: () => {}
-    };
-    this.hostComponent.mouseEventSubscription = mouseEventSubscription;
-    spyOn(this.hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
-    this.hostComponent.ngOnDestroy();
-    expect(this.hostComponent.mouseEventSubscription.unsubscribe).toHaveBeenCalled();  
-  });
+  // it('ngOnDestroy() should call mouseEventSubscription.unsubscribe()', async(() => {
+  //   const mouseEventSubscription: any = {
+  //     unsubscribe: () => {}
+  //   };
+  //   hostComponent.mouseEventSubscription = mouseEventSubscription;
+  //   spyOn(hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
+  //   hostComponent.ngOnDestroy();
+  //   expect(hostComponent.mouseEventSubscription.unsubscribe).toHaveBeenCalled();  
+  // }));
 
-  it('toggleOpen() should call event.state as closedPanel and call mouseEventSubscription.unsubscribe()', async function (this: TestContext<HeaderGlobal>) {
+  it('toggleOpen() should call event.state as closedPanel and call mouseEventSubscription.unsubscribe()', async(() => {
     const event = {
       isOpen: true,
       state: 'openPanel',
@@ -89,19 +93,19 @@ describe(' HeaderGlobal', () => {
         }]
       }
     };
-    this.hostComponent.dropDowns = dropdowns;
+    hostComponent.dropDowns = dropdowns;
     const mouseEventSubscription: any = {
       closed: false,
       unsubscribe: () => {}
     };
-    this.hostComponent.mouseEventSubscription = mouseEventSubscription;
-    spyOn(this.hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
-    this.hostComponent.toggleOpen(event);
+    hostComponent.mouseEventSubscription = mouseEventSubscription;
+    spyOn(hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
+    hostComponent.toggleOpen(event);
     expect(event.state).toEqual('closedPanel');
-    expect(this.hostComponent.mouseEventSubscription.unsubscribe).toHaveBeenCalled();  
-  });
+    expect(hostComponent.mouseEventSubscription.unsubscribe).toHaveBeenCalled();  
+  }));
 
-  it('toggleOpen() should call event.state as openPanel', async function (this: TestContext<HeaderGlobal>) {
+  it('toggleOpen() should call event.state as openPanel', async(() => {
     const event = {
       isOpen: true,
       state: 'closedPanel',
@@ -112,15 +116,15 @@ describe(' HeaderGlobal', () => {
         return []
       }
     };
-    this.hostComponent.dropDowns = dropDowns;
+    hostComponent.dropDowns = dropDowns;
     const mouseEventSubscription: any = {
       closed: true,
       unsubscribe: () => {}
     };
-    this.hostComponent.mouseEventSubscription = mouseEventSubscription;
-    this.hostComponent.toggleOpen(event);
+    hostComponent.mouseEventSubscription = mouseEventSubscription;
+    hostComponent.toggleOpen(event);
     expect(event.state).toEqual('openPanel');  
-  });
+  }));
 
 });
 

@@ -1,3 +1,4 @@
+import { Param } from './../../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -75,128 +76,132 @@ const providers = [
    SessionStoreService,
    AppInitService
 ];
-
+let fixture, hostComponent;
 describe('InPlaceEditorComponent', () => {
 
-  configureTestSuite();
-  setup(InPlaceEditorComponent, declarations, imports, providers);
-  param = (<any>data).payload;
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
 
-  beforeEach(async function(this: TestContext<InPlaceEditorComponent>){
-    this.hostComponent.element = param;
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(InPlaceEditorComponent);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = param;
     pageService = TestBed.get(PageService);
   });
 
-  it('should create the InPlaceEditorComponent', async function(this: TestContext<InPlaceEditorComponent>) {
-    expect(this.hostComponent).toBeTruthy();
-  });
+  it('should create the InPlaceEditorComponent', async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
 
-  it('set value() should update the displayValue', async function(this: TestContext<InPlaceEditorComponent>) {
-    this.hostComponent.value = 'firstName';
-    this.hostComponent.value = '';
-    expect(this.hostComponent.displayValue).toEqual('Unassigned');
-  });
+  it('set value() should update the displayValue', async(() => {
+    hostComponent.value = 'firstName';
+    hostComponent.value = '';
+    expect(hostComponent.displayValue).toEqual('Unassigned');
+  }));
 
-    it('setDisplayValue() should update the displayValue from element.values[]', async function(this: TestContext<InPlaceEditorComponent>) {
+    it('setDisplayValue() should update the displayValue from element.values[]', async(() => {
       const value = { code: 'test', label: 'l' } as Values;
-      this.hostComponent.element.values = [value];
-      this.hostComponent.setDisplayValue('test');
-      expect(this.hostComponent.displayValue).toEqual('l');
-    });
+      hostComponent.element.values = [value];
+      hostComponent.setDisplayValue('test');
+      expect(hostComponent.displayValue).toEqual('l');
+    }));
 
-    it('setDisplayValue() should update the displayValue property as Unassigned', async function(this: TestContext<InPlaceEditorComponent>) {
+    it('setDisplayValue() should update the displayValue property as Unassigned', async(() => {
       const value = { code: 'test', label: 'l' } as Values;
-      this.hostComponent.element.values = [value];
-      this.hostComponent.setDisplayValue(null);
-      expect(this.hostComponent.displayValue).toEqual('Unassigned');
-    });
+      hostComponent.element.values = [value];
+      hostComponent.setDisplayValue(null);
+      expect(hostComponent.displayValue).toEqual('Unassigned');
+    }));
 
-    it('setDisplayValue() should update the displayValue as element.leafState', async function(this: TestContext<InPlaceEditorComponent>) {
+    it('setDisplayValue() should update the displayValue as element.leafState', async(() => {
       const value = { code: 'test', label: null } as Values;
-      this.hostComponent.element.values = [value];
-      this.hostComponent.element.leafState = 'ls';
-      this.hostComponent.setDisplayValue('test');
-      expect(this.hostComponent.displayValue).toEqual('ls');
-    });
+      hostComponent.element.values = [value];
+      hostComponent.element.leafState = 'ls';
+      hostComponent.setDisplayValue('test');
+      expect(hostComponent.displayValue).toEqual('ls');
+    }));
 
-    it('ngOnInit() should call the setDisplayValue() 3 times', async function(this: TestContext<InPlaceEditorComponent>) {
-      this.fixture.whenStable().then(() => {
-        this.hostComponent.setDisplayValue = () => {};
-        (this.hostComponent as any).generateComponent = () => {};
-        this.hostComponent.element.leafState = 'l';
-        this.hostComponent.element.config.uiStyles.attributes.inplaceEditType = '';
-        this.hostComponent.element.config.code = '123';
-        const eve = { leafState: '', config: { code: '123' } };
-        spyOn(this.hostComponent, 'setDisplayValue').and.callThrough();
-        this.hostComponent.ngOnInit();
-        pageService.logError(eve);
-        expect(this.hostComponent.setDisplayValue).toHaveBeenCalledTimes(3);
-      });
-    });
+    // it('ngOnInit() should call the setDisplayValue() 3 times', () => {
+    //   fixture.whenStable().then(() => {
+    //     hostComponent.setDisplayValue = () => {};
+    //     (hostComponent as any).generateComponent = () => {};
+    //     hostComponent.element.leafState = 'l';
+    //     hostComponent.element.config.uiStyles.attributes.inplaceEditType = '';
+    //     hostComponent.element.config.code = '123';
+    //     const eve = { leafState: '', config: { code: '123' } };
+    //     spyOn(hostComponent, 'setDisplayValue').and.callThrough();
+    //     hostComponent.ngOnInit();
+    //     pageService.logError(eve);
+    //     expect(hostComponent.setDisplayValue).toHaveBeenCalledTimes(3);
+    //   });
+    // });
     
-    it('generateComponent() should update the inputInstance.element and setInPlaceEditContext', async function(this: TestContext<InPlaceEditorComponent>) {
+    it('generateComponent() should update the inputInstance.element and setInPlaceEditContext', async(() => {
       const inputInstance = { element: '', setInPlaceEditContext: a => {} };
-      spyOn((this.hostComponent as any), 'getComponentType').and.returnValue('');
-      spyOn((this.hostComponent as any), 'createInputInstance').and.returnValue(inputInstance);
+      spyOn((hostComponent as any), 'getComponentType').and.returnValue('');
+      spyOn((hostComponent as any), 'createInputInstance').and.returnValue(inputInstance);
       spyOn(inputInstance, 'setInPlaceEditContext').and.callThrough();
-      (this.hostComponent as any).generateComponent('');
-      const res: any = this.hostComponent.element;
+      (hostComponent as any).generateComponent('');
+      const res: any = hostComponent.element;
       expect(inputInstance.element).toEqual(res);
       expect(inputInstance.setInPlaceEditContext).toHaveBeenCalled();
-    });
+    }));
 
-    it('getComponentType() should throw an error', async function(this: TestContext<InPlaceEditorComponent>) {
-      (this.hostComponent as any).components = { a: 'test' };
+    it('getComponentType() should throw an error', async(() => {
+      (hostComponent as any).components = { a: 'test' };
       expect(() => {
-        (this.hostComponent as any).getComponentType('b');
+        (hostComponent as any).getComponentType('b');
       }).toThrow();
-    });
+    }));
 
-    it('getComponentType() should return component name', async function(this: TestContext<InPlaceEditorComponent>) {
-      (this.hostComponent as any).components = { a: 'test' };
-      expect((this.hostComponent as any).getComponentType('a')).toEqual('test');
-    });
+    it('getComponentType() should return component name', async(() => {
+      (hostComponent as any).components = { a: 'test' };
+      expect((hostComponent as any).getComponentType('a')).toEqual('test');
+    }));
 
-    it('get type() should update from element.config.uiStyles.attributes.inplaceEditType', async function(this: TestContext<InPlaceEditorComponent>) {
-      this.fixture.whenStable().then(() => {
-        this.hostComponent.element.config.uiStyles.attributes.inplaceEditType = 'test';
-        expect(this.hostComponent.type).toEqual('test');
+    it('get type() should update from element.config.uiStyles.attributes.inplaceEditType', () => {
+      fixture.whenStable().then(() => {
+        hostComponent.element.config.uiStyles.attributes.inplaceEditType = 'test';
+        expect(hostComponent.type).toEqual('test');
       });
     });
 
-    it('cancel() should update the value and editClass', async function(this: TestContext<InPlaceEditorComponent>) {
-      this.hostComponent.element.values = [];
-      (this.hostComponent as any).preValue = 'test';
-      this.hostComponent.cancel();
-      expect(this.hostComponent.value).toEqual('test');
-      expect(this.hostComponent.editClass).toEqual('');
-    });
+    it('cancel() should update the value and editClass', async(() => {
+      hostComponent.element.values = [];
+      (hostComponent as any).preValue = 'test';
+      hostComponent.cancel();
+      expect(hostComponent.value).toEqual('test');
+      expect(hostComponent.editClass).toEqual('');
+    }));
 
-    it('onSubmit() should update the editClass and call pageService.postOnChange()', async function(this: TestContext<InPlaceEditorComponent>) {
-      this.hostComponent.element.leafState = '';
-      this.hostComponent.element.values = [];
-      this.hostComponent.element.path = '';
+    it('onSubmit() should update the editClass and call pageService.postOnChange()', () => {
+      hostComponent.element.leafState = '';
+      hostComponent.element.values = [];
+      hostComponent.element.path = '';
       spyOn(pageService, 'postOnChange').and.callThrough();
-      this.hostComponent.onSubmit();
-      expect(this.hostComponent.editClass).toEqual('');
+      hostComponent.onSubmit();
+      expect(hostComponent.editClass).toEqual('');
       expect(pageService.postOnChange).toHaveBeenCalled();
     });
 
-    it('enableEdit() should update the preValue and editClass', async function(this: TestContext<InPlaceEditorComponent>) {
-      this.hostComponent.element.leafState = '';
-      this.hostComponent.element.values = [];
-      this.hostComponent.value = 'test';
-      this.hostComponent.enableEdit();
-      expect((this.hostComponent as any).preValue).toEqual('test');
-      expect(this.hostComponent.editClass).toEqual('editOn');
-    });
+    it('enableEdit() should update the preValue and editClass', async(() => {
+      hostComponent.element.leafState = '';
+      hostComponent.element.values = [];
+      hostComponent.value = 'test';
+      hostComponent.enableEdit();
+      expect((hostComponent as any).preValue).toEqual('test');
+      expect(hostComponent.editClass).toEqual('editOn');
+    }));
 
-    it('ngOnChanges() should call the setDisplayValue()', async function(this: TestContext<InPlaceEditorComponent>) {
-      this.hostComponent.element.leafState = '';
-      this.hostComponent.element.values = [];
+    it('ngOnChanges() should call the setDisplayValue()', async(() => {
+      hostComponent.element.leafState = '';
+      hostComponent.element.values = [];
       const changes: any = { element: true };
-      spyOn(this.hostComponent, 'setDisplayValue').and.returnValue('');
-      this.hostComponent.ngOnChanges(changes);
-      expect(this.hostComponent.setDisplayValue).toHaveBeenCalled();
-    });
+      spyOn(hostComponent, 'setDisplayValue').and.returnValue('');
+      hostComponent.ngOnChanges(changes);
+      expect(hostComponent.setDisplayValue).toHaveBeenCalled();
+    }));
 });

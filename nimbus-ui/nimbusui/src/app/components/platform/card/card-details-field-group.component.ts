@@ -50,6 +50,10 @@ export class CardDetailsFieldGroupComponent extends BaseElement {
     private fieldGroupClass: string = '';
     componentTypes = ComponentTypes;
 
+    constructor(private _wcs: WebContentSvc) {
+        super(_wcs);
+    }
+    
     getComponentClass() {
         let componentClass: string[] = [];
         if (this.cssClass) {

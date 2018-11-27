@@ -30,7 +30,7 @@ import { InputText } from './textbox.component';
 import { StorageServiceModule } from 'angular-webstorage-service';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
 import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
+import { setup, TestContext, instantiateComponent } from '../../../../setup.spec';
 import * as data from '../../../../payload.json';
 /**
  * \@author Sandeep.Mantha
@@ -41,55 +41,59 @@ import * as data from '../../../../payload.json';
  */
 
 let  param: Param, controlService;
-
+let fixture, hostComponent;
 const declarations = [InputText, TooltipComponent, InputLabel];
 const imports =  [ FormsModule, HttpClientTestingModule, HttpModule, StorageServiceModule ];
 
 describe('InputText', () => {
-    configureTestSuite();
-    setup(InputText, declarations, imports);
-    param = (<any>data).payload;
+    configureTestSuite(() => {
+        setup(declarations, imports);
+    });
+       let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
   
-    beforeEach(async function(this: TestContext<InputText>) {
-      const fg = new FormGroup({});
-      const checks: ValidatorFn[] = [];
-      checks.push(Validators.required);
-      fg.addControl(param.config.code, new FormControl(param.leafState, checks));
-      this.hostComponent.form = fg;
-      this.hostComponent.element = param;
-      controlService = TestBed.get(ControlSubscribers);
+    beforeEach(async() => {
+        fixture = TestBed.createComponent(InputText);
+        hostComponent = fixture.debugElement.componentInstance;
+        this.hostElement = fixture.nativeElement;
+        const fg = new FormGroup({});
+        const checks: ValidatorFn[] = [];
+        checks.push(Validators.required);
+        fg.addControl(param.config.code, new FormControl(param.leafState, checks));
+        hostComponent.form = fg;
+        hostComponent.element = param;
+        controlService = TestBed.get(ControlSubscribers);
     });
   
-    it('should create the InputText', async function (this: TestContext<InputText>) {
-        expect(this.hostComponent).toBeTruthy();
+    it('should create the InputText', async() =>{
+        expect(hostComponent).toBeTruthy();
     });
 
-    it('form control value with default leafstate', async function (this: TestContext<InputText>) {
-        this.fixture.whenStable().then(() => {
-            this.fixture.detectChanges();
-            expect(this.hostComponent.form.controls['firstName'].value).toBe('testData');
-            expect(this.hostComponent).toBeTruthy();
+    it('form control value with default leafstate', async() => {
+        fixture.whenStable().then(() => {
+            fixture.detectChanges();
+            expect(hostComponent.form.controls['firstName'].value).toBe('testData');
+            expect(hostComponent).toBeTruthy();
         });
     });
 
-    it('control validity', async function (this: TestContext<InputText>) {
-        this.fixture.whenStable().then(() => {
-            this.hostComponent.form.controls['firstName'].setValue('');
-            this.fixture.detectChanges();
-            expect(this.hostComponent.form.controls['firstName'].valid).toBeFalsy();
+    it('control validity', async() =>{
+        fixture.whenStable().then(() => {
+            hostComponent.form.controls['firstName'].setValue('');
+            fixture.detectChanges();
+            expect(hostComponent.form.controls['firstName'].valid).toBeFalsy();
         });
     });
 
-    it('post on focus out', async function (this: TestContext<InputText>) {
-        this.fixture.whenStable().then(() => {
-            this.fixture.detectChanges();
-            spyOn(this.hostComponent, 'emitValueChangedEvent').and.callThrough();
-            const textBox = this.fixture.debugElement.children[0].nativeElement;
+    it('post on focus out', async() =>{
+        fixture.whenStable().then(() => {
+            fixture.detectChanges();
+            spyOn(hostComponent, 'emitValueChangedEvent').and.callThrough();
+            const textBox = fixture.debugElement.children[0].nativeElement;
             textBox.value = 'abcd123';
             textBox.dispatchEvent(new Event('input'));
             textBox.dispatchEvent(new Event('focusout'));
-            this.fixture.detectChanges();
-            expect(this.hostComponent.emitValueChangedEvent).toHaveBeenCalled();
+            fixture.detectChanges();
+            expect(hostComponent.emitValueChangedEvent).toHaveBeenCalled();
         });
     });
   

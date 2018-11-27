@@ -1,3 +1,4 @@
+import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -75,61 +76,66 @@ const providers = [
   LoaderService,
   ConfigService
 ];
+let fixture, hostComponent;
 
 describe('CardDetailsComponent', () => {
 
-  configureTestSuite();
-  setup(CardDetailsComponent, declarations, imports, providers);
-  param = (<any>data).payload;
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
 
-  beforeEach(async function(this: TestContext<CardDetailsComponent>){
-    this.hostComponent.element = param;
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(CardDetailsComponent);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = param;
     pageService = TestBed.get(PageService);
   });
 
-  it('should create the CardDetailsComponent', async function (this: TestContext<CardDetailsComponent>) {
-    expect(this.hostComponent).toBeTruthy();
-  });
+  it('should create the CardDetailsComponent',async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
 
-  it('toggle() should updated opened property', async function (this: TestContext<CardDetailsComponent>) {
-    this.hostComponent.opened = true;
-    this.hostComponent.toggle();
-    expect(this.hostComponent.opened).toEqual(false);
-  });
+  it('toggle() should updated opened property',async(() => {
+    hostComponent.opened = true;
+    hostComponent.toggle();
+    expect(hostComponent.opened).toEqual(false);
+  }));
 
-  it('processOnClick() should call pageService.processEvent', async function (this: TestContext<CardDetailsComponent>) {
-    this.hostComponent.element.path = '/a';
+  it('processOnClick() should call pageService.processEvent',async(() => {
+    hostComponent.element.path = '/a';
     spyOn(pageService, 'processEvent').and.callThrough();
-    this.hostComponent.processOnClick();
+    hostComponent.processOnClick();
     expect(pageService.processEvent).toHaveBeenCalled();
-  });
+  }));
 
-  it('getAllURLParams should return null matching the regexp', async function (this: TestContext<CardDetailsComponent>) {
-    expect(this.hostComponent.getAllURLParams('/webhp?hl=en')).toEqual(null);
-  });
+  it('getAllURLParams should return null matching the regexp',async(() => {
+    expect(hostComponent.getAllURLParams('/webhp?hl=en')).toEqual(null);
+  }));
 
-  it('getAllURLParams should return string matching the regexp', async function (this: TestContext<CardDetailsComponent>) {
-    expect(this.hostComponent.getAllURLParams('{ /webhp?hl=en}')).toEqual(['{ /webhp?hl=en}']);
-  });
+  it('getAllURLParams should return string matching the regexp',async(() => {
+    expect(hostComponent.getAllURLParams('{ /webhp?hl=en}')).toEqual(['{ /webhp?hl=en}']);
+  }));
 
-  it('toggleState() should update isHidden and _state properties', async function (this: TestContext<CardDetailsComponent>) {
-    this.hostComponent.state = 'closedPanel';
-    this.hostComponent.isHidden = true;
-    this.hostComponent.toggleState();
-    expect(this.hostComponent.isHidden).toBeFalsy();
-    expect((this.hostComponent as any)._state).toEqual('openPanel');
-  });
+  it('toggleState() should update isHidden and _state properties',async(() => {
+    hostComponent.state = 'closedPanel';
+    hostComponent.isHidden = true;
+    hostComponent.toggleState();
+    expect(hostComponent.isHidden).toBeFalsy();
+    expect((hostComponent as any)._state).toEqual('openPanel');
+  }));
 
-  it('toggleState() should update _state property', async function (this: TestContext<CardDetailsComponent>) {
-    this.hostComponent.state = 'openPanel';
-    this.hostComponent.toggleState();
-    expect((this.hostComponent as any)._state).toEqual('closedPanel');
-  });
+  it('toggleState() should update _state property',async(() => {
+    hostComponent.state = 'openPanel';
+    hostComponent.toggleState();
+    expect((hostComponent as any)._state).toEqual('closedPanel');
+  }));
 
-  it('animationDone() should update the isHidden property', async function (this: TestContext<CardDetailsComponent>) {
-    this.hostComponent.state = 'closedPanel';
-    this.hostComponent.animationDone('a');
-    expect(this.hostComponent.isHidden).toBeTruthy();
-  });
+  it('animationDone() should update the isHidden property',async(() => {
+    hostComponent.state = 'closedPanel';
+    hostComponent.animationDone('a');
+    expect(hostComponent.isHidden).toBeTruthy();
+  }));
 
 });

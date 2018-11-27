@@ -178,41 +178,45 @@ const imports = [   FormsModule, ReactiveFormsModule,
     TreeTableModule ];
 const providers = [];
 
+let fixture, hostComponent;
 describe("form error message component", () => {
 
-    configureTestSuite();
-    setup(FormErrorMessage, declarations, imports, providers);
-    const payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';
-     param = JSON.parse(payload);
-    // param = (<any>data).payload;
+    configureTestSuite(() => {
+        setup( declarations, imports, providers);
+      });
     
-    beforeEach(async function(this: TestContext<FormErrorMessage>){
+    //   let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+    let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';
+    let param: Param = JSON.parse(payload);
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(FormErrorMessage);
+        hostComponent = fixture.debugElement.componentInstance;
         const fg = new FormGroup({});
         const checks: ValidatorFn[] = [];
         checks.push(Validators.required);
         param.type.model.params[0].visible = true;
         fg.addControl(param.type.model.params[0].config.code, new FormControl(param.type.model.params[0].leafState,checks));
-        this.hostComponent.form = fg;
-        this.hostComponent.element = param;
-      this.hostComponent.element = param;
+        hostComponent.form = fg;
+        hostComponent.element = param;
     });
 
-    it("check if message is displayed", function(this: TestContext<FormErrorMessage>) {
-        this.fixture.whenStable().then(() => {
-            this.fixture.detectChanges();
-            let messageDom = this.fixture.debugElement.query(By.css('div'));
-            expect(this.hostComponent).toBeTruthy();
+    it("check if message is displayed",  () => {
+        fixture.whenStable().then(() => {
+            fixture.detectChanges();
+            let messageDom = fixture.debugElement.query(By.css('div'));
+            expect(hostComponent).toBeTruthy();
             expect(messageDom.nativeElement.innerHTML).toEqual(' Remaining 0 of 1 ');
         });
     });
 
-    it("check if message is re-evaluated on form value change", function(this: TestContext<FormErrorMessage>) {
-        this.fixture.whenStable().then(() => {
-        this.fixture.detectChanges();
-        this.hostComponent.form.controls[param.type.model.params[0].config.code].setValue("");
-        this.fixture.detectChanges();
-        let messageDom = this.fixture.debugElement.query(By.css('div'));
-        expect(this.hostComponent).toBeTruthy();
+    it("check if message is re-evaluated on form value change",  () => {
+        fixture.whenStable().then(() => {
+        fixture.detectChanges();
+        hostComponent.form.controls[param.type.model.params[0].config.code].setValue("");
+        fixture.detectChanges();
+        let messageDom = fixture.debugElement.query(By.css('div'));
+        expect(hostComponent).toBeTruthy();
         expect(messageDom.nativeElement.innerHTML).toEqual(' Remaining 1 of 1 ');
         });
     });

@@ -32,18 +32,23 @@ const declarations = [
     HttpClientModule,
     ReactiveFormsModule, FormsModule
   ];
-  const providers = [];
+const providers = [];
+let fixture, hostComponent;
 
 describe('FooterGlobal', () => {
 
-  configureTestSuite();
-  setup(FooterGlobal, declarations, imports, providers);
-
-  beforeEach(async function(this: TestContext<FooterGlobal>){
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
   });
 
-  it('should create the FooterGlobal', async function (this: TestContext<FooterGlobal>) {
-      expect(this.hostComponent).toBeTruthy();
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(FooterGlobal);
+    hostComponent = fixture.debugElement.componentInstance;
   });
+
+  it('should create the FooterGlobal', async(() => {
+      expect(hostComponent).toBeTruthy();
+  }));
 
 });

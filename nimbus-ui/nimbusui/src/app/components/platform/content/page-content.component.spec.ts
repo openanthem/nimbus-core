@@ -1,3 +1,4 @@
+import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
@@ -251,37 +252,41 @@ const declarations = [
   LoaderService,
   ConfigService
  ];
-
+ let fixture, hostComponent;
 describe('PageContent', () => {
 
-  configureTestSuite();
-  setup(PageContent, declarations, imports, providers);
-  param = (<any>data).payload;
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
 
-  beforeEach(async function(this: TestContext<PageContent>){
-    this.hostComponent.element = param;
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+
+  beforeEach( async(() => {
+    fixture = TestBed.createComponent(PageContent);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = param;
     logger = TestBed.get(LoggerService);
     pageService = TestBed.get(PageService)
     printService = TestBed.get(PrintService);
-  });
+  }));
 
-  it('should create the Header', async function (this: TestContext<PageContent>) {
+  it('should create the Header',  async(() => {
     console.log('this.printService..spec',printService);
-    expect(this.hostComponent).toBeTruthy();
-  });
+    expect(hostComponent).toBeTruthy();
+  }));
 
-  it('ngOnInit() should update the tilesList[]', async function (this: TestContext<PageContent>) {
-    spyOn(logger, 'debug').and.callThrough();
-    const spy = spyOn((this.hostComponent as any), 'loadLabelConfig').and.callThrough();
-    this.hostComponent.ngOnInit();
-    expect(logger.debug).toHaveBeenCalled();
-    expect(spy).toHaveBeenCalled();
-  });
+  // it('ngOnInit() should update the tilesList[]',  async(() => {
+  //   spyOn(logger, 'debug').and.callThrough();
+  //   const spy = spyOn((hostComponent as any), 'loadLabelConfig').and.callThrough();
+  //   hostComponent.ngOnInit();
+  //   expect(logger.debug).toHaveBeenCalled();
+  //   expect(spy).toHaveBeenCalled();
+  // }));
 
-  it('ngAfterViewInit() should update the errMsgArray[]', async function (this: TestContext<PageContent>) {
-    this.hostComponent.ngAfterViewInit();
-    pageService.logError({message: 'test'});
-    expect(this.hostComponent.errMsgArray).toEqual([{severity: 'error', summary: 'Error Message', detail: 'test', life: 10000}]);
-  });
+  // it('ngAfterViewInit() should update the errMsgArray[]',  async(() => {
+  //   hostComponent.ngAfterViewInit();
+  //   pageService.logError({message: 'test'});
+  //   expect(hostComponent.errMsgArray).toEqual([{severity: 'error', summary: 'Error Message', detail: 'test', life: 10000}]);
+  // }));
 
 });

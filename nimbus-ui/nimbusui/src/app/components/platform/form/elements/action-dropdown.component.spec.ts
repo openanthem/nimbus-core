@@ -62,40 +62,43 @@ const declarations = [
   SessionStoreService,
   AppInitService
  ];
-
+ let fixture, hostComponent;
 describe('ActionLink', () => {
 
-  configureTestSuite();
-  setup(ActionLink, declarations, imports, providers);
-  param = (<any>data).payload;
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
 
-  beforeEach(async function(this: TestContext<ActionLink>){
-    this.hostComponent.element = param;
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ActionLink);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = param;
     pageservice = TestBed.get(PageService);
     configservice = TestBed.get(ConfigService);
   });
 
-  it('should create the ActionLink', async function (this: TestContext<ActionLink>) {
-    expect(this.hostComponent).toBeTruthy();
-  });
+  it('should create the ActionLink', async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
 
-  it('getAllURLParams() should return null', async function (this: TestContext<ActionLink>) {
-    expect(this.hostComponent.getAllURLParams('www.test.com')).toBeFalsy();
-  });
+  it('getAllURLParams() should return null', async(() => {
+    expect(hostComponent.getAllURLParams('www.test.com')).toBeFalsy();
+  }));
 
-  it('processOnClick() should call processEvent', async function (this: TestContext<ActionLink>) {
+  it('processOnClick() should call processEvent', async(() => {
     spyOn(pageservice, 'processEvent').and.callThrough();
-    this.hostComponent.element.enabled = true;
-    this.hostComponent.processOnClick('test');
+    hostComponent.element.enabled = true;
+    hostComponent.processOnClick('test');
     expect(pageservice.processEvent).toHaveBeenCalled();
-  });
+  }));
 
-  it('processOnClick() should not call processEvent', async function (this: TestContext<ActionLink>) {
+  it('processOnClick() should not call processEvent', async(() => {
     spyOn(pageservice, 'processEvent').and.callThrough();
-    this.hostComponent.element.enabled = false;
-    this.hostComponent.processOnClick('test');
+    hostComponent.element.enabled = false;
+    hostComponent.processOnClick('test');
     expect(pageservice.processEvent).not.toHaveBeenCalled();
-  });
+  }));
 
 });
 
@@ -135,68 +138,73 @@ const providers1 = [
 ];
 
 describe('ActionDropdown', () => {
-    configureTestSuite();
-    setup(ActionDropdown, declarations1, imports1, providers1);
-    param = (<any>data).payload;
+  configureTestSuite(() => {
+    setup( declarations1, imports1, providers1);
+  });
+
+       let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
   
-    beforeEach(async function(this: TestContext<ActionDropdown>){
-      this.hostComponent.element = param;
+   
+  beforeEach(() => {
+      fixture = TestBed.createComponent(ActionDropdown);
+      hostComponent = fixture.debugElement.componentInstance;
+      hostComponent.element = param;
       pageservice = TestBed.get(PageService);
     });
   
-  it('should create the ActionDropdown', async function (this: TestContext<ActionDropdown>) {
-    expect(this.hostComponent).toBeTruthy();
-  });
+  it('should create the ActionDropdown', async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
 
-  it('app should create elementRef property', async function (this: TestContext<ActionDropdown>) {
-    expect(this.hostComponent.elementRef).toBeTruthy();
-  });
+  it('app should create elementRef property',async(() => {
+    expect(hostComponent.elementRef).toBeTruthy();
+  }));
 
-  it('toggleOpen() should call dropDownClick.emit()', async function (this: TestContext<ActionDropdown>) {
+  it('toggleOpen() should call dropDownClick.emit()', async(() => {
     const eve: any = {
       preventDefault: () => { }
     };
     spyOn(eve, 'preventDefault').and.callThrough();
-    spyOn(this.hostComponent.dropDownClick, 'emit').and.callThrough();
-    this.hostComponent.toggleOpen(eve);
+    spyOn(hostComponent.dropDownClick, 'emit').and.callThrough();
+    hostComponent.toggleOpen(eve);
     expect(eve.preventDefault).toHaveBeenCalled();
-    expect(this.hostComponent.dropDownClick.emit).toHaveBeenCalled();
-  });
+    expect(hostComponent.dropDownClick.emit).toHaveBeenCalled();
+  }));
 
-  it('processOnClick() should call pageservice.processEvent()', async function (this: TestContext<ActionDropdown>) {
+  it('processOnClick() should call pageservice.processEvent()',async(() => {
     spyOn(pageservice, 'processEvent').and.callThrough();
-    this.hostComponent.processOnClick('test');
+    hostComponent.processOnClick('test');
     expect(pageservice.processEvent).toHaveBeenCalled();
-  });
+  }));
 
-  it('animationStart() should not update isHidden property', async function (this: TestContext<ActionDropdown>) {
-    this.hostComponent.isHidden = true;
-    this.hostComponent.animationStart('test');
-    expect(this.hostComponent.isHidden).toBeFalsy();
-  });
+  it('animationStart() should not update isHidden property', async(() => {
+    hostComponent.isHidden = true;
+    hostComponent.animationStart('test');
+    expect(hostComponent.isHidden).toBeFalsy();
+  }));
 
-  it('animationDone() should update isHidden property', async function (this: TestContext<ActionDropdown>) {
-    this.hostComponent.isOpen = false;
-    this.hostComponent.isHidden = false;
-    this.hostComponent.animationDone('');
-    expect(this.hostComponent.isHidden).toBeTruthy();
-  });
+  it('animationDone() should update isHidden property', async(() => {
+    hostComponent.isOpen = false;
+    hostComponent.isHidden = false;
+    hostComponent.animationDone('');
+    expect(hostComponent.isHidden).toBeTruthy();
+  }));
 
-  it('animationDone() should not update isHidden property', async function (this: TestContext<ActionDropdown>) {
-    this.hostComponent.isOpen = true;
-    this.hostComponent.isHidden = false;
-    this.hostComponent.animationDone('');
-    expect(this.hostComponent.isHidden).toBeFalsy();
-  });
+  it('animationDone() should not update isHidden property', async(() => {
+    hostComponent.isOpen = true;
+    hostComponent.isHidden = false;
+    hostComponent.animationDone('');
+    expect(hostComponent.isHidden).toBeFalsy();
+  }));
 
-  it('element proprty should be equal to element.enabled', async function (this: TestContext<ActionDropdown>) {
-    this.hostComponent.element.enabled = true;
-    expect(this.hostComponent.enabled).toEqual(true);
-  });
+  it('element proprty should be equal to element.enabled', async(() => {
+    hostComponent.element.enabled = true;
+    expect(hostComponent.enabled).toEqual(true);
+  }));
 
-  it('enabled property should not be created', async function (this: TestContext<ActionDropdown>) {
-    this.hostComponent.element.enabled = false;
-    expect(this.hostComponent.enabled).toBeFalsy();
-  });
+  it('enabled property should not be created', async(() => {
+    hostComponent.element.enabled = false;
+    expect(hostComponent.enabled).toBeFalsy();
+  }));
   
 });

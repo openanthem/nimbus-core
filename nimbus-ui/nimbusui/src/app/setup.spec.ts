@@ -66,30 +66,22 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser/';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing'
+import { TestCtx } from 'ng-bullet';
 
+export const allproviders =  [ PageService, ConfigService, WebContentSvc, HttpClient, AppInitService,
+    CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
+   // { provide: APP_INITIALIZER, useFactory: init_app, deps: [AppInitService], multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
+    { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService, Location,
+    { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
+    { provide: 'JSNLOG', useValue: JL },
+    { provide: ErrorHandler, useClass: CustomErrorHandler },
+    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE},
+    SessionStoreService, ControlSubscribers, 
+    AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 
+    RouteService, MessageService, GridUtils, DateTimeFormatPipe]
 
-export interface TestContext<H> {
-    fixture: ComponentFixture<H>;
-    hostComponent: H;
-    hostElement: any;
-}
-
-export function setup(testType, declarations: any[], imports?: any[], providers?: any[]): void {
-    
-    let allproviders =  [ PageService, ConfigService, WebContentSvc, HttpClient, AppInitService,
-        CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
-       // { provide: APP_INITIALIZER, useFactory: init_app, deps: [AppInitService], multi: true },
-        { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
-        { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService, Location,
-        { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: ErrorHandler, useClass: CustomErrorHandler },
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE},
-        SessionStoreService, ControlSubscribers, 
-        AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 
-        RouteService, MessageService, GridUtils, DateTimeFormatPipe]
-
-    let allimports = [
+export const allimports = [
         BrowserModule,
         HttpClientModule,
         ReactiveFormsModule,
@@ -125,24 +117,22 @@ export function setup(testType, declarations: any[], imports?: any[], providers?
         RouterTestingModule
     ]
 
-    beforeAll(done => (async () => {
-        TestBed.configureTestingModule({
-            declarations: declarations,
-            providers: providers ? providers : allproviders,
-            imports:  imports ? imports : allimports
-            })
-            await TestBed.compileComponents();
-    })().then(done).catch(done.fail));
 
-    beforeEach(function<H>(this: TestContext<H>) {
-        this.fixture = TestBed.createComponent(testType);
-        this.hostComponent = this.fixture.componentInstance;
-        this.hostElement = this.fixture.nativeElement;
-    });
+export interface TestContext<H> {
+    fixture: ComponentFixture<H>;
+   hostComponent: H;
+    hostElement: any;
+}
 
-    afterEach(function<H>(this: TestContext<H>) {
-        if (this.fixture) {
-            this.fixture.destroy();
-        }
-    });
+export function setup(declarations: any[], imports?: any[], providers?: any[]) {
+    TestBed.configureTestingModule({
+        declarations: declarations,
+        providers: providers ? providers : allproviders,
+        imports:  imports ? imports : allimports
+        })
+}
+export function instantiateComponent(testType: any) {
+    // fixture = TestBed.createComponent(testType);
+    // hostComponent = fixture.componentInstance;
+    // this.hostElement = fixture.nativeElement;
 }

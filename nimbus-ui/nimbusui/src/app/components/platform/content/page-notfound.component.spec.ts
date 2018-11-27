@@ -26,17 +26,20 @@ const declarations = [
   LoggerService,
   AppInitService
  ];
-
+ let fixture, hostComponent;
 describe('PageNotfoundComponent', () => {
 
-  configureTestSuite();
-  setup(PageNotfoundComponent, declarations, imports, providers);
-
-  beforeEach(async function(this: TestContext<PageNotfoundComponent>){
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
   });
 
-  it('should create the PageNotfoundComponent', async function (this: TestContext<PageNotfoundComponent>) {
-    expect(this.hostComponent).toBeTruthy();
-  });
+
+  beforeEach( async(() => {
+    fixture = TestBed.createComponent(PageNotfoundComponent);
+    hostComponent = fixture.debugElement.componentInstance;
+  }));
+
+  it('should create the PageNotfoundComponent',  async(() => {
+  }));
 
 });

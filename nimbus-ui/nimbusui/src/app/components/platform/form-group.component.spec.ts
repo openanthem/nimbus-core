@@ -157,42 +157,48 @@ const declarations = [
      { provide: WebContentSvc, useClass: MockWebContentSvc }
  ];
 
+ let fixture, hostComponent;
+ 
 describe('FrmGroupCmp', () => {
 
-  configureTestSuite();
-  setup(FrmGroupCmp, declarations, imports, providers);
-  param = (<any>data).payload;
-
-  beforeEach(async function(this: TestContext<FrmGroupCmp>){
-    this.hostComponent.element = param;
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
   });
 
-  it('should create the FrmGroupCmp', function(this: TestContext<FrmGroupCmp>) {
-    expect(this.hostComponent).toBeTruthy();
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+
+  beforeEach( () => {
+    fixture = TestBed.createComponent(FrmGroupCmp);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = param;
   });
 
-  it('getCssClass() should return the element.config.uiStyles.attributes.cssClass', function(this: TestContext<FrmGroupCmp>) {
-    this.fixture.whenStable().then(() => {
-      this.hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup';
-      this.hostComponent.element.config.uiStyles.attributes.cssClass = 'test';
-      expect(this.hostComponent.getCssClass()).toEqual('test');
+  it('should create the FrmGroupCmp',  async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
+
+  it('getCssClass() should return the element.config.uiStyles.attributes.cssClass',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup';
+      hostComponent.element.config.uiStyles.attributes.cssClass = 'test';
+      expect(hostComponent.getCssClass()).toEqual('test');
     });
   });
 
 
-  it('getCssClass() should return elementCss', function(this: TestContext<FrmGroupCmp>) {
-    this.fixture.whenStable().then(() => {
-      this.hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup';
-      this.hostComponent.elementCss = 'test1';
-      this.hostComponent.element.config.uiStyles.attributes.cssClass = null;
-      expect(this.hostComponent.getCssClass()).toEqual('test1');
+  it('getCssClass() should return elementCss',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup';
+      hostComponent.elementCss = 'test1';
+      hostComponent.element.config.uiStyles.attributes.cssClass = null;
+      expect(hostComponent.getCssClass()).toEqual('test1');
     });
   });
 
-  it('getCssClass() should return empty string', function(this: TestContext<FrmGroupCmp>) {
-    this.fixture.whenStable().then(() => {
-      this.hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup1';
-      expect(this.hostComponent.getCssClass()).toEqual('');
+  it('getCssClass() should return empty string',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup1';
+      expect(hostComponent.getCssClass()).toEqual('');
     });
   });
 

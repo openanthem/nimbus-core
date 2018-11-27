@@ -1,3 +1,4 @@
+import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
@@ -193,86 +194,90 @@ const declarations = [
     ConfigService,
     WebContentSvc
    ];
-
+let fixture, hostComponent;
 describe('Modal', () => {
 
-    configureTestSuite();
-    setup(Modal, declarations, imports, providers);
-    param = (<any>data).payload;
+    configureTestSuite(() => {
+        setup( declarations, imports, providers);
+      });
+    
+       let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
     // const payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';
     // param = JSON.parse(payload);
   
-    beforeEach(async function(this: TestContext<Modal>){
-        this.hostComponent.element = param;
+    beforeEach(() => {
+        fixture = TestBed.createComponent(Modal);
+        hostComponent = fixture.debugElement.componentInstance;
+        hostComponent.element = param;
         pageservice = TestBed.get(PageService);
     });
   
-    it('should create the Modal', async function (this: TestContext<Modal>) {
-        // this.fixture.detectChanges();
-        this.fixture.whenStable().then(() => {
-            console.log('this.hostComponent.element', this.hostComponent.element);
+    it('should create the Modal', async(() => {
+        // fixture.detectChanges();
+        fixture.whenStable().then(() => {
+            console.log('hostComponent.element', hostComponent.element);
             
-            expect(this.hostComponent).toBeTruthy();
+            expect(hostComponent).toBeTruthy();
         });
-    });
+    }));
 
-    it('width should be 500 for small size', async function (this: TestContext<Modal>) {
-        console.log('here is the error...modal', this.hostComponent.element);
-        // this.fixture.detectChanges();
-        // this.fixture.whenStable().then(() => {
-                // this.hostComponent.element.config.uiStyles.attributes.width = 'small';
-                // expect(this.hostComponent.width).toEqual('500');
+    it('width should be 500 for small size', async(() => {
+        console.log('here is the error...modal', hostComponent.element);
+        // fixture.detectChanges();
+        // fixture.whenStable().then(() => {
+                // hostComponent.element.config.uiStyles.attributes.width = 'small';
+                // expect(hostComponent.width).toEqual('500');
         // });
-    });
+    }));
 
-    // it('width should be 700 for medium size', async function (this: TestContext<Modal>) {
-    //     // this.fixture.whenStable().then(() => {
-    //         this.hostComponent.element.config.uiStyles.attributes.width = 'medium';
-    //         expect(this.hostComponent.width).toEqual('700');
+    // it('width should be 700 for medium size', async(() => {
+    //     // fixture.whenStable().then(() => {
+    //         hostComponent.element.config.uiStyles.attributes.width = 'medium';
+    //         expect(hostComponent.width).toEqual('700');
     //     // });
-    // });
+    // }));
 
-    // it('width should be 900 for large size', async function (this: TestContext<Modal>) {
-    //     // this.fixture.whenStable().then(() => {
-    //         this.hostComponent.element.config.uiStyles.attributes.width = 'large';
-    //         expect(this.hostComponent.width).toEqual('900');
+    // it('width should be 900 for large size', async(() => {
+    //     // fixture.whenStable().then(() => {
+    //         hostComponent.element.config.uiStyles.attributes.width = 'large';
+    //         expect(hostComponent.width).toEqual('900');
     //     // });
-    // });
+    // }));
 
-    // it('width property should be updated from element if size is not available', async function (this: TestContext<Modal>) {
-    //     // this.fixture.whenStable().then(() => {
-    //         this.hostComponent.element.config.uiStyles.attributes.width = '999';
-    //         expect(this.hostComponent.width).toEqual('999');
+    // it('width property should be updated from element if size is not available', async(() => {
+    //     // fixture.whenStable().then(() => {
+    //         hostComponent.element.config.uiStyles.attributes.width = '999';
+    //         expect(hostComponent.width).toEqual('999');
     //     // });
-    // });
+    // }));
 
-    // it('closeDialog() should call pageservice.processEvent', async function (this: TestContext<Modal>) {
-    //     this.hostComponent.element.visible = true;
+    // it('closeDialog() should call pageservice.processEvent', async(() => {
+    //     hostComponent.element.visible = true;
     //     spyOn(pageservice, 'processEvent').and.callThrough();
-    //     this.hostComponent.closeDialog(false);
+    //     hostComponent.closeDialog(false);
     //     expect(pageservice.processEvent).toHaveBeenCalled();
-    // });
+    // }));
 
-    // it('closeDialog() should not call pageservice.processEvent', async function (this: TestContext<Modal>) {
-    //     this.hostComponent.element.visible = false;
+    // it('closeDialog() should not call pageservice.processEvent', async(() => {
+    //     hostComponent.element.visible = false;
     //     spyOn(pageservice, 'processEvent').and.callThrough();
-    //     this.hostComponent.closeDialog('a');
+    //     hostComponent.closeDialog('a');
     //     expect(pageservice.processEvent).not.toHaveBeenCalled();
-    // });
+    // }));
 
-    // it('resizable property should be updated from element', async function (this: TestContext<Modal>) {
-    //     // this.fixture.whenStable().then(() => {
-    //         this.hostComponent.element.config.uiStyles.attributes.resizable = true;
-    //         expect(this.hostComponent.resizable).toEqual(true);
+    // it('resizable property should be updated from element', async(() => {
+    //     // fixture.whenStable().then(() => {
+    //         hostComponent.element.config.uiStyles.attributes.resizable = true;
+    //         expect(hostComponent.resizable).toEqual(true);
     
     //     // });
-    // });
+    // }));
 
     // it('closable property should updated from the element', function (this: TestContext<Modal>) {
-    //     // this.fixture.whenStable().then(() => {
-    //         this.hostComponent.element.config.uiStyles.attributes.closable = true;
-    //         expect(this.hostComponent.closable).toEqual(true);
+    //     // fixture.whenStable().then(() => {
+    //         hostComponent.element.config.uiStyles.attributes.closable = true;
+    //         expect(hostComponent.closable).toEqual(true);
     //     // });
-    // });
+    // }));
 
 });

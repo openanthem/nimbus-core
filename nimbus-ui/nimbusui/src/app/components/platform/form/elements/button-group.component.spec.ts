@@ -19,17 +19,22 @@ const declarations = [
    AngularSvgIconModule
  ];
  const providers = []
-
+ let fixture, hostComponent;
 describe('ButtonGroup', () => {
 
   configureTestSuite();
-  setup(ButtonGroup, declarations, imports, providers);
-
-  beforeEach(async function(this: TestContext<ButtonGroup>){
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
   });
 
-  it('should create the ButtonGroup', async function (this: TestContext<ButtonGroup>) {
-    expect(this.hostComponent).toBeTruthy();
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ButtonGroup);
+    hostComponent = fixture.debugElement.componentInstance;
   });
+
+  it('should create the ButtonGroup', async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
 
 });

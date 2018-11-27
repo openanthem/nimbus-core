@@ -1,3 +1,4 @@
+import { Param } from './../../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
@@ -51,94 +52,99 @@ const providers = [
    AppInitService,
    SessionStoreService
 ];
+let fixture, hostComponent;
 
 describe('MultiselectCard', () => {
 
-  configureTestSuite();
-  setup(MultiselectCard, declarations, imports, providers);
-  param = (<any>data).payload;
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
 
-  beforeEach(async function(this: TestContext<MultiselectCard>) {
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(MultiselectCard);
+    hostComponent = fixture.debugElement.componentInstance;
     const fg = new FormGroup({});
     const checks: ValidatorFn[] = [];
     checks.push(Validators.required);
     fg.addControl(param.config.code, new FormControl(param.leafState, checks));
-    this.hostComponent.form = fg;
-    this.hostComponent.element = param;
+    hostComponent.form = fg;
+    hostComponent.element = param;
     pageService = TestBed.get(PageService);
   });
 
-  it('should create the MultiselectCard', async function (this: TestContext<MultiselectCard>) {
-    expect(this.hostComponent).toBeTruthy();
-  });
+  it('should create the MultiselectCard', async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
 
-  it('set value() should update the value property', async function (this: TestContext<MultiselectCard>) {
-    this.hostComponent.value = 'test';
-    expect(this.hostComponent.value).toEqual('test');
-  });
+  it('set value() should update the value property', async(() => {
+    hostComponent.value = 'test';
+    expect(hostComponent.value).toEqual('test');
+  }));
 
-    it('registerOnChange() should update the onChange property', async function (this: TestContext<MultiselectCard>) {
-      this.hostComponent.registerOnChange('test');
-      expect(this.hostComponent.onChange).toEqual('test');
-    });
+    it('registerOnChange() should update the onChange property', async(() => {
+      hostComponent.registerOnChange('test');
+      expect(hostComponent.onChange).toEqual('test');
+    }));
 
-    it('writeValue() should update the value property', async function (this: TestContext<MultiselectCard>) {
-      this.hostComponent.writeValue('test');
-      this.hostComponent.writeValue('test');
-      expect(this.hostComponent.value).toEqual('test');
-    });
+    it('writeValue() should update the value property', async(() => {
+      hostComponent.writeValue('test');
+      hostComponent.writeValue('test');
+      expect(hostComponent.value).toEqual('test');
+    }));
 
-    it('registerOnTouched() should update the onTouched property', async function (this: TestContext<MultiselectCard>) {
-      this.hostComponent.registerOnTouched('test');
-      expect(this.hostComponent.onTouched).toEqual('test');
-    });
+    it('registerOnTouched() should update the onTouched property', async(() => {
+      hostComponent.registerOnTouched('test');
+      expect(hostComponent.onTouched).toEqual('test');
+    }));
 
-    it('toggleChecked() should return true', async function (this: TestContext<MultiselectCard>) {
-      (this.hostComponent as any).selectedOptions[0] = 'test';
-      expect(this.hostComponent.toggleChecked('test')).toBeTruthy();
-    });
+    it('toggleChecked() should return true', async(() => {
+      (hostComponent as any).selectedOptions[0] = 'test';
+      expect(hostComponent.toggleChecked('test')).toBeTruthy();
+    }));
 
-    it('toggleChecked() should return false', async function (this: TestContext<MultiselectCard>) {
-      (this.hostComponent as any).selectedOptions[0] = 'test';
-      expect(this.hostComponent.toggleChecked('test1')).toBeFalsy();
-    });
+    it('toggleChecked() should return false', async(() => {
+      (hostComponent as any).selectedOptions[0] = 'test';
+      expect(hostComponent.toggleChecked('test1')).toBeFalsy();
+    }));
 
-    it('selectOption() should update the value property based on valid argumnet', async function (this: TestContext<MultiselectCard>) {
-      const selectedOptions = (this.hostComponent as any).selectedOptions;
+    it('selectOption() should update the value property based on valid argumnet', async(() => {
+      const selectedOptions = (hostComponent as any).selectedOptions;
       selectedOptions[0] = 'test';
-      this.hostComponent.selectOption('test', '');
-      expect(this.hostComponent.value).toEqual(selectedOptions);
-    });
+      hostComponent.selectOption('test', '');
+      expect(hostComponent.value).toEqual(selectedOptions);
+    }));
 
-    it('selectOption() should update the value property', async function (this: TestContext<MultiselectCard>) {
-      const selectedOptions = (this.hostComponent as any).selectedOptions;
+    it('selectOption() should update the value property', async(() => {
+      const selectedOptions = (hostComponent as any).selectedOptions;
       selectedOptions[0] = 'test';
-      this.hostComponent.selectOption('123', '');
-      expect(this.hostComponent.value).toEqual(selectedOptions);
-    });
+      hostComponent.selectOption('123', '');
+      expect(hostComponent.value).toEqual(selectedOptions);
+    }));
 
-    it('setState() should call the pageService.postOnChange()', async function (this: TestContext<MultiselectCard>) {
-      this.fixture.whenStable().then(() => {
-        this.hostComponent.element.leafState = '';
-        this.hostComponent.element.config.uiStyles.attributes.postEventOnChange = true;
+    it('setState() should call the pageService.postOnChange()', () => {
+      fixture.whenStable().then(() => {
+        hostComponent.element.leafState = '';
+        hostComponent.element.config.uiStyles.attributes.postEventOnChange = true;
         spyOn(pageService, 'postOnChange').and.callThrough();
-        this.hostComponent.setState('t');
+        hostComponent.setState('t');
         expect(pageService.postOnChange).toHaveBeenCalled();
       });
     });
 
-    it('ngOnInit() should update the selectedOptions and call form.controls.a.setValue()', async function (this: TestContext<MultiselectCard>) {
-      this.fixture.whenStable().then(() => {
-        this.hostComponent.element.leafState = '';
-        this.hostComponent.element.path = 'test';
-        spyOn(this.hostComponent, 'setState').and.returnValue('');
-        spyOn(this.hostComponent.form.controls.firstName, 'setValue').and.callThrough();
-        const eve = { config: { code: 'firstName' }, path: 'test', leafState: '' };
-        this.hostComponent.ngOnInit();
-        pageService.logError(eve);
-        expect((this.hostComponent as any).selectedOptions).toEqual('');
-        expect(this.hostComponent.form.controls.firstName.setValue).toHaveBeenCalled();
-      });
-    });
+    // it('ngOnInit() should update the selectedOptions and call form.controls.a.setValue()', () => {
+    //   fixture.whenStable().then(() => {
+    //     hostComponent.element.leafState = '';
+    //     hostComponent.element.path = 'test';
+    //     spyOn(hostComponent, 'setState').and.returnValue('');
+    //     spyOn(hostComponent.form.controls.firstName, 'setValue').and.callThrough();
+    //     const eve = { config: { code: 'firstName' }, path: 'test', leafState: '' };
+    //     hostComponent.ngOnInit();
+    //     pageService.logError(eve);
+    //     expect((hostComponent as any).selectedOptions).toEqual('');
+    //     expect(hostComponent.form.controls.firstName.setValue).toHaveBeenCalled();
+    //   });
+    // });
     
 });

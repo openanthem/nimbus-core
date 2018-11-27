@@ -43,90 +43,96 @@ const providers = [
      ConfigService
  ];
 
+ let fixture, hostComponent;
+ 
 describe('Link', () => {
 
-    configureTestSuite();
-    setup(Link, declarations, imports, providers);
-    param = (<any>data).payload;
+    configureTestSuite(() => {
+        setup( declarations, imports, providers);
+    });
+    
+       let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
   
-    beforeEach(async function(this: TestContext<Link>){
-        this.hostComponent.element = param;
+    beforeEach(() => {
+        fixture = TestBed.createComponent(Link);
+        hostComponent = fixture.debugElement.componentInstance;
+        hostComponent.element = param;
         pageService = TestBed.get(PageService);
         configService = TestBed.get(ConfigService);
     });
 
-    it('should create the Link', function (this: TestContext<Link>) {
-        expect(this.hostComponent).toBeTruthy();
+    it('should create the Link',  () => {
+        expect(hostComponent).toBeTruthy();
     });
 
-    it('processOnClick() should call pageService.processEvent()', function (this: TestContext<Link>) {
+    it('processOnClick() should call pageService.processEvent()',  () => {
         spyOn(pageService, 'processEvent').and.callThrough();
-        this.hostComponent.processOnClick('/test', 'GET', 'test');
+        hostComponent.processOnClick('/test', 'GET', 'test');
         expect(pageService.processEvent).toHaveBeenCalled();
     });
 
-    it('processOnClick() should call pageService.processEvent() and call GenericDomain.addAttribute()', function (this: TestContext<Link>) {
+    it('processOnClick() should call pageService.processEvent() and call GenericDomain.addAttribute()',  () => {
         spyOn(pageService, 'processEvent').and.callThrough();
-        this.hostComponent.root = new Param(configService);
-        this.hostComponent.root.type = new Type(configService);
-        this.hostComponent.root.type.model = new Model(configService);
+        hostComponent.root = new Param(configService);
+        hostComponent.root.type = new Type(configService);
+        hostComponent.root.type.model = new Model(configService);
         const rootParam: any = { path: 'test/id' };
-        this.hostComponent.root.type.model.params = [rootParam];
-        this.hostComponent.element.path = 'test/t';
-        this.hostComponent.processOnClick('/test', 'GET', 'test');
+        hostComponent.root.type.model.params = [rootParam];
+        hostComponent.element.path = 'test/t';
+        hostComponent.processOnClick('/test', 'GET', 'test');
         expect(pageService.processEvent).toHaveBeenCalled();
     });
-    it('processOnClick() should call pageService.processEvent() and should not call GenericDomain.addAttribute()', function (this: TestContext<Link>) {
+    it('processOnClick() should call pageService.processEvent() and should not call GenericDomain.addAttribute()',  () => {
         spyOn(pageService, 'processEvent').and.callThrough();
-        this.hostComponent.root = new Param(configService);
-        this.hostComponent.root.type = new Type(configService);
-        this.hostComponent.root.type.model = new Model(configService);
+        hostComponent.root = new Param(configService);
+        hostComponent.root.type = new Type(configService);
+        hostComponent.root.type.model = new Model(configService);
         const rootParam: any = { path: 'asdsa' };
-        this.hostComponent.root.type.model.params = [rootParam];
-        this.hostComponent.element.path = 'test/t';
-        this.hostComponent.processOnClick('/test', 'GET', 'test');
+        hostComponent.root.type.model.params = [rootParam];
+        hostComponent.element.path = 'test/t';
+        hostComponent.processOnClick('/test', 'GET', 'test');
         expect(pageService.processEvent).toHaveBeenCalled();
     });
 
-    it('url should be update from the element', function (this: TestContext<Link>) {
-        this.fixture.whenStable().then(() => {
-            this.hostComponent.element.config.uiStyles.attributes.url = '/test';
-            expect(this.hostComponent.url).toEqual('/test');
+    it('url should be update from the element', () => {
+        fixture.whenStable().then(() => {
+            hostComponent.element.config.uiStyles.attributes.url = '/test';
+            expect(hostComponent.url).toEqual('/test');
         });
     });
 
-    it('value should be updated from the element', function (this: TestContext<Link>) {
-        this.fixture.whenStable().then(() => {
-            this.hostComponent.element.config.uiStyles.attributes.value = 'tvalue';
-            expect(this.hostComponent.value).toEqual('tvalue');
+    it('value should be updated from the element', () => {
+        fixture.whenStable().then(() => {
+            hostComponent.element.config.uiStyles.attributes.value = 'tvalue';
+            expect(hostComponent.value).toEqual('tvalue');
         });
     });
 
-    it('method should BE updated from the element', function (this: TestContext<Link>) {
-        this.fixture.whenStable().then(() => {
-            this.hostComponent.element.config.uiStyles.attributes.method = 'tmethod';
-            expect(this.hostComponent.method).toEqual('tmethod');
+    it('method should BE updated from the element',  () => {
+        fixture.whenStable().then(() => {
+            hostComponent.element.config.uiStyles.attributes.method = 'tmethod';
+            expect(hostComponent.method).toEqual('tmethod');
         });
     });
 
-    it('b property should be updated from the element', function (this: TestContext<Link>) {
-        this.fixture.whenStable().then(() => {
-            this.hostComponent.element.config.uiStyles.attributes.b = 'tb'
-            expect(this.hostComponent.b).toEqual('tb');
+    it('b property should be updated from the element',  () => {
+        fixture.whenStable().then(() => {
+            hostComponent.element.config.uiStyles.attributes.b = 'tb'
+            expect(hostComponent.b).toEqual('tb');
         });
     });
 
-    it('target should be updated from element', function (this: TestContext<Link>) {
-        this.fixture.whenStable().then(() => {
-            this.hostComponent.element.config.uiStyles.attributes.target = 'ttarget'
-            expect(this.hostComponent.target).toEqual('ttarget');
+    it('target should be updated from element', () => {
+        fixture.whenStable().then(() => {
+            hostComponent.element.config.uiStyles.attributes.target = 'ttarget'
+            expect(hostComponent.target).toEqual('ttarget');
         });
     });
 
-    it('rel should be updated from the element', function (this: TestContext<Link>) {
-        this.fixture.whenStable().then(() => {
-            this.hostComponent.element.config.uiStyles.attributes.rel = 'trel';
-            expect(this.hostComponent.rel).toEqual('trel');
+    it('rel should be updated from the element',  () => {
+        fixture.whenStable().then(() => {
+            hostComponent.element.config.uiStyles.attributes.rel = 'trel';
+            expect(hostComponent.rel).toEqual('trel');
         });
     });
 

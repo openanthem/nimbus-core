@@ -193,219 +193,225 @@ const providers = [
  AppInitService
 ];
 
+let fixture, hostComponent;
+
 describe('Form', () => {
 
-  configureTestSuite();
-  setup(Form, declarations, imports, providers);
-  param = (<any>data).payload;
-
-  beforeEach(async function(this: TestContext<Form>){
-      const fg = new FormGroup({});
-      const checks: ValidatorFn[] = [];
-      checks.push(Validators.required);
-      fg.addControl(param.config.code, new FormControl(param.leafState,checks));
-      this.hostComponent.form = fg;
-      this.hostComponent.element = param;
-      formElementsService = TestBed.get(FormElementsService);
-      pageService = TestBed.get(PageService);
-      configService = TestBed.get(ConfigService);
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
   });
 
-  it('should create the Form', function(this: TestContext<Form>) {
-    expect(this.hostComponent).toBeTruthy();
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+
+  beforeEach( () => {
+    fixture = TestBed.createComponent(Form);
+    hostComponent = fixture.debugElement.componentInstance;
+    const fg = new FormGroup({});
+    const checks: ValidatorFn[] = [];
+    checks.push(Validators.required);
+    fg.addControl(param.config.code, new FormControl(param.leafState,checks));
+    hostComponent.form = fg;
+    hostComponent.element = param;
+    formElementsService = TestBed.get(FormElementsService);
+    pageService = TestBed.get(PageService);
+    configService = TestBed.get(ConfigService);
   });
 
-  it('toggle() should update the opened property', function(this: TestContext<Form>) {
-    this.hostComponent.opened = true;
-    this.hostComponent.toggle();
-    expect(this.hostComponent.opened).toBeFalsy();
-  });
+  it('should create the Form',  async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
 
-  it('groupFormElements() should update formElements property', function(this: TestContext<Form>) {
-    this.fixture.whenStable().then(() => {
-      this.hostComponent.element.config.uiStyles.attributes.alias = 'tset';
-      const model: any = { params: [this.hostComponent.element] };
-      this.hostComponent.groupFormElements(model, true);
-      expect(this.hostComponent.formElements.includes(model.params[0])).toBeTruthy();
+  it('toggle() should update the opened property',  async(() => {
+    hostComponent.opened = true;
+    hostComponent.toggle();
+    expect(hostComponent.opened).toBeFalsy();
+  }));
+
+  it('groupFormElements() should update formElements property',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.alias = 'tset';
+      const model: any = { params: [hostComponent.element] };
+      hostComponent.groupFormElements(model, true);
+      expect(hostComponent.formElements.includes(model.params[0])).toBeTruthy();
     });
   });
 
-  it('groupFormElements() should not call groupFormElements() two times', function(this: TestContext<Form>) {
+  it('groupFormElements() should not call groupFormElements() two times',  async(() => {
     const model: any = { params: null };
-    spyOn(this.hostComponent, 'groupFormElements').and.callThrough();
-    this.hostComponent.groupFormElements(model, false);
-    expect(this.hostComponent.groupFormElements).not.toHaveBeenCalledTimes(2);
-  });
+    spyOn(hostComponent, 'groupFormElements').and.callThrough();
+    hostComponent.groupFormElements(model, false);
+    expect(hostComponent.groupFormElements).not.toHaveBeenCalledTimes(2);
+  }));
 
-  it('ngOnChanges() should call buildFormElements()', function(this: TestContext<Form>) {
+  it('ngOnChanges() should call buildFormElements()',  async(() => {
     const changes: any = { model: { currentValue: 'test' } };
     const element: any = { config: '' };
-    this.hostComponent.element = element;
-    spyOn(this.hostComponent, 'buildFormElements').and.callThrough();
-    this.hostComponent.ngOnChanges(changes);
-    expect(this.hostComponent.buildFormElements).toHaveBeenCalled();
-  });
+    hostComponent.element = element;
+    spyOn(hostComponent, 'buildFormElements').and.callThrough();
+    hostComponent.ngOnChanges(changes);
+    expect(hostComponent.buildFormElements).toHaveBeenCalled();
+  }));
 
-  it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is sixColumn', function(this: TestContext<Form>) {
-    this.fixture.whenStable().then(() => {
-      this.hostComponent.element.config.uiStyles.attributes.cssClass = 'sixColumn';
-      this.hostComponent.ngOnInit();
-      expect(this.hostComponent.elementCss).toEqual('col-lg-2 col-md-4 col-sm-12');
-    });
-  });
+  // it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is sixColumn',  () => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'sixColumn';
+  //     hostComponent.ngOnInit();
+  //     expect(hostComponent.elementCss).toEqual('col-lg-2 col-md-4 col-sm-12');
+  //   });
+  // });
 
-  it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is fourColumn', function(this: TestContext<Form>) {
-    this.fixture.whenStable().then(() => {
-      this.hostComponent.element.config.uiStyles.attributes.cssClass = 'fourColumn';
-      this.hostComponent.ngOnInit();
-      expect(this.hostComponent.elementCss).toEqual('col-lg-3 col-md-6 col-sm-12');
-    });
-  });
+  // it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is fourColumn',  () => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'fourColumn';
+  //     hostComponent.ngOnInit();
+  //     expect(hostComponent.elementCss).toEqual('col-lg-3 col-md-6 col-sm-12');
+  //   });
+  // });
 
-  it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is threeColumn', function(this: TestContext<Form>) {
-    this.fixture.whenStable().then(() => {
-      this.hostComponent.element.config.uiStyles.attributes.cssClass = 'threeColumn';
-      this.hostComponent.ngOnInit();
-      expect(this.hostComponent.elementCss).toEqual('col-lg-4 col-md-6 col-sm-12');
-    });
-  });
+  // it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is threeColumn',  () => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'threeColumn';
+  //     hostComponent.ngOnInit();
+  //     expect(hostComponent.elementCss).toEqual('col-lg-4 col-md-6 col-sm-12');
+  //   });
+  // });
 
-  it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is twoColumn', function(this: TestContext<Form>) {
-    this.fixture.whenStable().then(() => {
-      this.hostComponent.element.config.uiStyles.attributes.cssClass = 'twoColumn';
-      this.hostComponent.ngOnInit();
-      expect(this.hostComponent.elementCss).toEqual('col-sm-12 col-md-6');
-    });
-  });
+  // it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is twoColumn',  () => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'twoColumn';
+  //     hostComponent.ngOnInit();
+  //     expect(hostComponent.elementCss).toEqual('col-sm-12 col-md-6');
+  //   });
+  // });
 
-  it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is oneColumn', function(this: TestContext<Form>) {
-    this.fixture.whenStable().then(() => {
-      this.hostComponent.element.config.uiStyles.attributes.cssClass = 'oneColumn';
-      this.hostComponent.ngOnInit();
-      expect(this.hostComponent.elementCss).toEqual('col-sm-12');
-    });
-  });
+  // it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is oneColumn',  () => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'oneColumn';
+  //     hostComponent.ngOnInit();
+  //     expect(hostComponent.elementCss).toEqual('col-sm-12');
+  //   });
+  // });
 
-  it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is inline', function(this: TestContext<Form>) {
-    this.fixture.whenStable().then(() => {
-      this.hostComponent.element.config.uiStyles.attributes.cssClass = 'inline';
-      this.hostComponent.ngOnInit();
-      expect(this.hostComponent.elementCss).toEqual('d-block d-md-inline-block mr-3');
-    });
-  });
+  // it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is inline',  () => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'inline';
+  //     hostComponent.ngOnInit();
+  //     expect(hostComponent.elementCss).toEqual('d-block d-md-inline-block mr-3');
+  //   });
+  // });
  
-  it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is questionGroup', function(this: TestContext<Form>) {
-    this.fixture.whenStable().then(() => {
-      this.hostComponent.element.config.uiStyles.attributes.cssClass = 'questionGroup';
-      this.hostComponent.ngOnInit();
-      expect(this.hostComponent.elementCss).toEqual(' questionGroup');
-    });
-  });
+  // it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is questionGroup',  () => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'questionGroup';
+  //     hostComponent.ngOnInit();
+  //     expect(hostComponent.elementCss).toEqual(' questionGroup');
+  //   });
+  // });
 
-  it('ngOnInit() should update the elementCss property based on element.config.uiStyles.attributes.cssClass', function(this: TestContext<Form>) {
-    this.fixture.whenStable().then(() => {
-      this.hostComponent.element.config.uiStyles.attributes.cssClass = 'test';
-      spyOn(this.hostComponent, 'buildFormElements').and.callThrough();
-      this.hostComponent.ngOnInit();
-      expect(this.hostComponent.elementCss).toEqual('test');
-      expect(this.hostComponent.buildFormElements).toHaveBeenCalled();
-    });
-  });
+  // it('ngOnInit() should update the elementCss property based on element.config.uiStyles.attributes.cssClass',  () => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'test';
+  //     spyOn(hostComponent, 'buildFormElements').and.callThrough();
+  //     hostComponent.ngOnInit();
+  //     expect(hostComponent.elementCss).toEqual('test');
+  //     expect(hostComponent.buildFormElements).toHaveBeenCalled();
+  //   });
+  // });
 
-  it('buildFormElements() should update the groupFormElements()', function(this: TestContext<Form>) {
+  it('buildFormElements() should update the groupFormElements()',  async(() => {
     const model: any = {};
     const element: any = { config: '' };
-    this.hostComponent.element = element;
-    spyOn(this.hostComponent, 'groupFormElements').and.callThrough();
-    this.hostComponent.buildFormElements(model);
-    expect(this.hostComponent.groupFormElements).toHaveBeenCalled();
-  });
+    hostComponent.element = element;
+    spyOn(hostComponent, 'groupFormElements').and.callThrough();
+    hostComponent.buildFormElements(model);
+    expect(hostComponent.groupFormElements).toHaveBeenCalled();
+  }));
 
-  it('buildFormElements() should subscribe to pageService.eventUpdate$', function(this: TestContext<Form>) {
+  it('buildFormElements() should subscribe to pageService.eventUpdate$',  async(() => {
     const model: any = {};
     const element: any = { config: '', path: 'test' };
-    this.hostComponent.element = element;
+    hostComponent.element = element;
     const eve = { leafState: { a: 'a' }, path: 'test', config: { uiStyles: { attributes: { alias: 'Form' } } } };
     spyOn(pageService.eventUpdate$, 'subscribe').and.callThrough();
-    this.hostComponent.buildFormElements(model);
+    hostComponent.buildFormElements(model);
     pageService.logError(eve);
     expect(pageService.eventUpdate$.subscribe).toHaveBeenCalled();
-  });
+  }));
 
-  it('buildFormElements() should call form.patchValue() and update form', function(this: TestContext<Form>) {
+  it('buildFormElements() should call form.patchValue() and update form',  async(() => {
     const model: any = {};
     const element: any = { config: '', path: 'test' };
-    this.hostComponent.element = element;
+    hostComponent.element = element;
     const eve = { leafState: { a: 'a' }, path: 'test', config: { uiStyles: { attributes: { alias: 'Form' } } } };
-    this.hostComponent.buildFormElements(model);
+    hostComponent.buildFormElements(model);
     pageService.logError(eve);
-    expect(this.hostComponent.form).toBeTruthy();
-  });
+    expect(hostComponent.form).toBeTruthy();
+  }));
 
-  it('buildFormElements() should not call form.patchValue() and no form changes', function(this: TestContext<Form>) {
+  it('buildFormElements() should not call form.patchValue() and no form changes',  async(() => {
     const model: any = {};
     const element: any = { config: '', path: 'test' };
-    this.hostComponent.element = element;
+    hostComponent.element = element;
     const eve = { path: 'test', config: { uiStyles: { attributes: { alias: 'Form' } } } };
-    this.hostComponent.buildFormElements(model);
+    hostComponent.buildFormElements(model);
     pageService.logError(eve);
-    expect(this.hostComponent.form).toBeTruthy();
-  });
+    expect(hostComponent.form).toBeTruthy();
+  }));
 
-  it('buildFormElements() should not call form.patchValue() and no form changes', function(this: TestContext<Form>) {
+  it('buildFormElements() should not call form.patchValue() and no form changes',  async(() => {
     const model: any = {};
     const element: any = { config: '', path: 'test' };
-    this.hostComponent.element = element;
+    hostComponent.element = element;
     const eve = { path: '1test', config: { uiStyles: { attributes: { alias: 'Form' } } } };
-    this.hostComponent.buildFormElements(model);
+    hostComponent.buildFormElements(model);
     pageService.logError(eve);
-    expect(this.hostComponent.form).toBeTruthy();
-  });
+    expect(hostComponent.form).toBeTruthy();
+  }));
 
-  it('buildFormElements() should call form.patchValue() and update form', function(this: TestContext<Form>) {
+  it('buildFormElements() should call form.patchValue() and update form',  async(() => {
     const model: any = {};
     const element: any = { config: '', path: 'test' };
-    this.hostComponent.element = element;
+    hostComponent.element = element;
     const eve = { leafState: 'test', path: 'test', config: { uiStyles: { attributes: { alias: 'Form' } } } };
-    spyOn(this.hostComponent, 'hasNull').and.returnValue(false);
-    this.hostComponent.buildFormElements(model);
+    spyOn(hostComponent, 'hasNull').and.returnValue(false);
+    hostComponent.buildFormElements(model);
     pageService.logError(eve);
-    expect(this.hostComponent.form).toBeTruthy();
-  });
+    expect(hostComponent.form).toBeTruthy();
+  }));
 
-  it('hasNull() should return true', function(this: TestContext<Form>) {
+  it('hasNull() should return true',  async(() => {
     const target = { a: null };
-    expect(this.hostComponent.hasNull(target)).toBeTruthy();
-  });
+    expect(hostComponent.hasNull(target)).toBeTruthy();
+  }));
 
-  it('hasNull() should return false', function(this: TestContext<Form>) {
+  it('hasNull() should return false',  async(() => {
     const target = { a: '123' };
-    expect(this.hostComponent.hasNull(target)).toBeFalsy();
-  });
+    expect(hostComponent.hasNull(target)).toBeFalsy();
+  }));
 
-  it('partialUpdate() should call form.patchValue()', function(this: TestContext<Form>) {
+  it('partialUpdate() should call form.patchValue()',  async(() => {
     const obj = {};
-    spyOn(this.hostComponent.form, 'patchValue').and.returnValue('');
-    this.hostComponent.partialUpdate(obj);
-    expect(this.hostComponent.form.patchValue).toHaveBeenCalled();
-  });
+    spyOn(hostComponent.form, 'patchValue').and.returnValue('');
+    hostComponent.partialUpdate(obj);
+    expect(hostComponent.form.patchValue).toHaveBeenCalled();
+  }));
 
-  it('groupFormElements() should call groupFormElements() two times', function(this: TestContext<Form>) {
+  it('groupFormElements() should call groupFormElements() two times',  async(() => {
     const model1: any = 'test';
-    this.hostComponent.element.type.model = model1;
-    this.hostComponent.element.config.uiStyles = null;
-    const model: any = { params: [this.hostComponent.element] };
-    spyOn(this.hostComponent, 'groupFormElements').and.callThrough();
-    this.hostComponent.groupFormElements(model, true);
-    expect(this.hostComponent.groupFormElements).toHaveBeenCalledTimes(2);
-  });
+    hostComponent.element.type.model = model1;
+    hostComponent.element.config.uiStyles = null;
+    const model: any = { params: [hostComponent.element] };
+    spyOn(hostComponent, 'groupFormElements').and.callThrough();
+    hostComponent.groupFormElements(model, true);
+    expect(hostComponent.groupFormElements).toHaveBeenCalledTimes(2);
+  }));
 
-  it('groupFormElements() should not update formElements property', function(this: TestContext<Form>) {
-    this.hostComponent.element.config.uiStyles = null;
-    const model: any = { params: [this.hostComponent.element] };
-    this.hostComponent.formModel = [];
-    this.hostComponent.groupFormElements(model, false);
-    expect(this.hostComponent.formElements.includes(model.params[0])).toBeFalsy();
-  });
+  it('groupFormElements() should not update formElements property',  async(() => {
+    hostComponent.element.config.uiStyles = null;
+    const model: any = { params: [hostComponent.element] };
+    hostComponent.formModel = [];
+    hostComponent.groupFormElements(model, false);
+    expect(hostComponent.formElements.includes(model.params[0])).toBeFalsy();
+  }));
 
 });

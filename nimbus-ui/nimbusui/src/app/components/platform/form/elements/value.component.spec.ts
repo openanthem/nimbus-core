@@ -8,17 +8,21 @@ import { setup, TestContext } from '../../../../setup.spec';
 const declarations = [Value];
 const imports = [];
 const providers = [];
-
+let fixture, hostComponent;
 describe('Value', () => {
 
-  configureTestSuite();
-  setup(Value, declarations, imports, providers);
-
-  beforeEach(async function(this: TestContext<Value>) {
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
   });
 
-  it('should create the Value', async function (this: TestContext<Value>) {
-    expect(this.hostComponent).toBeTruthy();
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(Value);
+    hostComponent = fixture.debugElement.componentInstance;
   });
+
+  it('should create the Value', async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
 
 });

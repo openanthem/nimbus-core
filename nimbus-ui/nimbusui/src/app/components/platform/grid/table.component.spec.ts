@@ -214,20 +214,25 @@ const providers = [
    WebContentSvc,
    ChangeDetectorRef,
 ];
-
+let fixture, hostComponent;
 describe('DataTable', () => {
 
-  configureTestSuite();
-  setup(DataTable, declarations, imports, providers);
-  param = (<any>data).payload;
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
 
-  beforeEach(async function(this: TestContext<DataTable>){
-    this.hostComponent.element = param;
+  let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     
+  let param: Param = JSON.parse(payload);
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(DataTable);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = param;
     const checks: ValidatorFn[] = [];
     checks.push(Validators.required);
     const fg = new FormGroup({});
     fg.addControl(param.config.code, new FormControl(param.leafState, checks));
-    this.hostComponent.form = fg;
+    hostComponent.form = fg;
     configService = TestBed.get(ConfigService);
     pageService = TestBed.get(PageService);
     elementRef = TestBed.get(ElementRef);
@@ -239,994 +244,994 @@ describe('DataTable', () => {
 });
 
 
-    it('should create the DataTable', async function(this: TestContext<DataTable>){
-      expect(this.hostComponent).toBeTruthy();  
-    });
+    it('should create the DataTable', ()=> {
+      expect(hostComponent).toBeTruthy();  
+   });
 
-    it('this.hostComponent._value should update the this.hostComponent.value', async function(this: TestContext<DataTable>){
-      this.hostComponent._value = ['test'];
-      expect(this.hostComponent.value).toEqual(['test']);
-    });
+    it('hostComponent._value should update the hostComponent.value', ()=> {
+      hostComponent._value = ['test'];
+      expect(hostComponent.value).toEqual(['test']);
+   });
 
-    it('this.hostComponent.value should update the this.hostComponent.value', async function(this: TestContext<DataTable>){
-      this.hostComponent.value = ['test'];
-      expect(this.hostComponent.value).toEqual(['test']);
-    });
+    it('hostComponent.value should update the hostComponent.value', ()=> {
+      hostComponent.value = ['test'];
+      expect(hostComponent.value).toEqual(['test']);
+   });
 
-    it('writeValue() should call cd.markForCheck()', async function(this: TestContext<DataTable>){
-      const spy = spyOn((this.hostComponent as any).cd, 'markForCheck').and.callThrough();
-      this.hostComponent.writeValue({});
+    it('writeValue() should call cd.markForCheck()', ()=> {
+      const spy = spyOn((hostComponent as any).cd, 'markForCheck').and.callThrough();
+      hostComponent.writeValue({});
       expect(spy).toHaveBeenCalled();
-    });
+   });
 
-    it('should create the DataTable', async function(this: TestContext<DataTable>){
-      const spy = spyOn((this.hostComponent as any).cd, 'markForCheck').and.callThrough();
-      this.hostComponent.writeValue(undefined);
+    it('should create the DataTable', ()=> {
+      const spy = spyOn((hostComponent as any).cd, 'markForCheck').and.callThrough();
+      hostComponent.writeValue(undefined);
       expect(spy).toHaveBeenCalled();
-    });
+   });
 
-    it('registerOnChange() should update the onChange property', async function(this: TestContext<DataTable>){
+    it('registerOnChange() should update the onChange property', ()=> {
       const test = () => {};
-      this.hostComponent.registerOnChange(test);
-      expect(this.hostComponent.onChange).toEqual(test);
-    });
+      hostComponent.registerOnChange(test);
+      expect(hostComponent.onChange).toEqual(test);
+   });
 
-    it('registerOnTouched() should update the onTouched property', async function(this: TestContext<DataTable>){
+    it('registerOnTouched() should update the onTouched property', ()=> {
       const test = () => {};
-      this.hostComponent.registerOnTouched(test);
-      expect(this.hostComponent.onTouched).toEqual(test);
-    });
-
-    it('ngOnInit() should update the hasFilters, and rowExpanderKey properties', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: '', uiStyles: { attributes: { rowSelection: true } } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        this.hostComponent.rowExpanderKey = 'test';
-        spyOn(this.hostComponent, 'between').and.returnValue('test');
-        this.hostComponent.ngOnInit();
-        expect(this.hostComponent.hasFilters).toBeFalsy();
-        expect(this.hostComponent.rowExpanderKey).toEqual('test');
-      });
-    });
-
-    it('ngAfterViewInit() should call pageService.processEvent()', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true } } };
-        this.hostComponent.element.config.uiStyles.attributes.lazyLoad = false;
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        spyOn(pageService, 'processEvent').and.callThrough();
-        this.hostComponent.ngAfterViewInit();
-        expect(pageService.processEvent).toHaveBeenCalled();
-      });
-    });
-
-    it('ngAfterViewInit() should not call pageService.processEvent() if lazyLoad is true', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        this.hostComponent.element.config.uiStyles.attributes.lazyLoad = true;
-        spyOn(pageService, 'processEvent').and.callThrough();
-        this.hostComponent.ngAfterViewInit();
-        expect(pageService.processEvent).not.toHaveBeenCalled();
-      });
-    });
-
-    it('ngAfterViewInit() should not call pageService.processEvent() if onLoad is false', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        this.hostComponent.element.config.uiStyles.attributes.onLoad = false;
-        spyOn(pageService, 'processEvent').and.callThrough();
-        this.hostComponent.ngAfterViewInit();
-        expect(pageService.processEvent).not.toHaveBeenCalled();
-      });
-    });
-
-    it('ngAfterViewInit() should call dt.filter()', async function(this: TestContext<DataTable>){
-      this.hostComponent.element = new Param(configService);
-      const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true } } };
-      this.hostComponent.params = [new ParamConfig(configService)];
-      this.hostComponent.params[0].code = '';
-      this.hostComponent.params[0].uiStyles = new UiStyle();
-      this.hostComponent.params[0].uiStyles.attributes = new UiAttribute();
-      this.hostComponent.params[0].uiStyles.attributes.filterValue = 'a';
-      this.hostComponent.params[0].uiStyles.attributes.filterMode = '';
-      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-      spyOn(this.hostComponent.dt, 'filter').and.returnValue('');
-      this.hostComponent.ngAfterViewInit();
-      expect(this.hostComponent.dt.filter).toHaveBeenCalled();
-    });
-
-    it('ngAfterViewInit() should not call dt.filter()', async function(this: TestContext<DataTable>){
-      const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true } } };
-      this.hostComponent.params = [new ParamConfig(configService)];
-      this.hostComponent.params[0].code = '';
-      this.hostComponent.params[0].uiStyles = new UiStyle();
-      this.hostComponent.params[0].uiStyles.attributes = new UiAttribute();
-      this.hostComponent.params[0].uiStyles.attributes.filterValue = '';
-      this.hostComponent.params[0].uiStyles.attributes.filterMode = '';
-      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-      spyOn(this.hostComponent.dt, 'filter').and.returnValue('');
-      this.hostComponent.ngAfterViewInit();
-      expect(this.hostComponent.dt.filter).not.toHaveBeenCalled();
-    });
-
-    it('ngAfterViewInit() should update the value, totalRecords properties and call updatePageDetailsState()', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
-        this.hostComponent.element.path = 'test';
-        const eve = { gridData: { leafState: [] }, path: 'test', gridList: [], page: { totalElements: 100, first: true } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        spyOn(this.hostComponent, 'updatePageDetailsState').and.callThrough();
-        this.hostComponent.element.config.uiStyles.attributes.lazyLoad = true;
-        this.hostComponent.ngAfterViewInit();
-        pageService.logError(eve);
-        expect(this.hostComponent.value).toEqual([]);
-        expect(this.hostComponent.totalRecords).toEqual(100);
-        expect(this.hostComponent.updatePageDetailsState).toHaveBeenCalled();
-      });
-    });
-
-    it('ngAfterViewInit() should not call updatePageDetailsState()', async function(this: TestContext<DataTable>){
-      const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
-      this.hostComponent.element.path = 'test';
-      const eve = { path: '1test', gridList: 'tGrid', page: { totalElements: 'telements', first: true } };
-      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-      spyOn(this.hostComponent, 'updatePageDetailsState').and.callThrough();
-      this.hostComponent.ngAfterViewInit();
-      pageService.logError(eve);
-      expect(this.hostComponent.updatePageDetailsState).not.toHaveBeenCalled();
-    });
-
-    it('ngAfterViewInit() should call updatePageDetailsState() and update the dt.first', async function(this: TestContext<DataTable>){
-      const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: false } } };
-      this.hostComponent.element.path = 'test';
-      const eve = { gridData: {leafState: ''}, path: 'test', gridList: 'tGrid', page: { totalElements: 'telements', first: true } };
-      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-      spyOn(this.hostComponent, 'updatePageDetailsState').and.callThrough();
-      this.hostComponent.ngAfterViewInit();
-      pageService.logError(eve);
-      expect(this.hostComponent.updatePageDetailsState).toHaveBeenCalled();
-      expect(this.hostComponent.dt.first).toEqual(0);
-    });
-
-    it('ngAfterViewInit() should not call updatePageDetailsState() based on eve.page.first', async function(this: TestContext<DataTable>){
-      this.hostComponent.element = new Param(configService);
-      const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
-      this.hostComponent.element.path = 'test';
-      const eve = { gridData: {leafState: ''}, path: 'test', gridList: 'tGrid', page: { totalElements: 'telements', first: false } };
-      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-      spyOn(this.hostComponent, 'updatePageDetailsState').and.callThrough();
-      this.hostComponent.ngAfterViewInit();
-      pageService.logError(eve);
-      expect(this.hostComponent.updatePageDetailsState).not.toHaveBeenCalled();
-    });
-
-    it('ngAfterViewInit() should call form.controls.t.enable()', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: 't', uiStyles: { attributes: { onLoad: false } } };
-        this.hostComponent.element.path = '/test';
-        const eve = { enabled: true, path: '/test', config: { code: 'firstName' } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        spyOn(this.hostComponent.form.controls.firstName, 'enable').and.callThrough();
-        this.hostComponent.ngAfterViewInit();
-        pageService.notifyErrorEvent(eve);
-        expect(this.hostComponent.form.controls.firstName.enable).toHaveBeenCalled();
-      });
-    });
-
-    it('ngAfterViewInit() should call form.controls.t.disable()', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: 't', uiStyles: { attributes: { onLoad: false } } };
-        this.hostComponent.element.path = '/test';
-        const eve = { enabled: false, path: '/test', config: { code: 'firstName' } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        spyOn(this.hostComponent.form.controls.firstName, 'disable').and.callThrough();
-        this.hostComponent.ngAfterViewInit();
-        pageService.notifyErrorEvent(eve);
-        expect(this.hostComponent.form.controls.firstName.disable).toHaveBeenCalled();
-      });
-    });
-
-    it('ngAfterViewInit() should not call form.controls.t.disable()', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: 't', uiStyles: { attributes: { onLoad: false } } };
-        this.hostComponent.element.path = '/test';
-        const eve = { enabled: false, path: '/1test', config: { code: 'firstName' } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        spyOn(this.hostComponent.form.controls.firstName, 'disable').and.callThrough();
-        this.hostComponent.ngAfterViewInit();
-        pageService.notifyErrorEvent(eve);
-        expect(this.hostComponent.form.controls.firstName.disable).not.toHaveBeenCalled();
-      });
-    });
-
-    it('isRowExpanderHidden() should return true', async function(this: TestContext<DataTable>){
-      this.hostComponent.rowExpanderKey = '';
-      expect(this.hostComponent.isRowExpanderHidden('')).toBeTruthy();
-    });
-
-    it('isRowExpanderHidden() should return true based on argument', async function(this: TestContext<DataTable>){
-      this.hostComponent.rowExpanderKey = 't';
-      const testdata = { t: true };
-      expect(this.hostComponent.isRowExpanderHidden(testdata)).toBeTruthy();
-    });
-
-    it('isRowExpanderHidden() should return false', async function(this: TestContext<DataTable>){
-      this.hostComponent.rowExpanderKey = 't';
-      const testdata = { t: false };
-      expect(this.hostComponent.isRowExpanderHidden(testdata)).toBeFalsy();
-    });
-
-    it('getCellDisplayValue() should call dtFormat.transform()', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.code = 't';
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.datePattern = 'Date';
-      const rowData = { t: true };
-      spyOn(ParamUtils, 'isKnownDateType').and.returnValue(true);
-      const spy = spyOn((this.hostComponent as any).dtFormat, 'transform').and.returnValue('test');
-      this.hostComponent.getCellDisplayValue(rowData, col);
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('getCellDisplayValue() should not call dtFormat.transform() and return true', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.code = 't';
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.datePattern = 'Date';
-      const rowData = { t: true };
-      spyOn(ParamUtils, 'isKnownDateType').and.returnValue(false);
-      const spy = spyOn((this.hostComponent as any).dtFormat, 'transform').and.returnValue('test');
-      const res = this.hostComponent.getCellDisplayValue(rowData, col);
-      expect(spy).not.toHaveBeenCalled();
-      expect(res).toBeTruthy();
-    });
-
-
-    it('getCellDisplayValue() should not call dtFormat.transform() and return col.uiStyles.attributes.placeholder', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.code = 't';
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.datePattern = 'Date';
-      col.uiStyles.attributes.placeholder = 'test';
-      const rowData = { t: null };
-      spyOn(ParamUtils, 'isKnownDateType').and.returnValue(false);
-      const spy = spyOn((this.hostComponent as any).dtFormat, 'transform').and.returnValue('test');
-      const res = this.hostComponent.getCellDisplayValue(rowData, col);
-      expect(spy).not.toHaveBeenCalled();
-      expect(res).toEqual('test');
-    });
-
-    it('showColumn() should return true', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.hidden = false;
-      col.uiStyles.attributes.alias = 'test';
-      expect(this.hostComponent.showColumn(col)).toBeTruthy();
-    });
-
-    it('showColumn() should return true for link', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.hidden = false;
-      col.uiStyles.attributes.alias = 'Link';
-      expect(this.hostComponent.showColumn(col)).toBeTruthy();
-    });
-
-    it('showColumn() should return true for button', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.hidden = false;
-      col.uiStyles.attributes.alias = 'Button';
-      expect(this.hostComponent.showColumn(col)).toBeTruthy();
-    });
-
-    it('showColumn() should return true for LinkMenu', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.hidden = false;
-      col.uiStyles.attributes.alias = 'LinkMenu';
-      expect(this.hostComponent.showColumn(col)).toBeTruthy();
-    });
-
-    it('showColumn() should return false for gridRowBody', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.hidden = false;
-      col.uiStyles.attributes.alias = 'GridRowBody';
-      expect(this.hostComponent.showColumn(col)).toBeFalsy();
-    });
-
-    it('showColumn() should return false', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.hidden = true;
-      col.uiStyles.attributes.alias = 'test';
-      expect(this.hostComponent.showColumn(col)).toBeFalsy();
-    });
-
-    it('showHeader() should return true', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.hidden = false;
-      col.uiStyles.attributes.alias = 'GridColumn';
-      expect(this.hostComponent.showHeader(col)).toBeTruthy();
-    });
-
-    it('showHeader() should return false', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.hidden = false;
-      col.uiStyles.attributes.alias = 'Button';
-      expect(this.hostComponent.showHeader(col)).toBeFalsy();
-    });
-
-    it('showValue(col) should return true', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.type.nested = false;
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.alias = 'test';
-      expect(this.hostComponent.showValue(col)).toBeFalsy();
-    });
-
-    it('showValue(col) should return false if no uiStyle is given', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.type.nested = false;
-      col.uiStyles = new UiStyle();
-      expect(this.hostComponent.showValue(col)).toBeFalsy();
-    });
-
-    it('showValue(col) should return true for GridColumn', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.type.nested = false;
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.alias = ViewComponent.gridcolumn.toString();
-      expect(this.hostComponent.showValue(col)).toBeTruthy();
-    });
-
-    it('showValue(col) should return false for GridColumn with showAsLink attribute', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.type.nested = false;
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.alias = 'GridColumn';
-      col.uiStyles.attributes.showAsLink = true;
-      expect(this.hostComponent.showValue(col)).toBeFalsy();
-    });
-
-    it('showValue(col) should return false for link', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.type.nested = false;
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.alias = 'Link';
-      expect(this.hostComponent.showValue(col)).toBeFalsy();
-    });
-
-    it('showValue(col) should return false for button', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.type.nested = false;
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.alias = 'Button';
-      expect(this.hostComponent.showValue(col)).toBeFalsy();
-    });
-
-    it('showValue(col) should return false for link Menu', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.type.nested = false;
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.alias = 'LinkMenu';
-      expect(this.hostComponent.showValue(col)).toBeFalsy();
-    });
-
-    it('showValue(col) should return false for grid row body', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.type.nested = false;
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.alias = 'GridRowBody';
-      expect(this.hostComponent.showValue(col)).toBeFalsy();
-    });
-
-    it('showUiStyleInColumn(col) should return true for link', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.alias = 'Link';
-      expect(this.hostComponent.showUiStyleInColumn(col)).toBeTruthy();
-    });
-
-    it('showUiStyleInColumn(col) should return true for button', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.alias = 'Button';
-      expect(this.hostComponent.showUiStyleInColumn(col)).toBeTruthy();
-    });
-
-    it('showUiStyleInColumn(col) should return true for linkMenu', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.alias = 'LinkMenu';
-      expect(this.hostComponent.showUiStyleInColumn(col)).toBeTruthy();
-    });
-
-    it('showUiStyleInColumn(col) should return false', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.alias = 'TextBox';
-      expect(this.hostComponent.showUiStyleInColumn(col)).toBeFalsy();
-    });
-
-    it('showUiStyleInColumn(col) should return false', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.alias = 'Link1';
-      expect(this.hostComponent.showUiStyleInColumn(col)).toBeFalsy();
-    });
-
-    it('showLinkMenu(col) should return truee', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.alias = 'LinkMenu';
-      expect(this.hostComponent.showLinkMenu(col)).toBeTruthy();
-    });
-
-    it('showLinkMenu(col) should return false', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.type = new ConfigType(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.alias = '1LinkMenu';
-      expect(this.hostComponent.showLinkMenu(col)).toBeFalsy();
-    });
-
-    it('getViewParam() should return element.collectionParams object', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.code = '2';
-      expect(this.hostComponent.getViewParam(col, 1).path).toEqual('/test/1/2');
-    });
-
-    it('isClickedOnDropDown() should return true', async function(this: TestContext<DataTable>){
-    const dArray = new ActionDropdown(webContentSvc, pageService, elementRef);
-    dArray['elementRef'].nativeElement.contains = () => {return true};
-      expect(this.hostComponent.isClickedOnDropDown([dArray], 'te')).toBeTruthy();
-    });
-
-    it('isClickedOnDropDown() should return false', async function(this: TestContext<DataTable>){
-      const dArray = new ActionDropdown(webContentSvc, pageService, elementRef);
-      dArray['elementRef'].nativeElement.contains = () => {return false};
-        expect(this.hostComponent.isClickedOnDropDown([dArray], 'te')).toBeFalsy();
-    });
-
-    it('isActive() should return true', async function(this: TestContext<DataTable>){
-      this.hostComponent.filterState = [123];
-      expect(this.hostComponent.isActive(0)).toBeTruthy();
-    });
-
-    it('isActive()should return false', async function(this: TestContext<DataTable>){
-      this.hostComponent.filterState = [123];
-      expect(this.hostComponent.isActive(1)).toBeFalsy();
-    });
-
-    it('getRowPath() should return path', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.code = '123';
-      this.hostComponent.element.path = '/test';
-      const item = { elemId: 456 };
-      expect(this.hostComponent.getRowPath(col, item)).toEqual('/test/456/123');
-    });
-
-    it('processOnClick() should call pageService.processEvent()', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.b = '';
-      col.uiStyles.attributes.method = '';
-      this.hostComponent.element.path = '';
-      spyOn(pageService, 'processEvent').and.returnValue('');
-      this.hostComponent.processOnClick(col, { elemId: '' });
-      expect(pageService.processEvent).toHaveBeenCalled();
-    });
-
-    it('processOnClick() should call pageService.processEvent() based on getAllURLParams()', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.b = '';
-      col.uiStyles.attributes.method = '';
-      this.hostComponent.element.path = '';
-      spyOn(pageService, 'processEvent').and.returnValue('');
-      spyOn(this.hostComponent, 'getAllURLParams').and.returnValue(['test']);
-      this.hostComponent.processOnClick(col, { elemId: '', es: 't' });
-      expect(pageService.processEvent).toHaveBeenCalled();
-    });
-
-    it('processOnClick() should call pageService.processEvent() based on getAllURLParams() and argument', async function(this: TestContext<DataTable>){
-      const col = new ParamConfig(configService);
-      col.uiStyles = new UiStyle();
-      col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.b = '';
-      col.uiStyles.attributes.method = '';
-      this.hostComponent.element.path = '';
-      spyOn(pageService, 'processEvent').and.returnValue('');
-      spyOn(this.hostComponent, 'getAllURLParams').and.returnValue(['test']);
-      this.hostComponent.processOnClick(col, { elemId: '' });
-      expect(pageService.processEvent).toHaveBeenCalled();
-    });
-
-    it('toggleFilter() should update the showFilters property', async function(this: TestContext<DataTable>){
-      this.hostComponent.showFilters = true;
-      this.hostComponent.toggleFilter('');
-      expect(this.hostComponent.showFilters).toBeFalsy();
-    });
-
-    it('postGridData() should call the pageService.processEvent()', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: '', uiStyles: { attributes: { postButtonTargetPath: true, postButtonUrl: '/test' } } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        this.hostComponent.selectedRows = [{ elemId: 123 }];
-        spyOn(pageService, 'processEvent').and.returnValue('');
-        this.hostComponent.postGridData({});
-        expect(pageService.processEvent).toHaveBeenCalled();
-      });
-    });
-
-    it('resetMultiSelection should update the selectedRows property', async function(this: TestContext<DataTable>){
-      this.hostComponent.resetMultiSelection();
-      expect(this.hostComponent.selectedRows).toEqual([]);
-    });
-
-    it('customSort() should not sort value array for number type', async function(this: TestContext<DataTable>){
-      const eve = { order: -1, field: { code: 'test', uiStyles: { attributes: { sortAs: 'NUMBER' } }, type: { name: 't' } } };
-      this.hostComponent.value = [{ test: null, index: 1 }, { test: null, index: 2 }];
-      const value = this.hostComponent.value;
-      this.hostComponent.customSort(eve);
-      expect(this.hostComponent.value).toEqual(value);
-    });
-
-    it('customSort() should sort value array for number type, if first code is null', async function(this: TestContext<DataTable>){
-      const eve = { order: -2, field: { code: 'test', uiStyles: { attributes: { sortAs: 'NUMBER' } }, type: { name: 't' } } };
-      this.hostComponent.value = [{ test: null, index: 4 }, { test: 1, index: 3 }];
-      this.hostComponent.customSort(eve);
-      expect(this.hostComponent.value[0].index).toEqual(3);
-    });
-
-    it('customSort() should sort value array for number type, if second code is null', async function(this: TestContext<DataTable>){
-      const eve = { order: 1, field: { order: 1, code: 'test', uiStyles: { attributes: { sortAs: 'NUMBER' } }, type: { name: 't' } } };
-      this.hostComponent.value = [{ index: 2, test: 1 }, { index: 1, test: null }];
-      this.hostComponent.customSort(eve);
-      expect(this.hostComponent.value[0].index).toEqual(1);
-    });
-
-    it('customSort() should sort value array for number type, if second code less than first code', async function(this: TestContext<DataTable>){
-      const eve = { order: 1, field: { code: 'test', uiStyles: { attributes: { sortAs: 'NUMBER' } }, type: { name: 't' } } };
-      this.hostComponent.value = [{ index: 5, test: 1 }, { index: 1, test: 0 }];
-      this.hostComponent.customSort(eve);
-      expect(this.hostComponent.value[0].index).toEqual(1);
-    });
-
-    it('customSort() should sort value array for number type, if first code less than second code', async function(this: TestContext<DataTable>){
-      const eve = { order: -1, field: { code: 'test', uiStyles: { attributes: { sortAs: 'NUMBER' } }, type: { name: 't' } } };
-      this.hostComponent.value = [{ test: 1, index: 4 }, { test: 2, index: 1 }];
-      this.hostComponent.customSort(eve);
-      expect(this.hostComponent.value[0].index).toEqual(1);
-    });
-
-    it('customSort() should sort value array for number type, if both codes are equal', async function(this: TestContext<DataTable>){
-      const eve = { field: { code: 'test', uiStyles: { attributes: { sortAs: 'NUMBER' } }, type: { name: 't' } } };
-      this.hostComponent.value = [{ index: 1, test: 1 }, { index: 2, test: 1 }];
-      const value = this.hostComponent.value;
-      this.hostComponent.customSort(eve);
-      expect(this.hostComponent.value).toEqual(value);
-    });
-
-    it('customSort() should not sort value array for Date type', async function(this: TestContext<DataTable>){
-      const eve = { order: 1, field: { code: 'test', uiStyles: { attributes: { sortAs: 'DATE' } }, type: { name: 't' } } };
-      this.hostComponent.value = [{ test: null }, { test: null }];
-      const value = this.hostComponent.value;
-      this.hostComponent.customSort(eve);
-      expect(this.hostComponent.value).toEqual(value);
-    });
-
-    it('customSort() should sort value array for Date type, if first code is null', async function(this: TestContext<DataTable>){
-      const eve = { order: -1, field: { code: 'test', uiStyles: { attributes: { sortAs: 'DATE' } }, type: { name: 't' } } };
-      this.hostComponent.value = [{ test: null }, { test: 1 }];
-      this.hostComponent.customSort(eve);
-      expect(this.hostComponent.value[0].test).toEqual(1);
-    });
-
-    it('customSort() should not sort value arra', async function(this: TestContext<DataTable>){
-      const eve = { order: 1, field: { code: 'test', uiStyles: { attributes: { sortAs: 's' } }, type: { name: 't' } } };
-      this.hostComponent.value = [{ test: null }, { test: null }];
-      const value = this.hostComponent.value;
-      this.hostComponent.customSort(eve);
-      expect(this.hostComponent.value).toEqual(value);
-    });
-
-    it('customSort() should sort value array, if first code is null', async function(this: TestContext<DataTable>){
-      const eve = { order: -1, field: { code: 'test', uiStyles: { attributes: { sortAs: 's' } }, type: { name: 't' } } };
-      this.hostComponent.value = [{ test: null }, { test: 11 }];
-      this.hostComponent.customSort(eve);
-      expect(this.hostComponent.value[0].test).toEqual(11);
-    });
-
-    it('customSort() should sort value array, if second code is null', async function(this: TestContext<DataTable>){
-      const eve = { order: 1, field: { code: 'test', uiStyles: { attributes: { sortAs: 's' } }, type: { name: 't' } } };
-      this.hostComponent.value = [{ test: 111 }, { test: null }];
-      this.hostComponent.customSort(eve);
-      expect(this.hostComponent.value[0].test).toEqual(null);
-    });
-
-    it('customSort() should sort value array, if second code less than first code', async function(this: TestContext<DataTable>){
-      const eve = { order: 1, field: { code: 'test', uiStyles: { attributes: { sortAs: 's' } }, type: { name: 't' } } };
-      this.hostComponent.value = [{ test: { x: 2,
-        localeCompare: () => {
-              return 1;
-            } } }, { test: { x: 1,
-              localeCompare: () => {
-              return -1;
-            } } }];
-      this.hostComponent.customSort(eve);
-      expect(this.hostComponent.value[0].test.x).toEqual(1);
-    });
-
-    it('isSortAsNumber() should return true for int, NUMBER argument', async function(this: TestContext<DataTable>){
-      const res = (this.hostComponent as any).isSortAsNumber('int', 'NUMBER');
-      expect(res).toBeTruthy();
-    });
-
-    it('isSortAsNumber() should return true for int, null argument', async function(this: TestContext<DataTable>){
-      const res = (this.hostComponent as any).isSortAsNumber('int', null);
-      expect(res).toBeTruthy();
-    });
-
-    it('isSortAsNumber() should return true for integer, null argument', async function(this: TestContext<DataTable>){
-      const res = (this.hostComponent as any).isSortAsNumber('integer', null);
-      expect(res).toBeTruthy();
-    });
-
-    it('isSortAsNumber() should return true for long, null argument', async function(this: TestContext<DataTable>){
-      const res = (this.hostComponent as any).isSortAsNumber('long', null);
-      expect(res).toBeTruthy();
-    });
-
-    it('isSortAsNumber() should return true for double, null argument', async function(this: TestContext<DataTable>){
-      const res = (this.hostComponent as any).isSortAsNumber('double', null);
-      expect(res).toBeTruthy();
-    });
-
-    it('isSortAsDate() should return true for int, DATE argument', async function(this: TestContext<DataTable>){
-      const res = (this.hostComponent as any).isSortAsNumber('int', 'DATE');
-      expect(res).toBeTruthy();
-    });
-
-    it('between() should return false', async function(this: TestContext<DataTable>){
-      expect(this.hostComponent.between('day', 1)).toBeFalsy();
-    });
-
-    it('dateFilter() should call updatePageDetailsState() and dt.filter()', async function(this: TestContext<DataTable>){
-      const e = new Date();
-      const dt = new Table(elementRef, domHandler, objectUtils, null, tableService);
-      const datePattern = 'MMDDYYYY';
-      spyOn(this.hostComponent, 'updatePageDetailsState').and.callThrough();
-      spyOn(dt, 'filter').and.callThrough();
-      this.hostComponent.dateFilter(e, dt, '', datePattern);
-      expect(this.hostComponent.updatePageDetailsState).toHaveBeenCalled();
-      expect(dt.filter).toHaveBeenCalled();
-    });
-
-    it('inputFilter() shlould call dt.filter()', async function(this: TestContext<DataTable>){
-      const dt:any = { filter: () => {} };
-      spyOn(dt, 'filter').and.returnValue(true);
-      this.hostComponent.inputFilter({ target: { value: 1 } }, dt, 't', 't');
-      setTimeout(() => {
-        expect(dt.filter).toHaveBeenCalled();
-      }, 600);
-    });
-
-    it('inputFilter() shlould call dt.filter() based onb the filterTimeout property', async function(this: TestContext<DataTable>){
-      const dt:any = { filter: () => {} };
-      spyOn(dt, 'filter').and.returnValue(true);
-      this.hostComponent.filterTimeout = true;
-      this.hostComponent.inputFilter({ target: { value: 1 } }, dt, 't', 't');
-      setTimeout(() => {
-        expect(dt.filter).toHaveBeenCalled();
-      }, 600);
-    });
-
-    it('clearFilter() shlould call dt.filter()', async function(this: TestContext<DataTable>){
-      const dt:any = { filter: () => {} };
-      spyOn(dt, 'filter').and.returnValue('');
-      this.hostComponent.clearFilter({ value: 1 }, dt, 'as', 1);
-      expect(dt.filter).toHaveBeenCalled();
-    });
-
-    it('clearAll() should calldt.reset() and update the filterState property', async function(this: TestContext<DataTable>){
-      spyOn(this.hostComponent.dt, 'reset').and.returnValue('');
-      this.hostComponent.clearAll();
-      expect(this.hostComponent.dt.reset).toHaveBeenCalled();
-      expect(this.hostComponent.filterState).toEqual([]);
-    });
-
-    it('paginate() should update the rowEnd property', async function(this: TestContext<DataTable>){
-      const eve = { first: 12, rows: 2 };
-      this.hostComponent.totalRecords = 15;
-      this.hostComponent.paginate(eve);
-      expect(this.hostComponent.rowEnd).toEqual(14);
-    });
-
-    it('paginate() should update the rowEnd property based on the totalRecords value', async function(this: TestContext<DataTable>){
-      const eve = { first: 12, rows: 2 };
-      this.hostComponent.totalRecords = 13;
-      this.hostComponent.paginate(eve);
-      expect(this.hostComponent.rowEnd).toEqual(13);
-    });
-
-    it('updatePageDetailsState() should update the rowStart property', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        this.hostComponent.totalRecords = 1;
-        const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 3 } } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        this.hostComponent.updatePageDetailsState();
-        expect(this.hostComponent.rowStart).toEqual(1);
-      });
-    });
-
-    it('updatePageDetailsState() should update the rowStart property as 0', async function(this: TestContext<DataTable>){
-      this.hostComponent.totalRecords = 0;
-      this.hostComponent.element = new Param(configService);
-      const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 3 } } };
-      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-      this.hostComponent.updatePageDetailsState();
-      expect(this.hostComponent.rowStart).toEqual(0);
-    });
-
-    it('filterCallBack() should call the updatePageDetailsState()', async function(this: TestContext<DataTable>){
-      const eve = { filteredValue: [1] };
-      spyOn(this.hostComponent, 'updatePageDetailsState').and.returnValue('');
-      this.hostComponent.filterCallBack(eve);
-      expect(this.hostComponent.updatePageDetailsState).toHaveBeenCalled();
-      expect(this.hostComponent.totalRecords).toEqual(1);
-    });
-
-    it('toggleOpen() should call the mouseEventSubscription.unsubscribe()', async function(this: TestContext<DataTable>){
-      const eve = { isOpen: true, state: 'openPanel' };
-      const obj = {x: 10};
-      const test = observableOf(obj);
-      this.hostComponent.mouseEventSubscription =  test.subscribe();
-      spyOn(this.hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
-      this.hostComponent.mouseEventSubscription.closed = false;
-      this.hostComponent.toggleOpen(eve);
-      expect(this.hostComponent.mouseEventSubscription.unsubscribe).toHaveBeenCalled();
-    });
-
-    it('toggleOpen() should not call the mouseEventSubscription.unsubscribe()', async function(this: TestContext<DataTable>){
-      const eve = { isOpen: true, state: 'openPanel' };
-      const obj = {x: 10};
-      const test = observableOf(obj);
-      this.hostComponent.mouseEventSubscription =  test.subscribe();
-      this.hostComponent.mouseEventSubscription.closed = true;
-      spyOn(this.hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
-      this.hostComponent.toggleOpen(eve);
-      expect(this.hostComponent.mouseEventSubscription.unsubscribe).not.toHaveBeenCalled();
-    });
-
-    it('toggleOpen() should not call the mouseEventSubscription.unsubscribe() based on eve.state', async function(this: TestContext<DataTable>){
-      const eve = { isOpen: true, state: '1openPanel' };
-      const obj = {x: 10};
-      const test = observableOf(obj);
-      this.hostComponent.mouseEventSubscription =  test.subscribe();
-      this.hostComponent.mouseEventSubscription.closed = true;
-      spyOn(this.hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
-      this.hostComponent.toggleOpen(eve);
-      expect(this.hostComponent.mouseEventSubscription.unsubscribe).not.toHaveBeenCalled();
-    });
-
-    it('toggleOpen() should not call the mouseEventSubscription.unsubscribe() based on dropDowns property', async function(this: TestContext<DataTable>){
-      (this.hostComponent as any).dropDowns = { toArray: () => {
-        return [{ isOpen: true, selectedItem: false, state: '' }];
-      } };
-    const eve = { isOpen: true, state: '1openPanel' };
-    const obj = {x: 10};
-    const test = observableOf(obj);
-    this.hostComponent.mouseEventSubscription =  test.subscribe();
-    this.hostComponent.mouseEventSubscription.closed = false;
-    spyOn(this.hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
-    this.hostComponent.toggleOpen(eve);
-    expect(this.hostComponent.mouseEventSubscription.unsubscribe).not.toHaveBeenCalled();
-    });
-
-    it('export() should call dt.exportCSV()', async function(this: TestContext<DataTable>){
-      const tDate = new Date('December 17, 2017');
-      (this.hostComponent as any).dt = { filteredValue: [{ a: tDate }], value: [], exportCSV: () => {} };
-      this.hostComponent.params = [new ParamConfig(configService)];
-      this.hostComponent.params[0].code = 'a';
-      this.hostComponent.params[0].type = new ConfigType(configService);
-      this.hostComponent.params[0].type.name = 'Date'
-      this.hostComponent.params[0].uiStyles = new UiStyle();
-      this.hostComponent.params[0].uiStyles.attributes = new UiAttribute();
-      this.hostComponent.params[0].uiStyles.attributes.datePattern = '';
-            spyOn(this.hostComponent.dt, 'exportCSV').and.callThrough();
-      this.hostComponent.export();
-      expect(this.hostComponent.dt.exportCSV).toHaveBeenCalled();
-    });
-
-    it('export() should call dt.exportCSV() even without dt.filterValue.a', async function(this: TestContext<DataTable>){
-      const tDate = new Date('December 17, 2017');
-      (this.hostComponent as any).dt = { filteredValue: [{ a: '' }], value: [], exportCSV: () => {} };
-      this.hostComponent.params = [new ParamConfig(configService)];
-      this.hostComponent.params[0].code = 'a';
-      this.hostComponent.params[0].type = new ConfigType(configService);
-      this.hostComponent.params[0].type.name = 'Date'
-      spyOn(this.hostComponent.dt, 'exportCSV').and.callThrough();
-      this.hostComponent.export();
-      expect(this.hostComponent.dt.exportCSV).toHaveBeenCalled();
-    });
-
-    it('export() should call dt.exportCSV() even without dt.filterValue', async function(this: TestContext<DataTable>){
-      const tDate = new Date('December 17, 2017');
-      (this.hostComponent as any).dt = { filteredValue: [{}], value: [], exportCSV: () => {} };
-      this.hostComponent.params = [new ParamConfig(configService)];
-      this.hostComponent.params[0].code = 'a';
-      this.hostComponent.params[0].type = null;
-      spyOn(this.hostComponent.dt, 'exportCSV').and.callThrough();
-      this.hostComponent.export();
-      expect(this.hostComponent.dt.exportCSV).toHaveBeenCalled();
-    });
-
-    it('ngOnDestroy() should call the mouseEventSubscription.unsubscribe and cd.detach()', async function(this: TestContext<DataTable>){
-      (this.hostComponent as any).mouseEventSubscription = { unsubscribe: () => {} };
-      const spy = spyOn((this.hostComponent as any).cd, 'detach').and.callThrough();
-      spyOn(this.hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
-      this.hostComponent.ngOnDestroy();
-      expect(spy).toHaveBeenCalled();
-      expect(this.hostComponent.mouseEventSubscription.unsubscribe).toHaveBeenCalled();
-    });
-
-    it('ngOnDestroy() should call the cd.detach()', async function(this: TestContext<DataTable>){
-      const spy = spyOn((this.hostComponent as any).cd, 'detach').and.returnValue('');
-      this.hostComponent.ngOnDestroy();
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('loadDataLazy() call getQueryString() with 12, DESC', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        const eve = { first: 12, sortField: { code: '' }, sortOrder: 22, filters: [{ value: '' }] };
-        spyOn(this.hostComponent, 'getQueryString').and.callThrough();
-        this.hostComponent.loadDataLazy(eve);
-        expect(this.hostComponent.getQueryString).toHaveBeenCalled();
-        expect(this.hostComponent.getQueryString).toHaveBeenCalledWith(12, ',DESC');
-      });
-    });
-
-    it('loadDataLazy() call getQueryString() with 0, DESC', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        const eve = { first: 0, sortField: { code: '' }, sortOrder: 22, filters: [{ value: '' }] };
-        spyOn(this.hostComponent, 'getQueryString').and.callThrough();
-        this.hostComponent.loadDataLazy(eve);
-        expect(this.hostComponent.getQueryString).toHaveBeenCalled();
-        expect(this.hostComponent.getQueryString).toHaveBeenCalledWith(0, ',DESC');
-      });
-    });
-
-    it('loadDataLazy() call getQueryString() with 0, ASC', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        const eve = { first: 0, sortField: { code: '' }, sortOrder: 1, filters: [{ value: '' }] };
-        spyOn(this.hostComponent, 'getQueryString').and.callThrough();
-        this.hostComponent.loadDataLazy(eve);
-        expect(this.hostComponent.getQueryString).toHaveBeenCalled();
-        expect(this.hostComponent.getQueryString).toHaveBeenCalledWith(0, ',ASC');
-      });
-    });
-
-    it('loadDataLazy() call getQueryString() with 0, undefined', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        const eve = { first: 0, sortField: false, sortOrder: 1, filters: [{ value: '' }] };
-        spyOn(this.hostComponent, 'getQueryString').and.callThrough();
-        this.hostComponent.loadDataLazy(eve);
-        expect(this.hostComponent.getQueryString).toHaveBeenCalled();
-        expect(this.hostComponent.getQueryString).toHaveBeenCalledWith(0, undefined);
-      });
-    });
-
-    it('loadDataLazy() call getQueryString() with 0, ASC, if eve.filters is not avilable', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        const eve = { first: 0, sortField: { code: '' }, sortOrder: 1 };
-        spyOn(this.hostComponent, 'getQueryString').and.callThrough();
-        this.hostComponent.loadDataLazy(eve);
-        expect(this.hostComponent.getQueryString).toHaveBeenCalled();
-        expect(this.hostComponent.getQueryString).toHaveBeenCalledWith(0, ',ASC');
-      });
-    });
-
-    it('getQueryString(1, ASC) should return &sortBy=ASC&pageSize=1&page=1', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        const res = this.hostComponent.getQueryString(1, 'ASC');
-        expect(res).toEqual('&sortBy=ASC&pageSize=1&page=1');
-      });
-    });
-
-    it('getQueryString(1, null) should return &pageSize=1&page=1', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        const res = this.hostComponent.getQueryString(1, null);
-        expect(res).toEqual('&pageSize=1&page=1');
-      });
-    });
-
-    it('getQueryString(undefined, null) should return empty string', async function(this: TestContext<DataTable>){
-      this.fixture.whenStable().then(() => {
-        const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
-        spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-        const res = this.hostComponent.getQueryString(undefined, null);
-        expect(res).toEqual('');
-      });
-    });
-
-    it('getPattern() should return numPattern value', async function(this: TestContext<DataTable>){
-      spyOn((this.hostComponent as any), 'isSortAsNumber').and.returnValue(true);
-      (this.hostComponent as any).numPattern = 'test';
-      expect(this.hostComponent.getPattern('')).toEqual('test');
-    });
-
-    it('getPattern() should return defaultPattern value', async function(this: TestContext<DataTable>){
-      spyOn((this.hostComponent as any), 'isSortAsNumber').and.returnValue(false);
-      (this.hostComponent as any).defaultPattern = 'test';
-      expect(this.hostComponent.getPattern('')).toEqual('test');
-    });
+      hostComponent.registerOnTouched(test);
+      expect(hostComponent.onTouched).toEqual(test);
+   });
+
+    // it('ngOnInit() should update the hasFilters, and rowExpanderKey properties', () => {
+    //   fixture.whenStable().then(() => {
+    //     const eleConfig = { code: '', uiStyles: { attributes: { rowSelection: true } } };
+    //     spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+    //     hostComponent.rowExpanderKey = 'test';
+    //     spyOn(hostComponent, 'between').and.returnValue('test');
+    //     hostComponent.ngOnInit();
+    //     expect(hostComponent.hasFilters).toBeFalsy();
+    //     expect(hostComponent.rowExpanderKey).toEqual('test');
+    //   });
+    // });
+
+  //   it('ngAfterViewInit() should call pageService.processEvent()', () => {
+  //     fixture.whenStable().then(() => {
+  //       const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true } } };
+  //       hostComponent.element.config.uiStyles.attributes.lazyLoad = false;
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       spyOn(pageService, 'processEvent').and.callThrough();
+  //       hostComponent.ngAfterViewInit();
+  //       expect(pageService.processEvent).toHaveBeenCalled();
+  //     });
+  //   });
+
+  //   it('ngAfterViewInit() should not call pageService.processEvent() if lazyLoad is true', () => {
+  //     fixture.whenStable().then(() => {
+  //       hostComponent.element.config.uiStyles.attributes.lazyLoad = true;
+  //       spyOn(pageService, 'processEvent').and.callThrough();
+  //       hostComponent.ngAfterViewInit();
+  //       expect(pageService.processEvent).not.toHaveBeenCalled();
+  //     });
+  //   });
+
+  //   it('ngAfterViewInit() should not call pageService.processEvent() if onLoad is false', () => {
+  //     fixture.whenStable().then(() => {
+  //       hostComponent.element.config.uiStyles.attributes.onLoad = false;
+  //       spyOn(pageService, 'processEvent').and.callThrough();
+  //       hostComponent.ngAfterViewInit();
+  //       expect(pageService.processEvent).not.toHaveBeenCalled();
+  //     });
+  //   });
+
+  //   it('ngAfterViewInit() should call dt.filter()', ()=> {
+  //     hostComponent.element = new Param(configService);
+  //     const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true } } };
+  //     hostComponent.params = [new ParamConfig(configService)];
+  //     hostComponent.params[0].code = '';
+  //     hostComponent.params[0].uiStyles = new UiStyle();
+  //     hostComponent.params[0].uiStyles.attributes = new UiAttribute();
+  //     hostComponent.params[0].uiStyles.attributes.filterValue = 'a';
+  //     hostComponent.params[0].uiStyles.attributes.filterMode = '';
+  //     spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //     spyOn(hostComponent.dt, 'filter').and.returnValue('');
+  //     hostComponent.ngAfterViewInit();
+  //     expect(hostComponent.dt.filter).toHaveBeenCalled();
+  //  });
+
+  //   it('ngAfterViewInit() should not call dt.filter()', () => {
+  //     const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true } } };
+  //     hostComponent.params = [new ParamConfig(configService)];
+  //     hostComponent.params[0].code = '';
+  //     hostComponent.params[0].uiStyles = new UiStyle();
+  //     hostComponent.params[0].uiStyles.attributes = new UiAttribute();
+  //     hostComponent.params[0].uiStyles.attributes.filterValue = '';
+  //     hostComponent.params[0].uiStyles.attributes.filterMode = '';
+  //     spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //     spyOn(hostComponent.dt, 'filter').and.returnValue('');
+  //     hostComponent.ngAfterViewInit();
+  //     expect(hostComponent.dt.filter).not.toHaveBeenCalled();
+  //   });
+
+  //   it('ngAfterViewInit() should update the value, totalRecords properties and call updatePageDetailsState()', () => {
+  //     fixture.whenStable().then(() => {
+  //       const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
+  //       hostComponent.element.path = 'test';
+  //       const eve = { gridData: { leafState: [] }, path: 'test', gridList: [], page: { totalElements: 100, first: true } };
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       spyOn(hostComponent, 'updatePageDetailsState').and.callThrough();
+  //       hostComponent.element.config.uiStyles.attributes.lazyLoad = true;
+  //       hostComponent.ngAfterViewInit();
+  //       pageService.logError(eve);
+  //       expect(hostComponent.value).toEqual([]);
+  //       expect(hostComponent.totalRecords).toEqual(100);
+  //       expect(hostComponent.updatePageDetailsState).toHaveBeenCalled();
+  //     });
+  //   });
+
+  //   it('ngAfterViewInit() should not call updatePageDetailsState()', ()=> {
+  //     const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
+  //     hostComponent.element.path = 'test';
+  //     const eve = { path: '1test', gridList: 'tGrid', page: { totalElements: 'telements', first: true } };
+  //     spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //     spyOn(hostComponent, 'updatePageDetailsState').and.callThrough();
+  //     hostComponent.ngAfterViewInit();
+  //     pageService.logError(eve);
+  //     expect(hostComponent.updatePageDetailsState).not.toHaveBeenCalled();
+  //  });
+
+  //   it('ngAfterViewInit() should call updatePageDetailsState() and update the dt.first', ()=> {
+  //     const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: false } } };
+  //     hostComponent.element.path = 'test';
+  //     const eve = { gridData: {leafState: ''}, path: 'test', gridList: 'tGrid', page: { totalElements: 'telements', first: true } };
+  //     spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //     spyOn(hostComponent, 'updatePageDetailsState').and.callThrough();
+  //     hostComponent.ngAfterViewInit();
+  //     pageService.logError(eve);
+  //     expect(hostComponent.updatePageDetailsState).toHaveBeenCalled();
+  //     expect(hostComponent.dt.first).toEqual(0);
+  //  });
+
+  //   it('ngAfterViewInit() should not call updatePageDetailsState() based on eve.page.first', ()=> {
+  //     hostComponent.element = new Param(configService);
+  //     const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
+  //     hostComponent.element.path = 'test';
+  //     const eve = { gridData: {leafState: ''}, path: 'test', gridList: 'tGrid', page: { totalElements: 'telements', first: false } };
+  //     spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //     spyOn(hostComponent, 'updatePageDetailsState').and.callThrough();
+  //     hostComponent.ngAfterViewInit();
+  //     pageService.logError(eve);
+  //     expect(hostComponent.updatePageDetailsState).not.toHaveBeenCalled();
+  //  });
+
+  //   it('ngAfterViewInit() should call form.controls.t.enable()', () => {
+  //     fixture.whenStable().then(() => {
+  //       const eleConfig = { code: 't', uiStyles: { attributes: { onLoad: false } } };
+  //       hostComponent.element.path = '/test';
+  //       const eve = { enabled: true, path: '/test', config: { code: 'firstName' } };
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       spyOn(hostComponent.form.controls.firstName, 'enable').and.callThrough();
+  //       hostComponent.ngAfterViewInit();
+  //       pageService.notifyErrorEvent(eve);
+  //       expect(hostComponent.form.controls.firstName.enable).toHaveBeenCalled();
+  //     });
+  //   });
+
+  //   it('ngAfterViewInit() should call form.controls.t.disable()', () => {
+  //     fixture.whenStable().then(() => {
+  //       const eleConfig = { code: 't', uiStyles: { attributes: { onLoad: false } } };
+  //       hostComponent.element.path = '/test';
+  //       const eve = { enabled: false, path: '/test', config: { code: 'firstName' } };
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       spyOn(hostComponent.form.controls.firstName, 'disable').and.callThrough();
+  //       hostComponent.ngAfterViewInit();
+  //       pageService.notifyErrorEvent(eve);
+  //       expect(hostComponent.form.controls.firstName.disable).toHaveBeenCalled();
+  //     });
+  //   });
+
+  //   it('ngAfterViewInit() should not call form.controls.t.disable()', () => {
+  //     fixture.whenStable().then(() => {
+  //       const eleConfig = { code: 't', uiStyles: { attributes: { onLoad: false } } };
+  //       hostComponent.element.path = '/test';
+  //       const eve = { enabled: false, path: '/1test', config: { code: 'firstName' } };
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       spyOn(hostComponent.form.controls.firstName, 'disable').and.callThrough();
+  //       hostComponent.ngAfterViewInit();
+  //       pageService.notifyErrorEvent(eve);
+  //       expect(hostComponent.form.controls.firstName.disable).not.toHaveBeenCalled();
+  //     });
+  //   });
+
+  //   it('isRowExpanderHidden() should return true', ()=> {
+  //     hostComponent.rowExpanderKey = '';
+  //     expect(hostComponent.isRowExpanderHidden('')).toBeTruthy();
+  //  });
+
+  //   it('isRowExpanderHidden() should return true based on argument', ()=> {
+  //     hostComponent.rowExpanderKey = 't';
+  //     const testdata = { t: true };
+  //     expect(hostComponent.isRowExpanderHidden(testdata)).toBeTruthy();
+  //  });
+
+  //   it('isRowExpanderHidden() should return false', ()=> {
+  //     hostComponent.rowExpanderKey = 't';
+  //     const testdata = { t: false };
+  //     expect(hostComponent.isRowExpanderHidden(testdata)).toBeFalsy();
+  //  });
+
+  //   it('getCellDisplayValue() should call dtFormat.transform()', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.code = 't';
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.datePattern = 'Date';
+  //     const rowData = { t: true };
+  //     spyOn(ParamUtils, 'isKnownDateType').and.returnValue(true);
+  //     const spy = spyOn((hostComponent as any).dtFormat, 'transform').and.returnValue('test');
+  //     hostComponent.getCellDisplayValue(rowData, col);
+  //     expect(spy).toHaveBeenCalled();
+  //  });
+
+  //   it('getCellDisplayValue() should not call dtFormat.transform() and return true', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.code = 't';
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.datePattern = 'Date';
+  //     const rowData = { t: true };
+  //     spyOn(ParamUtils, 'isKnownDateType').and.returnValue(false);
+  //     const spy = spyOn((hostComponent as any).dtFormat, 'transform').and.returnValue('test');
+  //     const res = hostComponent.getCellDisplayValue(rowData, col);
+  //     expect(spy).not.toHaveBeenCalled();
+  //     expect(res).toBeTruthy();
+  //  });
+
+
+  //   it('getCellDisplayValue() should not call dtFormat.transform() and return col.uiStyles.attributes.placeholder', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.code = 't';
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.datePattern = 'Date';
+  //     col.uiStyles.attributes.placeholder = 'test';
+  //     const rowData = { t: null };
+  //     spyOn(ParamUtils, 'isKnownDateType').and.returnValue(false);
+  //     const spy = spyOn((hostComponent as any).dtFormat, 'transform').and.returnValue('test');
+  //     const res = hostComponent.getCellDisplayValue(rowData, col);
+  //     expect(spy).not.toHaveBeenCalled();
+  //     expect(res).toEqual('test');
+  //  });
+
+  //   it('showColumn() should return true', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.hidden = false;
+  //     col.uiStyles.attributes.alias = 'test';
+  //     expect(hostComponent.showColumn(col)).toBeTruthy();
+  //  });
+
+  //   it('showColumn() should return true for link', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.hidden = false;
+  //     col.uiStyles.attributes.alias = 'Link';
+  //     expect(hostComponent.showColumn(col)).toBeTruthy();
+  //  });
+
+  //   it('showColumn() should return true for button', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.hidden = false;
+  //     col.uiStyles.attributes.alias = 'Button';
+  //     expect(hostComponent.showColumn(col)).toBeTruthy();
+  //  });
+
+  //   it('showColumn() should return true for LinkMenu', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.hidden = false;
+  //     col.uiStyles.attributes.alias = 'LinkMenu';
+  //     expect(hostComponent.showColumn(col)).toBeTruthy();
+  //  });
+
+  //   it('showColumn() should return false for gridRowBody', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.hidden = false;
+  //     col.uiStyles.attributes.alias = 'GridRowBody';
+  //     expect(hostComponent.showColumn(col)).toBeFalsy();
+  //  });
+
+  //   it('showColumn() should return false', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.hidden = true;
+  //     col.uiStyles.attributes.alias = 'test';
+  //     expect(hostComponent.showColumn(col)).toBeFalsy();
+  //  });
+
+  //   it('showHeader() should return true', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.hidden = false;
+  //     col.uiStyles.attributes.alias = 'GridColumn';
+  //     expect(hostComponent.showHeader(col)).toBeTruthy();
+  //  });
+
+  //   it('showHeader() should return false', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.hidden = false;
+  //     col.uiStyles.attributes.alias = 'Button';
+  //     expect(hostComponent.showHeader(col)).toBeFalsy();
+  //  });
+
+  //   it('showValue(col) should return true', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.type.nested = false;
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.alias = 'test';
+  //     expect(hostComponent.showValue(col)).toBeFalsy();
+  //  });
+
+  //   it('showValue(col) should return false if no uiStyle is given', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.type.nested = false;
+  //     col.uiStyles = new UiStyle();
+  //     expect(hostComponent.showValue(col)).toBeFalsy();
+  //  });
+
+  //   it('showValue(col) should return true for GridColumn', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.type.nested = false;
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.alias = ViewComponent.gridcolumn.toString();
+  //     expect(hostComponent.showValue(col)).toBeTruthy();
+  //  });
+
+  //   it('showValue(col) should return false for GridColumn with showAsLink attribute', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.type.nested = false;
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.alias = 'GridColumn';
+  //     col.uiStyles.attributes.showAsLink = true;
+  //     expect(hostComponent.showValue(col)).toBeFalsy();
+  //  });
+
+  //   it('showValue(col) should return false for link', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.type.nested = false;
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.alias = 'Link';
+  //     expect(hostComponent.showValue(col)).toBeFalsy();
+  //  });
+
+  //   it('showValue(col) should return false for button', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.type.nested = false;
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.alias = 'Button';
+  //     expect(hostComponent.showValue(col)).toBeFalsy();
+  //  });
+
+  //   it('showValue(col) should return false for link Menu', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.type.nested = false;
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.alias = 'LinkMenu';
+  //     expect(hostComponent.showValue(col)).toBeFalsy();
+  //  });
+
+  //   it('showValue(col) should return false for grid row body', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.type.nested = false;
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.alias = 'GridRowBody';
+  //     expect(hostComponent.showValue(col)).toBeFalsy();
+  //  });
+
+  //   it('showUiStyleInColumn(col) should return true for link', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.alias = 'Link';
+  //     expect(hostComponent.showUiStyleInColumn(col)).toBeTruthy();
+  //  });
+
+  //   it('showUiStyleInColumn(col) should return true for button', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.alias = 'Button';
+  //     expect(hostComponent.showUiStyleInColumn(col)).toBeTruthy();
+  //  });
+
+  //   it('showUiStyleInColumn(col) should return true for linkMenu', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.alias = 'LinkMenu';
+  //     expect(hostComponent.showUiStyleInColumn(col)).toBeTruthy();
+  //  });
+
+  //   it('showUiStyleInColumn(col) should return false', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.alias = 'TextBox';
+  //     expect(hostComponent.showUiStyleInColumn(col)).toBeFalsy();
+  //  });
+
+  //   it('showUiStyleInColumn(col) should return false', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.alias = 'Link1';
+  //     expect(hostComponent.showUiStyleInColumn(col)).toBeFalsy();
+  //  });
+
+  //   it('showLinkMenu(col) should return truee', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.alias = 'LinkMenu';
+  //     expect(hostComponent.showLinkMenu(col)).toBeTruthy();
+  //  });
+
+  //   it('showLinkMenu(col) should return false', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.type = new ConfigType(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.alias = '1LinkMenu';
+  //     expect(hostComponent.showLinkMenu(col)).toBeFalsy();
+  //  });
+
+  //   it('getViewParam() should return element.collectionParams object', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.code = '2';
+  //     expect(hostComponent.getViewParam(col, 1).path).toEqual('/test/1/2');
+  //  });
+
+  //   it('isClickedOnDropDown() should return true', ()=> {
+  //   const dArray = new ActionDropdown(webContentSvc, pageService, elementRef);
+  //   dArray['elementRef'].nativeElement.contains = () => {return true};
+  //     expect(hostComponent.isClickedOnDropDown([dArray], 'te')).toBeTruthy();
+  //  });
+
+  //   it('isClickedOnDropDown() should return false', ()=> {
+  //     const dArray = new ActionDropdown(webContentSvc, pageService, elementRef);
+  //     dArray['elementRef'].nativeElement.contains = () => {return false};
+  //       expect(hostComponent.isClickedOnDropDown([dArray], 'te')).toBeFalsy();
+  //  });
+
+  //   it('isActive() should return true', ()=> {
+  //     hostComponent.filterState = [123];
+  //     expect(hostComponent.isActive(0)).toBeTruthy();
+  //  });
+
+  //   it('isActive()should return false', ()=> {
+  //     hostComponent.filterState = [123];
+  //     expect(hostComponent.isActive(1)).toBeFalsy();
+  //  });
+
+  //   it('getRowPath() should return path', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.code = '123';
+  //     hostComponent.element.path = '/test';
+  //     const item = { elemId: 456 };
+  //     expect(hostComponent.getRowPath(col, item)).toEqual('/test/456/123');
+  //  });
+
+  //   it('processOnClick() should call pageService.processEvent()', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.b = '';
+  //     col.uiStyles.attributes.method = '';
+  //     hostComponent.element.path = '';
+  //     spyOn(pageService, 'processEvent').and.returnValue('');
+  //     hostComponent.processOnClick(col, { elemId: '' });
+  //     expect(pageService.processEvent).toHaveBeenCalled();
+  //  });
+
+  //   it('processOnClick() should call pageService.processEvent() based on getAllURLParams()', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.b = '';
+  //     col.uiStyles.attributes.method = '';
+  //     hostComponent.element.path = '';
+  //     spyOn(pageService, 'processEvent').and.returnValue('');
+  //     spyOn(hostComponent, 'getAllURLParams').and.returnValue(['test']);
+  //     hostComponent.processOnClick(col, { elemId: '', es: 't' });
+  //     expect(pageService.processEvent).toHaveBeenCalled();
+  //  });
+
+  //   it('processOnClick() should call pageService.processEvent() based on getAllURLParams() and argument', ()=> {
+  //     const col = new ParamConfig(configService);
+  //     col.uiStyles = new UiStyle();
+  //     col.uiStyles.attributes = new UiAttribute();
+  //     col.uiStyles.attributes.b = '';
+  //     col.uiStyles.attributes.method = '';
+  //     hostComponent.element.path = '';
+  //     spyOn(pageService, 'processEvent').and.returnValue('');
+  //     spyOn(hostComponent, 'getAllURLParams').and.returnValue(['test']);
+  //     hostComponent.processOnClick(col, { elemId: '' });
+  //     expect(pageService.processEvent).toHaveBeenCalled();
+  //  });
+
+  //   it('toggleFilter() should update the showFilters property', ()=> {
+  //     hostComponent.showFilters = true;
+  //     hostComponent.toggleFilter('');
+  //     expect(hostComponent.showFilters).toBeFalsy();
+  //  });
+
+  //   it('postGridData() should call the pageService.processEvent()', () => {
+  //     fixture.whenStable().then(() => {
+  //       const eleConfig = { code: '', uiStyles: { attributes: { postButtonTargetPath: true, postButtonUrl: '/test' } } };
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       hostComponent.selectedRows = [{ elemId: 123 }];
+  //       spyOn(pageService, 'processEvent').and.returnValue('');
+  //       hostComponent.postGridData({});
+  //       expect(pageService.processEvent).toHaveBeenCalled();
+  //     });
+  //   });
+
+  //   it('resetMultiSelection should update the selectedRows property', ()=> {
+  //     hostComponent.resetMultiSelection();
+  //     expect(hostComponent.selectedRows).toEqual([]);
+  //  });
+
+  //   it('customSort() should not sort value array for number type', ()=> {
+  //     const eve = { order: -1, field: { code: 'test', uiStyles: { attributes: { sortAs: 'NUMBER' } }, type: { name: 't' } } };
+  //     hostComponent.value = [{ test: null, index: 1 }, { test: null, index: 2 }];
+  //     const value = hostComponent.value;
+  //     hostComponent.customSort(eve);
+  //     expect(hostComponent.value).toEqual(value);
+  //  });
+
+  //   it('customSort() should sort value array for number type, if first code is null', ()=> {
+  //     const eve = { order: -2, field: { code: 'test', uiStyles: { attributes: { sortAs: 'NUMBER' } }, type: { name: 't' } } };
+  //     hostComponent.value = [{ test: null, index: 4 }, { test: 1, index: 3 }];
+  //     hostComponent.customSort(eve);
+  //     expect(hostComponent.value[0].index).toEqual(3);
+  //  });
+
+  //   it('customSort() should sort value array for number type, if second code is null', ()=> {
+  //     const eve = { order: 1, field: { order: 1, code: 'test', uiStyles: { attributes: { sortAs: 'NUMBER' } }, type: { name: 't' } } };
+  //     hostComponent.value = [{ index: 2, test: 1 }, { index: 1, test: null }];
+  //     hostComponent.customSort(eve);
+  //     expect(hostComponent.value[0].index).toEqual(1);
+  //  });
+
+  //   it('customSort() should sort value array for number type, if second code less than first code', ()=> {
+  //     const eve = { order: 1, field: { code: 'test', uiStyles: { attributes: { sortAs: 'NUMBER' } }, type: { name: 't' } } };
+  //     hostComponent.value = [{ index: 5, test: 1 }, { index: 1, test: 0 }];
+  //     hostComponent.customSort(eve);
+  //     expect(hostComponent.value[0].index).toEqual(1);
+  //  });
+
+  //   it('customSort() should sort value array for number type, if first code less than second code', ()=> {
+  //     const eve = { order: -1, field: { code: 'test', uiStyles: { attributes: { sortAs: 'NUMBER' } }, type: { name: 't' } } };
+  //     hostComponent.value = [{ test: 1, index: 4 }, { test: 2, index: 1 }];
+  //     hostComponent.customSort(eve);
+  //     expect(hostComponent.value[0].index).toEqual(1);
+  //  });
+
+  //   it('customSort() should sort value array for number type, if both codes are equal', ()=> {
+  //     const eve = { field: { code: 'test', uiStyles: { attributes: { sortAs: 'NUMBER' } }, type: { name: 't' } } };
+  //     hostComponent.value = [{ index: 1, test: 1 }, { index: 2, test: 1 }];
+  //     const value = hostComponent.value;
+  //     hostComponent.customSort(eve);
+  //     expect(hostComponent.value).toEqual(value);
+  //  });
+
+  //   it('customSort() should not sort value array for Date type', ()=> {
+  //     const eve = { order: 1, field: { code: 'test', uiStyles: { attributes: { sortAs: 'DATE' } }, type: { name: 't' } } };
+  //     hostComponent.value = [{ test: null }, { test: null }];
+  //     const value = hostComponent.value;
+  //     hostComponent.customSort(eve);
+  //     expect(hostComponent.value).toEqual(value);
+  //  });
+
+  //   it('customSort() should sort value array for Date type, if first code is null', ()=> {
+  //     const eve = { order: -1, field: { code: 'test', uiStyles: { attributes: { sortAs: 'DATE' } }, type: { name: 't' } } };
+  //     hostComponent.value = [{ test: null }, { test: 1 }];
+  //     hostComponent.customSort(eve);
+  //     expect(hostComponent.value[0].test).toEqual(1);
+  //  });
+
+  //   it('customSort() should not sort value arra', ()=> {
+  //     const eve = { order: 1, field: { code: 'test', uiStyles: { attributes: { sortAs: 's' } }, type: { name: 't' } } };
+  //     hostComponent.value = [{ test: null }, { test: null }];
+  //     const value = hostComponent.value;
+  //     hostComponent.customSort(eve);
+  //     expect(hostComponent.value).toEqual(value);
+  //  });
+
+  //   it('customSort() should sort value array, if first code is null', ()=> {
+  //     const eve = { order: -1, field: { code: 'test', uiStyles: { attributes: { sortAs: 's' } }, type: { name: 't' } } };
+  //     hostComponent.value = [{ test: null }, { test: 11 }];
+  //     hostComponent.customSort(eve);
+  //     expect(hostComponent.value[0].test).toEqual(11);
+  //  });
+
+  //   it('customSort() should sort value array, if second code is null', ()=> {
+  //     const eve = { order: 1, field: { code: 'test', uiStyles: { attributes: { sortAs: 's' } }, type: { name: 't' } } };
+  //     hostComponent.value = [{ test: 111 }, { test: null }];
+  //     hostComponent.customSort(eve);
+  //     expect(hostComponent.value[0].test).toEqual(null);
+  //  });
+
+  //   it('customSort() should sort value array, if second code less than first code', ()=> {
+  //     const eve = { order: 1, field: { code: 'test', uiStyles: { attributes: { sortAs: 's' } }, type: { name: 't' } } };
+  //     hostComponent.value = [{ test: { x: 2,
+  //       localeCompare: () => {
+  //             return 1;
+  //           } } }, { test: { x: 1,
+  //             localeCompare: () => {
+  //             return -1;
+  //           } } }];
+  //     hostComponent.customSort(eve);
+  //     expect(hostComponent.value[0].test.x).toEqual(1);
+  //  });
+
+  //   it('isSortAsNumber() should return true for int, NUMBER argument', ()=> {
+  //     const res = (hostComponent as any).isSortAsNumber('int', 'NUMBER');
+  //     expect(res).toBeTruthy();
+  //  });
+
+  //   it('isSortAsNumber() should return true for int, null argument', ()=> {
+  //     const res = (hostComponent as any).isSortAsNumber('int', null);
+  //     expect(res).toBeTruthy();
+  //  });
+
+  //   it('isSortAsNumber() should return true for integer, null argument', ()=> {
+  //     const res = (hostComponent as any).isSortAsNumber('integer', null);
+  //     expect(res).toBeTruthy();
+  //  });
+
+  //   it('isSortAsNumber() should return true for long, null argument', ()=> {
+  //     const res = (hostComponent as any).isSortAsNumber('long', null);
+  //     expect(res).toBeTruthy();
+  //  });
+
+  //   it('isSortAsNumber() should return true for double, null argument', ()=> {
+  //     const res = (hostComponent as any).isSortAsNumber('double', null);
+  //     expect(res).toBeTruthy();
+  //  });
+
+  //   it('isSortAsDate() should return true for int, DATE argument', ()=> {
+  //     const res = (hostComponent as any).isSortAsNumber('int', 'DATE');
+  //     expect(res).toBeTruthy();
+  //  });
+
+  //   it('between() should return false', ()=> {
+  //     expect(hostComponent.between('day', 1)).toBeFalsy();
+  //  });
+
+  //   it('dateFilter() should call updatePageDetailsState() and dt.filter()', ()=> {
+  //     const e = new Date();
+  //     const dt = new Table(elementRef, domHandler, objectUtils, null, tableService);
+  //     const datePattern = 'MMDDYYYY';
+  //     spyOn(hostComponent, 'updatePageDetailsState').and.callThrough();
+  //     spyOn(dt, 'filter').and.callThrough();
+  //     hostComponent.dateFilter(e, dt, '', datePattern);
+  //     expect(hostComponent.updatePageDetailsState).toHaveBeenCalled();
+  //     expect(dt.filter).toHaveBeenCalled();
+  //  });
+
+  //   it('inputFilter() shlould call dt.filter()', ()=> {
+  //     const dt:any = { filter: () => {} };
+  //     spyOn(dt, 'filter').and.returnValue(true);
+  //     hostComponent.inputFilter({ target: { value: 1 } }, dt, 't', 't');
+  //     setTimeout(() => {
+  //       expect(dt.filter).toHaveBeenCalled();
+  //     }, 600);
+  //  });
+
+  //   it('inputFilter() shlould call dt.filter() based onb the filterTimeout property', ()=> {
+  //     const dt:any = { filter: () => {} };
+  //     spyOn(dt, 'filter').and.returnValue(true);
+  //     hostComponent.filterTimeout = true;
+  //     hostComponent.inputFilter({ target: { value: 1 } }, dt, 't', 't');
+  //     setTimeout(() => {
+  //       expect(dt.filter).toHaveBeenCalled();
+  //     }, 600);
+  //  });
+
+  //   it('clearFilter() shlould call dt.filter()', ()=> {
+  //     const dt:any = { filter: () => {} };
+  //     spyOn(dt, 'filter').and.returnValue('');
+  //     hostComponent.clearFilter({ value: 1 }, dt, 'as', 1);
+  //     expect(dt.filter).toHaveBeenCalled();
+  //  });
+
+  //   it('clearAll() should calldt.reset() and update the filterState property', ()=> {
+  //     spyOn(hostComponent.dt, 'reset').and.returnValue('');
+  //     hostComponent.clearAll();
+  //     expect(hostComponent.dt.reset).toHaveBeenCalled();
+  //     expect(hostComponent.filterState).toEqual([]);
+  //  });
+
+  //   it('paginate() should update the rowEnd property', ()=> {
+  //     const eve = { first: 12, rows: 2 };
+  //     hostComponent.totalRecords = 15;
+  //     hostComponent.paginate(eve);
+  //     expect(hostComponent.rowEnd).toEqual(14);
+  //  });
+
+  //   it('paginate() should update the rowEnd property based on the totalRecords value', ()=> {
+  //     const eve = { first: 12, rows: 2 };
+  //     hostComponent.totalRecords = 13;
+  //     hostComponent.paginate(eve);
+  //     expect(hostComponent.rowEnd).toEqual(13);
+  //  });
+
+  //   it('updatePageDetailsState() should update the rowStart property', () => {
+  //     fixture.whenStable().then(() => {
+  //       hostComponent.totalRecords = 1;
+  //       const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 3 } } };
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       hostComponent.updatePageDetailsState();
+  //       expect(hostComponent.rowStart).toEqual(1);
+  //     });
+  //   });
+
+  //   it('updatePageDetailsState() should update the rowStart property as 0', ()=> {
+  //     hostComponent.totalRecords = 0;
+  //     hostComponent.element = new Param(configService);
+  //     const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 3 } } };
+  //     spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //     hostComponent.updatePageDetailsState();
+  //     expect(hostComponent.rowStart).toEqual(0);
+  //  });
+
+  //   it('filterCallBack() should call the updatePageDetailsState()', ()=> {
+  //     const eve = { filteredValue: [1] };
+  //     spyOn(hostComponent, 'updatePageDetailsState').and.returnValue('');
+  //     hostComponent.filterCallBack(eve);
+  //     expect(hostComponent.updatePageDetailsState).toHaveBeenCalled();
+  //     expect(hostComponent.totalRecords).toEqual(1);
+  //  });
+
+  //   it('toggleOpen() should call the mouseEventSubscription.unsubscribe()', ()=> {
+  //     const eve = { isOpen: true, state: 'openPanel' };
+  //     const obj = {x: 10};
+  //     const test = observableOf(obj);
+  //     hostComponent.mouseEventSubscription =  test.subscribe();
+  //     spyOn(hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
+  //     hostComponent.mouseEventSubscription.closed = false;
+  //     hostComponent.toggleOpen(eve);
+  //     expect(hostComponent.mouseEventSubscription.unsubscribe).toHaveBeenCalled();
+  //  });
+
+  //   it('toggleOpen() should not call the mouseEventSubscription.unsubscribe()', ()=> {
+  //     const eve = { isOpen: true, state: 'openPanel' };
+  //     const obj = {x: 10};
+  //     const test = observableOf(obj);
+  //     hostComponent.mouseEventSubscription =  test.subscribe();
+  //     hostComponent.mouseEventSubscription.closed = true;
+  //     spyOn(hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
+  //     hostComponent.toggleOpen(eve);
+  //     expect(hostComponent.mouseEventSubscription.unsubscribe).not.toHaveBeenCalled();
+  //  });
+
+  //   it('toggleOpen() should not call the mouseEventSubscription.unsubscribe() based on eve.state', ()=> {
+  //     const eve = { isOpen: true, state: '1openPanel' };
+  //     const obj = {x: 10};
+  //     const test = observableOf(obj);
+  //     hostComponent.mouseEventSubscription =  test.subscribe();
+  //     hostComponent.mouseEventSubscription.closed = true;
+  //     spyOn(hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
+  //     hostComponent.toggleOpen(eve);
+  //     expect(hostComponent.mouseEventSubscription.unsubscribe).not.toHaveBeenCalled();
+  //  });
+
+  //   it('toggleOpen() should not call the mouseEventSubscription.unsubscribe() based on dropDowns property', ()=> {
+  //     (hostComponent as any).dropDowns = { toArray: () => {
+  //       return [{ isOpen: true, selectedItem: false, state: '' }];
+  //     } };
+  //   const eve = { isOpen: true, state: '1openPanel' };
+  //   const obj = {x: 10};
+  //   const test = observableOf(obj);
+  //   hostComponent.mouseEventSubscription =  test.subscribe();
+  //   hostComponent.mouseEventSubscription.closed = false;
+  //   spyOn(hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
+  //   hostComponent.toggleOpen(eve);
+  //   expect(hostComponent.mouseEventSubscription.unsubscribe).not.toHaveBeenCalled();
+  //  });
+
+  //   it('export() should call dt.exportCSV()', ()=> {
+  //     const tDate = new Date('December 17, 2017');
+  //     (hostComponent as any).dt = { filteredValue: [{ a: tDate }], value: [], exportCSV: () => {} };
+  //     hostComponent.params = [new ParamConfig(configService)];
+  //     hostComponent.params[0].code = 'a';
+  //     hostComponent.params[0].type = new ConfigType(configService);
+  //     hostComponent.params[0].type.name = 'Date'
+  //     hostComponent.params[0].uiStyles = new UiStyle();
+  //     hostComponent.params[0].uiStyles.attributes = new UiAttribute();
+  //     hostComponent.params[0].uiStyles.attributes.datePattern = '';
+  //           spyOn(hostComponent.dt, 'exportCSV').and.callThrough();
+  //     hostComponent.export();
+  //     expect(hostComponent.dt.exportCSV).toHaveBeenCalled();
+  //  });
+
+  //   it('export() should call dt.exportCSV() even without dt.filterValue.a', ()=> {
+  //     const tDate = new Date('December 17, 2017');
+  //     (hostComponent as any).dt = { filteredValue: [{ a: '' }], value: [], exportCSV: () => {} };
+  //     hostComponent.params = [new ParamConfig(configService)];
+  //     hostComponent.params[0].code = 'a';
+  //     hostComponent.params[0].type = new ConfigType(configService);
+  //     hostComponent.params[0].type.name = 'Date'
+  //     spyOn(hostComponent.dt, 'exportCSV').and.callThrough();
+  //     hostComponent.export();
+  //     expect(hostComponent.dt.exportCSV).toHaveBeenCalled();
+  //  });
+
+  //   it('export() should call dt.exportCSV() even without dt.filterValue', ()=> {
+  //     const tDate = new Date('December 17, 2017');
+  //     (hostComponent as any).dt = { filteredValue: [{}], value: [], exportCSV: () => {} };
+  //     hostComponent.params = [new ParamConfig(configService)];
+  //     hostComponent.params[0].code = 'a';
+  //     hostComponent.params[0].type = null;
+  //     spyOn(hostComponent.dt, 'exportCSV').and.callThrough();
+  //     hostComponent.export();
+  //     expect(hostComponent.dt.exportCSV).toHaveBeenCalled();
+  //  });
+
+  //   it('ngOnDestroy() should call the mouseEventSubscription.unsubscribe and cd.detach()', ()=> {
+  //     (hostComponent as any).mouseEventSubscription = { unsubscribe: () => {} };
+  //     const spy = spyOn((hostComponent as any).cd, 'detach').and.callThrough();
+  //     spyOn(hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
+  //     hostComponent.ngOnDestroy();
+  //     expect(spy).toHaveBeenCalled();
+  //     expect(hostComponent.mouseEventSubscription.unsubscribe).toHaveBeenCalled();
+  //  });
+
+  //   it('ngOnDestroy() should call the cd.detach()', ()=> {
+  //     const spy = spyOn((hostComponent as any).cd, 'detach').and.returnValue('');
+  //     hostComponent.ngOnDestroy();
+  //     expect(spy).toHaveBeenCalled();
+  //  });
+
+  //   it('loadDataLazy() call getQueryString() with 12, DESC', () => {
+  //     fixture.whenStable().then(() => {
+  //       const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       const eve = { first: 12, sortField: { code: '' }, sortOrder: 22, filters: [{ value: '' }] };
+  //       spyOn(hostComponent, 'getQueryString').and.callThrough();
+  //       hostComponent.loadDataLazy(eve);
+  //       expect(hostComponent.getQueryString).toHaveBeenCalled();
+  //       expect(hostComponent.getQueryString).toHaveBeenCalledWith(12, ',DESC');
+  //     });
+  //   });
+
+  //   it('loadDataLazy() call getQueryString() with 0, DESC', () => {
+  //     fixture.whenStable().then(() => {
+  //       const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       const eve = { first: 0, sortField: { code: '' }, sortOrder: 22, filters: [{ value: '' }] };
+  //       spyOn(hostComponent, 'getQueryString').and.callThrough();
+  //       hostComponent.loadDataLazy(eve);
+  //       expect(hostComponent.getQueryString).toHaveBeenCalled();
+  //       expect(hostComponent.getQueryString).toHaveBeenCalledWith(0, ',DESC');
+  //     });
+  //   });
+
+  //   it('loadDataLazy() call getQueryString() with 0, ASC', () => {
+  //     fixture.whenStable().then(() => {
+  //       const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       const eve = { first: 0, sortField: { code: '' }, sortOrder: 1, filters: [{ value: '' }] };
+  //       spyOn(hostComponent, 'getQueryString').and.callThrough();
+  //       hostComponent.loadDataLazy(eve);
+  //       expect(hostComponent.getQueryString).toHaveBeenCalled();
+  //       expect(hostComponent.getQueryString).toHaveBeenCalledWith(0, ',ASC');
+  //     });
+  //   });
+
+  //   it('loadDataLazy() call getQueryString() with 0, undefined', () => {
+  //     fixture.whenStable().then(() => {
+  //       const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       const eve = { first: 0, sortField: false, sortOrder: 1, filters: [{ value: '' }] };
+  //       spyOn(hostComponent, 'getQueryString').and.callThrough();
+  //       hostComponent.loadDataLazy(eve);
+  //       expect(hostComponent.getQueryString).toHaveBeenCalled();
+  //       expect(hostComponent.getQueryString).toHaveBeenCalledWith(0, undefined);
+  //     });
+  //   });
+
+  //   it('loadDataLazy() call getQueryString() with 0, ASC, if eve.filters is not avilable', () => {
+  //     fixture.whenStable().then(() => {
+  //       const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       const eve = { first: 0, sortField: { code: '' }, sortOrder: 1 };
+  //       spyOn(hostComponent, 'getQueryString').and.callThrough();
+  //       hostComponent.loadDataLazy(eve);
+  //       expect(hostComponent.getQueryString).toHaveBeenCalled();
+  //       expect(hostComponent.getQueryString).toHaveBeenCalledWith(0, ',ASC');
+  //     });
+  //   });
+
+  //   it('getQueryString(1, ASC) should return &sortBy=ASC&pageSize=1&page=1', () => {
+  //     fixture.whenStable().then(() => {
+  //       const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       const res = hostComponent.getQueryString(1, 'ASC');
+  //       expect(res).toEqual('&sortBy=ASC&pageSize=1&page=1');
+  //     });
+  //   });
+
+  //   it('getQueryString(1, null) should return &pageSize=1&page=1', () => {
+  //     fixture.whenStable().then(() => {
+  //       const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       const res = hostComponent.getQueryString(1, null);
+  //       expect(res).toEqual('&pageSize=1&page=1');
+  //     });
+  //   });
+
+  //   it('getQueryString(undefined, null) should return empty string', () => {
+  //     fixture.whenStable().then(() => {
+  //       const eleConfig = { code: '', uiStyles: { attributes: { pageSize: 1 } } };
+  //       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+  //       const res = hostComponent.getQueryString(undefined, null);
+  //       expect(res).toEqual('');
+  //     });
+  //   });
+
+  //   it('getPattern() should return numPattern value', ()=> {
+  //     spyOn((hostComponent as any), 'isSortAsNumber').and.returnValue(true);
+  //     (hostComponent as any).numPattern = 'test';
+  //     expect(hostComponent.getPattern('')).toEqual('test');
+  //  });
+
+  //   it('getPattern() should return defaultPattern value', ()=> {
+  //     spyOn((hostComponent as any), 'isSortAsNumber').and.returnValue(false);
+  //     (hostComponent as any).defaultPattern = 'test';
+  //     expect(hostComponent.getPattern('')).toEqual('test');
+  //  });
 });

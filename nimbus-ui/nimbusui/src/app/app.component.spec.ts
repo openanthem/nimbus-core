@@ -54,16 +54,21 @@ const declarations = [
 const imports = [ RouterTestingModule, AngularSvgIconModule ];
 const providers = [ LoaderService, { provide: ServiceConstants, useClass: MockServiceConstant} ];
 
+let fixture, hostComponent;
+
 describe('AppComponent', () => {
 
-  configureTestSuite();
-  setup(AppComponent, declarations, imports, providers);
-
-  beforeEach(async function(this: TestContext<AppComponent>){
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
   });
 
-  it('should create the AppComponent', function(this: TestContext<AppComponent>) {
-    expect(this.hostComponent).toBeTruthy();
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AppComponent);
+    hostComponent = fixture.debugElement.componentInstance;
   });
+
+  it('should create the AppComponent', async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
 
 });

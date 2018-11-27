@@ -49,20 +49,26 @@ const declarations = [
   WebContentSvc
  ];
 
+ let fixture, hostComponent;
+
 describe('InputLabel', () => {
-  configureTestSuite();
-  setup(InputLabel, declarations, imports, providers);
-
-  beforeEach(async function(this: TestContext<InputLabel>){
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
   });
 
-  it('should create the InputLabel', async function(this: TestContext<InputLabel>) {
-    expect(this.hostComponent).toBeTruthy();
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(InputLabel);
+    hostComponent = fixture.debugElement.componentInstance;
   });
 
-  it('getCssClass() should return required', async function(this: TestContext<InputLabel>) {
-    this.hostComponent.required = true;
-    expect(this.hostComponent.getCssClass()).toEqual('required');
-  });
+  it('should create the InputLabel', async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
+
+  it('getCssClass() should return required', async(() => {
+    hostComponent.required = true;
+    expect(hostComponent.getCssClass()).toEqual('required');
+  }));
 
 });

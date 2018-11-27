@@ -15,21 +15,27 @@ const declarations = [
 const imports = [  AngularSvgIconModule ];
 const providers = [];
 
+let fixture, hostComponent;
+
 describe('Image', () => {
 
-  configureTestSuite();
-  setup(Image, declarations, imports, providers);
-
-  beforeEach(async function(this: TestContext<Image>){
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
   });
 
-  it('should create the Image', function(this: TestContext<Image>) {
-    expect(this.hostComponent).toBeTruthy();
-  });
 
-  it('ngOnInit() should update the imagesPath', function(this: TestContext<Image>) {
-    this.hostComponent.ngOnInit();
-    expect(this.hostComponent.imagesPath).not.toEqual(null);
-  });
+  beforeEach( async(() => {
+    fixture = TestBed.createComponent(Image);
+    hostComponent = fixture.debugElement.componentInstance;
+  }));
+
+  it('should create the Image',  async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
+
+  it('ngOnInit() should update the imagesPath',  async(() => {
+    hostComponent.ngOnInit();
+    expect(hostComponent.imagesPath).not.toEqual(null);
+  }));
 
 });

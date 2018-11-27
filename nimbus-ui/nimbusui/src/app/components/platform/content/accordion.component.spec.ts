@@ -185,121 +185,125 @@ const providers = [
   AppInitService,
   Location
 ];
-
+let fixture, hostComponent;
 describe('Accordion', () => {
 
-  configureTestSuite();
-  setup(Accordion, declarations, imports, providers);
-  param = (<any>data).payload;
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
 
-  beforeEach(async function(this: TestContext<Accordion>){
-    this.hostComponent.element = param;
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(Accordion);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = param;
     pageService = TestBed.get(PageService);
     webContentSvc = TestBed.get(WebContentSvc);
     configService = TestBed.get(ConfigService);
   });
 
-  it('should create the Accordion', async function (this: TestContext<Accordion>) {
-    expect(this.hostComponent).toBeTruthy();
-  });
+  it('should create the Accordion', async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
 
-  it('get multiple() should return the this.element.config.uiStyles.attributes.multiple value', async function (this: TestContext<Accordion>) {
-    this.fixture.whenStable().then(() => {
-      this.hostComponent.element.config.uiStyles.attributes.multiple = false;
-      expect(this.hostComponent.multiple).toEqual(false);
-    });
-  });
+  // it('get multiple() should return the this.element.config.uiStyles.attributes.multiple value', async(() => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.multiple = false;
+  //     expect(hostComponent.multiple).toEqual(false);
+  //   });
+  // }));
 
-  it('closeAll should clear the index array', async function (this: TestContext<Accordion>) {
-    this.hostComponent.accordion = new Accordion(webContentSvc, pageService);
-    this.hostComponent.accordion['tabs'] = true;
-    this.hostComponent.index = [1, 2, 3];
-    this.hostComponent.closeAll();
-    expect(this.hostComponent.index).toEqual([-1]);
-  });
+  // it('closeAll should clear the index array', async(() => {
+  //   hostComponent.accordion = new Accordion(webContentSvc, pageService);
+  //   hostComponent.accordion['tabs'] = true;
+  //   hostComponent.index = [1, 2, 3];
+  //   hostComponent.closeAll();
+  //   expect(hostComponent.index).toEqual([-1]);
+  // }));
 
-  it('closeAll should not clear the index array', async function (this: TestContext<Accordion>) {
-    this.hostComponent.accordion = new Accordion(webContentSvc, pageService);
-    this.hostComponent.accordion['tabs'] = false;
-    this.hostComponent.index = [1, 2, 3];
-    this.hostComponent.closeAll();
-    expect(this.hostComponent.index).toEqual([1, 2, 3]);
-  });
+  // it('closeAll should not clear the index array', async(() => {
+  //   hostComponent.accordion = new Accordion(webContentSvc, pageService);
+  //   hostComponent.accordion['tabs'] = false;
+  //   hostComponent.index = [1, 2, 3];
+  //   hostComponent.closeAll();
+  //   expect(hostComponent.index).toEqual([1, 2, 3]);
+  // }));
 
-  it('openAll() should update index array', async function (this: TestContext<Accordion>) {
-    this.hostComponent.accordion = new Accordion(webContentSvc, pageService);
-    this.hostComponent.accordion['tabs'] = [1, 2, 3];
-    this.hostComponent.index = [];
-    this.hostComponent.openAll();
-    expect(this.hostComponent.index.length).toEqual(3);
-  });
+  // it('openAll() should update index array', async(() => {
+  //   hostComponent.accordion = new Accordion(webContentSvc, pageService);
+  //   hostComponent.accordion['tabs'] = [1, 2, 3];
+  //   hostComponent.index = [];
+  //   hostComponent.openAll();
+  //   expect(hostComponent.index.length).toEqual(3);
+  // }));
 
-  it('openAll() should not update index array', async function (this: TestContext<Accordion>) {
-    this.hostComponent.accordion = new Accordion(webContentSvc, pageService);
-    this.hostComponent.index = [];
-    this.hostComponent.openAll();
-    expect(this.hostComponent.index.length).toEqual(0);
-  });
+  // it('openAll() should not update index array', async(() => {
+  //   hostComponent.accordion = new Accordion(webContentSvc, pageService);
+  //   hostComponent.index = [];
+  //   hostComponent.openAll();
+  //   expect(hostComponent.index.length).toEqual(0);
+  // }));
 
-  it('processOnClick() should call processEvent()', async function (this: TestContext<Accordion>) {
-    spyOn(pageService, 'processEvent').and.callThrough();
-    const test = new Param(configService);
-    this.hostComponent.processOnClick(test);
-    expect(pageService.processEvent).toHaveBeenCalled();
-  });
+  // it('processOnClick() should call processEvent()', async(() => {
+  //   spyOn(pageService, 'processEvent').and.callThrough();
+  //   const test = new Param(configService);
+  //   hostComponent.processOnClick(test);
+  //   expect(pageService.processEvent).toHaveBeenCalled();
+  // }));
 
-  it('getImageSrc() should return imgSrc', async function (this: TestContext<Accordion>) {
-    const tab = { type: { model: { params: [{ alias: 'Image', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }] } } };
-    expect(this.hostComponent.getImageSrc(tab)).toEqual('test');
-  });
+  // it('getImageSrc() should return imgSrc', async(() => {
+  //   const tab = { type: { model: { params: [{ alias: 'Image', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }] } } };
+  //   expect(hostComponent.getImageSrc(tab)).toEqual('test');
+  // }));
 
-  it('getImageSrc() should return undefined', async function (this: TestContext<Accordion>) {
-    const tab = { type: { model: { params: [{ alias: 'Image', visible: false, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }] } } };
-    expect(this.hostComponent.getImageSrc(tab)).toBeFalsy();
-  });
+  // it('getImageSrc() should return undefined', async(() => {
+  //   const tab = { type: { model: { params: [{ alias: 'Image', visible: false, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }] } } };
+  //   expect(hostComponent.getImageSrc(tab)).toBeFalsy();
+  // }));
 
-  it('getImageSrc() should return leafState', async function (this: TestContext<Accordion>) {
-    const tab = { type: { model: { params: [{ alias: 'Image', visible: true, leafState: 'test', config: { uiStyles: { attributes: { imgSrc: '' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }] } } };
-    expect(this.hostComponent.getImageSrc(tab)).toEqual('test');
-  });
+  // it('getImageSrc() should return leafState', async(() => {
+  //   const tab = { type: { model: { params: [{ alias: 'Image', visible: true, leafState: 'test', config: { uiStyles: { attributes: { imgSrc: '' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }] } } };
+  //   expect(hostComponent.getImageSrc(tab)).toEqual('test');
+  // }));
 
-  it('getImageType() should return type, getTitle() should return title and getcssClass() should return cssClass', async function (this: TestContext<Accordion>) {
-    const tab = { type: { model: { params: [{ alias: 'Image', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test', type: 'testingType', title: 'testingTitle', cssClass: 'testingCssClass' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }] } } };
-    expect(this.hostComponent.getImageType(tab)).toEqual('testingType');
-    expect(this.hostComponent.getTitle(tab)).toEqual('testingTitle');
-    expect(this.hostComponent.getcssClass(tab)).toEqual('testingCssClass');
-  });
+  // it('getImageType() should return type, getTitle() should return title and getcssClass() should return cssClass', async(() => {
+  //   const tab = { type: { model: { params: [{ alias: 'Image', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test', type: 'testingType', title: 'testingTitle', cssClass: 'testingCssClass' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }] } } };
+  //   expect(hostComponent.getImageType(tab)).toEqual('testingType');
+  //   expect(hostComponent.getTitle(tab)).toEqual('testingTitle');
+  //   expect(hostComponent.getcssClass(tab)).toEqual('testingCssClass');
+  // }));
 
-  it('ngOnInit() should call updatePositionWithNoLabel()', async function (this: TestContext<Accordion>) {
-    this.hostComponent.updatePositionWithNoLabel = () => {};
-    spyOn(this.hostComponent, 'updatePositionWithNoLabel').and.callThrough();
-    this.hostComponent.ngOnInit();
-    expect(this.hostComponent.updatePositionWithNoLabel).toHaveBeenCalled();    
-  });
+  // it('ngOnInit() should call updatePositionWithNoLabel()', async(() => {
+  //   hostComponent.updatePositionWithNoLabel = () => {};
+  //   spyOn(hostComponent, 'updatePositionWithNoLabel').and.callThrough();
+  //   hostComponent.ngOnInit();
+  //   expect(hostComponent.updatePositionWithNoLabel).toHaveBeenCalled();    
+  // }));
 
-  it('getInfoText() should return undefined', async function (this: TestContext<Accordion>) {
-    const tab = { type: { model: { params: [{ alias: 'TabInfo', visible: false, config: { uiStyles: { attributes: { info: 'info' } } } }] } } };
-    expect(this.hostComponent.getInfoText(tab)).toEqual(undefined);
-  });
+  // it('getInfoText() should return undefined', async(() => {
+  //   const tab = { type: { model: { params: [{ alias: 'TabInfo', visible: false, config: { uiStyles: { attributes: { info: 'info' } } } }] } } };
+  //   expect(hostComponent.getInfoText(tab)).toEqual(undefined);
+  // }));
 
-  it('getInfoText() should return tab.type.model.params[0].config.uiStyles.attributes.info', async function (this: TestContext<Accordion>) {
-    const tab = { type: { model: { params: [{ alias: 'TabInfo', visible: true, config: { uiStyles: { attributes: { info: 'info' } } } }] } } };
-    expect(this.hostComponent.getInfoText(tab)).toEqual('info');
-  });
+  // it('getInfoText() should return tab.type.model.params[0].config.uiStyles.attributes.info', async(() => {
+  //   const tab = { type: { model: { params: [{ alias: 'TabInfo', visible: true, config: { uiStyles: { attributes: { info: 'info' } } } }] } } };
+  //   expect(hostComponent.getInfoText(tab)).toEqual('info');
+  // }));
 
-  it('getInfoText() should return tab.type.model.params[0].leafState', async function (this: TestContext<Accordion>) {
-    const tab = { type: { model: { params: [{ alias: 'TabInfo', leafState: 'leafState', visible: true, config: { uiStyles: { attributes: { info: 'info' } } } }] } } };
-    expect(this.hostComponent.getInfoText(tab)).toEqual('leafState');
-  });
+  // it('getInfoText() should return tab.type.model.params[0].leafState', async(() => {
+  //   const tab = { type: { model: { params: [{ alias: 'TabInfo', leafState: 'leafState', visible: true, config: { uiStyles: { attributes: { info: 'info' } } } }] } } };
+  //   expect(hostComponent.getInfoText(tab)).toEqual('leafState');
+  // }));
 
-  it('getTabInfoClass() should return tab.type.model.params[0].config.uiStyles.attributes.cssClass', async function (this: TestContext<Accordion>) {
-    const tab = { type: { model: { params: [{ alias: 'TabInfo', config: { uiStyles: { attributes: { cssClass: 'cssClass' } } } }] } } };
-    expect(this.hostComponent.getTabInfoClass(tab)).toEqual('cssClass');
-  });
+  // it('getTabInfoClass() should return tab.type.model.params[0].config.uiStyles.attributes.cssClass', async(() => {
+  //   const tab = { type: { model: { params: [{ alias: 'TabInfo', config: { uiStyles: { attributes: { cssClass: 'cssClass' } } } }] } } };
+  //   expect(hostComponent.getTabInfoClass(tab)).toEqual('cssClass');
+  // }));
 
-  it('getTabInfoClass() should return nm-accordion-headertext', async function (this: TestContext<Accordion>) {
-    const tab = { type: { model: { params: [{ alias: 'TabInfo', config: { uiStyles: { attributes: {} } } }] } } };
-    expect(this.hostComponent.getTabInfoClass(tab)).toEqual('nm-accordion-headertext');
-  });
+  // it('getTabInfoClass() should return nm-accordion-headertext', async(() => {
+  //   const tab = { type: { model: { params: [{ alias: 'TabInfo', config: { uiStyles: { attributes: {} } } }] } } };
+  //   expect(hostComponent.getTabInfoClass(tab)).toEqual('nm-accordion-headertext');
+  // }));
 
 });
