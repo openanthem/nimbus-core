@@ -173,20 +173,14 @@ export class BaseElement {
      * Get the tooltip help text for this element.
      */
     public get helpText(): string {
-        if (!this.labelConfig) {
-            return undefined;
-        }
-        return this.labelConfig.helpText;
+        return ParamUtils.getHelpText(this.labelConfig);
     }
 
     /**
      * Get the label text for this element.
      */
     public get label(): string {
-        if (!this.labelConfig) {
-            return undefined;
-        }
-        return this.labelConfig.text;
+        return ParamUtils.getLabelText(this.labelConfig);
     }
 
     /**
@@ -242,6 +236,11 @@ export class BaseElement {
             return 'H6';
         }
         return 'H' + position;
+    }
+
+    ngOnDestroy(){
+        if(this.element.message)                 
+        this.element.message = [];              
     }
     
 }

@@ -4,8 +4,7 @@ import { HttpClient, HttpRequest } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf,  Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { LayoutService } from './layout.service';
@@ -46,7 +45,7 @@ class MockHttpClient {
         }
       ]
     };
-    return Observable.of(data);
+    return observableOf(data);
   }
 }
 
@@ -171,7 +170,7 @@ describe('LayoutService', () => {
 
   it('getLayout() should call logger.error()', async(() => {
     spyOn(configService, 'getFlowConfig').and.returnValue(false);
-    spyOn(mockHttpClient, 'get').and.returnValue(Observable.of({
+    spyOn(mockHttpClient, 'get').and.returnValue(observableOf({
         result: [false]
       }));
     spyOn(logger, 'error').and.callThrough();
@@ -206,22 +205,6 @@ describe('LayoutService', () => {
             } } }] };
     const res = service.getTopBar(layoutConfig);
     expect(res).toEqual({ branding: {}, headerMenus: [], accordions: [] });
-  }));
-
-  it('parseTopBarConfig() should not update subHeaders[]', async(() => {
-    const topBarConfig = { params: [{ type: { model: '' }, config: { uiStyles: { attributes: { alias: 'Accordion' } }, type: { nested: true } } }] };
-    const subHeaders = [];
-    service.parseTopBarConfig(topBarConfig, {}, [], subHeaders);
-    expect(subHeaders).not.toEqual([]);
-  }));
-
-  it('parseTopBarConfig() should call parseTopBarConfig()', async(() => {
-    const topBarConfig = { params: [{ type: { model: { params: [{ config: { uiNatures: [{ name: '' }], type: { nested: false } } }] } }, config: { uiStyles: { attributes: { alias: 'Header' } }, type: { nested: true } } }] };
-    spyOn(service, 'parseTopBarConfig').and.callThrough();
-    const subHeaders = [];
-    service.parseTopBarConfig(topBarConfig, {}, [], subHeaders);
-    expect(subHeaders).toEqual([]);
-    expect(service.parseTopBarConfig).toHaveBeenCalledTimes(2);
   }));
 
   it('parseTopBarConfig() should update branding{} with logo property', async(() => {
@@ -313,30 +296,6 @@ describe('LayoutService', () => {
     expect(headerMenus).not.toEqual([]);
   }));
 
-  it('getSubBar() should return object with menuItems property', async(() => {
-    const layoutConfig = { params: [{ type: { model: { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { alias: 'Link' } } } }] } }, config: { uiStyles: { attributes: { alias: 'Menu' } } } }] } }, config: { uiStyles: { attributes: { alias: 'Global-Nav-Menu' } } } }] };
-    const res = service.getSubBar(layoutConfig);
-    expect(res.menuItems).toBeTruthy();
-  }));
-
-  it('getSubBar() should return object with organization property', async(() => {
-    const layoutConfig = { params: [{ type: { model: { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { alias: 'LINK' } } } }] } }, config: { uiStyles: { attributes: { alias: 'ComboBox' } } } }] } }, config: { uiStyles: { attributes: { alias: 'Global-Nav-Menu' } } } }] };
-    const res = service.getSubBar(layoutConfig);
-    expect(res.organization).toBeTruthy();
-  }));
-
-  it('getSubBar() should return object with menuLinks property', async(() => {
-    const layoutConfig = { params: [{ type: { model: { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { alias: 'LINK' } } } }] } }, config: { uiStyles: { attributes: { alias: 'Link' } } } }] } }, config: { uiStyles: { attributes: { alias: 'Global-Nav-Menu' } } } }] };
-    const res = service.getSubBar(layoutConfig);
-    expect(res.menuLinks).toBeTruthy();
-  }));
-
-  it('getLeftMenu() should return empty array', async(() => {
-    const labelConfig = { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { url: '/url' }, name: 'ViewConfig.Link' } } }] } }, config: { uiStyles: { attributes: { alias: ViewComponent.menupanel.toString()} } } }] };
-    const res = service.getLeftMenu(labelConfig);
-    expect(res).toEqual([]);
-  }));
-
   it('getLeftMenu() should return empty array and call buildMenu()', async(() => {
     const labelConfig = { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { url: '/url' }, name: 'ViewConfig.Link' } } }] } }, config: { uiStyles: { attributes: { alias: ViewComponent.menupanel.toString()} } } }] };
     spyOn(service, 'buildMenu').and.returnValue('');
@@ -359,18 +318,16 @@ describe('LayoutService', () => {
     expect(res).toEqual(undefined);
   }));
 
-  it('parseLayoutConfig() should call getLeftMenu(), getTopBar(), getSubBar(), getFooterItems() and getActionTrayItems()', async(() => {
-    const flowModel = { params: [{ type: { model: '' }, config: { uiStyles: { attributes: { alias: 'Page' } } } }] };
+  it('parseLayoutConfig() should call getLeftMenu(), getTopBar(), getFooterItems() and getActionTrayItems()', async(() => {
+    const flowModel = { params: [{ type: { model: {params: [{config: { uiStyles: { attributes: { alias: '' }}}}]} }, config: { uiStyles: { attributes: { alias: 'Page' } } } }] };
     spyOn(service, 'getLeftMenu').and.returnValue(1);
     spyOn(service, 'getTopBar').and.returnValue(2);
-    spyOn(service, 'getSubBar').and.returnValue(3);
     spyOn(service, 'getFooterItems').and.returnValue(4);
     spyOn(service, 'getActionTrayItems').and.returnValue(5);
     service.layout$ = { next: () => {} };
     service.parseLayoutConfig(flowModel);
     expect(service.getLeftMenu).toHaveBeenCalled();
     expect(service.getTopBar).toHaveBeenCalled();
-    expect(service.getSubBar).toHaveBeenCalled();
     expect(service.getFooterItems).toHaveBeenCalled();
     expect(service.getActionTrayItems).toHaveBeenCalled();
   }));

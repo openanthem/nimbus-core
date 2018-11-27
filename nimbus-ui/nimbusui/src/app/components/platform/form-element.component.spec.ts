@@ -1,11 +1,20 @@
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule, AbstractControlDirective } from '@angular/forms';
-import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule } from 'primeng/primeng';
+import { FormsModule, ReactiveFormsModule, AbstractControlDirective, Validators, ValidatorFn, FormGroup, FormControl } from '@angular/forms';
+import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, 
+    DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule,
+    InputSwitchModule, TreeTableModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import {ToastModule} from 'primeng/toast';
+import { HttpClientModule } from '@angular/common/http';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { HttpModule } from '@angular/http';
+import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
 
+import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 import { FormElement } from './form-element.component';
 import { MessageComponent } from '../platform/message/message.component';
 import { DataTable } from './grid/table.component';
@@ -31,8 +40,7 @@ import { TooltipComponent } from '../platform/tooltip/tooltip.component';
 import { SelectItemPipe } from '../../pipes/select-item.pipe';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
 import { Button } from '../platform/form/elements/button.component';
-import { Accordion } from '../platform/accordion.component';
-import { AccordionMain } from '../platform/content/accordion.component';
+import { Accordion } from '../platform/content/accordion.component';
 import { Menu } from '../platform/menu.component';
 import { Link } from '../platform/link.component';
 import { Form } from '../platform/form.component';
@@ -40,17 +48,35 @@ import { StaticText } from '../platform/content/static-content.component';
 import { CardDetailsComponent } from '../platform/card/card-details.component';
 import { CardDetailsGrid } from '../platform/card/card-details-grid.component';
 import { FrmGroupCmp } from './form-group.component';
-import { AccordionGroup } from '../platform/accordion-group.component';
 import { CardDetailsFieldComponent } from '../platform/card/card-details-field.component';
 import { InPlaceEditorComponent } from '../platform/form/elements/inplace-editor.component';
 import { DateTimeFormatPipe } from '../../pipes/date.pipe';
 import { HeaderCheckBox } from '../platform/form/elements/header-checkbox.component';
 import { SvgComponent } from './svg/svg.component';
 import { Image } from './image.component';
+import { TreeGrid } from './tree-grid/tree-grid.component';
+import { InputSwitch } from './form/elements/input-switch.component';
+import { FormGridFiller } from './form/form-grid-filler.component';
+import { DisplayValueDirective } from '../../directives/display-value.directive';
+import { InputLabel } from './form/elements/input-label.component';
+import { Label } from './content/label.component';
+import { CardDetailsFieldGroupComponent } from './card/card-details-field-group.component';
+import { WebContentSvc } from '../../services/content-management.service';
+import { InputLegend } from './form/elements/input-legend.component';
+import { Param } from '../../shared/param-state';
+import { By } from '@angular/platform-browser';
+import { PageService } from '../../services/page.service';
+import { CustomHttpClient } from '../../services/httpclient.service';
+import { LoaderService } from '../../services/loader.service';
+import { ConfigService } from '../../services/config.service';
+import { LoggerService } from '../../services/logger.service';
+import { AppInitService } from '../../services/app.init.service'
 
-let fixture, app;
+let fixture, app, param: Param, payload;
 
 describe('FormElement', () => {
+  payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';
+  param = JSON.parse(payload);
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -80,7 +106,6 @@ describe('FormElement', () => {
         ButtonGroup,
         Button,
         Accordion,
-        AccordionMain,
         Menu,
         Link,
         Form,
@@ -88,13 +113,20 @@ describe('FormElement', () => {
         CardDetailsComponent,
         CardDetailsGrid,
         FrmGroupCmp,
-        AccordionGroup,
         CardDetailsFieldComponent,
         InPlaceEditorComponent,
         DateTimeFormatPipe,
         HeaderCheckBox,
         SvgComponent,
-        Image
+        Image,
+        TreeGrid,
+        InputSwitch,
+        FormGridFiller,
+        DisplayValueDirective,
+        InputLabel,
+        Label,
+        CardDetailsFieldGroupComponent,
+        InputLegend
        ],
        imports: [
         FormsModule, 
@@ -111,11 +143,55 @@ describe('FormElement', () => {
         CheckboxModule,
         TableModule,
         KeyFilterModule,
-        AngularSvgIconModule
+        AngularSvgIconModule,
+        ToastModule,
+        InputSwitchModule, 
+        TreeTableModule,
+        HttpClientModule,
+        StorageServiceModule,
+        HttpModule
+       ],
+       providers: [
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        { provide: 'JSNLOG', useValue: JL },
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        Location,
+        WebContentSvc,
+        PageService,
+        CustomHttpClient,
+        SessionStoreService,
+        LoaderService,
+        ConfigService,
+        LoggerService,
+        AppInitService
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(FormElement);
     app = fixture.debugElement.componentInstance;
+    const fg = new FormGroup({});
+    const checks: ValidatorFn[] = [];
+    checks.push(Validators.required);
+    fg.addControl(param.config.code, new FormControl(param.leafState,checks));
+    app.form = fg;
+    app.element = param;
+  }));
+
+  it('two way binding', async(() => {
+      app.elementCss = '';
+      app.getComponentClass();
+      fixture.detectChanges();
+      let textBox;
+      textBox = fixture.debugElement.query(By.css('.form-control')).nativeElement;
+      textBox.value = 'abcd123';
+      textBox.dispatchEvent(new Event('input'));
+      textBox.dispatchEvent(new Event('focusout'));
+      fixture.detectChanges();      
+      expect(app.form.controls[param.config.code].value).toEqual('abcd123');
+      app.form.controls[param.config.code].setValue('testtt');
+      fixture.detectChanges();
+      setTimeout(() => {
+        expect(textBox.value).toEqual('testtt');  
+      }, 100);
   }));
 
   it('should create the app', async(() => {
@@ -157,14 +233,12 @@ describe('FormElement', () => {
 
   it('getMessages() should return message from the element', async(() => {
     app.element = { message: ['test'] };
-    spyOn(app, 'getErrors').and.returnValue('');
-    spyOn(app, 'getPristine').and.returnValue(false);
+    spyOn(app, 'getPristine').and.returnValue(true);
     expect(app.getMessages()).toEqual(['test']);
   }));
 
   it('getMessages() should return return empty array', async(() => {
     app.element = { message: [] };
-    spyOn(app, 'getErrors').and.returnValue('');
     spyOn(app, 'getPristine').and.returnValue(true);
     expect(app.getMessages()).toEqual([]);
   }));
@@ -179,7 +253,7 @@ describe('FormElement', () => {
             return false;
           } } } };
     app.form = { controls: {} };
-    expect(app.getErrorStyles()).toEqual(undefined);
+    expect(app.getErrorStyles()).toEqual('');
   }));
 
   it('getErrorStyles() should return alert string', async(() => {
@@ -188,24 +262,10 @@ describe('FormElement', () => {
     expect(app.getErrorStyles()).toEqual('alert alert-danger');
   }));
 
-  it('elementCss should be updated with even suffix', async(() => {
-    app.elementCss = 'test';
-    app.element = { config: { uiStyles: { attributes: { controlId: 10 } } } };
-    app.ngOnInit();
-    expect(app.elementCss).toEqual('test even');
-  }));
-
   it('elementCss should be undefined', async(() => {
     app.element = { config: { uiStyles: { attributes: { controlId: null } } } };
     app.ngOnInit();
     expect(app.elementCss).toEqual(undefined);
-  }));
-
-  it('elementCss should be updated with odd suffix', async(() => {
-    app.elementCss = 'test';
-    app.element = { config: { uiStyles: { attributes: { controlId: 19 } } } };
-    app.ngOnInit();
-    expect(app.elementCss).toEqual('test odd');
   }));
 
   it('getElementStyle() should return col-lg-12 col-md-6', async(() => {
@@ -216,85 +276,6 @@ describe('FormElement', () => {
   it('getElementStyle() should return empty array', async(() => {
     app.element = { config: { uiStyles: { attributes: { alias: '' } } } };
     expect(app.getElementStyle()).toEqual('');
-  }));
-
-  it('getErrors() should call addErrorMessages() with attribute from element', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'NotNull', attribute: { message: 'testing...' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { required: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('testing...');
-  }));
-
-  it('getErrors() should call addErrorMessages() with Field is required string', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'NotNull', attribute: { message: '' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { required: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('Field is required.');
-  }));
-
-  it('getErrors() should call addErrorMessages() with attribute from element on constraints.name as pattern', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'Pattern', attribute: { message: 'testing pattern' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { pattern: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('testing pattern');
-  }));
-
-  it('getErrors() should call addErrorMessages() with Field is required string on constraints.name as pattern', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'Pattern', attribute: { message: '' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { pattern: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('Field is required.');
-  }));
-
-  it('getErrors() should call addErrorMessages() with attribute from element on constraints.name as Size', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'Size', attribute: { message: 'testing Size' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { minMaxSelection: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('testing Size');
-  }));
-
-  it('getErrors() should call addErrorMessages() with Field is required string on constraints.name as Size', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'Size', attribute: { message: '' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { minMaxSelection: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('Field is required.');
-  }));
-
-  it('getErrors() should call addErrorMessages() with Value must be a number.', async(() => {
-    app.element = { config: { validation: { constraints: [{ attribute: { message: '' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { isNumber: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('Value must be a number.');
-  }));
-
-  it('getErrors() should call addErrorMessages()', async(() => {
-    app.element = { config: { code: 'test' } };
-    app.form = { controls: { test: { invalid: false, errors: { isNumber: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).not.toHaveBeenCalled();
-  }));
-
-  it('getErrors() should not call addErrorMessages()', async(() => {
-    app.element = { config: { code: 'test', validation: '' } };
-    app.form = { controls: { test: { invalid: true, errors: { isNumber: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).not.toHaveBeenCalled();
   }));
 
   it('addErrorMessages() should update the elemMessages[0].messageArray[0].detail', async(() => {

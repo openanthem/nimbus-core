@@ -23,7 +23,6 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 import { PageService } from '../../../services/page.service';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
-
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -49,6 +48,7 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                             {{getInfoText(tab)}}
                         </span>
                         <nm-image class='nm-accordion-headerimage' *ngIf="getImageSrc(tab)" [name]="getImageSrc(tab)" [type]="getImageType(tab)" [title]="getTitle(tab)" [cssClass]="getcssClass(tab)"></nm-image>
+                        <nm-counter-message *ngIf="element.config?.uiStyles?.attributes?.showMessages" [element]="tab" [form]="form"></nm-counter-message>
                         <div style='clear: both'></div>
                     </p-header>
                     <div class="accordionBtn" *ngIf="tab?.config?.uiStyles?.attributes?.editable">
@@ -72,22 +72,31 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                                     </nm-button-group>
                                 </div>
                             </ng-template>
+                            <!-- Link -->
+                            <ng-template [ngIf]="tabElement.alias == componentTypes.link.toString()">
+                                <nm-link [element] = "tabElement"> </nm-link>                                                                  
+                            </ng-template>
                             <!-- Grid Param -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.grid.toString()">
                                 <nm-table
                                     [element]="tabElement" 
                                     [params]="tabElement?.config?.type?.elementConfig?.type?.model?.paramConfigs"
                                     (onScrollEvent)="onScrollEvent()"
-                                    [position]="position+1">
+                                    [position]="position+1"
+                                    [nmPrint]="tabElement">
                                 </nm-table>
                             </ng-template>
                             <!-- Card Content -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetail.toString()">
-                                <nm-card-details [element]="tabElement" [position]="position+1"></nm-card-details>
+                                <nm-card-details [element]="tabElement" [position]="position+1" [nmPrint]="tabElement"></nm-card-details>
                             </ng-template>
                             <!-- Card Detaisl Grid -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetailsGrid.toString()">
-                                <nm-card-details-grid [position]="position+1" [element]="tabElement"></nm-card-details-grid>
+                                <nm-card-details-grid [position]="position+1" [element]="tabElement" [nmPrint]="tabElement"></nm-card-details-grid>
+                            </ng-template>
+                            <!-- Form Param -->
+                            <ng-template [ngIf]="tabElement.alias == viewComponent.form.toString()">
+                                <nm-form [position]="position+1" [element]="tabElement" [model]="tabElement.type?.model" [nmPrint]="tabElement"></nm-form>
                             </ng-template>
                         </ng-template>
                     </ng-template>
@@ -102,7 +111,7 @@ export class Accordion extends BaseElement {
     @Input() form: FormGroup;
     @Input() elementCss: string;
     componentTypes = ComponentTypes;
-
+    viewComponent = ViewComponent;
     protected _multiple: boolean;
     index: number[]; 
     @ViewChild('accordion') accordion: Accordion;
@@ -113,7 +122,7 @@ export class Accordion extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
-        this.updatePositionWithNoLabel();
+        this.updatePositionWithNoLabel();     
     }
 
     /**

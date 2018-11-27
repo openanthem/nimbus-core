@@ -19,6 +19,7 @@ import { Subject } from 'rxjs';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
 import { SvgComponent } from '../../svg/svg.component';
+import { Image } from '../../image.component';
 
 let fixture, app, location, pageService;
 
@@ -46,7 +47,8 @@ describe('Button', () => {
     TestBed.configureTestingModule({
       declarations: [
           Button,
-          SvgComponent
+          SvgComponent,
+          Image
        ],
        imports: [
            HttpModule,
@@ -65,7 +67,8 @@ describe('Button', () => {
            ConfigService,
            LoggerService,
            FileService,
-           AppInitService
+           AppInitService,
+           SessionStoreService
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(Button);

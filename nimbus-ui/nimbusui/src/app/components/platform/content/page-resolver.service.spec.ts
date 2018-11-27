@@ -159,7 +159,6 @@ describe('PageResolver', () => {
     });
   }));
 
-
   it('resolve() should call router.navigate()', async(() => {
     spyOn(wcservice, 'findLabelContent').and.returnValue({});
     spyOn(pageservice, 'getPageConfigById').and.returnValue(new Promise(

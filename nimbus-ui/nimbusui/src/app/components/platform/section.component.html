@@ -9,10 +9,10 @@
         <ng-template ngFor let-element [ngForOf]="nestedParams">
             <!-- Card Content -->
             <ng-template [ngIf]="element.alias == componentTypes.cardDetailsGrid.toString()">
-                <nm-card-details-grid [position]="position+1" [element]="element"></nm-card-details-grid>
+                <nm-card-details-grid [position]="position+1" [element]="element" [nmPrint]="element"></nm-card-details-grid>
             </ng-template>
             <ng-template [ngIf]="element.alias == componentTypes.cardDetail.toString()">
-                <nm-card-details [position]="position+1" [element]="element"></nm-card-details>
+                <nm-card-details [position]="position+1" [element]="element" [nmPrint]="element"></nm-card-details>
             </ng-template>
             <!-- Paragraph -->
             <ng-template [ngIf]="element.alias == componentTypes.paragraph.toString()">
@@ -24,7 +24,7 @@
             </ng-template>
             <!-- Form Param -->
             <ng-template [ngIf]="element.alias == viewComponent.form.toString()">
-                <nm-form [position]="position+1" [element]="element" [model]="element.type?.model"></nm-form>
+                <nm-form [position]="position+1" [element]="element" [model]="element.type?.model" [nmPrint]="element"></nm-form>
             </ng-template>
             <!-- Link Param -->
             <ng-template [ngIf]="element.config?.uiStyles?.isLink">
@@ -38,7 +38,7 @@
             </ng-template>
             <!-- Accordion Main Param -->
             <ng-template [ngIf]="element.alias == componentTypes.accordion.toString()">
-                <nm-accordion [position]="position+1" [element]="element"></nm-accordion>
+                <nm-accordion [position]="position+1" [element]="element" [nmPrint]="element"></nm-accordion>
             </ng-template>
             <!-- Grid Param -->
             <ng-template [ngIf]="element.alias == componentTypes.grid.toString()">
@@ -46,7 +46,8 @@
                     [element]="element" 
                     [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs"
                     (onScrollEvent)="onScrollEvent()"
-                    [position]="position+1">
+                    [position]="position+1"
+                    [nmPrint]="element">
                 </nm-table>
             </ng-template>
 

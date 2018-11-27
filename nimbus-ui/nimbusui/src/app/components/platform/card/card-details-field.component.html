@@ -7,7 +7,11 @@
         </ng-template>
         
         <ng-template [ngIf]="isDate(element.config.type.name)">
-            <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
+            <nm-input-label *ngIf="element.config.uiStyles.attributes.showName==true"
+                [element]="element" 
+                [required]="false">
+            </nm-input-label>
+            <!--<label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>-->
             <ng-template [ngIf]="value">
                 <div class="textWrapBreakWord">{{value | dateTimeFormat: element.config?.uiStyles?.attributes?.datePattern : element.config.type.name }}&nbsp;</div>
             </ng-template>
@@ -17,7 +21,11 @@
          </ng-template>
 
         <div class="form-group" *ngIf="!element.config.uiStyles.attributes.inplaceEdit && !isDate(element.config.type.name)">
-            <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
+           <!-- <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label> -->
+           <nm-input-label *ngIf="element.config.uiStyles.attributes.showName==true"
+                [element]="element" 
+                [required]="false">
+            </nm-input-label>
             <div class="textWrapBreakWord" [nmDisplayValue]='element.leafState' [config]='element.config'>
                 <span class="fieldValue">{{value ? value : placeholder}}&nbsp;</span>
             </div>    

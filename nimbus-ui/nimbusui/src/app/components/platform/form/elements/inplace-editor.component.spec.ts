@@ -7,6 +7,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { JL } from 'jsnlog';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { Subject } from 'rxjs';
 
 import { InPlaceEditorComponent } from './inplace-editor.component';
 import { PageService } from './../../../../services/page.service';
@@ -20,7 +21,7 @@ import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
-import { Subject } from 'rxjs';
+import { InputLabel } from './input-label.component';
 
 let fixture, app, pageService;
 
@@ -51,7 +52,8 @@ describe('InPlaceEditorComponent', () => {
           TextArea,
           ComboBox,
           TooltipComponent,
-          SelectItemPipe
+          SelectItemPipe,
+          InputLabel
        ],
        imports: [
            FormsModule,

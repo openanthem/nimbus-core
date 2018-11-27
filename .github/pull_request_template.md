@@ -1,28 +1,33 @@
 # Description
+<!-- Include a summary of the change and which issue is fixed. Also include relevant motivation and context. List any dependencies that are required for this change. -->
 
-Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context. List any dependencies that are required for this change.
+The author of this pull request failed to include a description or DELETE this line.
 
-Fixes # (issue)
+# Overview of Changes
+<!-- Please include a bulleted list of changes here -->
 
-## Overview of Changes
-- Include a bulleted list of high level changes here.
+N/A
 
-## Type of change
-
-Please delete options that are not relevant.
-
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+# Type of Change
+<!-- Please include the options below which are relevant. -->
+<!--
+- [ ] New feature
+- [ ] Bug fix
+- [ ] Refactor/Technical Debt
+- [ ] Documentation Update
+- [ ] Test case change
 - [ ] This change requires a documentation update
+- [ ] Other
+-->
 
-# How Has This Been Tested?
+N/A
 
-Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration
+# Test Details
+<!-- Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration. -->
 
-- [ ] Test A
-- [ ] Test B
+N/A
 
 # Additional Notes
+<!-- Please add any additional notes regarding this pull request here. -->
 
-Please add any additional notes regarding this pull request here.
+N/A

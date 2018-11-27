@@ -5,13 +5,59 @@
 
 	<groupId>com.antheminc.oss</groupId>
 	<artifactId>nimbus-starter</artifactId>
-    <version>1.1.6.BUILD-SNAPSHOT</version>
+    <version>1.1.11.BUILD-SNAPSHOT</version>
+	<url>http://www.oss.antheminc.com/</url>
+	<developers>
+		<developer>
+		    <id>soham.chakravarti</id>
+		    <!-- Replace with github id -->
+		    <name>Soham Chakravarti</name>
+		    <organization>Anthem Inc.</organization>
+		    <organizationUrl>https://www.anthem.com</organizationUrl>
+		    <roles>
+			<role>Lead Engineer</role>
+		    </roles>
+		</developer>
+		<developer>
+		    <id>jayant.chaudhuri</id>
+		    <!-- Replace with github id -->
+		    <name>Jayant Chaudhuri</name>
+		    <organization>Anthem Inc.</organization>
+		    <organizationUrl>https://www.anthem.com</organizationUrl>
+		    <roles>
+			<role>Engineer</role>
+		    </roles>
+		</developer>
+		<developer>
+		    <id>dinakar.meda</id>
+		    <!-- Replace with github id -->
+		    <name>Dinakar Meda</name>
+		    <organization>Anthem Inc.</organization>
+		    <organizationUrl>https://www.anthem.com</organizationUrl>
+		    <roles>
+			<role>Engineer</role>
+		    </roles>
+		</developer>
+    	</developers>
+
+	<licenses>
+		<license>
+		    <name>Apache License, Version 2.0</name>
+		    <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>http://github.com/anthem-projects/nimbus-oss</url>
+		<connection>scm:git:git://github.com/openanthem/nimbus-core.git</connection>
+		<tag>nimbus-starter</tag>
+	</scm>
    
 	<name>nimbus-starter</name>
 	<description>framework starter project</description>
 
 	<properties>
-		<nimbus.version>1.1.6.BUILD-SNAPSHOT</nimbus.version>
+		<nimbus.version>1.1.11.BUILD-SNAPSHOT</nimbus.version>
 	</properties>
 
 	<dependencies>	
@@ -37,5 +83,29 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<profiles>
+	<profile>
+            <id>cicdbuild</id>
+            <build>
+                <plugins>
+                	
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        </profiles>
 
 </project>

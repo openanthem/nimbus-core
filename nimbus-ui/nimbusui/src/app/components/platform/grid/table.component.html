@@ -16,7 +16,7 @@
     </div>
 
     <p-table #dt [value]="value" [columns]="params" 
-        [dataKey]="element.config?.uiStyles?.attributes?.dataKey"
+        [dataKey]="'elemId'"
         [(selection)]="selectedRows"
         [rows]="element.config?.uiStyles?.attributes?.pageSize"
         [totalRecords]=totalRecords
@@ -98,11 +98,12 @@
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
                     <td *ngIf="showColumn(col)" [ngClass]="getColumnStyle(col)">
                         <span title="{{getCellDisplayValue(rowData, col)}}" *ngIf="showValue(col)" [nmDisplayValue]='getCellDisplayValue(rowData, col)' [config]='col'>
-                            <span class="fieldValue">{{getCellDisplayValue(rowData, col)}}</span>
+                            <span class="fieldValue {{col.code}} {{getCellStyle(rowData.elemId, col.code)}}">{{getCellDisplayValue(rowData, col)}}</span>
                         </span>
                         <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.link.toString()">
                             <nm-link
-                                [element] = "getViewParam(col, rowData['elemId'])">
+                                [element] = "getViewParam(col, rowData['elemId'])"
+                                [rowData]="rowData">                                
                             </nm-link>
                         </span>
                         <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true">
@@ -131,7 +132,7 @@
         <ng-template pTemplate="rowexpansion" let-rowData>
             <tr class="ui-expanded-row-content">
                 <td [attr.colspan]="columnsToShow" >
-                    <nm-section *ngIf="rowData.nestedElement" [position]="position+1" [element]="rowData.nestedElement"></nm-section>
+                    <nm-section *ngIf="rowData.nestedElement" [position]="position+1" [element]="rowData.nestedElement" [nmPrint]="rowData.nestedElement"></nm-section>
                 </td>
             </tr>
         </ng-template>

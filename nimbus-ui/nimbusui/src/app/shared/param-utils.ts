@@ -16,12 +16,12 @@
  */
 'use strict';
 
-import { ConfigService } from './../services/config.service';
-import { SortAs } from '../components/platform/grid/sortas.interface';
-import { PageService } from '../services/page.service';
-import { GridService } from '../services/grid.service';
 import { ServiceConstants } from '../services/service.constants';
 import { Param } from './param-state';
+import { LabelConfig } from './param-config';
+import { UiNature } from './param-config';
+import * as moment from 'moment';
+
 /**
  * \@author Tony.Lopez
  * \@whatItDoes 
@@ -36,7 +36,7 @@ export class ParamUtils {
         DATE:               { name: 'Date', defaultFormat: 'MM/dd/yyyy hh:mm a' },
         LOCAL_DATE:         { name: 'LocalDate', defaultFormat: 'MM/dd/yyyy' },
         LOCAL_DATE_TIME:    { name: 'LocalDateTime', defaultFormat: 'MM/dd/yyyy hh:mm a' },
-        ZONED_DATE_TIME:    { name: 'ZonedDateTime', defaultFormat: 'MM/dd/yyyy hh:mm a' },
+        ZONED_DATE_TIME:    { name: 'ZonedDateTime', defaultFormat: 'MM/dd/yyyy hh:mm a', useBrowserTimezone: true },
     };
 
     public static DEFAULT_DATE_FORMAT: string = 'MM/dd/yyyy hh:mm a';
@@ -93,21 +93,36 @@ export class ParamUtils {
         }
 
         var serverDateTime = new Date(value);
+        let convertedDate;
         switch(typeClassMapping) {
             case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name: {
-                return new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate());
+                convertedDate = new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate());
+                break;
             }
-
             case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE_TIME.name: {
-                return new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate(), 
+                convertedDate = new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate(), 
                     serverDateTime.getHours(), serverDateTime.getMinutes(), serverDateTime.getSeconds());
+                break;
             }
-
             default: {
-                return new Date(serverDateTime.getFullYear(), serverDateTime.getMonth(), serverDateTime.getDate(), 
+                convertedDate = new Date(serverDateTime.getFullYear(), serverDateTime.getMonth(), serverDateTime.getDate(), 
                     serverDateTime.getHours(), serverDateTime.getMinutes(), serverDateTime.getSeconds());
+                break;
             }
         }
+        if (ParamUtils.shouldUseBrowserTimeZone(typeClassMapping)) {
+            ParamUtils.setDateJsonHandler(convertedDate);
+        }
+        return convertedDate;
+    }
+
+    public static shouldUseBrowserTimeZone(typeClassMapping: string) {
+        let dateTypeMetadata = ParamUtils.getDateTypeConfig(typeClassMapping);
+        return dateTypeMetadata ? dateTypeMetadata.useBrowserTimezone : undefined;
+    }
+
+    public static setDateJsonHandler(date: Date): void {
+        date.toJSON = function() { return moment(this).format(); }
     }
 
     /**
@@ -118,13 +133,18 @@ export class ParamUtils {
      * @param typeClassMapping the class type of the server date object
      */
     public static getDateFormatForType(typeClassMapping: string): string {
+        let dateTypeMetadata = ParamUtils.getDateTypeConfig(typeClassMapping);
+        return dateTypeMetadata ? dateTypeMetadata.defaultFormat : null;
+    }
+
+    private static getDateTypeConfig(typeClassMapping: string): any {
         for(let x in ParamUtils.DATE_TYPE_METADATA) {
             let dateTypeMetadata = ParamUtils.DATE_TYPE_METADATA[x];
             if (dateTypeMetadata.name === typeClassMapping) {
-                return dateTypeMetadata.defaultFormat;
+                return dateTypeMetadata;
             }
         }
-        return null;
+        return undefined;
     }
 
     /**
@@ -269,5 +289,68 @@ export class ParamUtils {
         }
     
         return true;
+    }
+
+    static getHelpText(labelConfig: LabelConfig) {
+        if (!labelConfig) {
+            return undefined;
+        }
+        return labelConfig.helpText;
+    }
+
+    static getLabelText(labelConfig: LabelConfig) {
+        if (!labelConfig) {
+            return undefined;
+        }
+        return labelConfig.text;
+    }
+
+    /**
+     * Retrieve a UiNature by name from uiNatures. If not uiNatures is undefined or the uiNature 
+     * by name is not found, undefined is returned.
+     * @param param The param to inspect
+     * @param name The name of the uiNature on this param to find
+     */
+    static getUiNature(param: Param, name: string): UiNature {
+        let uiNatures = ParamUtils.getUiNatures(param);
+        return !uiNatures ? undefined : uiNatures.find(uiNature => uiNature.name === name);
+    }
+    
+    /**
+     * Get the UiNature[] if it exists and is non-empty on this instance
+     * @param param The param to inspect
+     */
+    static getUiNatures(param: Param): UiNature[] {
+        if (param.config && param.config.uiNatures && param.config.uiNatures.length > 0) {
+            return param.config.uiNatures;
+        } else {
+            return undefined;
+        }
+    }
+
+    static getDomainIdFromPath(path: string): string {
+        if (!path) {
+            return undefined;
+        }
+        return path.split('/')[1];
+    }
+
+    static getPageIdFromPath(path: string): string {
+        if (!path) {
+            return undefined;
+        }
+        return path.split('/')[2];
+    }
+
+    static getDomainPageFromPath(path: string): string {
+        let domain = ParamUtils.getDomainIdFromPath(path);
+        if (!domain) {
+            return undefined;
+        }
+        let page = ParamUtils.getPageIdFromPath(path);
+        if (!page) {
+            return undefined;
+        }
+        return `/${domain}/${page}`;
     }
 }
