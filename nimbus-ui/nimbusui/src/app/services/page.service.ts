@@ -67,6 +67,9 @@ export class PageService {
         errorMessageUpdate = new Subject<ExecuteException>();
         errorMessageUpdate$ = this.errorMessageUpdate.asObservable();
 
+        postResponseProcessing = new Subject<string>();
+        postResponseProcessing$ = this.postResponseProcessing.asObservable();
+
         private requestQueue :RequestContainer[] = [];
 
         private _entityId: number = 0;
@@ -501,6 +504,7 @@ export class PageService {
 
         /** Process execute call - TODO revisit to make it more dynamic based on url completion */
         processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string, queryParams?: string) {
+                let path = processUrl;
                 processUrl = processUrl + '/' + Action._get.value;
                 let url = '';
                 let serverUrl = '';
@@ -526,49 +530,55 @@ export class PageService {
                         let flowNameWithId = flowName.concat(':' + rootDomainId);
                         url = url.replace(flowName, flowNameWithId);
                 }
-                this.executeHttp(url, method, model);
+                this.executeHttp(url, method, model, path);
         }
 
-        executeHttp(url:string, method : string, model:any) {
+        executeHttp(url:string, method : string, model:any, paramPath?: string) {
                 this.showLoader();
                 this.logger.info('http call' + url + 'started');
                 if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
-                        this.executeHttpGet(url)
+                        this.executeHttpGet(url, paramPath)
                  } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
-                         this.executeHttpPost(url, model);
+                         this.executeHttpPost(url, model, paramPath);
                  } else {
                          this.invokeFinally(url);
                          this.logger.error('http method not supported');
                  }
         }
-        executeHttpGet(url) {
+        executeHttpGet(url, paramPath?: string) {
                 this.http.get(url).subscribe(
                         data => { 
                                 this.sessionStore.setSessionId(data.sessionId);
                                 this.processResponse(data.result); 
                         },
-                        err => { this.processError(err); },
-                        () => { this.invokeFinally(url); }
+                        err => { this.processError(err, paramPath); },
+                        () => { this.invokeFinally(url, paramPath); }
                         );
         }
 
-        executeHttpPost(url:string, model:GenericDomain) {
+        executeHttpPost(url:string, model:GenericDomain, paramPath?: string) {
                 this.http.post(url, JSON.stringify(model)).subscribe(
                         data => { 
                                 this.sessionStore.setSessionId(data.sessionId);
                                 this.processResponse(data.result);
                         },
-                        err => { this.processError(err); },
-                        () => { this.invokeFinally(url); }
+                        err => { this.processError(err, paramPath); },
+                        () => { this.invokeFinally(url, paramPath); }
                         );
         }
 
-        processError(err:any) {
+        processError(err:any, paramPath?: string) {
+                if(paramPath) {
+                        this.postResponseProcessing.next(paramPath);
+                }
                 this.logError(err);
                 this.hideLoader();
         }
 
-        invokeFinally(url:string) {
+        invokeFinally(url:string, paramPath?: string) {
+                if(paramPath){
+                        this.postResponseProcessing.next(paramPath);
+                }
                 this.logger.info('http response for ' + url + ' processed successsfully');
                 this.hideLoader();
         }
