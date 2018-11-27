@@ -140,7 +140,7 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 		
 		Param<?> coreParam = Optional.ofNullable(getCommandGateway().execute(mapsToCmd, null))
 								.map(mOut->(Param<?>)mOut.getSingleResult())
-								.orElseThrow(()->new InvalidStateException("Expeceted first response from command gateway to return mapsTo core parm, but not found for mapsToCmd: "+mapsToCmd));
+								.orElseThrow(()->new InvalidStateException("Expected first response from command gateway to return mapsTo core parm, but not found for mapsToCmd: "+mapsToCmd));
 		
 		QuadModel<?, ?> q = getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), mapped, coreParam);
 		q.getRoot().initState();

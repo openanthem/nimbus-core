@@ -43,10 +43,24 @@ export class AppComponent {
     onWindowScroll() {
         if (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop > 100) {
             this.navIsFixed = true;
-        } else if (this.navIsFixed && window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop < 10) { this.navIsFixed = false; } } scrollToTop() { (function smoothscroll() { var currentScroll = document.documentElement.scrollTop || document.body.scrollTop; if (currentScroll > 0) {
+        } else if (this.navIsFixed && window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop < 10) { 
+            this.navIsFixed = false; 
+        } 
+    } 
+            
+    scrollToTop() {(
+        function smoothscroll() { 
+            var currentScroll = document.documentElement.scrollTop || document.body.scrollTop; 
+            if (currentScroll > 0) {
                 //window.requestAnimationFrame(smoothscroll);
                 window.scrollTo(0, 0);
             }
+        })();
+    }
+
+    scrollDivToTop() {(
+        function smoothscroll() { 
+            document.getElementById('page-content').scrollTop = 0;
         })();
     }
 

@@ -1,10 +1,8 @@
-<footer class="nm-footer">
+<footer class="nm-footer" [ngClass]="state" >
   
+    <button (click)="toggleFooter()" id="footer-trigger" class="btn-plain" style="color:#fff;">{{display}}</button>
+
     <div class="footer-text">
-        <div class="displayNone">
-            <!-- <div id="testSvg" class="icon red"><nm-svg name='add1'></nm-svg></div>   
-            <button  type="button" class="btn btn-icon"><nm-svg name='add1'></nm-svg></button> -->
-        </div>
         <ng-template *ngIf="footerConfig?.disclaimer">
             <nm-paragraph [element]="footerConfig.disclaimer"></nm-paragraph>
         </ng-template>  

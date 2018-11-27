@@ -2033,6 +2033,8 @@ public class ViewConfig {
 		String imgSrc() default "";
 
 		String route() default ""; // remove
+		
+		boolean fixLayout() default false;
 	}
 
 	/**

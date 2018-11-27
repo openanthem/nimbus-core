@@ -222,6 +222,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     printPath: string;
     autoPrint: boolean;
     dataEntryField: boolean;
+    fixLayout: boolean;
     
     deserialize( inJson ) {
         let obj = this;
