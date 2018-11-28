@@ -47,27 +47,27 @@ import { PrintConfig } from './../../../../shared/print-event';
     template: `
         <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc">
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.primary.toString() && element?.visible == true">
-                <button class="btn btn-primary" (click)="onSubmit()" type="{{element.config?.uiStyles?.attributes?.type}}" [disabled]="!form.valid">{{label}}</button>
+                <button class="btn btn-primary"  eventpropagation (clickEvnt)="onSubmit()" [element]="element" type="{{element.config?.uiStyles?.attributes?.type}}" [disabled]="!form.valid">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.secondary.toString() && element?.visible == true">
-                <button class="btn btn-secondary" [disabled]="disabled" (click)="emitEvent($event)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-secondary" [disabled]="disabled" eventpropagation (clickEvnt)="emitEvent($event)" [element]="element" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.plain.toString() && element?.visible == true">
-                <button class="btn btn-plain {{cssClass}}" (click)="emitEvent($event)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-plain {{cssClass}}" eventpropagation (clickEvnt)="emitEvent($event)" [element]="element" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.destructive.toString() && element?.visible == true">
-                <button class="btn btn-delete" (click)="emitEvent($event)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-delete" eventpropagation (clickEvnt)="emitEvent($event)" [element]="element" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.validation.toString() && element?.visible == true">
-                <button class="btn btn-primary" (click)="emitEvent($event)" [disabled]="form.valid">{{label}}</button>
+                <button class="btn btn-primary" eventpropagation (clickEvnt)="emitEvent($event)" [element]="element" [disabled]="form.valid">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.print.toString() && element?.visible == true">
-                <button class="btn btn-secondary" (click)="emitEvent($event)" [disabled]="disabled">{{label}}</button>
+                <button class="btn btn-secondary" eventpropagation (clickEvnt)="emitEvent($event)" [element]="element" [disabled]="disabled">{{label}}</button>
             </ng-template>
         </ng-template>
         
         <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc && element?.visible == true">
-            <button (click)="emitEvent($event)" [disabled]="disabled" title="{{element.config?.uiStyles?.attributes?.title}}" type="button" class="{{btnClass}}">
+            <button eventpropagation (clickEvnt)="emitEvent($event)" [element]="element" [disabled]="disabled" title="{{element.config?.uiStyles?.attributes?.title}}" type="button" class="{{btnClass}}">
                 <nm-image [name]="element.config?.uiStyles?.attributes?.imgSrc" [type]="element.config?.uiStyles?.attributes?.imgType" [cssClass]=""></nm-image>
                 {{label}}
             </button>    

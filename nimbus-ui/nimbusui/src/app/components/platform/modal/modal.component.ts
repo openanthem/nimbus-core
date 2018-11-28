@@ -16,7 +16,7 @@
  */
 'use strict';
 
-import { Component, ElementRef, Input, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, OnDestroy, ViewChild, NgZone} from '@angular/core';
 import { Param, Model } from '../../../shared/param-state';
 import { DialogModule } from 'primeng/primeng';
 import { WebContentSvc } from './../../../services/content-management.service';
@@ -61,14 +61,15 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     private elementCss: string;
     viewComponent = ViewComponent;
     componentTypes = ComponentTypes;
+    currentHeight: number;
 
-    readonly modalSize: { [id: string]: IModalSize } = {
+    readonly modalSize: { [id: string]: IModalSize, } = {
         SMALL: { width: '500' },
         MEDIUM: { width: '700' },
         LARGE: { width: '900' }
     };
 
-    constructor(private wcsvc: WebContentSvc, public domHandler: DomHandler, private pageSvc: PageService) {
+    constructor(private wcsvc: WebContentSvc, public domHandler: DomHandler, private pageSvc: PageService, private zone: NgZone) {
         super(wcsvc);
     }
 
@@ -104,9 +105,12 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     }
 
     ngAfterViewChecked() {
-        if(this.modal.visible && this.modal.container) {
-            this.modal.positionOverlay();
-        }
+        this.zone.runOutsideAngular(() => {
+            setTimeout(() => {
+                if(this.modal.visible && this.modal.container)
+                this.modal.positionOverlay();
+            }, 50);
+        });
     }
     /**
      * Closable attribute. Can the Modal window be closed?
