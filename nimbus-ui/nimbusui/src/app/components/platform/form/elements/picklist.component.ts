@@ -109,7 +109,6 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
     }
 
     ngOnInit() {
-        console.log('this.targetList...0', this.targetList);
         this.loadLabelConfigFromConfigs(this.parent.labels, this.parent.config.code);
         this.requiredCss = ValidationUtils.applyelementStyle(this.parent);
         this.sourcelist = [];
@@ -118,18 +117,14 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
                 this.sourcelist.push(value);
             });
         }
-        console.log('this.targetList...1', this.targetList);
         
         // First check if the picklist has any values that are selected onload
         if (this.element.leafState != null && this.element.leafState.length > 0) {
-            console.log('this.targetList...2', this.targetList);
             this.targetList = this.element.leafState;
         } else {
-            console.log('this.targetList...3', this.targetList);
             this.targetList = [];
         }
         this.refreshSourceList();
-        console.log('this.targetList...4', this.targetList);
         if (this.form != null) {
             const parentCtrl = this.form.controls[this.parent.config.code];
             const frmCtrl = this.form.controls[this.element.config.code];
@@ -187,10 +182,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         });
     }
 
-    emitValueChangedEvent() {
-        console.log('this.form.controls[this.element.config.code].valid', this.form == null || (this.form.controls[this.element.config.code]!= null 
-            && this.form.controls[this.element.config.code].valid));
-        
+    emitValueChangedEvent() {        
         if (this.form == null || (this.form.controls[this.element.config.code]!= null 
             && this.form.controls[this.element.config.code].valid)) {
             this.controlValueChanged.emit(this.element);
