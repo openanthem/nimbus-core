@@ -353,4 +353,57 @@ export class ParamUtils {
         }
         return `/${domain}/${page}`;
     }
+
+    /**
+     * <p>This method resolves a relative path based on the current param's path.</p>
+     * <p> If paramPath is /currentDomain/page/section/grid , then various examples of relative path that can be resolved are :
+     * '../postButton' =>  /currentDomain/page/section/postButton
+     * '<!#this!>/../postButton' => /currentDomain/page/section/postButton
+     * '/p/anotherdomain/page/section' => null (This will throw an error as cross domain requests need to be used using @Config)
+     * '/currentdomain/page/section/tile' => /currentdomain/page/section/tile
+     * '../../tile2/section2/postButton' => /currentdomain/page/tile2/section2/postButton
+     * .d/page/tile/section
+     * @param paramPath
+     * @param pathToResolve 
+     */
+    public static resolveParamUri(paramPath: string, pathToResolve: string): string {
+        if (pathToResolve === undefined || pathToResolve === null || pathToResolve.length === 0) {
+           return null;
+       }
+        if (pathToResolve.startsWith(`${ServiceConstants.PLATFORM_SEPARATOR}/`)) {
+           console.error('Cannot use cross domain uri here. Consider using @Config on a param for cross domain requests');
+           return null;
+       }
+        const key_parts = pathToResolve.split(ServiceConstants.PATH_SEPARATOR);
+       if (key_parts.length === 0) {
+           return pathToResolve;
+       }
+       // If absolute uri is given - exit immediately with the pathToResolve.
+       if (pathToResolve.indexOf(ServiceConstants.PATH_SEPARATOR) === 0) {
+           return pathToResolve;
+       }
+        const currTopParamPathSegment = key_parts[0];
+       const currentTopNestedParamPath = this.resolvePathConstants(paramPath, currTopParamPathSegment);
+        if (key_parts.length === 1) {
+           return currentTopNestedParamPath;
+       }
+       return this.resolveParamUri(currentTopNestedParamPath, key_parts.slice(1).join(ServiceConstants.PATH_SEPARATOR));
+   }
+    public static resolvePathConstants(currentPath: string, resolvePathSegment: string): string {
+        const currentPath_parts = currentPath.split(ServiceConstants.PATH_SEPARATOR);
+       // If resolvePathSegment is '..', then strip the last param of current path
+       // Ex: currentPath = /currentdomain/page/section/grid, resolvePathSegment = '..' -> return '/currentdomain/page/section'
+       if (resolvePathSegment === ServiceConstants.SEPARATOR_URI_PARENT) {
+           return currentPath_parts.slice(0 , currentPath_parts.length - 1).join(ServiceConstants.PATH_SEPARATOR);
+        } else if (resolvePathSegment === ServiceConstants.MARKER_COMMAND_PARAM_CURRENT_SELF) {
+       // Ex: currentPath = /currentdomain/page/section/grid, resolvePathSegment = '<!#this!>' -> return '/currentdomain/page/section/grid'
+           return currentPath;
+        } else if (resolvePathSegment === ServiceConstants.SEPARATOR_URI_ROOT_DOMAIN) {
+       // Ex: currentPath = /currentdomain/page/section/grid, resolvePathSegment = '.d' -> return '/currentdomain'
+           return currentPath_parts.slice(0, 2).join(ServiceConstants.PATH_SEPARATOR);
+        } else {
+   // Ex: currentPath = /currentdomain/page/section/grid, resolvePathSegment = 'button' -> return '/currentdomain/page/section/grid/button'
+           return currentPath.concat(ServiceConstants.PATH_SEPARATOR).concat(resolvePathSegment);
+       }
+   }
 }
