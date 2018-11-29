@@ -53,10 +53,10 @@ describe('LoginCmp', () => {
   });
 
 
-    beforeEach( async(() => {
+    beforeEach(() => {
       fixture = TestBed.createComponent(LoginCmp);
       hostComponent = fixture.debugElement.componentInstance;
-    }));
+    });
 
     it('should create the LoginCmp',  async(() => {
       expect(hostComponent).toBeTruthy();

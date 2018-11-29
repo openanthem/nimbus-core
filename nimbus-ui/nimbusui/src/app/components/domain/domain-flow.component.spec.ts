@@ -510,7 +510,7 @@ describe('DomainFlowCmp', () => {
   });
 
 
-  beforeEach( async(() => {
+  beforeEach(() => {
     fixture = TestBed.createComponent(DomainFlowCmp);
     hostComponent = fixture.debugElement.componentInstance;
     layoutservice = TestBed.get(LayoutService);
@@ -518,7 +518,7 @@ describe('DomainFlowCmp', () => {
     router = TestBed.get(Router);
     route = TestBed.get(ActivatedRoute);
     hostComponent.accordions = accordions;
-  }));
+  });
 
   it('ngOnInit should not call layoutservice.getLayout()',  async(() => {
     spyOn(hostComponent, 'setLayoutScroll').and.returnValue('');

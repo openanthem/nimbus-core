@@ -101,13 +101,13 @@ describe('FlowWrapper', () => {
   });
 
 
-  beforeEach( async(() => {
+  beforeEach(() => {
     fixture = TestBed.createComponent(FlowWrapper);
     hostComponent = fixture.debugElement.componentInstance;
     pageService = TestBed.get(PageService);
     configService = TestBed.get(ConfigService);
     router = TestBed.get(Router);
-  }));
+  });
 
   it('should create the FlowWrapper',  async(() => {
     expect(hostComponent).toBeTruthy();
