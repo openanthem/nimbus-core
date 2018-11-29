@@ -79,7 +79,7 @@ it('resolveParamUri() method test with cross domain', function() {
     expect(resolvedPath).toEqual(null);
 });
 
-it('resolveParamUri() method test with another domain - Negative scenario', function() {
+it('resolveParamUri() method test with another domain', function() {
     // tslint:disable-next-line:max-line-length
     const resolvedPath = ParamUtils.resolveParamUri('/currentdomain/page/tile/section/grid', '/anotherdomain/_process?fn=_handler&source=type');
     expect(resolvedPath).toEqual('/anotherdomain/_process?fn=_handler&source=type');
