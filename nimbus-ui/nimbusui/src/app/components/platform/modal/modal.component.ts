@@ -107,8 +107,14 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     ngAfterViewChecked() {
         this.zone.runOutsideAngular(() => {
             setTimeout(() => {
-                if(this.modal.visible && this.modal.container)
-                this.modal.positionOverlay();
+                if(this.modal.visible && this.modal.container) {
+                    let height = this.domHandler.getOuterHeight(this.modal.container);
+
+                    if(height !== this.currentHeight) {
+                        this.currentHeight = height;
+                        this.modal.positionOverlay();
+                    }
+                }
             }, 50);
         });
     }
