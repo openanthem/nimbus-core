@@ -1,67 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>	
-
-	<parent>
-		<groupId>com.antheminc.oss</groupId>
-		<artifactId>nimbus-parent</artifactId>
-		<version>1.1.11.BUILD-SNAPSHOT</version>
-	</parent>
-	
-	<name>nimbus-ui</name>
-	<artifactId>nimbus-ui</artifactId>
-	<description>oss web project</description>
-	<packaging>jar</packaging>
-	
-	<properties>
-		<sonar.projectName>NIM-Platform Web</sonar.projectName>
-		<testconfig.ui.browsers>ChromeHeadless</testconfig.ui.browsers>
-	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>com.antheminc.oss</groupId>
-			<artifactId>nimbus-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-	</dependencies>
-
-	<profiles>
-		<profile>
-			<id>devbuild</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.github.eirslett</groupId>
-						<artifactId>frontend-maven-plugin</artifactId>
-						<version>${frontend.plugin.version}</version>
-						<configuration>
-   							<workingDirectory>${project.basedir}/nimbusui</workingDirectory>
-						</configuration>
-						<executions>
-						    <execution>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>  
+ 
+    <parent>
+        <groupId>com.antheminc.oss</groupId>
+        <artifactId>nimbus-parent</artifactId>
+        <version>1.1.11.BUILD-SNAPSHOT</version>
+    </parent>
+    
+    <name>nimbus-ui</name>
+    <artifactId>nimbus-ui</artifactId>
+    <description>oss web project</description>
+    <packaging>jar</packaging>
+    
+    <properties>
+        <sonar.projectName>NIM-Platform Web</sonar.projectName>
+        <testconfig.ui.browsers>ChromeHeadless</testconfig.ui.browsers>
+        <webdriver.manager.version>3.0.0</webdriver.manager.version>
+    </properties>
+ 
+    <dependencies>
+        <dependency>
+            <groupId>com.antheminc.oss</groupId>
+            <artifactId>nimbus-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>${webdriver.manager.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+ 
+    <profiles>
+        <profile>
+            <id>devbuild</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <version>${frontend.plugin.version}</version>
+                        <configuration>
+                            <workingDirectory>${project.basedir}/nimbusui</workingDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
                                 <id>npm install dev</id>
                                 <goals>
                                     <goal>npm</goal>
@@ -71,7 +78,7 @@
                                 </configuration> -->
                                 <phase>generate-resources</phase>
                             </execution>
-							<execution>
+                            <execution>
                                     <id>npm run-script mavenbuild</id>
                                     <phase>generate-resources</phase>
                                     <goals>
@@ -81,58 +88,58 @@
                                         <arguments>run-script mavenbuild</arguments>
                                     </configuration>
                              </execution>
-						</executions>
-					</plugin>
-					
-				</plugins>
-				<resources>
-					<resource>
-						<directory>${project.basedir}/src/main/resources</directory>
-					</resource>
-					<resource>
-						<directory>${project.basedir}/nimbusui/dist</directory>
-						<targetPath>static</targetPath>
-					</resource>
-				</resources>
-			</build>
-		</profile>
-		<!-- Profile for executing UI Tests -->
-		<profile>
-			<id>run-ui-tests</id>
-			<activation>
-				<property>
-					<name>run-ui-tests</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<version>${exec-maven-plugin.version}</version>
-						<executions>
-							<execution>
-								<phase>test</phase>
-									<goals>
-										<goal>exec</goal>
-									</goals>
-							</execution>
-						</executions>
-						  <configuration>
-						  	<executable>ng</executable>
-          					<workingDirectory>${project.basedir}/nimbusui</workingDirectory>
-				            <arguments>
-            					<argument>test </argument>
-								<argument>--watch=false </argument>
-								<argument>--code-coverage</argument>
-								<argument>--browsers</argument>
-								<argument>${testconfig.ui.browsers}</argument>
-          					</arguments>
-        				  </configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
+                        </executions>
+                    </plugin>
+                    
+                </plugins>
+                <resources>
+                    <resource>
+                        <directory>${project.basedir}/src/main/resources</directory>
+                    </resource>
+                    <resource>
+                        <directory>${project.basedir}/nimbusui/dist</directory>
+                        <targetPath>static</targetPath>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        <!-- Profile for executing UI Tests -->
+        <profile>
+            <id>run-ui-tests</id>
+            <activation>
+                <property>
+                    <name>run-ui-tests</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>${exec-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                                    <goals>
+                                        <goal>exec</goal>
+                                    </goals>
+                            </execution>
+                        </executions>
+                          <configuration>
+                            <executable>ng</executable>
+                            <workingDirectory>${project.basedir}/nimbusui</workingDirectory>
+                            <arguments>
+                                <argument>test </argument>
+                                <argument>--watch=false </argument>
+                                <argument>--code-coverage</argument>
+                                <argument>--browsers</argument>
+                                <argument>${testconfig.ui.browsers}</argument>
+                            </arguments>
+                          </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+ 
 </project>
