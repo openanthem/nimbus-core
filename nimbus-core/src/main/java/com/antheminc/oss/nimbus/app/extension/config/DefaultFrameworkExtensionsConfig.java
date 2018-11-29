@@ -168,4 +168,5 @@ public class DefaultFrameworkExtensionsConfig {
 	public StaticCodeValueBasedCodeToLabelConverter staticCodeValueBasedCodeToLabelConverter(BeanResolverStrategy beanResolver) {
 		return new StaticCodeValueBasedCodeToLabelConverter(beanResolver);
 	}
+	
 }
