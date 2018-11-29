@@ -24,10 +24,10 @@ describe('Image', () => {
   });
 
 
-  beforeEach( async(() => {
+  beforeEach(() => {
     fixture = TestBed.createComponent(Image);
     hostComponent = fixture.debugElement.componentInstance;
-  }));
+  });
 
   it('should create the Image',  async(() => {
     expect(hostComponent).toBeTruthy();

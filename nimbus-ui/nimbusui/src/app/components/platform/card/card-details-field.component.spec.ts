@@ -85,11 +85,11 @@ describe('CardDetailsFieldComponent', () => {
     setup( declarations, imports, providers);
   });
 
-  beforeEach( async(() => {
+  beforeEach(() => {
     fixture = TestBed.createComponent(CardDetailsFieldComponent);
     hostComponent = fixture.debugElement.componentInstance;
     hostComponent.element = param;
-  }));
+  });
 
   it('should create the CardDetailsFieldComponent',  async(() => {
     expect(hostComponent).toBeTruthy();

@@ -34,10 +34,10 @@ describe('PageNotfoundComponent', () => {
   });
 
 
-  beforeEach( async(() => {
+  beforeEach(() => {
     fixture = TestBed.createComponent(PageNotfoundComponent);
     hostComponent = fixture.debugElement.componentInstance;
-  }));
+  });
 
   it('should create the PageNotfoundComponent',  async(() => {
   }));
