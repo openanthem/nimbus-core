@@ -14,6 +14,7 @@ import { HttpModule } from '@angular/http';
 import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 import { FormElement } from './form-element.component';
@@ -40,7 +41,7 @@ import { ActionDropdown } from '../platform/form/elements/action-dropdown.compon
 import { TooltipComponent } from '../platform/tooltip/tooltip.component';
 import { SelectItemPipe } from '../../pipes/select-item.pipe';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
-import { Button } from '../platform/form/elements/button.component';
+// import { Button } from '../platform/form/elements/button.component';
 import { Accordion } from '../platform/content/accordion.component';
 import { Menu } from '../platform/menu.component';
 import { Link } from '../platform/link.component';
@@ -82,6 +83,28 @@ import { async, TestBed, ComponentFixture } from '@angular/core/testing';
 
 let param: Param;
 let fixture: ComponentFixture<any>, hostComponent;
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
+
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
+}
 
 const declarations = [
     FormElement,

@@ -12,6 +12,7 @@ import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, Drag
   import { TableModule } from 'primeng/table';
   import { KeyFilterModule } from 'primeng/keyfilter';
   import { ToastModule } from 'primeng/toast';
+  import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { Accordion } from './accordion.component';
 import { CardDetailsComponent } from '../card/card-details.component';
@@ -38,7 +39,7 @@ import { Location, LocationStrategy, HashLocationStrategy } from '@angular/commo
 import { FrmGroupCmp } from '../form-group.component';
 import { SvgComponent } from '../svg/svg.component';
 import { FormElement } from '../form-element.component';
-import { Button } from '../form/elements/button.component';
+// import { Button } from '../form/elements/button.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
 import { Signature } from '../form/elements/signature.component';
 // import { DateControl } from '../form/elements/date.component';
@@ -89,6 +90,28 @@ class MockWebContentSvc {
 
 class MockPageService {
   processEvent(a, b, c, d) {  }
+}
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
+
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
 }
 
 const declarations = [

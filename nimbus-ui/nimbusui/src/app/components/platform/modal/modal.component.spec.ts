@@ -11,7 +11,7 @@ import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import {ToastModule} from 'primeng/toast';
-import { Directive, Component, Input } from '@angular/core';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { Modal } from './modal.component';
 import { TooltipComponent } from '../tooltip/tooltip.component';
@@ -19,7 +19,7 @@ import { TooltipComponent } from '../tooltip/tooltip.component';
 import { ComboBox } from '../../platform/form/elements/combobox.component';
 import { InputText } from '../form/elements/textbox.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
-import { Button } from '../form/elements/button.component';
+// import { Button } from '../form/elements/button.component';
 // import { InfiniteScrollGrid } from '../grid/grid.component';
 import { Menu } from '../menu.component';
 import { Link } from '../link.component';
@@ -85,6 +85,28 @@ import { WebContentSvc } from './../../../services/content-management.service';
 //     nativeElement: any;
 //     subscription: any;
 //   }
+
+@Component({
+    template: '<div></div>',
+    selector: 'nm-button'
+  })
+  class Button {
+  
+    @Input() element: any;
+    @Input() payload: string;
+    @Input() form: any;
+    @Input() actionTray?: boolean;
+  
+    @Output() buttonClickEvent = new EventEmitter();
+  
+    @Output() elementChange = new EventEmitter();
+    private imagesPath: string;
+    private btnClass: string;
+    private disabled: boolean;
+    files: any;
+    differ: any;
+    componentTypes;
+  }
 
   @Component({
     selector: 'nm-section',

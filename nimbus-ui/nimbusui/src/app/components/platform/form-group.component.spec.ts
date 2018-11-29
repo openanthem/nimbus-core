@@ -10,10 +10,11 @@ import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import {ToastModule} from 'primeng/toast';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { FrmGroupCmp } from './form-group.component';
 import { FormElement } from './form-element.component';
-import { Button } from '../platform/form/elements/button.component';
+// import { Button } from '../platform/form/elements/button.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
 import { Header } from '../platform/content/header.component';
 import { Paragraph } from '../platform/content/paragraph.component';
@@ -77,6 +78,28 @@ class MockWebContentSvc {
         }
         return test;
     }
+}
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
+
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
 }
 
 const declarations = [

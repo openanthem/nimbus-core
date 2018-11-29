@@ -29,6 +29,7 @@ import { UiAttribute } from '../../../../shared/param-config';
 import { FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms';
 import { PrintDirective } from '../../../../directives/print.directive';
 import { PrintService } from '../../../../services/print.service';
+import { EventPropagationDirective } from './event-propagation.directive';
 
 let location, pageService, param, fileService;
 
@@ -63,7 +64,8 @@ const declarations = [
   Button,
   SvgComponent,
   Image,
-  PrintDirective
+  PrintDirective,
+  EventPropagationDirective
 ];
 const imports = [
    HttpModule,

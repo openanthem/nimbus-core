@@ -6,6 +6,7 @@ import { DropdownModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { CardDetailsGrid } from './card-details-grid.component';
 import { PageService } from '../../../services/page.service';
@@ -29,7 +30,7 @@ import { Paragraph } from '../content/paragraph.component';
 import { ButtonGroup } from '../../platform/form/elements/button-group.component';
 import { DisplayValueDirective } from '../../../directives/display-value.directive';
 import { InputLabel } from '../../platform/form/elements/input-label.component';
-import { Button } from '../../platform/form/elements/button.component';
+// import { Button } from '../../platform/form/elements/button.component';
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
 import { WebContentSvc } from '../../../services/content-management.service';
@@ -44,6 +45,28 @@ class MockPageService {
     processEvent() {
 
     }
+}
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
+
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
 }
 
 const declarations = [

@@ -12,6 +12,7 @@ import { JL } from 'jsnlog';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import {ToastModule} from 'primeng/toast';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { Tile } from './tile.component';
 import { MessageComponent } from './message/message.component';
@@ -26,7 +27,7 @@ import { Form } from '../platform/form.component';
 import { Link } from '../platform/link.component';
 import { Menu } from '../platform/menu.component';
 // import { InfiniteScrollGrid } from '../platform/grid/grid.component';
-import { Button } from '../platform/form/elements/button.component';
+// import { Button } from '../platform/form/elements/button.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
 import { InputText } from '../platform/form/elements/textbox.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
@@ -84,6 +85,28 @@ class MockPageService {
 
     }
 }
+
+@Component({
+    template: '<div></div>',
+    selector: 'nm-button'
+  })
+  class Button {
+  
+    @Input() element: any;
+    @Input() payload: string;
+    @Input() form: any;
+    @Input() actionTray?: boolean;
+  
+    @Output() buttonClickEvent = new EventEmitter();
+  
+    @Output() elementChange = new EventEmitter();
+    private imagesPath: string;
+    private btnClass: string;
+    private disabled: boolean;
+    files: any;
+    differ: any;
+    componentTypes;
+  }
 
 class MockLoggerService {
     debug() { }

@@ -18,6 +18,7 @@ import { Subject } from 'rxjs';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ToastModule } from 'primeng/toast';
 import { Subscription } from 'rxjs';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { PageContent } from './page-content.component';
 import { Tile } from '../tile.component';
@@ -35,7 +36,7 @@ import { Menu } from '../menu.component';
 import { Link } from '../link.component';
 import { Form } from '../form.component';
 import { StaticText } from './static-content.component';
-import { Button } from '../form/elements/button.component';
+// import { Button } from '../form/elements/button.component';
 import { Paragraph } from './paragraph.component';
 import { CardDetailsComponent } from '../card/card-details.component';
 import { CardDetailsGrid } from '../card/card-details-grid.component';
@@ -129,6 +130,28 @@ class MockWebContentSvc {
       helpText: 345
     };
   }
+}
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
+
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
 }
 
 class MockLoggerService {

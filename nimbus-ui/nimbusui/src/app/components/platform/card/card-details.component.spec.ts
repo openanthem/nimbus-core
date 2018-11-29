@@ -6,6 +6,7 @@ import { DropdownModule } from 'primeng/primeng';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { CardDetailsComponent } from './card-details.component';
 import { Link } from '../link.component';
@@ -28,7 +29,7 @@ import { ButtonGroup } from '../../platform/form/elements/button-group.component
 import { Label } from '../content/label.component';
 import { DisplayValueDirective } from '../../../directives/display-value.directive';
 import { InputLabel } from '../../platform/form/elements/input-label.component';
-import { Button } from '../../platform/form/elements/button.component';
+// import { Button } from '../../platform/form/elements/button.component';
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
 import { configureTestSuite } from 'ng-bullet';
@@ -39,6 +40,28 @@ let param, pageService;
 
 class MockPageService {
     processEvent() {    }
+}
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
+
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
 }
 
 const declarations = [

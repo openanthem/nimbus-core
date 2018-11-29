@@ -17,6 +17,8 @@ import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, FormControl } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
+import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { DomainFlowCmp } from './domain-flow.component';
 import { SubHeaderCmp } from '../platform/sub-header.component';
@@ -32,10 +34,10 @@ import { LoggerService } from '../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 import { AppInitService } from '../../services/app.init.service'
 import { ActionTray } from '../platform/actiontray.component';
-import { Button } from '../platform/form/elements/button.component';
+// import { Button } from '../platform/form/elements/button.component';
 import { SvgComponent } from '../platform/svg/svg.component';
-import { Accordion } from '../platform/content/accordion.component';
-import { Modal } from '../platform/modal/modal.component';
+// import { Accordion } from '../platform/content/accordion.component';
+// import { Modal } from '../platform/modal/modal.component';
 import { Image } from '../platform/image.component';
 import { CardDetailsGrid } from '../platform/card/card-details-grid.component';
 import { CardDetailsComponent } from '../platform/card/card-details.component';
@@ -82,6 +84,7 @@ import { FormErrorMessage } from '../platform/form-error-message.component';
 import { setup, TestContext } from '../../setup.spec';
 import { configureTestSuite } from 'ng-bullet';
 import { PrintDirective } from '../../directives/print.directive';
+import { PrintService } from '../../services/print.service';
 
 let layoutservice, pageservice, router, route;
 
@@ -94,6 +97,36 @@ export class NmPanelMenu {
     @Input() style: any;
     @Input() styleClass: string;
     @Input() multiple: boolean = true;  
+}
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-modal'
+})
+export class Modal {
+  @Input() element: any;
+}
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
+
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
 }
 
 @Component({
@@ -111,6 +144,23 @@ export class NmPanelMenuSub {
     @Input() item: any;
     @Input() expanded: boolean;
 }
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-accordion'
+})
+export class Accordion {
+  @Input() form: FormGroup;
+  @Input() elementCss: string;
+  @Input() element: any;
+  @Input() position: any;
+  componentTypes: any;
+  viewComponent: any;
+  _multiple: boolean;
+  index: number[]; 
+  @ViewChild('accordion') accordion: any;
+}
+
 
 @Component({
     template: '<div></div>',
@@ -322,7 +372,8 @@ export class MockActivatedRoute implements ActivatedRoute {
      KeyFilterModule,
      FormsModule,
      ReactiveFormsModule,
-     ToastModule
+     ToastModule,
+     BrowserAnimationsModule
  ];
  const providers = [
      {provide: LayoutService, useClass: MockLayoutService},
@@ -338,7 +389,8 @@ export class MockActivatedRoute implements ActivatedRoute {
      ConfigService,
      BreadcrumbService,
      SessionStoreService,
-     AppInitService
+     AppInitService,
+     PrintService
   ];
 
 let fixture, hostComponent;
@@ -357,35 +409,80 @@ describe('DomainFlowCmp', () => {
     pageservice = TestBed.get(PageService);
     router = TestBed.get(Router);
     route = TestBed.get(ActivatedRoute);
+    hostComponent.accordions = accordions;
+    hostComponent.items = items;
+    hostComponent.actionTray = actionTray;
+    hostComponent.modalItems = modalItems;
   });
 
   it('should create the app', async(() => {
     expect(hostComponent).toBeTruthy();
   }));
 
-  // it('ngOnInit() should not update main-content', async(() => {
-  //   spyOn(document, 'getElementById').and.callThrough();
-  //   const res = { topBar: { headerMenus: 'theaderMenus' } };
-  //   hostComponent.ngOnInit();
-  //   layoutservice.parseLayoutConfig(res);
-  //   expect(document.getElementById).not.toHaveBeenCalled();
-  // }));
+  it('accordion, button, breadcrump, panelmenu, actiontray and modal should be created', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const breadcrumb  = debugElement.query(By.css('nm-breadcrumb'));
+    const accordionEle  = debugElement.query(By.css('nm-accordion'));
+    const button  = debugElement.query(By.css('button'));
+    const panelMenu = debugElement.query(By.css('nm-panelMenu'));
+    const actiontray = debugElement.query(By.css('nm-actiontray'));
+    const modal = debugElement.query(By.css('nm-modal'));
+    expect(breadcrumb.name).toEqual('nm-breadcrumb');
+    expect(button.name).toEqual('button');
+    expect(panelMenu.name).toEqual('nm-panelMenu');
+    expect(actiontray.name).toEqual('nm-actiontray');
+    expect(accordionEle.name).toEqual('nm-accordion');
+    expect(modal.name).toEqual('nm-modal');
+  }));
 
-  // it('ngOnInit() should call router.navigate',  async(() => {
-  //   const res = { pageConfig: { config: { code: 321 } } };
-  //   spyOn(router, 'navigate').and.callThrough();
-  //   hostComponent.ngOnInit();
-  //   pageservice.logError(res);
-  //   expect(router.navigate).toHaveBeenCalled();
-  // }));
+  it('accordion should not be created', async(() => {
+    hostComponent.accordions = null;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const accordion  = debugElement.query(By.css('nm-accordion'));
+    expect(accordion).toBeFalsy();
+    }));
 
-  // it('ngOnInit() should not call router.navigate',  async(() => {
-  //   const res = {};
-  //   spyOn(router, 'navigate').and.callThrough();
-  //   hostComponent.ngOnInit();
-  //   pageservice.logError(res);
-  //   expect(router.navigate).not.toHaveBeenCalled();
-  // }));
+  it('modal should not be created', async(() => {
+    hostComponent.modalItems = [];
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const modal = debugElement.query(By.css('nm-modal'));
+    expect(modal).toBeFalsy();  
+  }));
+
+  it('action tray should not be created', async(() => {
+    hostComponent.actionTray = null;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const actiontray = debugElement.query(By.css('nm-actiontray'));
+    expect(actiontray).toBeFalsy();  
+    }));
+
+  it('ngOnInit() should not update main-content', async(() => {
+    spyOn(document, 'getElementById').and.callThrough();
+    const res = { topBar: { headerMenus: 'theaderMenus' } };
+    hostComponent.ngOnInit();
+    layoutservice.parseLayoutConfig(res);
+    expect(document.getElementById).not.toHaveBeenCalled();
+  }));
+
+  it('ngOnInit() should call router.navigate',  async(() => {
+    const res = { pageConfig: { config: { code: 321 } } };
+    spyOn(router, 'navigate').and.callThrough();
+    hostComponent.ngOnInit();
+    pageservice.logError(res);
+    expect(router.navigate).toHaveBeenCalled();
+  }));
+
+  it('ngOnInit() should not call router.navigate',  async(() => {
+    const res = {};
+    spyOn(router, 'navigate').and.callThrough();
+    hostComponent.ngOnInit();
+    pageservice.logError(res);
+    expect(router.navigate).not.toHaveBeenCalled();
+  }));
 
 });
 
@@ -409,7 +506,7 @@ const secondProviders = [
 describe('DomainFlowCmp', () => {
 
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup( declarations, imports, secondProviders);
   });
 
 
@@ -420,18 +517,158 @@ describe('DomainFlowCmp', () => {
     pageservice = TestBed.get(PageService);
     router = TestBed.get(Router);
     route = TestBed.get(ActivatedRoute);
+    hostComponent.accordions = accordions;
   }));
 
-  // it('ngOnInit should not call layoutservice.getLayout()',  async(() => {
-  //   spyOn(layoutservice, 'getLayout').and.callThrough();
-  //   spyOn(document, 'getElementById').and.returnValue({
-  //     classList: {
-  //       remove: () => {},
-  //       add: () => {}
-  //     }
-  //   });
-  //   hostComponent.ngOnInit();
-  //   expect(layoutservice.getLayout).not.toHaveBeenCalled();
-  // }));
+  it('ngOnInit should not call layoutservice.getLayout()',  async(() => {
+    spyOn(hostComponent, 'setLayoutScroll').and.returnValue('');
+    spyOn(layoutservice, 'getLayout').and.callThrough();
+    spyOn(document, 'getElementById').and.returnValue({
+      classList: {
+        remove: () => {},
+        add: () => {}
+      }
+    });
+    hostComponent.ngOnInit();
+    expect(layoutservice.getLayout).not.toHaveBeenCalled();
+  }));
 
 });
+
+const accordions = [
+  {
+      "enabled": true,
+      "visible": false,
+      "activeValidationGroups": [],
+      "collectionParams": [],
+      "configId": "14455",
+      "path": "/home/vpHome/vmAddNote",
+      "type": {
+          "model": {
+              "params": [
+
+              ]
+          }
+      },
+      "message": [],
+      "values": [],
+      "labels": [],
+      "elemLabels": {}
+  }
+];
+
+
+
+const items = [
+  {
+      "label": "Home",
+      "path": "/home/vpHome/vsHomeLeftBar/home",
+      "page": "",
+      "icon": "tasksIcon",
+      "imgType": "FA",
+      "url": "petclinicdashboard/vpDashboard",
+      "type": "INTERNAL",
+      "target": "",
+      "rel": "",
+      "routerLink": "/h/petclinicdashboard/vpDashboard",
+      "code": "home",
+      "expanded": false
+  },
+  {
+      "label": "Veterinarians",
+      "path": "/home/vpHome/vsHomeLeftBar/vets",
+      "page": "",
+      "icon": "caseHistoryIcon",
+      "imgType": "FA",
+      "url": "veterinarianview/vpVeterenarians",
+      "type": "INTERNAL",
+      "target": "",
+      "rel": "",
+      "routerLink": "/h/veterinarianview/vpVeterenarians",
+      "code": "vets",
+      "expanded": false
+  },
+  {
+      "label": "Owners",
+      "path": "/home/vpHome/vsHomeLeftBar/owners",
+      "page": "",
+      "icon": "caseHistoryIcon",
+      "imgType": "FA",
+      "url": "ownerlandingview/vpOwners",
+      "type": "INTERNAL",
+      "target": "",
+      "rel": "",
+      "routerLink": "/h/ownerlandingview/vpOwners",
+      "code": "owners"
+  },
+  {
+      "label": "Pets",
+      "path": "/home/vpHome/vsHomeLeftBar/pets",
+      "page": "",
+      "icon": "caseHistoryIcon",
+      "imgType": "FA",
+      "url": "petview/vpAllPets",
+      "type": "INTERNAL",
+      "target": "",
+      "rel": "",
+      "routerLink": "/h/petview/vpAllPets",
+      "code": "pets",
+      "expanded": false
+  },
+  {
+      "label": "Notes",
+      "path": "/home/vpHome/vsHomeLeftBar/notes",
+      "page": "",
+      "icon": "notesIcon",
+      "imgType": "FA",
+      "url": "petclinicdashboard/vpNotes",
+      "type": "INTERNAL",
+      "target": "",
+      "rel": "",
+      "routerLink": "/h/petclinicdashboard/vpNotes",
+      "code": "notes",
+      "expanded": false
+  }
+];
+
+const actionTray = {
+  "enabled": true,
+  "visible": true,
+  "activeValidationGroups": [],
+  "collectionParams": [],
+  "configId": "14452",
+  "path": "/home/vpHome/vsActionTray",
+  "type": {
+      "model": {
+          "params": [
+          ]
+      }
+  },
+  "message": [],
+  "values": [],
+  "labels": [],
+  "elemLabels": {}
+};
+
+const modalItems = [
+  {
+      "enabled": true,
+      "visible": false,
+      "activeValidationGroups": [],
+      "collectionParams": [],
+      "configId": "14455",
+      "path": "/home/vpHome/vmAddNote",
+      "type": {
+          "model": {
+              "params": [
+              ]
+          }
+      },
+      "message": [],
+      "values": [],
+      "labels": [],
+      "elemLabels": {}
+  }
+];
+
+

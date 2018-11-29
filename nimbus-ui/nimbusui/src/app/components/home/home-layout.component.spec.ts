@@ -20,7 +20,8 @@ import {
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 import { HomeLayoutCmp } from './home-layout.component';
 import { FooterGlobal } from '../platform/footer/footer-global.component';
@@ -44,7 +45,7 @@ import { LoggerService } from '../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 import { AppInitService } from '../../services/app.init.service'
 import { SvgComponent } from '../platform/svg/svg.component';
-import { Button } from '../platform/form/elements/button.component';
+// import { Button } from '../platform/form/elements/button.component';
 import { ActionDropdown, ActionLink } from '../platform/form/elements/action-dropdown.component';
 import { InputLabel } from '../platform/form/elements/input-label.component';
 import { Image } from '../platform/image.component';
@@ -69,6 +70,28 @@ export class NmPanelMenu {
   @Input() style: any;
   @Input() styleClass: string;
   @Input() multiple: boolean = true;  
+}
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
+
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
 }
 
 class MockAuthenticationService {
@@ -212,68 +235,60 @@ describe('HomeLayoutCmp', () => {
     expect(hostComponent).toBeTruthy();
   }));
 
-  // it('ngOnInint() should get layout from layout service',  async(() => {
-  //   spyOn(layoutService, 'getLayout').and.callThrough();
-  //   hostComponent.ngOnInit();
-  //   const layout = {
-  //     topBar: {
-  //       branding: 'test',
-  //       headerMenus: 'tHeaderMenus'
-  //     },
-  //     menu: [],
-  //     footer: 'FooterConfig',
-  //   };
-  //   layoutService.parseLayoutConfig(layout);
-  //   expect(layoutService.getLayout).toHaveBeenCalled();
-  // }));
+  it('button, panelMenu, headerGlobal, footer should be created', async(() => {
+    layoutService.parseLayoutConfig(layout);
+    fixture.detectChanges();
+    hostComponent.ngOnInit();
+    layoutService.parseLayoutConfig(layout);
+    const debugElement = fixture.debugElement;
+    const panelMenu = debugElement.query(By.css('nm-panelMenu'));
+    const button  = debugElement.query(By.css(".navbar-toggler.collapsed"));
+    const headerGlobal  = debugElement.query(By.css('nm-header-global'));
+    const footer = debugElement.query(By.css('nm-footer-global'));
+    expect(button.name).toEqual('button');
+    expect(button.nativeElement.classList.contains('navbar-toggler', 'collapsed', 'home')).toBeTruthy();
+    expect(panelMenu.name).toEqual('nm-panelMenu');
+    expect(headerGlobal.name).toEqual('nm-header-global');
+    expect(footer.name).toEqual('nm-footer-global');
+  }));
 
-  // it('ngOnInint() should not get layout from layout service',  async(() => {
-  //   spyOn(layoutService, 'getLayout').and.callThrough();
-  //   activatedRoute.data['value']['layout'] = null;
-  //   hostComponent.ngOnInit();
-  //   const layout = {
-  //     topBar: {
-  //       branding: 'test',
-  //       headerMenus: 'tHeaderMenus'
-  //     },
-  //     menu: [],
-  //     footer: 'FooterConfig',
-  //   };
-  //   layoutService.parseLayoutConfig(layout);
-  //   expect(layoutService.getLayout).not.toHaveBeenCalled();
-  // }));
+  it('ngOnInint() should get layout from layout service',  async(() => {
+    spyOn(layoutService, 'getLayout').and.callThrough();
+    hostComponent.ngOnInit();
+    layoutService.parseLayoutConfig(layout);
+    expect(layoutService.getLayout).toHaveBeenCalled();
+  }));
 
-  // it('ngOnInint() should update the class properties',  async(() => {
-  //   hostComponent.ngOnInit();
-  //   const layout: any = {
-  //     topBar: {
-  //       branding: 'test',
-  //       headerMenus: 'tHeaderMenus'
-  //     },
-  //     menu: [],
-  //     footer: 'FooterConfig',
-  //   };
-  //   layoutService.parseLayoutConfig(layout);
-  //   const res: any = 'test';
-  //   expect(hostComponent.branding).toEqual(res);
-  //   expect(hostComponent.topMenuItems).toEqual(layout.topBar.headerMenus);
-  // }));
+  it('ngOnInint() should not get layout from layout service',  async(() => {
+    spyOn(layoutService, 'getLayout').and.callThrough();
+    activatedRoute.data['value']['layout'] = null;
+    hostComponent.ngOnInit();
+    layoutService.parseLayoutConfig(layout);
+    expect(layoutService.getLayout).not.toHaveBeenCalled();
+  }));
 
-  // it('ngOnInint() should not update the class properties',  async(() => {
-  //   hostComponent.ngOnInit();
-  //   const layout = {};
-  //   layoutService.parseLayoutConfig(layout);
-  //   const res: any = 'test';
-  //   expect(hostComponent.branding).not.toEqual(res);
-  // }));
+  it('ngOnInint() should update the class properties',  async(() => {
+    hostComponent.ngOnInit();
+    layoutService.parseLayoutConfig(layout);
+    const res: any = 'test';
+    expect(hostComponent.branding).toEqual(layout.topBar.branding);
+    expect(hostComponent.topMenuItems).toEqual(layout.topBar.headerMenus);
+  }));
 
-  // it('ngOnInint() should not update the class properties if layout is null',  async(() => {
-  //   hostComponent.ngOnInit();
-  //   const layout = {};
-  //   layoutService.parseLayoutConfig();
-  //   const res: any = 'test';
-  //   expect(hostComponent.branding).not.toEqual(res);
-  // }));
+  it('ngOnInint() should not update the class properties',  async(() => {
+    hostComponent.ngOnInit();
+    const layout1 = {};
+    layoutService.parseLayoutConfig(layout1);
+    const res: any = 'test';
+    expect(hostComponent.branding).not.toEqual(res);
+  }));
+
+  it('ngOnInint() should not update the class properties if layout is null',  async(() => {
+    hostComponent.ngOnInit();
+    layoutService.parseLayoutConfig();
+    const res: any = 'test';
+    expect(hostComponent.branding).not.toEqual(res);
+  }));
 
   it('toggelSideNav should update collapse property',  async(() => {
     hostComponent.collapse = true;
@@ -308,3 +323,130 @@ describe('HomeLayoutCmp', () => {
   }));
 
 });
+
+
+const layout:any = {
+  "menu": [
+      {
+          "label": "Home",
+          "path": "/home/vpHome/vsHomeLeftBar/home",
+          "page": "",
+          "icon": "tasksIcon",
+          "imgType": "FA",
+          "url": "petclinicdashboard/vpDashboard",
+          "type": "INTERNAL",
+          "target": "",
+          "rel": "",
+          "routerLink": "/h/petclinicdashboard/vpDashboard",
+          "code": "home"
+      },
+      {
+          "label": "Veterinarians",
+          "path": "/home/vpHome/vsHomeLeftBar/vets",
+          "page": "",
+          "icon": "caseHistoryIcon",
+          "imgType": "FA",
+          "url": "veterinarianview/vpVeterenarians",
+          "type": "INTERNAL",
+          "target": "",
+          "rel": "",
+          "routerLink": "/h/veterinarianview/vpVeterenarians",
+          "code": "vets"
+      },
+      {
+          "label": "Owners",
+          "path": "/home/vpHome/vsHomeLeftBar/owners",
+          "page": "",
+          "icon": "caseHistoryIcon",
+          "imgType": "FA",
+          "url": "ownerlandingview/vpOwners",
+          "type": "INTERNAL",
+          "target": "",
+          "rel": "",
+          "routerLink": "/h/ownerlandingview/vpOwners",
+          "code": "owners"
+      },
+      {
+          "label": "Pets",
+          "path": "/home/vpHome/vsHomeLeftBar/pets",
+          "page": "",
+          "icon": "caseHistoryIcon",
+          "imgType": "FA",
+          "url": "petview/vpAllPets",
+          "type": "INTERNAL",
+          "target": "",
+          "rel": "",
+          "routerLink": "/h/petview/vpAllPets",
+          "code": "pets"
+      },
+      {
+          "label": "Notes",
+          "path": "/home/vpHome/vsHomeLeftBar/notes",
+          "page": "",
+          "icon": "notesIcon",
+          "imgType": "FA",
+          "url": "petclinicdashboard/vpNotes",
+          "type": "INTERNAL",
+          "target": "",
+          "rel": "",
+          "routerLink": "/h/petclinicdashboard/vpNotes",
+          "code": "notes"
+      }
+  ],
+  "topBar": {
+      "branding": {
+          "logo": {
+              "configSvc": {
+                  "flowConfigs": {
+                      "ownerview": {
+                          "model": {
+                              "params": [ ]
+                          },
+                          "layout": "home"
+                      },
+                      "home": {
+                          "model": {
+                              "params": [ ]
+                          }
+                      }
+                  }
+              },
+              "enabled": true,
+              "visible": true,
+              "activeValidationGroups": [],
+              "collectionParams": [],
+              "configId": "3923",
+              "path": "/home/vpHome/vsHomeHeader/linkHomeLogo",
+              "type": {
+                  "nested": false,
+                  "name": "string",
+                  "collection": false
+              },
+              "message": [],
+              "values": [],
+              "labels": [
+                  {
+                      "locale": "en-US",
+                      "text": "Anthem"
+                  }
+              ],
+              "elemLabels": {}
+          }
+      },
+      "headerMenus": [],
+      "accordions": [
+          null
+      ]
+  },
+  "footer": {
+      "links": [
+          null,
+          null,
+          null,
+          null
+      ]
+  },
+  "modalList": [
+      null
+  ]
+};

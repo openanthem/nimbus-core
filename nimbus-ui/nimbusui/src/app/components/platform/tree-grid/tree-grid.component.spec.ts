@@ -14,9 +14,10 @@ import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, F
 import {ToastModule} from 'primeng/toast';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { TreeGrid, RowNodeUtils } from './tree-grid.component';
-import { Button } from '../form/elements/button.component';
+// import { Button } from '../form/elements/button.component';
 import { TooltipComponent } from '../tooltip/tooltip.component';
 import { Image } from '../image.component';
 import { SvgComponent } from '../svg/svg.component';
@@ -77,6 +78,28 @@ import { OrderablePickList } from '../form/elements/picklist.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
 
 let pageService, param;
+
+@Component({
+    template: '<div></div>',
+    selector: 'nm-button'
+  })
+  class Button {
+  
+    @Input() element: any;
+    @Input() payload: string;
+    @Input() form: any;
+    @Input() actionTray?: boolean;
+  
+    @Output() buttonClickEvent = new EventEmitter();
+  
+    @Output() elementChange = new EventEmitter();
+    private imagesPath: string;
+    private btnClass: string;
+    private disabled: boolean;
+    files: any;
+    differ: any;
+    componentTypes;
+  }
 
 class MockPageService {
     public config$: Subject<any>;
