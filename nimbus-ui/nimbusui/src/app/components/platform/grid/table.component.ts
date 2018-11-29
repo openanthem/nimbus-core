@@ -389,12 +389,13 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     postGridData(obj) {
         let item: GenericDomain = new GenericDomain();
         let elemIds = [];
-        this.selectedRows.forEach(element => {
-            elemIds.push(element.elemId);
-        });
-
-        item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath, elemIds);
-        this.pageSvc.processEvent(this.element.config.uiStyles.attributes.postButtonUrl, null, item, 'POST');
+        if(this.selectedRows && this.selectedRows.length > 0) {
+            this.selectedRows.forEach(element => {
+                elemIds.push(element.elemId);
+            });
+            item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath, elemIds);
+            this.pageSvc.processEvent(this.element.config.uiStyles.attributes.postButtonUrl, null, item, 'POST');
+        }
     }
 
     onRowSelect(event) {
@@ -651,7 +652,11 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     getCellStyle(rowIndex, code): string {
-        let style: StyleState = this.element.gridData.stateMap[rowIndex][code].style;
+        let elemStateMap = this.element.gridData.stateMap[rowIndex];
+        if (!elemStateMap) {
+            return '';
+        }
+        let style: StyleState = elemStateMap[code].style;
         return style ? style.cssClass : '';
     }
 

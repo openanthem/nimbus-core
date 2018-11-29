@@ -67,6 +67,9 @@ export class PageService {
         errorMessageUpdate = new Subject<ExecuteException>();
         errorMessageUpdate$ = this.errorMessageUpdate.asObservable();
 
+        postResponseProcessing = new Subject<string>();
+        postResponseProcessing$ = this.postResponseProcessing.asObservable();
+
         private requestQueue :RequestContainer[] = [];
 
         private _entityId: number = 0;
@@ -302,9 +305,11 @@ export class PageService {
                 const PAGE_NODE = ROOT_NODE + 1;
                 const pageId = nodes[PAGE_NODE];
                 const pageParam: Param = this.findMatchingPageConfigById(pageId, flowName);
-                relativeParamPath = nodes.slice(PAGE_NODE + 1).join(ServiceConstants.PATH_SEPARATOR);
-                // This will find the param using the relative path
-                rootParam = ParamUtils.findParamByPath(pageParam, relativeParamPath);
+                if (pageParam) {
+                        // This will find the param using the relative path
+                        relativeParamPath = nodes.slice(PAGE_NODE + 1).join(ServiceConstants.PATH_SEPARATOR);
+                        rootParam = ParamUtils.findParamByPath(pageParam, relativeParamPath);
+                }
 
                 // making sure we indeed got the right param
                 if (rootParam && rootParam.path === path) {
@@ -399,7 +404,7 @@ export class PageService {
                                                 this.setViewRootAndNavigate(output,flow,navToDefault,refresh);
 
                                         } else {
-                                                this.logger.warn('Received an _get call without model or config ' + output.value.path);
+                                                this.logger.warn('Received a _get call without model or config ' + output.value.path);
                                         }
                                 } else if (output.action === Action._nav.value) {
                                         // Do Nothing. We will process _nav action in the end.
@@ -492,13 +497,14 @@ export class PageService {
                         }
                 }
                 if (!page) {
-                        this.logError('Page Configuration not found for Page ID: ' + pageId + ' in Flow: ' + flowName);
+                        this.logger.debug('Page Configuration not found for Page ID: ' + pageId + ' in Flow: ' + flowName);
                 }
                 return page;
         }
 
         /** Process execute call - TODO revisit to make it more dynamic based on url completion */
         processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string, queryParams?: string) {
+                let path = processUrl;
                 processUrl = processUrl + '/' + Action._get.value;
                 let url = '';
                 let serverUrl = '';
@@ -524,49 +530,55 @@ export class PageService {
                         let flowNameWithId = flowName.concat(':' + rootDomainId);
                         url = url.replace(flowName, flowNameWithId);
                 }
-                this.executeHttp(url, method, model);
+                this.executeHttp(url, method, model, path);
         }
 
-        executeHttp(url:string, method : string, model:any) {
+        executeHttp(url:string, method : string, model:any, paramPath?: string) {
                 this.showLoader();
                 this.logger.info('http call' + url + 'started');
                 if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
-                        this.executeHttpGet(url)
+                        this.executeHttpGet(url, paramPath)
                  } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
-                         this.executeHttpPost(url, model);
+                         this.executeHttpPost(url, model, paramPath);
                  } else {
                          this.invokeFinally(url);
-                         throw 'http method not supported';
+                         this.logger.error('http method not supported');
                  }
         }
-        executeHttpGet(url) {
+        executeHttpGet(url, paramPath?: string) {
                 this.http.get(url).subscribe(
                         data => { 
                                 this.sessionStore.setSessionId(data.sessionId);
                                 this.processResponse(data.result); 
                         },
-                        err => { this.processError(err); },
-                        () => { this.invokeFinally(url); }
+                        err => { this.processError(err, paramPath); },
+                        () => { this.invokeFinally(url, paramPath); }
                         );
         }
 
-        executeHttpPost(url:string, model:GenericDomain) {
+        executeHttpPost(url:string, model:GenericDomain, paramPath?: string) {
                 this.http.post(url, JSON.stringify(model)).subscribe(
                         data => { 
                                 this.sessionStore.setSessionId(data.sessionId);
                                 this.processResponse(data.result);
                         },
-                        err => { this.processError(err); },
-                        () => { this.invokeFinally(url); }
+                        err => { this.processError(err, paramPath); },
+                        () => { this.invokeFinally(url, paramPath); }
                         );
         }
 
-        processError(err:any) {
+        processError(err:any, paramPath?: string) {
+                if(paramPath) {
+                        this.postResponseProcessing.next(paramPath);
+                }
                 this.logError(err);
                 this.hideLoader();
         }
 
-        invokeFinally(url:string) {
+        invokeFinally(url:string, paramPath?: string) {
+                if(paramPath){
+                        this.postResponseProcessing.next(paramPath);
+                }
                 this.logger.info('http response for ' + url + ' processed successsfully');
                 this.hideLoader();
         }
@@ -910,7 +922,7 @@ export class PageService {
                                 if(respKey !== ParamAttribute.config.toString() && respKey !== ParamAttribute.type.toString()) 
                                         Reflect.set(sourceParam, respKey, Reflect.get(responseParam, respKey)); 
                         } catch (e) { 
-                                throw e; 
+                                this.logger.error(JSON.stringify(e));
                         } 
                 });
         }
@@ -925,7 +937,7 @@ export class PageService {
                                 }
                         }catch (e) {
                                 this.logError('Could not find source param to update the nested payload param path'+ responseParam.path);
-                                throw e; 
+                                this.logger.error(JSON.stringify(e));
                         }
                 }
         }
