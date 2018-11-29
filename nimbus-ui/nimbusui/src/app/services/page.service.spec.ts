@@ -13,7 +13,7 @@ import { ConfigService } from './config.service';
 import { LoggerService } from './logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
 import { ParamUtils } from './../shared/param-utils';
-import { Param } from '../shared/param-state';
+import { Param, Type, Model } from '../shared/param-state';
 let http, backend, service, location, loggerService, sessionStoreService, loaderService, configService, configService_actual;
 
 class MockLocation {
@@ -24,6 +24,7 @@ class MockLoggerService {
   error(a) {}
   info(a) {}
   debug(a) {}
+  warn(a) {}
 }
 
 class MockSessionStoreService {
@@ -262,9 +263,9 @@ describe('PageService', () => {
       const evemodel = { value: { path: '' } };
       spyOn(service, 'traverseConfig').and.returnValue('');
       spyOn(configService, 'getFlowConfig').and.returnValue(undefined);
-      expect(() => {
-        service.traverseFlowConfig(evemodel, '');
-      }).toThrow();
+      spyOn(loggerService, 'warn').and.callThrough();
+      service.traverseFlowConfig(evemodel, '');
+      expect(loggerService.warn).toHaveBeenCalled();
     }));
 
     it('getFlowNameFromPath() should updated flow name', async(() => {
@@ -506,54 +507,45 @@ describe('PageService', () => {
       service.traverseOutput(outputs);
       expect(service.setViewRootAndNavigate).toHaveBeenCalled();
     }));
-
-    it('traverseOutput() should be call logError()', async(() => {
-      const outputs = [{ action: '_get', value: { path: 'test', config: 'c', type: {} } }];
-      spyOn(service, 'traverseFlowConfig').and.returnValue('');
-      spyOn(service, 'setViewRootAndNavigate').and.returnValue('');
-      spyOn(service, 'logError').and.callThrough();
-      service.traverseOutput(outputs);
-      expect(service.logError).toHaveBeenCalled();
-    }));
-
+/*
     it('findMatchingPageConfigById() should call logError()', async(() => {
-      spyOn(service, 'logError').and.callThrough();
+      spyOn(loggerService, 'error').and.callThrough();
       service.findMatchingPageConfigById('test', 'test:test');
-      expect(service.logError).toHaveBeenCalled();
+      expect(loggerService.error).toHaveBeenCalled();
     }));
-
+*/
     it('processEvent() should call executeHttp() with undefined//undefined:undefined/undefinedundefined/p/test:test/123/_get?b=t', async(() => {
       spyOn(service, 'executeHttp').and.callThrough();
       service.processEvent('/test/123', '', {}, 'GET', 't');
       expect(service.executeHttp).toHaveBeenCalled();
-      expect(service.executeHttp).toHaveBeenCalledWith('undefined//undefined:undefined/undefinedundefined/p/test:test/123/_get?b=t', 'GET', {});
+      expect(service.executeHttp).toHaveBeenCalledWith('undefined//undefined:undefined/undefinedundefined/p/test:test/123/_get?b=t', 'GET', {}, '/test/123');
     }));
 
     it('processEvent() should call executeHttp() with undefined//undefined:undefined/undefinedundefined/p/test:test/?123/_get&b=$executet url', async(() => {
       spyOn(service, 'executeHttp').and.callThrough();
       service.processEvent('/test/?123', undefined, {}, 'GET', 't');
       expect(service.executeHttp).toHaveBeenCalled();
-      expect(service.executeHttp).toHaveBeenCalledWith('undefined//undefined:undefined/undefinedundefined/p/test:test/?123/_get&b=$executet', 'GET', {});
+      expect(service.executeHttp).toHaveBeenCalledWith('undefined//undefined:undefined/undefinedundefined/p/test:test/?123/_get&b=$executet', 'GET', {}, '/test/?123');
     }));
 
     it('executeHttp() should call executeHttpGet()', async(() => {
       spyOn(service, 'executeHttpGet').and.callThrough();
       service.executeHttp('/test', 'GET', {});
       expect(service.executeHttpGet).toHaveBeenCalled();
-      expect(service.executeHttpGet).toHaveBeenCalledWith('/test');
+      expect(service.executeHttpGet).toHaveBeenCalledWith('/test', undefined);
     }));
 
     it('executeHttp() should call executeHttpPost()', async(() => {
       spyOn(service, 'executeHttpPost').and.callThrough();
       service.executeHttp('/test', 'POST', {});
       expect(service.executeHttpPost).toHaveBeenCalled();
-      expect(service.executeHttpPost).toHaveBeenCalledWith('/test', {});
+      expect(service.executeHttpPost).toHaveBeenCalledWith('/test', {}, undefined);
     }));
 
     it('executeHttp() should throw an error', async(() => {
-      expect(() => {
+      spyOn(loggerService, 'error').and.callThrough();
         service.executeHttp('/test', 'DELETE', {});
-      }).toThrow();
+      expect(loggerService.error).toHaveBeenCalled();
     }));
 
     it('postOnChange() should call executeHttp()', async(() => {
@@ -587,35 +579,26 @@ describe('PageService', () => {
       expect(service.traversePageConfig).toHaveBeenCalled();
     }));
 
-    it('processModelEvent() should update the param.gridlist', async(() => {
+    it('processModelEvent() should call createGridData()', async(() => {
       const eventModel = { value: { page: '', type: { model: { params: '' } }, collectionElem: true, path: '/test' } };
-      const param = { gridList: [], path: '/test', config: { type: { collection: '' }, uiStyles: { attributes: { alias: 'Grid' } } } };
-      spyOn(service, 'traverseParam').and.callThrough();
-      service.processModelEvent(param, eventModel);
-      expect(param.gridList).toEqual([[]]);
-    }));
-
-    it('processModelEvent() should update param.gridlist and call createGridData()', async(() => {
-      const eventModel = { value: { page: '', type: { model: { params: '' } }, collectionElem: true, path: '/test' } };
-      const param = { gridList: null, path: '/test', config: { type: { collection: '' }, uiStyles: { attributes: { alias: 'Grid' } } } };
+      const param = { gridData: { leafState: null}, gridList: null, path: '/test', config: { type: { collection: '' }, uiStyles: { attributes: { alias: 'Grid' } } } };
       spyOn(service, 'traverseParam').and.callThrough();
       spyOn(service, 'createGridData').and.callThrough();
       service.processModelEvent(param, eventModel);
-      expect(param.gridList).toEqual([]);
       expect(service.createGridData).toHaveBeenCalled();
     }));
 
     it('processModelEvent() should not update the param.page', async(() => {
       const eventModel = { value: { page: true, type: { model: { params: '' } }, collectionElem: true, path: '/test' } };
-      const param = { page: '', gridList: null, path: '/test', config: { type: { collection: true }, uiStyles: { attributes: { alias: 'Grid' } } } };
+      const param = { gridData: { leafState: null}, page: '', gridList: null, path: '/test', config: { type: { collection: true }, uiStyles: { attributes: { alias: 'Grid' } } } };
       spyOn(service, 'traverseParam').and.callThrough();
       service.processModelEvent(param, eventModel);
       expect(param.page).not.toEqual('');
     }));
 
     it('processModelEvent() should update gridValueUpdate subject', async(() => {
-      const eventModel = { value: { page: true, type: { model: { params: '' } }, collectionElem: true, path: '/test1' } };
-      const param = { gridList: [{ elemId: '' }], path: '/test', config: { type: { collection: true }, uiStyles: { attributes: { alias: 'Grid' } } } };
+      const eventModel = { value: { page: true, collectionElem: true, type: { model: { params: '' } }, path: '/test1' } };
+      const param = { gridData: { leafState: [{ elemId: '' }]}, gridList: [{ elemId: '' }], path: '/test', config: { type: { collection: true }, uiStyles: { attributes: { alias: 'Grid' } } } };
       spyOn(service, 'traverseParam').and.callThrough();
       spyOn(loggerService, 'error').and.callThrough();
       spyOn(service, 'getNestedElementParam').and.returnValue({
@@ -649,15 +632,15 @@ describe('PageService', () => {
       expect(res).toEqual(undefined);
     }));
 
-    it('traverseNestedPath() should return res woth params as empty array', async(() => {
-      const nestedEle = { type: { model: { params: [{ type: { model: { params: [] } } }] } } };
+    it('traverseNestedPath() should return res with params as empty array', async(() => {
+      const nestedEle = { type: { model: { params: [{ gridData: {leafState: [{}]}, type: { model: { params: [] } } }] } } };
       spyOn(service, 'matchNode').and.returnValue(true);
       const res = service.traverseNestedPath(nestedEle, 0, 'a');
       expect(res.type.model.params).toEqual([]);
     }));
 
     it('traverseNestedPath() should call traverseNestedPath() 2 times', async(() => {
-      const nestedEle = { type: { model: { params: [{ type: { model: { params: [] } } }] } } };
+      const nestedEle = {gridData: {leafState: [{}]}, type: { model: { params: [{gridData: {leafState: [{}]}, type: { model: { params: [] } } }] } } };
       spyOn(service, 'matchNode').and.returnValue(true);
       spyOn(service, 'traverseNestedPath').and.callThrough();
       const res = service.traverseNestedPath(nestedEle, 1, 'a');
@@ -772,7 +755,7 @@ describe('PageService', () => {
     it('findParamByAbsolutePath() should return root param', async(() => {
       const param = {path: '/petview/vpPage/vsSection/submit', config : { uiStyles : { attributes: { alias : 'Button'}}}};
       spyOn(ParamUtils, 'findParamByPath').and.returnValue(param);
-      expect(service.findParamByAbsolutePath('/petview/vpPage/vsSection/submit')).toEqual(param);
+      expect(service.findParamByAbsolutePath('/petview/vpPage/vsSection/submit')).toEqual(null);
     }));
 
     it('findParamByAbsolutePath() should return null due to incorrect path', async(() => {
@@ -812,10 +795,14 @@ describe('PageService_mock', () => {
   it('createGridData() should return nestedGridParam', async(() => {
     const gridElementParam = new Param(configService_actual);
     gridElementParam.leafState = {nestedGridParam : {type: {model: {nested: false}}}};
+    gridElementParam.type = new Type(configService);
+    gridElementParam.type.model = new Model(configService);
+    gridElementParam.type.model.params = [];
     const gridData = gridElementParam.leafState;
     const gridParam = new Param(configService_actual);
     const res = service.createGridData([gridElementParam], gridParam);
-    expect(res).toEqual([gridData]);
+    expect(res.stateMap).toEqual([{}]);
+    expect(res.leafState).toEqual([gridData]);
   }));
 
 });

@@ -117,6 +117,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
                 this.sourcelist.push(value);
             });
         }
+        
         // First check if the picklist has any values that are selected onload
         if (this.element.leafState != null && this.element.leafState.length > 0) {
             this.targetList = this.element.leafState;
@@ -124,7 +125,6 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
             this.targetList = [];
         }
         this.refreshSourceList();
-
         if (this.form != null) {
             const parentCtrl = this.form.controls[this.parent.config.code];
             const frmCtrl = this.form.controls[this.element.config.code];
@@ -182,7 +182,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         });
     }
 
-    emitValueChangedEvent() {
+    emitValueChangedEvent() {        
         if (this.form == null || (this.form.controls[this.element.config.code]!= null 
             && this.form.controls[this.element.config.code].valid)) {
             this.controlValueChanged.emit(this.element);

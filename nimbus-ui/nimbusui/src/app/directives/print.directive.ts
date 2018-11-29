@@ -59,7 +59,7 @@ export class PrintDirective {
             this.nativeElement = elementRef.nativeElement;
     }
 
-    ngAfterViewInit() {
+    ngAfterViewInit() {        
         this.subscription = this.printService.printClickUpdate$.subscribe((event: PrintEvent) => {
             if(event.path === this.element.path) {
                 if (event.printConfig.stylesheet || event.printConfig.useAppStyles) {

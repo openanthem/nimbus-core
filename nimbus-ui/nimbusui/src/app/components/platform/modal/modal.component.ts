@@ -121,7 +121,7 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     /**
      * Closable attribute. Can the Modal window be closed?
      */
-    public get closable(): boolean {
+    public get closable(): boolean {        
         return this.element.config.uiStyles.attributes.closable;
     }
 

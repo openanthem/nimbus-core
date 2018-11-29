@@ -86,26 +86,26 @@ export class STOMPService {
     public configure(): void {
 
         // Check for errors:
-        if (this.state.getValue() !== STOMPState.CLOSED) {
-            throw Error('Already running!');
-        }
+        // if (this.state.getValue() !== STOMPState.CLOSED) {
+        //     throw Error('Already running!');
+        // }
 
-        // Attempt connection, passing in a callback
-        //let theClientFunction;
-        //jit-aot conflict,  same typing, same angular version
-        //but the ts code has to be written differently like below
-        let stompAny : any = Stomp;
-        if (stompAny.client) {
-            this.client = Stomp.client(ServiceConstants.WS_BASE_URL, ['v10.stomp', 'v11.stomp', 'v12.stomp']);
-        } else {
-            this.client = stompAny.Stomp.client(ServiceConstants.WS_BASE_URL, ['v10.stomp', 'v11.stomp', 'v12.stomp']);
-        }
-        // Configure client heartbeating
-        this.client.heartbeat.incoming = 20000;
-        this.client.heartbeat.outgoing = 0;
+        // // Attempt connection, passing in a callback
+        // //let theClientFunction;
+        // //jit-aot conflict,  same typing, same angular version
+        // //but the ts code has to be written differently like below
+        // let stompAny : any = Stomp;
+        // if (stompAny.client) {
+        //     this.client = Stomp.client(ServiceConstants.WS_BASE_URL, ['v10.stomp', 'v11.stomp', 'v12.stomp']);
+        // } else {
+        //     this.client = stompAny.Stomp.client(ServiceConstants.WS_BASE_URL, ['v10.stomp', 'v11.stomp', 'v12.stomp']);
+        // }
+        // // Configure client heartbeating
+        // this.client.heartbeat.incoming = 20000;
+        // this.client.heartbeat.outgoing = 0;
 
-        // Set function to debug print messages
-        this.client.debug = this.debug;
+        // // Set function to debug print messages
+        // this.client.debug = this.debug;
     }
 
     /** 
@@ -114,23 +114,23 @@ export class STOMPService {
      */
     public try_connect(): Promise<{}> {
 
-        if(this.state.getValue() !== STOMPState.CLOSED) {
-            this.logger.error('Can\'t try_connect if not CLOSED!');
-            throw Error('Can\'t try_connect if not CLOSED!');
-        }
-        if(this.client === null) {
-            this.logger.error('Client not configured!');
-            throw Error('Client not configured!');
-        }
+        // if(this.state.getValue() !== STOMPState.CLOSED) {
+        //     this.logger.error('Can\'t try_connect if not CLOSED!');
+        //     throw Error('Can\'t try_connect if not CLOSED!');
+        // }
+        // if(this.client === null) {
+        //     this.logger.error('Client not configured!');
+        //     throw Error('Client not configured!');
+        // }
 
-        // Attempt connection, passing in a callback 
-        this.client.connect(
-            {login: '', passcode: ''},
-            this.on_connect,
-            this.on_error
-        );
+        // // Attempt connection, passing in a callback 
+        // this.client.connect(
+        //     {login: '', passcode: ''},
+        //     this.on_connect,
+        //     this.on_error
+        // );
 
-        this.state.next(STOMPState.TRYING);
+        // this.state.next(STOMPState.TRYING);
 
         return new Promise(
             (resolve, reject) => this.resolvePromise = resolve
@@ -144,10 +144,10 @@ export class STOMPService {
         this.state.next( STOMPState.DISCONNECTING );
 
         // Disconnect. Callback will set CLOSED state
-        this.client.disconnect(
-            () => this.state.next( STOMPState.CLOSED ),
-            message
-        );
+        // this.client.disconnect(
+        //     () => this.state.next( STOMPState.CLOSED ),
+        //     message
+        // );
     }
 
     /** Send a message to all topics */
@@ -218,7 +218,7 @@ export class STOMPService {
     /** Subscribe to server message queues */
     private subscribe(): void {
         // Subscribe to our configured queues
-        this.client.subscribe(ServiceConstants.WS_SUBSCRIBE_Q, this.on_message, <any>{ ack: 'auto' });
+        // this.client.subscribe(ServiceConstants.WS_SUBSCRIBE_Q, this.on_message, <any>{ ack: 'auto' });
         // Update the state
         this.state.next( STOMPState.SUBSCRIBED );
     }

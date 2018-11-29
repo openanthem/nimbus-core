@@ -18,50 +18,57 @@ import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/sessio
 import { AppInitService } from '../../../../services/app.init.service';
 import { InputLabel } from './input-label.component';
 import { WebContentSvc } from '../../../../services/content-management.service';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+import * as data from '../../../../payload.json';
 
-let fixture, app;
+const declarations = [
+  InputLabel,
+  TooltipComponent,
+  InputLabel
+ ];
+ const imports = [
+  CalendarModule,
+  FormsModule,
+  HttpModule,
+  HttpClientModule,
+  StorageServiceModule
+ ];
+ const providers = [
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: LocationStrategy, useClass: HashLocationStrategy },
+  Location,
+  PageService,
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  LoggerService,
+  SessionStoreService,
+  AppInitService,
+  WebContentSvc
+ ];
+
+ let fixture, hostComponent;
 
 describe('InputLabel', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        InputLabel,
-        TooltipComponent,
-        InputLabel
-       ],
-       imports: [
-        CalendarModule,
-        FormsModule,
-        HttpModule,
-        HttpClientModule,
-        StorageServiceModule
-       ],
-       providers: [
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        Location,
-        PageService,
-        CustomHttpClient,
-        LoaderService,
-        ConfigService,
-        LoggerService,
-        SessionStoreService,
-        AppInitService,
-        WebContentSvc
-       ]
-    }).compileComponents();
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(InputLabel);
-    app = fixture.debugElement.componentInstance;
+    hostComponent = fixture.debugElement.componentInstance;
+  });
+
+  it('should create the InputLabel', async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
-    it('should create the app', async(() => {
-      expect(app).toBeTruthy();
-    }));
-
-    it('app.getCssClass() should return required', async(() => {
-        app.required = true;        
-        expect(app.getCssClass()).toEqual('required');
-      }));
+  it('getCssClass() should return required', async(() => {
+    hostComponent.required = true;
+    expect(hostComponent.getCssClass()).toEqual('required');
+  }));
 
 });

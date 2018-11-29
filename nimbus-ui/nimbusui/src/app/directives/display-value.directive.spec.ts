@@ -19,7 +19,7 @@ class MockRenderer {
 let directive, elementRef, renderer;
 
 describe('DisplayValueDirective', () => {
-    beforeEach(async(() => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
           declarations: [
             DisplayValueDirective
@@ -32,7 +32,7 @@ describe('DisplayValueDirective', () => {
         elementRef = TestBed.get(ElementRef);
         renderer = TestBed.get(Renderer2);
         directive = new DisplayValueDirective(elementRef, renderer)
-      }));
+      });
 
     it('should create an instance', () => {
       expect(directive).toBeTruthy();
