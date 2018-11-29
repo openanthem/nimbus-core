@@ -60,4 +60,6 @@ public class VRSampleViewRootEntity {
 	
 	@Path
 	private List<String> attr_list_2_simple;
+	
+	private SampleParamStateHolders paramStateHolders;
 }
