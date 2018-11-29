@@ -393,9 +393,9 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             this.selectedRows.forEach(element => {
                 elemIds.push(element.elemId);
             });
-            item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath, elemIds);
-            this.pageSvc.processEvent(this.element.config.uiStyles.attributes.postButtonUrl, null, item, 'POST');
         }
+        item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath, elemIds);
+        this.pageSvc.processEvent(this.element.config.uiStyles.attributes.postButtonUrl, null, item, 'POST');
     }
 
     onRowSelect(event) {

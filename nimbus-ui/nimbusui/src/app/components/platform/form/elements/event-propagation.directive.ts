@@ -1,6 +1,3 @@
-import { URLUtils } from './../../../../shared/url-utils';
-import { Action } from './../../../../shared/command.enum';
-import { ServiceConstants } from './../../../../services/service.constants';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -19,12 +16,12 @@ import { ServiceConstants } from './../../../../services/service.constants';
  */
 'use strict';
 
-import { Directive, OnInit, OnDestroy, Output, EventEmitter, HostListener, Input, ElementRef} from '@angular/core';
+import { Directive, OnInit, OnDestroy, Output, EventEmitter, HostListener, Input } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-import { debounceTime, distinctUntilChanged, distinctUntilKeyChanged } from 'rxjs/operators';
-import { Param } from './../../../../shared/param-state';
+import { debounceTime } from 'rxjs/operators';
 import { PageService } from './../../../../services/page.service';
+import { LoggerService } from './../../../../services/logger.service';
 
 /**
  * \@author Sandeep.Mantha
@@ -35,7 +32,7 @@ import { PageService } from './../../../../services/page.service';
   })
   export class EventPropagationDirective implements OnInit, OnDestroy{
 
-    @Input() element:Param;
+    @Input() path:string;
     private clicksubject = new Subject();
     private subscription: Subscription;
     private postProcessing: Subscription;
@@ -43,26 +40,32 @@ import { PageService } from './../../../../services/page.service';
   
     @Output() clickEvnt = new EventEmitter();
 
-    constructor(private pageService: PageService, private elementRef: ElementRef) {
+    constructor(private pageService: PageService, private logger: LoggerService) {
     }
 
     ngOnInit() {
       this.subscription = this.clicksubject.pipe(
         debounceTime(500)
-      ).subscribe(e => this.clickEvnt.emit(e));
+      ).subscribe(
+        e => { this.clickEvnt.emit(e) },
+        err => { this.logger.error('Failed to emit click event' + JSON.stringify(err))}
+      );
 
-      this.postProcessing = this.pageService.postResponseProcessing$.subscribe(event => {
-        if(this.element && event === this.element.path) {
-          this.srcElement.removeAttribute('disabled');
-        }
-      })
+      this.postProcessing = this.pageService.postResponseProcessing$.subscribe(
+        event => {
+                    if(event === this.path) {
+                      this.srcElement.removeAttribute('disabled');
+                    }
+                 },
+        err => { this.logger.error('Failed on processing eventpropagation for path ' + event + ' with '+ JSON.stringify(err));}
+      )
     }
 
     @HostListener('click', ['$event'])
     clickEvent(event) {
       event.preventDefault();
       event.stopPropagation();
-      if(this.element) {
+      if(this.path) {
         this.srcElement =  event.srcElement;
         this.srcElement.setAttribute('disabled', true);
       }
