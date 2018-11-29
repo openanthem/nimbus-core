@@ -1145,7 +1145,6 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
-	@OnStateLoad
 	public @interface Grid {
 		String alias() default "Grid";
 
@@ -1191,9 +1190,9 @@ public class ViewConfig {
 		
 		/**
 		 * Represents the relative path of the postButton on a rowselection Grid. 
-		 * Can use similar notation as @Config url for relative path to param i.e, '../', <!#this!>
+		 * Can use similar notation as url attribute of @Config for relative path to param i.e, '../', <!#this!>
 		 */
-		String postButtonUri() default "";
+		String postButtonUri() default "";	
 
 		boolean postEventOnChange() default false;
 

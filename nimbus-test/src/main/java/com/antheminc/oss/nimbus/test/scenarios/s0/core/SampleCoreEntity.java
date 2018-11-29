@@ -198,26 +198,4 @@ public class SampleCoreEntity extends IdLong {
 	
 	private List<String> attr_list_2_simple;
 	
-	//@Grid(postButtonUrl="/samplecore/page/gridPost")
-	private List<SampleCoreNestedEntity> grid1;
-	
-//	@Config(url="")
-//	@Config(url="", target=@Post)
-	// /p/domain:123/page/tile/section/grid/_get - on load
-	// /p/domain:123/page/tile/section/grid#postButton/_get - for postbutton
-//	@Grid(rowSelection=true, postButtonUrl="<!#this!>/../gridPost", @PostButton(url=""), )
-	private List<SampleCoreNestedEntity> grid2;
-	
-	// grid2  /samplecore/page/tile1/section1/grid2 -> ../../../tile2/section2/gridpost
-	// gridpost /samplecore/page/tile2/section2/gridpost
-	
-	@Grid(rowSelection=true, postButtonUrl="../gridPost")
-	//uri = relative path
-	// url - if complete path
-	private List<SampleCoreNestedEntity> grid3;
-	
-	private String gridUpdate;
-	
-	@Config(url="<!#this!>/../gridUpdate/_update?rawPayload=\"update grid test\"")
-	private String gridPost;
 }

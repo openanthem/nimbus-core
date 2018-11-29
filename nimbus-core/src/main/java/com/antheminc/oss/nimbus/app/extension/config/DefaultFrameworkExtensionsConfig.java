@@ -32,7 +32,6 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.DefaultParamValuesH
 import com.antheminc.oss.nimbus.domain.model.state.extension.DobToAgeConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.EnableConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ExpressionConditionalStateEventHandler;
-import com.antheminc.oss.nimbus.domain.model.state.extension.GridStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.LabelConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.MessageConditionalHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ModalStateEventHandler;
@@ -169,10 +168,4 @@ public class DefaultFrameworkExtensionsConfig {
 	public StaticCodeValueBasedCodeToLabelConverter staticCodeValueBasedCodeToLabelConverter(BeanResolverStrategy beanResolver) {
 		return new StaticCodeValueBasedCodeToLabelConverter(beanResolver);
 	}
-	
-	@Bean
-	public GridStateEventHandler extensionGridStateEventHandler(BeanResolverStrategy beanResolver) {
-		return new GridStateEventHandler(beanResolver);
-	}
-	
 }
