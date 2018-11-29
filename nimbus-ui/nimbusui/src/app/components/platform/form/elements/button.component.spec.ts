@@ -129,7 +129,7 @@ describe('Button', () => {
       hostComponent.element.config.uiStyles.attributes.browserBack = null;
       spyOn(hostComponent.buttonClickEvent, 'emit').and.callThrough();
       hostComponent.emitEvent('eve');
-      expect(hostComponent.buttonClickEvent.emit).toHaveBeenCalled();
+      expect(hostComponent.buttonClickEvent.emit).not.toHaveBeenCalled();
     });
   });
 
