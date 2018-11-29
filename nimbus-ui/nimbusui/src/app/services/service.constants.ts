@@ -75,7 +75,10 @@ export class ServiceConstants {
     public static get WS_PORT() : string { return '8080'; }
     public static get WEB_CONTENT_PORT() : string { return '3004'; }
     public static get STATIC_CONTENT_PORT() : string { return '4000'; }
-    public static get PLATFORM_SEPARATOR() : string { return '/p' ;}
+    public static get PLATFORM_SEPARATOR() : string { return '/p'; }
+    public static get SEPARATOR_URI_PARENT(): string { return '..'; }
+    public static get SEPARATOR_URI_ROOT_DOMAIN(): string { return '.d'; }
+    public static get MARKER_COMMAND_PARAM_CURRENT_SELF(): string { return '<!#this!>'; }
     
     public static get SESSIONKEY(): string  {
         { return 'sessionId';}
