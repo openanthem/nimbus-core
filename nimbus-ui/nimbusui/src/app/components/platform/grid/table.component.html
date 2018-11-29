@@ -16,7 +16,7 @@
     </div>
 
     <p-table #dt [value]="value" [columns]="params" 
-        [dataKey]="element.config?.uiStyles?.attributes?.dataKey"
+        [dataKey]="'elemId'"
         [(selection)]="selectedRows"
         [rows]="element.config?.uiStyles?.attributes?.pageSize"
         [totalRecords]=totalRecords
@@ -132,7 +132,7 @@
         <ng-template pTemplate="rowexpansion" let-rowData>
             <tr class="ui-expanded-row-content">
                 <td [attr.colspan]="columnsToShow" >
-                    <nm-section *ngIf="rowData.nestedElement" [position]="position+1" [element]="rowData.nestedElement"></nm-section>
+                    <nm-section *ngIf="rowData.nestedElement" [position]="position+1" [element]="rowData.nestedElement" [nmPrint]="rowData.nestedElement"></nm-section>
                 </td>
             </tr>
         </ng-template>

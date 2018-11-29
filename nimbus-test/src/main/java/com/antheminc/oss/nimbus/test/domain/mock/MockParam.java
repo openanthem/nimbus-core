@@ -77,6 +77,7 @@ public class MockParam implements Param<Object> {
 	private boolean nested;
 	private boolean leaf;
 	private StyleState style;
+	private boolean empty;
 
 	@Override
 	public String getConfigId() {

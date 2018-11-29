@@ -31,6 +31,7 @@ import { PageNotfoundComponent } from './components/platform/content/page-notfou
 import { PageContent } from './components/platform/content/page-content.component';
 import { GridService } from './services/grid.service';
 import { GridMouseEventDirective } from './directives/gridhover.directive';
+import { PrintDirective } from './directives/print.directive';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule, BrowserXhr } from '@angular/http';
@@ -70,11 +71,9 @@ import { ComboBox } from './components/platform/form/elements/combobox.component
 import { RadioButton } from './components/platform/form/elements/radio.component';
 import { Signature } from './components/platform/form/elements/signature.component';
 import { InputText } from './components/platform/form/elements/textbox.component';
-import { DateControl } from './components/platform/form/elements/date.component';
 import { CheckBoxGroup } from './components/platform/form/elements/checkbox-group.component';
 import { MultiselectCard } from './components/platform/form/elements/multi-select-card.component';
 import { ActionDropdown, ActionLink } from './components/platform/form/elements/action-dropdown.component';
-import { InfiniteScrollGrid } from './components/platform/grid/grid.component';
 import { DataTable } from './components/platform/grid/table.component';
 import { TreeGrid } from './components/platform/tree-grid/tree-grid.component';
 import { Link } from './components/platform/link.component';
@@ -106,6 +105,7 @@ import { ActionTray } from './components/platform/actiontray.component';
 import { BaseLabel } from './components/platform/base-label.component';
 import { Label } from './components/platform/content/label.component';
 import { InputLabel } from './components/platform/form/elements/input-label.component';
+import { BaseTableElement } from './components/platform/base-table-element.component';
 // Services
 import { WebContentSvc } from './services/content-management.service';
 import { STOMPStatusComponent } from './services/stomp-status.component';
@@ -116,6 +116,7 @@ import { AppInitService } from "./services/app.init.service";
 import { LoggerService } from './services/logger.service';
 import { RouteService } from './services/route.service';
 import { MessageService } from 'primeng/api';
+import { PrintService } from './services/print.service';
 
 //Utility Services
 import { GridUtils } from './shared/grid-utils';
@@ -153,6 +154,7 @@ import { MenuRouterLinkActive } from './directives/routes/route-active.component
 import { InputSwitch } from './components/platform/form/elements/input-switch.component';
 import { InputLegend } from './components/platform/form/elements/input-legend.component';
 import { FormErrorMessage } from './components/platform/form-error-message.component';
+import { EventPropagationDirective } from './components/platform/form/elements/event-propagation.directive';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -205,21 +207,21 @@ export function init_app(appinitservice: AppInitService) {
         InputSwitchModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
-        Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, DateControl, CheckBoxGroup,
+        Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, CheckBoxGroup,
         InPlaceEditorComponent, Paragraph, Value, BaseElement, FormGridFiller, 
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldGroupComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         Accordion, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
-        STOMPStatusComponent, InfiniteScrollGrid, DataTable, SubHeaderCmp, TextArea, LandingPage,
+        STOMPStatusComponent, DataTable, SubHeaderCmp, TextArea, LandingPage,
         LayoutService, ContentContainer,
         DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
         Modal, ActionDropdown, ActionLink,
-        GridMouseEventDirective, DisplayValueDirective,
+        GridMouseEventDirective, DisplayValueDirective, PrintDirective,
         HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, LoaderComponent, MessageComponent,
         HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, 
-        MenuRouteLink, BaseLabel, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage
+        MenuRouteLink, BaseLabel, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage, BaseTableElement, EventPropagationDirective
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,
@@ -233,7 +235,7 @@ export function init_app(appinitservice: AppInitService) {
          { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
          SessionStoreService,
          AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 
-         RouteService, MessageService, GridUtils, DateTimeFormatPipe],
+         RouteService, MessageService, GridUtils, DateTimeFormatPipe, PrintService],
     bootstrap: [ AppComponent ]
 })
 export class AppModule { }

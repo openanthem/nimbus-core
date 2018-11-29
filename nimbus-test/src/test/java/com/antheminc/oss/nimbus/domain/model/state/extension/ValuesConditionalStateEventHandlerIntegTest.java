@@ -32,6 +32,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreValuesEntity.Status;
 
 /**
  * 
@@ -254,5 +255,23 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 		
 		Assert.assertNull(statusForm.findParamByPath("/statusReason2").getValues());
 		Assert.assertNull(statusForm.findParamByPath("/statusReason2").getState());
+	}
+	
+	@Test
+	public void t11_nonStringState() {
+		final Param<?> statusForm = _q.getRoot().findParamByPath(STATUS_FORM);
+		assertNotNull(statusForm);
+		
+		Assert.assertNotNull(statusForm.findParamByPath("/contactStatus").getValues());
+		Assert.assertNull(statusForm.findParamByPath("/contactStatus").getState());
+		
+		statusForm.findParamByPath("/contactStatus").setState(Status.PAST);
+		
+		statusForm.findParamByPath("/contactType").setState("changeit");
+		Assert.assertEquals(1, statusForm.findParamByPath("/contactStatus").getValues().size());
+		Assert.assertEquals("PAST", statusForm.findParamByPath("/contactStatus").getValues().get(0).getCode());
+		Assert.assertEquals("Past", statusForm.findParamByPath("/contactStatus").getValues().get(0).getLabel());
+		
+		Assert.assertEquals(Status.PAST, statusForm.findParamByPath("/contactStatus").getState());
 	}
 }

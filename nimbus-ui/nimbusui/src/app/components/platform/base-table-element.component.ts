@@ -15,65 +15,36 @@
  * limitations under the License.
  */
 'use strict';
-import { Component, Input, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
-import { LayoutService } from '../../../services/layout.service';
-import { Param } from '../../../shared/param-state';
-import { AppBranding, LinkConfig } from '../../../model/menu-meta.interface';
-import { ServiceConstants } from './../../../services/service.constants';
-import { BreadcrumbService } from './../breadcrumb/breadcrumb.service';
-import { Breadcrumb } from '../../../model/breadcrumb.model';
-import { ActionDropdown } from '../form/elements/action-dropdown.component';
-import { fromEvent as observableFromEvent,  Subscription, Observable } from 'rxjs';
+
+import { ActionDropdown } from './form/elements/action-dropdown.component';
+import { fromEvent as observableFromEvent, Subscription } from 'rxjs';
 import { first, filter } from 'rxjs/operators';
+import { Component, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
+import { WebContentSvc } from './../../services/content-management.service';
+import { BaseElement } from './base-element.component';
 
 /**
- * \@author Mayur.Mehta
- * \@whatItDoes 
- * 
- * \@howToUse 
- * 
+ * \@author Tony Lopez
+ * \@whatItDoes A base element for components that use an underling table structure
  */
 @Component({
-    selector: 'nm-header-global',
-    templateUrl: './header-global.component.html'
+    selector: 'nm-base-table-element',
+    providers: [ WebContentSvc ],
+    template: ``
 })
+export class BaseTableElement extends BaseElement {
 
-export class HeaderGlobal {
-    @Input() branding : AppBranding;
-    @Input() topMenuItems: Param[];
-    @Input() leftMenuItems: LinkConfig[];
-    @Input() element: Param;
-    private imagesPath: string;
-    private _homeRoute: string;
     @ViewChildren('dropDown') dropDowns: QueryList<any>;
+
     mouseEventSubscription: Subscription;
 
-    private messageCount : number = 3;
-
-    constructor(private _breadcrumbService: BreadcrumbService, private cd: ChangeDetectorRef) {
-        this.imagesPath = ServiceConstants.IMAGES_URL;
-    }
-
-    public get homeRoute(): string {
-        let crumb: Breadcrumb = this._breadcrumbService.getHomeBreadcrumb();
-        if (crumb) {
-            return crumb['url'];
-        }
-        return '';
-    }
-
-    ngAfterViewInit() {
-        console.log(this.branding);
-    }
-
-    ngOnDestroy() {
-        if (this.mouseEventSubscription)
-            this.mouseEventSubscription.unsubscribe();
-        this.cd.detach();
+    constructor(
+        protected _wcs: WebContentSvc, 
+        protected cd: ChangeDetectorRef) {
+            super(_wcs);
     }
 
     toggleOpen(e: any) {
-
         let selectedDropDownIsOpen = e.isOpen;
         let selectedDropDownState = e.state;
 
@@ -87,7 +58,7 @@ export class HeaderGlobal {
 
         e.isOpen = !selectedDropDownIsOpen;
 
-        if (selectedDropDownState == 'openPanel') {            
+        if (selectedDropDownState == 'openPanel') {
             e.state = 'closedPanel';
             if (!this.mouseEventSubscription.closed)
                 this.mouseEventSubscription.unsubscribe();
@@ -110,24 +81,11 @@ export class HeaderGlobal {
     }
 
     isClickedOnDropDown(dropDownArray: Array<ActionDropdown>, target: any) {
-
         for (var i = 0; i < dropDownArray.length; i++) {
             if (dropDownArray[i].elementRef.nativeElement.contains(target))
                 return true;
         }
         return false;
-
     }
 
-    get headerImageURL() {
-        if (!this.branding || !this.branding.logo.config || !this.branding.logo.config.uiStyles) {
-            return undefined;
-        }
-        let imgSrc = this.branding.logo.config.uiStyles.attributes.imgSrc;
-        if (!imgSrc) {
-            return undefined;
-        }
-        return this.imagesPath + this.branding.logo.config.uiStyles.attributes.imgSrc;
-    }
 }
-
