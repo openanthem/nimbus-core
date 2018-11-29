@@ -483,5 +483,10 @@ public class StateHolder {
 			this.ref.setStyle(styleState);
 		}
 
+		@Override
+		public boolean isEmpty() {
+			return this.ref.isEmpty();
+		}
+
 	}
 }
