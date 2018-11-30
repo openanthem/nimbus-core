@@ -389,12 +389,27 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     postGridData(obj) {
         let item: GenericDomain = new GenericDomain();
         let elemIds = [];
-        this.selectedRows.forEach(element => {
-            elemIds.push(element.elemId);
-        });
-
+        if (this.selectedRows && this.selectedRows.length > 0) {
+            this.selectedRows.forEach(element => {
+                elemIds.push(element.elemId);
+            });
+        }
         item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath, elemIds);
-        this.pageSvc.processEvent(this.element.config.uiStyles.attributes.postButtonUrl, null, item, 'POST');
+
+        // postButtonUrl is deprecated in @Grid Config from 1.1.11
+        // TODO - remove this when the annotation attribute is removed completely in ViewConfig.
+        if (this.element.config.uiStyles.attributes.postButtonUrl) {
+            console.warn('Use of postButtonUrl attribute in @Grid is deprecated. Consider using postButtonUri');
+            this.pageSvc.processEvent(this.element.config.uiStyles.attributes.postButtonUrl, null, item, 'POST');
+            return;
+        }
+        const postButtonUri = this.element.config.uiStyles.attributes.postButtonUri;
+        if (postButtonUri) {
+            const resolvedPostButtonUri = ParamUtils.resolveParamUri(this.element.path, postButtonUri);
+            // resolve the postbutton url relative to the current element path.
+            // Ex: (../, <!#this#!> , ./ , /p, .d, absolute path with current domain)
+            this.pageSvc.processEvent(resolvedPostButtonUri, null, item, 'POST');
+        }
     }
 
     onRowSelect(event) {

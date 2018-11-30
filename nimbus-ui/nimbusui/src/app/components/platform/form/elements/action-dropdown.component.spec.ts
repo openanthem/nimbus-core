@@ -25,8 +25,11 @@ import { AppInitService } from '../../../../services/app.init.service';
 import { Image } from '../../image.component';
 import { Link } from '../../link.component';
 import { SvgComponent } from '../../svg/svg.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+import * as data from '../../../../payload.json';
 
-let fixture, app, pageservice, configservice;
+let pageservice, configservice, param;
 
 class MockLoggerService {
     debug() { }
@@ -34,64 +37,66 @@ class MockLoggerService {
     error() { }
 }
 
+const declarations = [
+  ActionLink,
+  Image,
+  Link,
+  SvgComponent
+ ];
+ const imports = [
+     HttpModule,
+     HttpClientTestingModule,
+     StorageServiceModule,
+     AngularSvgIconModule
+ ];
+ const providers = [
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: 'JSNLOG', useValue: JL },
+  {provide: LoggerService, useClass: MockLoggerService},
+  { provide: LocationStrategy, useClass: HashLocationStrategy },
+  Location,
+  PageService,
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  SessionStoreService,
+  AppInitService
+ ];
+ let fixture, hostComponent;
 describe('ActionLink', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        ActionLink,
-        Image,
-        Link,
-        SvgComponent
-       ],
-       imports: [
-           HttpModule,
-           HttpClientTestingModule,
-           StorageServiceModule,
-           AngularSvgIconModule
-       ],
-       providers: [
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        { provide: 'JSNLOG', useValue: JL },
-        {provide: LoggerService, useClass: MockLoggerService},
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        Location,
-        PageService,
-        CustomHttpClient,
-        LoaderService,
-        ConfigService,
-        SessionStoreService,
-        AppInitService
-       ]
-    }).compileComponents();
+
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(ActionLink);
-    app = fixture.debugElement.componentInstance;
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = param;
     pageservice = TestBed.get(PageService);
     configservice = TestBed.get(ConfigService);
-  }));
+  });
 
-  it('should create the app', async(() => {
-    expect(app).toBeTruthy();
+  it('should create the ActionLink', async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
   it('getAllURLParams() should return null', async(() => {
-    expect(app.getAllURLParams('www.test.com')).toBeFalsy();
+    expect(hostComponent.getAllURLParams('www.test.com')).toBeFalsy();
   }));
 
   it('processOnClick() should call processEvent', async(() => {
     spyOn(pageservice, 'processEvent').and.callThrough();
-    let param = new Param(configservice);
-    param.enabled = true;
-    app.element = param;
-    app.processOnClick('test');
+    hostComponent.element.enabled = true;
+    hostComponent.processOnClick('test');
     expect(pageservice.processEvent).toHaveBeenCalled();
   }));
 
   it('processOnClick() should not call processEvent', async(() => {
     spyOn(pageservice, 'processEvent').and.callThrough();
-    let param = new Param(configservice);
-    param.enabled = false;
-    app.element = param;
-    app.processOnClick('test');
+    hostComponent.element.enabled = false;
+    hostComponent.processOnClick('test');
     expect(pageservice.processEvent).not.toHaveBeenCalled();
   }));
 
@@ -105,95 +110,101 @@ class MockPageService {
     processEvent(a, b, c) {}
 }
 
+const declarations1 = [
+  ActionDropdown,
+  ActionLink,
+  Image,
+  Link,
+  SvgComponent
+];
+const imports1 = [
+  HttpModule,
+  HttpClientTestingModule,
+  BrowserAnimationsModule,
+  AngularSvgIconModule
+];
+const providers1 = [
+  {provide: ElementRef, useClass: MockElementRef},
+  {provide: PageService, useClass: MockPageService},
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: LocationStrategy, useClass: HashLocationStrategy },
+  Location,
+  WebContentSvc,
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  AppInitService
+];
+
 describe('ActionDropdown', () => {
-    beforeEach(async(() => {
-      TestBed.configureTestingModule({
-        declarations: [
-            ActionDropdown,
-            ActionLink,
-            Image,
-            Link,
-            SvgComponent
-         ],
-         imports: [
-            HttpModule,
-            HttpClientTestingModule,
-            BrowserAnimationsModule,
-            AngularSvgIconModule
-        ],
-         providers: [
-            {provide: ElementRef, useClass: MockElementRef},
-            {provide: PageService, useClass: MockPageService},
-            { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-            { provide: 'JSNLOG', useValue: JL },
-            { provide: LocationStrategy, useClass: HashLocationStrategy },
-            Location,
-            WebContentSvc,
-            CustomHttpClient,
-            LoaderService,
-            ConfigService,
-            AppInitService
-         ]
-      }).compileComponents();
-      fixture = TestBed.createComponent(ActionDropdown);
-      app = fixture.debugElement.componentInstance;
-      pageservice = TestBed.get(PageService);
-    }));
-  
-    it('should create the app', async(() => {
-      expect(app).toBeTruthy();
-    }));
-
-    it('app should create elementRef property', async(() => {
-        expect(app.elementRef).toBeTruthy();
-    }));
-
-    it('toggleOpen() should call dropDownClick.emit()', async(() => {
-        const eve = {
-            preventDefault: () => {}
-        };
-        spyOn(eve, 'preventDefault').and.callThrough();
-        spyOn(app.dropDownClick, 'emit').and.callThrough();
-        app.toggleOpen(eve);
-        expect(eve.preventDefault).toHaveBeenCalled();
-        expect(app.dropDownClick.emit).toHaveBeenCalled();
-    }));
-
-    it('processOnClick() should call pageservice.processEvent()', async(() => {
-        spyOn(pageservice, 'processEvent').and.callThrough();
-        app.processOnClick('test');
-        expect(pageservice.processEvent).toHaveBeenCalled();
-    }));
-
-    it('animationStart() should not update isHidden property', async(() => {
-        app.isHidden = true;
-        app.animationStart('test');
-        expect(app.isHidden).toBeFalsy();
-    }));
-
-    it('animationDone() should update isHidden property', async(() => {
-        app.isOpen = false;
-        app.isHidden = false;
-        app.animationDone('');
-        expect(app.isHidden).toBeTruthy();
-      }));
-
-      it('animationDone() should not update isHidden property', async(() => {
-        app.isOpen = true;
-        app.isHidden = false;
-        app.animationDone('');
-        expect(app.isHidden).toBeFalsy();
-      }));
-
-      it('element proprty should be equal to element.enabled', async(() => {
-          app.element = {
-              enabled: 'test'
-          };
-        expect(app.enabled).toEqual('test');
-      }));
-
-      it('enabled property should not be created', async(() => {
-        expect(app.enabled).toBeFalsy();
-      }));
-  
+  configureTestSuite(() => {
+    setup( declarations1, imports1, providers1);
   });
+
+       let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+  
+   
+  beforeEach(() => {
+      fixture = TestBed.createComponent(ActionDropdown);
+      hostComponent = fixture.debugElement.componentInstance;
+      hostComponent.element = param;
+      pageservice = TestBed.get(PageService);
+    });
+  
+  it('should create the ActionDropdown', async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
+
+  it('app should create elementRef property',async(() => {
+    expect(hostComponent.elementRef).toBeTruthy();
+  }));
+
+  it('toggleOpen() should call dropDownClick.emit()', async(() => {
+    const eve: any = {
+      preventDefault: () => { }
+    };
+    spyOn(eve, 'preventDefault').and.callThrough();
+    spyOn(hostComponent.dropDownClick, 'emit').and.callThrough();
+    hostComponent.toggleOpen(eve);
+    expect(eve.preventDefault).toHaveBeenCalled();
+    expect(hostComponent.dropDownClick.emit).toHaveBeenCalled();
+  }));
+
+  it('processOnClick() should call pageservice.processEvent()',async(() => {
+    spyOn(pageservice, 'processEvent').and.callThrough();
+    hostComponent.processOnClick('test');
+    expect(pageservice.processEvent).toHaveBeenCalled();
+  }));
+
+  it('animationStart() should not update isHidden property', async(() => {
+    hostComponent.isHidden = true;
+    hostComponent.animationStart('test');
+    expect(hostComponent.isHidden).toBeFalsy();
+  }));
+
+  it('animationDone() should update isHidden property', async(() => {
+    hostComponent.isOpen = false;
+    hostComponent.isHidden = false;
+    hostComponent.animationDone('');
+    expect(hostComponent.isHidden).toBeTruthy();
+  }));
+
+  it('animationDone() should not update isHidden property', async(() => {
+    hostComponent.isOpen = true;
+    hostComponent.isHidden = false;
+    hostComponent.animationDone('');
+    expect(hostComponent.isHidden).toBeFalsy();
+  }));
+
+  it('element proprty should be equal to element.enabled', async(() => {
+    hostComponent.element.enabled = true;
+    expect(hostComponent.enabled).toEqual(true);
+  }));
+
+  it('enabled property should not be created', async(() => {
+    hostComponent.element.enabled = false;
+    expect(hostComponent.enabled).toBeFalsy();
+  }));
+  
+});

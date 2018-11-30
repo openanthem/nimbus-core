@@ -1,5 +1,5 @@
 <nm-breadcrumb></nm-breadcrumb>
-<span *ngIf="hasLayout">
+<ng-template [ngIf]="hasLayout">
 	<div class="info-bar clearfix">
 	    <div [class]="p.config?.uiStyles?.attributes?.cssClass" *ngFor="let p of accordions, let index=index">
 	            <nm-accordion [element]="p" [nmPrint]="p"></nm-accordion>
@@ -22,9 +22,7 @@
 		<nm-modal [element]="modal"></nm-modal>
 	</ng-template>	
 
-	
-
-</span>
-<div class="{{infoClass}}">
+</ng-template>
+<div id="page-content" class="{{infoClass}}" (scroll)="onPageContentScroll($event)">
     <router-outlet></router-outlet>
 </div><!--  END Domain-content  -->

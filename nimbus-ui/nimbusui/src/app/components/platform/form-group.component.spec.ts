@@ -10,16 +10,17 @@ import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import {ToastModule} from 'primeng/toast';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { FrmGroupCmp } from './form-group.component';
 import { FormElement } from './form-element.component';
-import { Button } from '../platform/form/elements/button.component';
+// import { Button } from '../platform/form/elements/button.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
 import { Header } from '../platform/content/header.component';
 import { Paragraph } from '../platform/content/paragraph.component';
 import { InputText } from '../platform/form/elements/textbox.component';
 import { TextArea } from '../platform/form/elements/textarea.component';
-import { DateControl } from '../platform/form/elements/date.component';
+// import { DateControl } from '../platform/form/elements/date.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
 import { RadioButton } from '../platform/form/elements/radio.component';
@@ -29,7 +30,7 @@ import { MultiSelectListBox } from '../platform/form/elements/multi-select-listb
 import { MultiselectCard } from '../platform/form/elements/multi-select-card.component';
 import { OrderablePickList } from '../platform/form/elements/picklist.component';
 import { FileUploadComponent } from '../platform/fileupload/file-upload.component';
-import { InfiniteScrollGrid } from '../platform/grid/grid.component';
+// import { InfiniteScrollGrid } from '../platform/grid/grid.component';
 import { TooltipComponent } from '../platform/tooltip/tooltip.component';
 import { SelectItemPipe } from '../../pipes/select-item.pipe';
 import { ActionDropdown } from '../platform/form/elements/action-dropdown.component';
@@ -60,8 +61,14 @@ import { InputLabel } from './form/elements/input-label.component';
 import { Label } from './content/label.component';
 import { CardDetailsFieldGroupComponent } from './card/card-details-field-group.component';
 import { InputLegend } from './form/elements/input-legend.component';
+import { FormErrorMessage } from './form-error-message.component';
+import { setup, TestContext } from './../../setup.spec';
+import { configureTestSuite } from 'ng-bullet';
+import * as data from '../../payload.json';
+import { Param } from '../../shared/param-state';
+import { PrintDirective } from '../../directives/print.directive';
 
-let fixture, app;
+let param: Param;
 
 class MockWebContentSvc {
     findLabelContent(param) {
@@ -73,107 +80,149 @@ class MockWebContentSvc {
     }
 }
 
+@Component({
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
+
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
+}
+
+const declarations = [
+  FrmGroupCmp,
+  FormElement,
+  Button,
+  ButtonGroup,
+  Header,
+  Paragraph,
+  InputText,
+  TextArea,
+  // DateControl,
+  Calendar,
+  ComboBox,
+  RadioButton,
+  CheckBoxGroup,
+  CheckBox,
+  MultiSelectListBox,
+  MultiselectCard,
+  OrderablePickList,
+  FileUploadComponent,
+  // InfiniteScrollGrid,
+  TooltipComponent,
+  SelectItemPipe,
+  ActionDropdown,
+  DateTimeFormatPipe,
+  Section,
+  ActionLink,
+  MessageComponent,
+  CardDetailsGrid,
+  Accordion,
+  Menu,
+  CardDetailsComponent,
+  StaticText,
+  Form,
+  Link,
+  CardDetailsFieldComponent,
+  InPlaceEditorComponent,
+  Signature,
+  DataTable,
+  HeaderCheckBox,
+  SvgComponent,
+  Image,
+  TreeGrid,
+  InputSwitch,
+  FormGridFiller,
+  DisplayValueDirective,
+  InputLabel,
+  Label,
+  CardDetailsFieldGroupComponent,
+  InputLegend,
+  FormErrorMessage,
+  PrintDirective
+ ];
+ const imports = [
+     FormsModule,
+     ReactiveFormsModule,
+     CalendarModule,
+     DropdownModule,
+     RadioButtonModule,
+     CheckboxModule,
+     ListboxModule,
+     PickListModule,
+     FileUploadModule,
+     DataTableModule,
+     GrowlModule,
+     AccordionModule,
+     HttpModule,
+     HttpClientModule,
+     TableModule,
+     KeyFilterModule,
+     AngularSvgIconModule,
+     ToastModule,
+     InputSwitchModule, 
+     TreeTableModule
+ ];
+ const providers = [
+     { provide: WebContentSvc, useClass: MockWebContentSvc }
+ ];
+
+ let fixture, hostComponent;
+ 
 describe('FrmGroupCmp', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        FrmGroupCmp,
-        FormElement,
-        Button,
-        ButtonGroup,
-        Header,
-        Paragraph,
-        InputText,
-        TextArea,
-        DateControl,
-        Calendar,
-        ComboBox,
-        RadioButton,
-        CheckBoxGroup,
-        CheckBox,
-        MultiSelectListBox,
-        MultiselectCard,
-        OrderablePickList,
-        FileUploadComponent,
-        InfiniteScrollGrid,
-        TooltipComponent,
-        SelectItemPipe,
-        ActionDropdown,
-        DateTimeFormatPipe,
-        Section,
-        ActionLink,
-        MessageComponent,
-        CardDetailsGrid,
-        Accordion,
-        Menu,
-        CardDetailsComponent,
-        StaticText,
-        Form,
-        Link,
-        CardDetailsFieldComponent,
-        InPlaceEditorComponent,
-        Signature,
-        DataTable,
-        HeaderCheckBox,
-        SvgComponent,
-        Image,
-        TreeGrid,
-        InputSwitch,
-        FormGridFiller,
-        DisplayValueDirective,
-        InputLabel,
-        Label,
-        CardDetailsFieldGroupComponent,
-        InputLegend
-       ],
-       imports: [
-           FormsModule,
-           ReactiveFormsModule,
-           CalendarModule,
-           DropdownModule,
-           RadioButtonModule,
-           CheckboxModule,
-           ListboxModule,
-           PickListModule,
-           FileUploadModule,
-           DataTableModule,
-           GrowlModule,
-           AccordionModule,
-           HttpModule,
-           HttpClientModule,
-           TableModule,
-           KeyFilterModule,
-           AngularSvgIconModule,
-           ToastModule,
-           InputSwitchModule, 
-           TreeTableModule
-       ],
-       providers: [
-           { provide: WebContentSvc, useClass: MockWebContentSvc }
-       ]
-    }).compileComponents();
+
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+
+  beforeEach( () => {
     fixture = TestBed.createComponent(FrmGroupCmp);
-    app = fixture.debugElement.componentInstance;
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = param;
+  });
+
+  it('should create the FrmGroupCmp',  async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
-    it('should create the FrmGroupCmp', async(() => {
-      expect(app).toBeTruthy();
-    }));
+  it('getCssClass() should return the element.config.uiStyles.attributes.cssClass',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup';
+      hostComponent.element.config.uiStyles.attributes.cssClass = 'test';
+      expect(hostComponent.getCssClass()).toEqual('test');
+    });
+  });
 
-    it('getCssClass() should return the element.config.uiStyles.attributes.cssClass', async(() => {
-      app.element = { config: { uiStyles: { attributes: { alias: 'FormElementGroup', cssClass: 'test' } } } };
-      expect(app.getCssClass()).toEqual('test');
-    }));
 
-    it('getCssClass() should return elementCss', async(() => {
-      app.element = { config: { uiStyles: { attributes: { alias: 'FormElementGroup' } } } };
-      app.elementCss = 'test';
-      expect(app.getCssClass()).toEqual('test');
-    }));
+  it('getCssClass() should return elementCss',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup';
+      hostComponent.elementCss = 'test1';
+      hostComponent.element.config.uiStyles.attributes.cssClass = null;
+      expect(hostComponent.getCssClass()).toEqual('test1');
+    });
+  });
 
-    it('getCssClass() should return empty string', async(() => {
-      app.element = { config: { uiStyles: { attributes: { alias: 'FormElementGroup1' } } } };
-      expect(app.getCssClass()).toEqual('');
-    }));
+  it('getCssClass() should return empty string',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup1';
+      expect(hostComponent.getCssClass()).toEqual('');
+    });
+  });
 
 });

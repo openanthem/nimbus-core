@@ -1,7 +1,13 @@
 <!-- <svg-definitions></svg-definitions> -->
 <router-outlet></router-outlet>
-<div class="scroll-to-top" [ngClass]="{'show-scroll': navIsFixed}">
+<div id="scroll-to-top" class="scroll-to-top" [ngClass]="{'show-scroll': navIsFixed}">
     <button title="Scroll to top of page" (click)="scrollToTop()" class="btn-plain btn" 
+        style="background: rgb(171, 171, 171); color: black; padding: 0 0.4rem;">
+        <i aria-hidden="true" class="fa fa-angle-up" style="font-size: 2rem;"></i>
+    </button>
+</div>
+<div id="scroll-div-to-top" class="scroll-to-top">
+    <button title="Scroll to top of page" (click)="scrollDivToTop()" class="btn-plain btn" 
         style="background: rgb(171, 171, 171); color: black; padding: 0 0.4rem;">
         <i aria-hidden="true" class="fa fa-angle-up" style="font-size: 2rem;"></i>
     </button>

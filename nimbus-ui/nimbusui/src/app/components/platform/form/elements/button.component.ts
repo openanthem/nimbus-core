@@ -47,27 +47,27 @@ import { PrintConfig } from './../../../../shared/print-event';
     template: `
         <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc">
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.primary.toString() && element?.visible == true">
-                <button class="btn btn-primary" (click)="onSubmit()" type="{{element.config?.uiStyles?.attributes?.type}}" [disabled]="!form.valid">{{label}}</button>
+                <button class="btn btn-primary"  eventpropagation (clickEvnt)="onSubmit()" [path]="element.path" type="{{element.config?.uiStyles?.attributes?.type}}" [disabled]="!form.valid">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.secondary.toString() && element?.visible == true">
-                <button class="btn btn-secondary" [disabled]="disabled" (click)="emitEvent($event)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-secondary" [disabled]="disabled" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.plain.toString() && element?.visible == true">
-                <button class="btn btn-plain {{cssClass}}" (click)="emitEvent($event)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-plain {{cssClass}}" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.destructive.toString() && element?.visible == true">
-                <button class="btn btn-delete" (click)="emitEvent($event)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-delete" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.validation.toString() && element?.visible == true">
-                <button class="btn btn-primary" (click)="emitEvent($event)" [disabled]="form.valid">{{label}}</button>
+                <button class="btn btn-primary" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" [disabled]="form.valid">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.print.toString() && element?.visible == true">
-                <button class="btn btn-secondary" (click)="emitEvent($event)" [disabled]="disabled">{{label}}</button>
+                <button class="btn btn-secondary" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" [disabled]="disabled">{{label}}</button>
             </ng-template>
         </ng-template>
         
         <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc && element?.visible == true">
-            <button (click)="emitEvent($event)" [disabled]="disabled" title="{{element.config?.uiStyles?.attributes?.title}}" type="button" class="{{btnClass}}">
+            <button eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" [disabled]="disabled" title="{{element.config?.uiStyles?.attributes?.title}}" type="button" class="{{btnClass}}">
                 <nm-image [name]="element.config?.uiStyles?.attributes?.imgSrc" [type]="element.config?.uiStyles?.attributes?.imgType" [cssClass]=""></nm-image>
                 {{label}}
             </button>    
@@ -107,7 +107,8 @@ export class Button extends BaseElement {
         } else if(this.element.config.uiStyles != null && this.element.config.uiStyles.attributes.style === this.componentTypes.print.toString()) {
             this.handlePrint($event);
         } else {
-            this.buttonClickEvent.emit(this);
+            this.pageService.processEvent( this.element.path, this.element.config.uiStyles.attributes.b,
+                null, this.element.config.uiStyles.attributes.method );
         }
     }
 
@@ -124,12 +125,6 @@ export class Button extends BaseElement {
         } else {
             this.btnClass = 'btn btn-icon icon ' + this.cssClass;
         }
-    
-        this.buttonClickEvent.subscribe(( $event ) => {
-
-            this.pageService.processEvent( $event.element.path, $event.element.config.uiStyles.attributes.b,
-                null, $event.element.config.uiStyles.attributes.method );
-        } );
 
         this.pageService.validationUpdate$.subscribe(event => {
             if(event.path == this.element.path) {
@@ -148,7 +143,7 @@ export class Button extends BaseElement {
                 this.elementChange.emit();
             }
         }
-}
+    }
 
     
 
