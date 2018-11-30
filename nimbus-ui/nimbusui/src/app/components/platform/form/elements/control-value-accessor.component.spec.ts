@@ -6,9 +6,9 @@ import { BaseControlValueAccessor } from './control-value-accessor.component';
 let sut;
 
 describe('BaseControlValueAccessor', () => {
-  beforeEach(async(() => {
+  beforeEach(() => {
     sut = new BaseControlValueAccessor();
-  }));
+  });
 
   it('should create the app', async(() => {
     expect(sut).toBeTruthy();

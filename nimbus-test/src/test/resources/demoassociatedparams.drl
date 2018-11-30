@@ -1,0 +1,16 @@
+package com.atlas.client.extension.petclinic.view;
+
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState;
+
+rule "show modal"
+no-loop true
+    when
+        $actionParam: DefaultParamState($actionParam.getPath() == '/sample_core_nested/paramWithSetByRuleConfig')
+        //$associatedParam: DefaultParamState($associatedParam.getPath() == '/sample_core_nested/testParam')
+        $associatedParam: DefaultParamState(this != $actionParam)
+        
+    then
+    	$actionParam.setState("setFromRule1");
+    	$associatedParam.setState("setFromRule2");
+end

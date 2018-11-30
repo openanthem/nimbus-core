@@ -1,3 +1,4 @@
+import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -5,6 +6,7 @@ import { DropdownModule } from 'primeng/primeng';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { CardDetailsComponent } from './card-details.component';
 import { Link } from '../link.component';
@@ -27,116 +29,136 @@ import { ButtonGroup } from '../../platform/form/elements/button-group.component
 import { Label } from '../content/label.component';
 import { DisplayValueDirective } from '../../../directives/display-value.directive';
 import { InputLabel } from '../../platform/form/elements/input-label.component';
-import { Button } from '../../platform/form/elements/button.component';
+// import { Button } from '../../platform/form/elements/button.component';
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
+import * as data from '../../../payload.json';
+
+let param, pageService;
 
 class MockPageService {
     processEvent() {    }
 }
 
+@Component({
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
+
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
+}
+
+const declarations = [
+  CardDetailsComponent,
+  Link,
+  CardDetailsFieldComponent,
+  StaticText,
+  InPlaceEditorComponent,
+  InputText,
+  TextArea,
+  ComboBox,
+  DateTimeFormatPipe,
+  TooltipComponent,
+  SelectItemPipe,
+  CardDetailsFieldGroupComponent,
+  Paragraph,
+  ButtonGroup,
+  Label,
+  DisplayValueDirective,
+  InputLabel,
+  Button,
+  Image,
+  SvgComponent
+];
+const imports = [
+  FormsModule,
+  DropdownModule,
+  HttpModule,
+  HttpClientModule,
+  AngularSvgIconModule
+];
+const providers = [
+  { provide: PageService, useClass: MockPageService },
+  CustomHttpClient,
+  LoaderService,
+  ConfigService
+];
+let fixture, hostComponent;
+
 describe('CardDetailsComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        CardDetailsComponent,
-        Link,
-        CardDetailsFieldComponent,
-        StaticText,
-        InPlaceEditorComponent,
-        InputText,
-        TextArea,
-        ComboBox,
-        DateTimeFormatPipe,
-        TooltipComponent,
-        SelectItemPipe,
-        CardDetailsFieldGroupComponent,
-        Paragraph,
-        ButtonGroup,
-        Label,
-        DisplayValueDirective,
-        InputLabel,
-        Button,
-        Image,
-        SvgComponent
-    ],
-    imports: [
-        FormsModule,
-        DropdownModule,
-        HttpModule,
-        HttpClientModule,
-        AngularSvgIconModule
-    ],
-    providers: [
-        { provide: PageService, useClass: MockPageService },
-        CustomHttpClient,
-        LoaderService,
-        ConfigService
-    ]
-    }).compileComponents();
+
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(CardDetailsComponent);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = param;
+    pageService = TestBed.get(PageService);
+  });
+
+  it('should create the CardDetailsComponent',async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
-  it('should create the CardDetailsComponent', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
+  it('toggle() should updated opened property',async(() => {
+    hostComponent.opened = true;
+    hostComponent.toggle();
+    expect(hostComponent.opened).toEqual(false);
   }));
 
-  it('toggle() should updated opened property', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    app.opened = true;
-    app.toggle();
-    expect(app.opened).toEqual(false);
+  it('processOnClick() should call pageService.processEvent',async(() => {
+    hostComponent.element.path = '/a';
+    spyOn(pageService, 'processEvent').and.callThrough();
+    hostComponent.processOnClick();
+    expect(pageService.processEvent).toHaveBeenCalled();
   }));
 
-it('processOnClick() should call pageSvc.processEvent', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    spyOn(app.pageSvc, 'processEvent').and.callThrough();
-    app.element = {
-        path: '/a'
-    };
-    app.processOnClick();
-    expect(app.pageSvc.processEvent).toHaveBeenCalled();
+  it('getAllURLParams should return null matching the regexp',async(() => {
+    expect(hostComponent.getAllURLParams('/webhp?hl=en')).toEqual(null);
   }));
 
-it('getAllURLParams should return null matching the regexp', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.getAllURLParams('/webhp?hl=en')).toEqual(null);
+  it('getAllURLParams should return string matching the regexp',async(() => {
+    expect(hostComponent.getAllURLParams('{ /webhp?hl=en}')).toEqual(['{ /webhp?hl=en}']);
   }));
 
-  it('getAllURLParams should return string matching the regexp', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.getAllURLParams('{ /webhp?hl=en}')).toEqual(['{ /webhp?hl=en}']);
+  it('toggleState() should update isHidden and _state properties',async(() => {
+    hostComponent.state = 'closedPanel';
+    hostComponent.isHidden = true;
+    hostComponent.toggleState();
+    expect(hostComponent.isHidden).toBeFalsy();
+    expect((hostComponent as any)._state).toEqual('openPanel');
   }));
 
-  it('toggleState() should update isHidden and _state properties', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    app.state = 'closedPanel';
-    app.isHidden = true;
-    app.toggleState();
-    expect(app.isHidden).toBeFalsy();
-    expect(app._state).toEqual('openPanel');
+  it('toggleState() should update _state property',async(() => {
+    hostComponent.state = 'openPanel';
+    hostComponent.toggleState();
+    expect((hostComponent as any)._state).toEqual('closedPanel');
   }));
 
-  it('toggleState() should update _state property', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    app.state = 'openPanel';
-    app.toggleState();
-    expect(app._state).toEqual('closedPanel');
-  }));
-
-  it('animationDone() should update the isHidden property', async(() => {
-    const fixture = TestBed.createComponent(CardDetailsComponent);
-    const app = fixture.debugElement.componentInstance;
-    app.state = 'closedPanel';
-    app.animationDone('a');
-    expect(app.isHidden).toBeTruthy();
+  it('animationDone() should update the isHidden property',async(() => {
+    hostComponent.state = 'closedPanel';
+    hostComponent.animationDone('a');
+    expect(hostComponent.isHidden).toBeTruthy();
   }));
 
 });

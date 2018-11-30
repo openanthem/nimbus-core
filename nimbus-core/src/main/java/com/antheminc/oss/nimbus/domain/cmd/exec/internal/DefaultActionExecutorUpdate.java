@@ -128,10 +128,10 @@ public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean
 		Param<Object> p = findParamByCommandOrThrowEx(eCtx);
 		String json = eCtx.getCommandMessage().getRawPayload();
 
-		if (p.isLeaf()) {
-			handleLeaf(p, json);
-		} else if (p.isCollection()) {
+		if (p.isCollection()) {
 			handleCollection(p.findIfCollection(), json);
+		} else if (p.isLeaf()) {
+			handleLeaf(p, json);
 		} else {
 			// remaining scenarios apply to nested params or collection elements
 			handleParam(p, json);

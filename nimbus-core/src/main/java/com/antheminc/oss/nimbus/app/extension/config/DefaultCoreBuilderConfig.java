@@ -74,6 +74,8 @@ public class DefaultCoreBuilderConfig {
 	
 	private List<String> basePackages;
 	
+	private List<String> basePackagesToExclude;
+	
 	@Value("${platform.config.secure.regex}")
 	private String secureRegex;
 	
@@ -90,7 +92,7 @@ public class DefaultCoreBuilderConfig {
 	
 	@Bean
 	public DomainConfigBuilder domainConfigBuilder(EntityConfigBuilder configBuilder){
-		return new DomainConfigBuilder(configBuilder, basePackages);
+		return new DomainConfigBuilder(configBuilder, basePackages, basePackagesToExclude);
 	}
 	
 	@Bean

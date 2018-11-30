@@ -17,7 +17,7 @@ class MockElementRef {
 let directive, elementRef, gridService;
 
 describe('GridMouseEventDirective', () => {
-    beforeEach(async(() => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
           declarations: [
             GridMouseEventDirective
@@ -30,7 +30,7 @@ describe('GridMouseEventDirective', () => {
         elementRef = TestBed.get(ElementRef);
         gridService = TestBed.get(GridService);
         directive = new GridMouseEventDirective(elementRef, gridService)
-      }));
+      });
 
   it('should create an instance', () => {
     expect(directive).toBeTruthy();

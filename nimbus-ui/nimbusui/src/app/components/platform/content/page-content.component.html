@@ -3,7 +3,7 @@
 
 <nm-message messageContext = "TOAST" [messageArray]="errMsgArray" *ngIf="errMsgArray.length > 0"></nm-message>
 
-<ng-template [ngIf]="element?.visible">
+<ng-template [ngIf]="element?.visible" [nmPrint]="element" [isPage]="true">
     <ng-template [ngIf]="element?.config?.labelConfigs?.length > 0">
         <!-- <h1 class="page-title {{imgSrc}} ">
             {{label}}
@@ -11,6 +11,6 @@
         <nm-label *ngIf="!isLabelEmpty" [element]="element" [labelClass]="imgSrc + ' page-title'" [size]="labelSize"></nm-label>
     </ng-template>
 
-    <nm-tile [element]="tile" *ngFor="let tile of tilesList" [position]="position+1"></nm-tile>
+    <nm-tile [element]="tile" *ngFor="let tile of tilesList" [position]="position+1" [nmPrint]="tile"></nm-tile>
 </ng-template>
 

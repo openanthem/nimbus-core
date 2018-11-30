@@ -12,13 +12,14 @@ import { JL } from 'jsnlog';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import {ToastModule} from 'primeng/toast';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { Section } from './section.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
 import { InputText } from '../platform/form/elements/textbox.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
-import { Button } from '../platform/form/elements/button.component';
-import { InfiniteScrollGrid } from '../platform/grid/grid.component';
+// import { Button } from '../platform/form/elements/button.component';
+// import { InfiniteScrollGrid } from '../platform/grid/grid.component';
 import { Menu } from '../platform/menu.component';
 import { Link } from '../platform/link.component';
 import { Form } from '../platform/form.component';
@@ -46,7 +47,7 @@ import { CheckBox } from '../platform/form/elements/checkbox.component';
 import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.component';
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
-import { DateControl } from '../platform/form/elements/date.component';
+// import { DateControl } from '../platform/form/elements/date.component';
 import { Signature } from '../platform/form/elements/signature.component'
 import { Header } from '../platform/content/header.component';
 import { WebContentSvc } from '../../services/content-management.service';
@@ -69,6 +70,36 @@ import { CardDetailsFieldGroupComponent } from '../platform/card/card-details-fi
 import { DisplayValueDirective } from '../../directives/display-value.directive';
 import { FormGridFiller } from '../platform/form/form-grid-filler.component';
 import { InputLegend } from '../platform/form/elements/input-legend.component';
+import { FormErrorMessage } from './form-error-message.component';
+import { setup, TestContext } from './../../setup.spec';
+import { configureTestSuite } from 'ng-bullet';
+import * as data from '../../payload.json';
+import { Param } from '../../shared/param-state';
+import { PrintDirective } from '../../directives/print.directive';
+
+let param: Param;
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
+
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
+}
 
 class MockPageService {
     processEvent() {
@@ -82,126 +113,126 @@ class MockLoggerService {
   error() { }
 }
 
+const declarations = [
+  Section,
+  ComboBox,
+  InputText,
+  ButtonGroup,
+  Button,
+  // InfiniteScrollGrid,
+  Menu,
+  Link,
+  Form,
+  StaticText,
+  Paragraph,
+  CardDetailsComponent,
+  CardDetailsGrid,
+  MessageComponent,
+  TooltipComponent,
+  SelectItemPipe,
+  ActionDropdown,
+  DateTimeFormatPipe,
+  FrmGroupCmp,
+  Accordion,
+  CardDetailsFieldComponent,
+  ActionLink,
+  FormElement,
+  InPlaceEditorComponent,
+  TextArea,
+  FileUploadComponent,
+  OrderablePickList,
+  MultiselectCard,
+  MultiSelectListBox,
+  CheckBox,
+  CheckBoxGroup,
+  RadioButton,
+  Calendar,
+  // DateControl,
+  Signature,
+  Header,
+  DataTable,
+  HeaderCheckBox,
+  SvgComponent,
+  Image,
+  InputLabel,
+  Label,
+  TreeGrid,
+  InputSwitch,
+  CardDetailsFieldGroupComponent,
+  DisplayValueDirective,
+  FormGridFiller,
+  InputLegend,
+  FormErrorMessage,
+  PrintDirective
+ ];
+const imports = [
+  FormsModule,
+  DropdownModule,
+  DataTableModule,
+  AccordionModule,
+  ReactiveFormsModule,
+  GrowlModule,
+  PickListModule,
+  FileUploadModule,
+  ListboxModule,
+  CheckboxModule,
+  RadioButtonModule,
+  CalendarModule,
+  HttpModule,
+  HttpClientModule,
+  TableModule,
+  KeyFilterModule,
+  StorageServiceModule,
+  AngularSvgIconModule,
+  ToastModule,
+  TreeTableModule,
+  InputSwitchModule
+ ];
+const providers = [
+  { provide: PageService, useClass: MockPageService },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  {provide: LoggerService, useClass: MockLoggerService},
+  WebContentSvc,
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  AppInitService
+ ];
+
+ let fixture, hostComponent;
 
 describe('Section', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        Section,
-        ComboBox,
-        InputText,
-        ButtonGroup,
-        Button,
-        InfiniteScrollGrid,
-        Menu,
-        Link,
-        Form,
-        StaticText,
-        Paragraph,
-        CardDetailsComponent,
-        CardDetailsGrid,
-        MessageComponent,
-        TooltipComponent,
-        SelectItemPipe,
-        ActionDropdown,
-        DateTimeFormatPipe,
-        FrmGroupCmp,
-        Accordion,
-        CardDetailsFieldComponent,
-        ActionLink,
-        FormElement,
-        InPlaceEditorComponent,
-        TextArea,
-        FileUploadComponent,
-        OrderablePickList,
-        MultiselectCard,
-        MultiSelectListBox,
-        CheckBox,
-        CheckBoxGroup,
-        RadioButton,
-        Calendar,
-        DateControl,
-        Signature,
-        Header,
-        DataTable,
-        HeaderCheckBox,
-        SvgComponent,
-        Image,
-        InputLabel,
-        Label,
-        TreeGrid,
-        InputSwitch,
-        CardDetailsFieldGroupComponent,
-        DisplayValueDirective,
-        FormGridFiller,
-        InputLegend
-       ],
-       imports: [
-        FormsModule,
-        DropdownModule,
-        DataTableModule,
-        AccordionModule,
-        ReactiveFormsModule,
-        GrowlModule,
-        PickListModule,
-        FileUploadModule,
-        ListboxModule,
-        CheckboxModule,
-        RadioButtonModule,
-        CalendarModule,
-        HttpModule,
-        HttpClientModule,
-        TableModule,
-        KeyFilterModule,
-        StorageServiceModule,
-        AngularSvgIconModule,
-        ToastModule,
-        TreeTableModule,
-        InputSwitchModule
-       ],
-       providers: [
-        { provide: PageService, useClass: MockPageService },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        {provide: LoggerService, useClass: MockLoggerService},
-        WebContentSvc,
-        CustomHttpClient,
-        LoaderService,
-        ConfigService,
-        AppInitService
-       ]
-    }).compileComponents();
+
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(Section);
+    hostComponent = fixture.debugElement.componentInstance;
+      hostComponent.element = param;
+  });
+
+  it('should create the Section',  async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(Section);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
-
-  it('ngOnInit() should call pageSvc.processEvent()', async(() => {
-    const fixture = TestBed.createComponent(Section);
-    const app = fixture.debugElement.componentInstance;
-    const service = TestBed.get(PageService);
-    app.element = {
-        config: {
-            initializeComponent: () => {
-                return 'true';
-            }
-        }
-    }
+  it('ngOnInit() should call pageSvc.processEvent()',  async(() => {
+   const service = TestBed.get(PageService);
+    hostComponent.element.config.initializeComponent = () => {return true};
     spyOn(service, 'processEvent').and.callThrough();
-    app.ngOnInit();
+    hostComponent.ngOnInit();
     expect(service.processEvent).toHaveBeenCalled();
   }));
 
-  it('ngOnInit() should not call pageSvc.processEvent()', async(() => {
-    const fixture = TestBed.createComponent(Section);
-    const app = fixture.debugElement.componentInstance;
+  it('ngOnInit() should not call pageSvc.processEvent()',  async(() => {
     const service = TestBed.get(PageService);
-    app.element = { }
+    hostComponent.element = { } as Param;
     spyOn(service, 'processEvent').and.callThrough();
-    app.ngOnInit();
+    hostComponent.ngOnInit();
     expect(service.processEvent).not.toHaveBeenCalled();
   }));
 

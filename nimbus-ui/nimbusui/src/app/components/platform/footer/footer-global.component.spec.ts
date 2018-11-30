@@ -13,33 +13,42 @@ import { Header } from '../content/header.component';
 import { InputText } from '../form/elements/textbox.component';
 import { TooltipComponent } from '../tooltip/tooltip.component';
 import { InputLabel } from '../form/elements/input-label.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
+
+const declarations = [
+  FooterGlobal,
+  Link,
+  Paragraph,
+  SvgComponent,
+  Header,
+  InputText,
+  TooltipComponent,
+  InputLabel
+  ];
+  const imports = [
+    AngularSvgIconModule,
+    HttpModule,
+    HttpClientModule,
+    ReactiveFormsModule, FormsModule
+  ];
+const providers = [];
+let fixture, hostComponent;
 
 describe('FooterGlobal', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        FooterGlobal,
-        Link,
-        Paragraph,
-        SvgComponent,
-        Header,
-        InputText,
-        TooltipComponent,
-        InputLabel
-        ],
-        imports: [
-          AngularSvgIconModule,
-          HttpModule,
-          HttpClientModule,
-          ReactiveFormsModule, FormsModule
-        ]
-    }).compileComponents();
-  }));
+
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(FooterGlobal);
+    hostComponent = fixture.debugElement.componentInstance;
+  });
 
   it('should create the FooterGlobal', async(() => {
-    const fixture = TestBed.createComponent(FooterGlobal);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
+      expect(hostComponent).toBeTruthy();
   }));
 
 });

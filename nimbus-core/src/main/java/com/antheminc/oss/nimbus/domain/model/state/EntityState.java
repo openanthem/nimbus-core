@@ -473,6 +473,8 @@ public interface EntityState<T> {
 //			return false;
 //		}
 		
+		boolean isEmpty();
+		
 		boolean isNested();
 //		default boolean isNested() {
 //			return getType().isNested();

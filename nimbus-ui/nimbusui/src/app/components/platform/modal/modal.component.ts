@@ -16,16 +16,17 @@
  */
 'use strict';
 
-import { Component, ElementRef, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, OnDestroy, ViewChild, NgZone} from '@angular/core';
 import { Param, Model } from '../../../shared/param-state';
 import { DialogModule } from 'primeng/primeng';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
-import { Action, HttpMethod, Behavior} from './../../../shared/command.enum';
+import { HttpMethod, Behavior} from './../../../shared/command.enum';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { BaseElement } from '../base-element.component';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
-
+import { Dialog } from 'primeng/primeng';
+import { DomHandler } from 'primeng/components/dom/domhandler';
 /**
  * \@author Sandeep.Mantha
  * \@author Dinakar.Meda
@@ -44,10 +45,13 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
     selector: 'nm-modal',
     templateUrl: './modal.component.html',
     providers: [
-        WebContentSvc
+        WebContentSvc, DomHandler
     ]
 })
 export class Modal extends BaseElement implements OnInit, OnDestroy {
+    
+    @ViewChild('modal') modal: Dialog;
+    
     // width of modal window
     public _width: string;
     // closable to indicate whether modal window can be closed
@@ -57,8 +61,15 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     private elementCss: string;
     viewComponent = ViewComponent;
     componentTypes = ComponentTypes;
-    
-    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
+    currentHeight: number;
+
+    readonly modalSize: { [id: string]: IModalSize, } = {
+        SMALL: { width: '500' },
+        MEDIUM: { width: '700' },
+        LARGE: { width: '900' }
+    };
+
+    constructor(private wcsvc: WebContentSvc, public domHandler: DomHandler, private pageSvc: PageService, private zone: NgZone) {
         super(wcsvc);
     }
 
@@ -66,16 +77,51 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     }
 
     ngAfterViewInit() {
+        //override the primeng definition as the modal does not have scrollbar and also does not position correctly with grid data (pagesize = 50)
+        this.modal.positionOverlay = () => {
+            let viewport = this.domHandler.getViewport();
+            if (this.domHandler.getOuterHeight(this.modal.container) > viewport.height) {
+                 this.modal.contentViewChild.nativeElement.style.height = (viewport.height * .75) + 'px';
+            }
+            
+            if (this.modal.positionLeft >= 0 && this.modal.positionTop >= 0) {
+                this.modal.container.style.left = this.modal.positionLeft + 'px';
+                this.modal.container.style.top = this.modal.positionTop + 'px';
+            }
+            else if (this.modal.positionTop >= 0) {
+                this.modal.center();
+                this.modal.container.style.top = this.modal.positionTop + 'px';
+            }
+            else{
+                this.modal.center();
+            }
+        }
+
         this.pageSvc.eventUpdate$.subscribe(event => {
             if(event.path == this.element.path) {
                 this.display = event.visible;
             }
         });
     }
+
+    ngAfterViewChecked() {
+        this.zone.runOutsideAngular(() => {
+            setTimeout(() => {
+                if(this.modal.visible && this.modal.container) {
+                    let height = this.domHandler.getOuterHeight(this.modal.container);
+
+                    if(height !== this.currentHeight) {
+                        this.currentHeight = height;
+                        this.modal.positionOverlay();
+                    }
+                }
+            }, 50);
+        });
+    }
     /**
      * Closable attribute. Can the Modal window be closed?
      */
-    public get closable(): boolean {
+    public get closable(): boolean {        
         return this.element.config.uiStyles.attributes.closable;
     }
 
@@ -85,17 +131,11 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
      */
     public get width(): string {
         let myWidth = this.element.config.uiStyles.attributes.width;
-
-        if(myWidth === 'small') {
-            return '500';
-        }else if(myWidth === 'medium') {
-            return '700';
-        }else if(myWidth === 'large') {
-            return '900';
-        }else {
-            return myWidth;
+        if (!myWidth) {
+            return undefined;
         }
-        
+        let modalSize = this.modalSize[myWidth.toUpperCase()];
+        return modalSize ? modalSize.width : myWidth;
     }
 
     /**
@@ -113,3 +153,7 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
         return this.element.config.uiStyles.attributes.resizable;
     }
 }
+
+export interface IModalSize {
+    width: string;
+};

@@ -1,5 +1,4 @@
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, AbstractControlDirective, Validators, ValidatorFn, FormGroup, FormControl } from '@angular/forms';
 import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, 
     DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule,
@@ -13,6 +12,9 @@ import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-servic
 import { JL } from 'jsnlog';
 import { HttpModule } from '@angular/http';
 import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { MessageService } from 'primeng/api';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 import { FormElement } from './form-element.component';
@@ -27,7 +29,7 @@ import { CheckBox } from '../platform/form/elements/checkbox.component';
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
-import { DateControl } from '../platform/form/elements/date.component';
+// import { DateControl } from '../platform/form/elements/date.component';
 import { TextArea } from '../platform/form/elements/textarea.component';
 import { Signature } from '../platform/form/elements/signature.component'
 import { InputText } from '../platform/form/elements/textbox.component';
@@ -39,7 +41,7 @@ import { ActionDropdown } from '../platform/form/elements/action-dropdown.compon
 import { TooltipComponent } from '../platform/tooltip/tooltip.component';
 import { SelectItemPipe } from '../../pipes/select-item.pipe';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
-import { Button } from '../platform/form/elements/button.component';
+// import { Button } from '../platform/form/elements/button.component';
 import { Accordion } from '../platform/content/accordion.component';
 import { Menu } from '../platform/menu.component';
 import { Link } from '../platform/link.component';
@@ -71,221 +73,273 @@ import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
 import { LoggerService } from '../../services/logger.service';
 import { AppInitService } from '../../services/app.init.service'
+import { setup, TestContext } from './../../setup.spec';
+import { configureTestSuite, createStableTestContext, createTestContext } from 'ng-bullet';
+import * as data from '../../payload.json';
+import { FormErrorMessage } from './form-error-message.component';
+import { Message } from '../../shared/message';
+import { PrintDirective } from '../../directives/print.directive';
+import { async, TestBed, ComponentFixture } from '@angular/core/testing';
 
-let fixture, app, param: Param, payload;
+let param: Param;
+let fixture: ComponentFixture<any>, hostComponent;
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
+
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
+}
+
+const declarations = [
+    FormElement,
+    MessageComponent,
+    DataTable,
+    FileUploadComponent,
+    OrderablePickList,
+    MultiSelectListBox,
+    MultiselectCard,
+    CheckBox,
+    CheckBoxGroup,
+    RadioButton,
+    ComboBox,
+    Calendar,
+    // DateControl,
+    TextArea,
+    Signature,
+    InputText,
+    Paragraph,
+    Header,
+    Section,
+    ActionLink,
+    ActionDropdown,
+    TooltipComponent,
+    SelectItemPipe,
+    ButtonGroup,
+    Button,
+    Accordion,
+    Menu,
+    Link,
+    Form,
+    StaticText,
+    CardDetailsComponent,
+    CardDetailsGrid,
+    FrmGroupCmp,
+    CardDetailsFieldComponent,
+    InPlaceEditorComponent,
+    DateTimeFormatPipe,
+    HeaderCheckBox,
+    SvgComponent,
+    Image,
+    TreeGrid,
+    InputSwitch,
+    FormGridFiller,
+    DisplayValueDirective,
+    InputLabel,
+    Label,
+    CardDetailsFieldGroupComponent,
+    InputLegend,
+    FormErrorMessage,
+    PrintDirective
+   ];
+  const imports = [
+    FormsModule, 
+    ReactiveFormsModule,
+    GrowlModule,
+    AccordionModule, 
+    PickListModule, 
+    ListboxModule, 
+    CalendarModule, 
+    DataTableModule, 
+    DropdownModule, 
+    FileUploadModule, 
+    RadioButtonModule, 
+    CheckboxModule,
+    TableModule,
+    KeyFilterModule,
+    AngularSvgIconModule,
+    ToastModule,
+    InputSwitchModule, 
+    TreeTableModule,
+    HttpClientModule,
+    StorageServiceModule,
+    HttpModule,
+    BrowserAnimationsModule
+  ];
+  const providers = [
+    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+    { provide: 'JSNLOG', useValue: JL },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    Location,
+    WebContentSvc,
+    PageService,
+    CustomHttpClient,
+    SessionStoreService,
+    LoaderService,
+    ConfigService,
+    LoggerService,
+    AppInitService,
+    MessageService
+   ];
+
 
 describe('FormElement', () => {
-  payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';
-  param = JSON.parse(payload);
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        FormElement,
-        MessageComponent,
-        DataTable,
-        FileUploadComponent,
-        OrderablePickList,
-        MultiSelectListBox,
-        MultiselectCard,
-        CheckBox,
-        CheckBoxGroup,
-        RadioButton,
-        ComboBox,
-        Calendar,
-        DateControl,
-        TextArea,
-        Signature,
-        InputText,
-        Paragraph,
-        Header,
-        Section,
-        ActionLink,
-        ActionDropdown,
-        TooltipComponent,
-        SelectItemPipe,
-        ButtonGroup,
-        Button,
-        Accordion,
-        Menu,
-        Link,
-        Form,
-        StaticText,
-        CardDetailsComponent,
-        CardDetailsGrid,
-        FrmGroupCmp,
-        CardDetailsFieldComponent,
-        InPlaceEditorComponent,
-        DateTimeFormatPipe,
-        HeaderCheckBox,
-        SvgComponent,
-        Image,
-        TreeGrid,
-        InputSwitch,
-        FormGridFiller,
-        DisplayValueDirective,
-        InputLabel,
-        Label,
-        CardDetailsFieldGroupComponent,
-        InputLegend
-       ],
-       imports: [
-        FormsModule, 
-        ReactiveFormsModule,
-        GrowlModule,
-        AccordionModule, 
-        PickListModule, 
-        ListboxModule, 
-        CalendarModule, 
-        DataTableModule, 
-        DropdownModule, 
-        FileUploadModule, 
-        RadioButtonModule, 
-        CheckboxModule,
-        TableModule,
-        KeyFilterModule,
-        AngularSvgIconModule,
-        ToastModule,
-        InputSwitchModule, 
-        TreeTableModule,
-        HttpClientModule,
-        StorageServiceModule,
-        HttpModule
-       ],
-       providers: [
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        Location,
-        WebContentSvc,
-        PageService,
-        CustomHttpClient,
-        SessionStoreService,
-        LoaderService,
-        ConfigService,
-        LoggerService,
-        AppInitService
-       ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(FormElement);
-    app = fixture.debugElement.componentInstance;
-    const fg = new FormGroup({});
-    const checks: ValidatorFn[] = [];
-    checks.push(Validators.required);
-    fg.addControl(param.config.code, new FormControl(param.leafState,checks));
-    app.form = fg;
-    app.element = param;
-  }));
 
-  it('two way binding', async(() => {
-      app.elementCss = '';
-      app.getComponentClass();
+  configureTestSuite(() => {
+    //setup(declarations, imports, providers);
+    TestBed.configureTestingModule({
+      declarations: declarations,
+      providers: providers,
+      imports:  imports
+      })
+  });
+
+       let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(FormElement);
+      hostComponent = fixture.debugElement.componentInstance;
+      const fg = new FormGroup({});
+      const checks: ValidatorFn[] = [];
+      checks.push(Validators.required);
+      fg.addControl(param.config.code, new FormControl(param.leafState,checks));
+      hostComponent.form = fg;
+      hostComponent.element = param;
+  });
+
+  it('two way binding',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.elementCss = '';
+      hostComponent.getComponentClass();
       fixture.detectChanges();
       let textBox;
-      textBox = fixture.debugElement.query(By.css('.form-control')).nativeElement;
+      textBox = fixture.debugElement.query(By.css('.form-control.text-input')).nativeElement;
       textBox.value = 'abcd123';
       textBox.dispatchEvent(new Event('input'));
       textBox.dispatchEvent(new Event('focusout'));
-      fixture.detectChanges();      
-      expect(app.form.controls[param.config.code].value).toEqual('abcd123');
-      app.form.controls[param.config.code].setValue('testtt');
       fixture.detectChanges();
-      setTimeout(() => {
-        expect(textBox.value).toEqual('testtt');  
-      }, 100);
+      expect(hostComponent.form.controls[param.config.code].value).toEqual('abcd123');
+      // hostComponent.form.controls[param.config.code].setValue('testtt');
+      // fixture.detectChanges();
+      // expect(textBox.value).toEqual('testtt');
+    });
+  });
+
+  it('getErrorStyles() should return alert string', () => {
+    fixture.whenStable().then(() => {
+      hostComponent.elementCss = '';
+      hostComponent.getComponentClass();
+      fixture.detectChanges();
+      let textBox;
+      textBox = fixture.debugElement.query(By.css('.form-control.text-input')).nativeElement;
+      textBox.value = null;
+      textBox.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      expect(hostComponent.getErrorStyles()).toEqual('alert alert-danger');
+    });
+  });
+
+  it('should create the FormElement',  async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
-  it('should create the app', async(() => {
-    expect(app).toBeTruthy();
+  it('isValid property should be updated from form.controls',  async(() => {
+    hostComponent.elementCss = '';
+    hostComponent.getComponentClass();
+    hostComponent.form.controls[hostComponent.element.config.code].setValue('test');
+    fixture.detectChanges();
+  
+      expect(hostComponent.isValid).toBeTruthy();
   }));
 
-  it('isValid property should be updated from form.controls', async(() => {
-    app.element = { config: { code: 123 } };
-    app.form = { controls: { 123: { valid: 'test' } } };
-    expect(app.isValid).toEqual('test');
+  it('isValid property should not be updated from form.controls',  async(() => {
+    hostComponent.form.controls[hostComponent.element.config.code] = null;
+    expect(hostComponent.isValid).toBeTruthy();
   }));
 
-  it('isValid property should not be updated from form.controls', async(() => {
-    app.element = { config: { code: 123 } };
-    app.form = { controls: { 123: null } };
-    expect(app.isValid).toBeTruthy();
+  it('isPristine property should be updated from element',  async(() => {
+    hostComponent.element.config.code = '{';
+    expect(hostComponent.isPristine).toBeTruthy();
   }));
 
-  it('isPristine property should be updated from element', async(() => {
-    app.element = { config: { code: { startsWith: () => {
-            return true;
-          } } } };
-    expect(app.isPristine).toBeTruthy();
+  it('isPristine property should be updated from form.controls',  async(() => {
+    hostComponent.form.controls[hostComponent.element.config.code].setValue('test');
+    expect(hostComponent.isPristine).toEqual(true);
   }));
 
-  it('isPristine property should be updated from form.controls', async(() => {
-    app.element = { config: { code: 'testing' } };
-    app.form = { controls: { testing: { pristine: true } } };
-    expect(app.isPristine).toEqual(true);
+  it('isPristine property should be updated from element even if it returns false',  async(() => {
+    hostComponent.form.controls[hostComponent.element.config.code].setValue(null);
+    expect(hostComponent.isPristine).toEqual(true);
   }));
 
-  it('isPristine property should be updated from element even if it returns false', async(() => {
-    app.element = { config: { code: { startsWith: () => {
-            return false;
-          } } } };
-    app.form = { controls: {} };
-    expect(app.isPristine).toBeTruthy();
+  it('getMessages() should return message from the element',  async(() => {
+    const message = new Message();
+    message.text = 'test'
+    hostComponent.element.message = [message];
+    expect(hostComponent.getMessages()).toEqual(hostComponent.element.message);
   }));
 
-  it('getMessages() should return message from the element', async(() => {
-    app.element = { message: ['test'] };
-    spyOn(app, 'getPristine').and.returnValue(true);
-    expect(app.getMessages()).toEqual(['test']);
+  it('getMessages() should return return empty array',  async(() => {
+    hostComponent.element.message = [];
+    expect(hostComponent.getMessages()).toEqual([]);
   }));
 
-  it('getMessages() should return return empty array', async(() => {
-    app.element = { message: [] };
-    spyOn(app, 'getPristine').and.returnValue(true);
-    expect(app.getMessages()).toEqual([]);
+  it('showMessages should be updated based on the elemMessages',  async(() => {
+    const message = new Message();
+    message.text = 't'
+    hostComponent.elemMessages = [message];
+    expect(hostComponent.showMessages).toEqual(true);
   }));
 
-  it('showMessages should be updated based on the elemMessages', async(() => {
-    app.elemMessages = [1];
-    expect(app.showMessages).toEqual(true);
+  it('getErrorStyles() should return empty string',  async(() => {
+    expect(hostComponent.getErrorStyles()).toEqual('');
   }));
 
-  it('getErrorStyles() should return undefined', async(() => {
-    app.element = { config: { code: { startsWith: () => {
-            return false;
-          } } } };
-    app.form = { controls: {} };
-    expect(app.getErrorStyles()).toEqual('');
+  it('elementCss should be undefined', () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.controlId = null;
+      expect(hostComponent.elementCss).toEqual(undefined);
+    });
+  });
+
+  it('getElementStyle() should return col-lg-12 col-md-6',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.alias = 'MultiSelectCard';
+      expect(hostComponent.getElementStyle()).toEqual('col-lg-12 col-md-6');
+    });
+  });
+
+  it('getElementStyle() should return empty array',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.alias = '';
+      expect(hostComponent.getElementStyle()).toEqual('');
+    });
+  });
+
+  it('addErrorMessages() should update the elemMessages[0].messageArray[0].detail',  async(() => {
+    hostComponent.elemMessages = [];
+    hostComponent.addErrorMessages('testing error message');
+    expect(hostComponent.elemMessages[0].messageArray[0].detail).toEqual('testing error message');
   }));
 
-  it('getErrorStyles() should return alert string', async(() => {
-    app.element = { config: { code: 'testing' } };
-    app.form = { controls: { testing: { pristine: false, valid: false } } };
-    expect(app.getErrorStyles()).toEqual('alert alert-danger');
-  }));
-
-  it('elementCss should be undefined', async(() => {
-    app.element = { config: { uiStyles: { attributes: { controlId: null } } } };
-    app.ngOnInit();
-    expect(app.elementCss).toEqual(undefined);
-  }));
-
-  it('getElementStyle() should return col-lg-12 col-md-6', async(() => {
-    app.element = { config: { uiStyles: { attributes: { alias: 'MultiSelectCard' } } } };
-    expect(app.getElementStyle()).toEqual('col-lg-12 col-md-6');
-  }));
-
-  it('getElementStyle() should return empty array', async(() => {
-    app.element = { config: { uiStyles: { attributes: { alias: '' } } } };
-    expect(app.getElementStyle()).toEqual('');
-  }));
-
-  it('addErrorMessages() should update the elemMessages[0].messageArray[0].detail', async(() => {
-    app.elemMessages = [];
-    app.addErrorMessages('testing error message');
-    expect(app.elemMessages[0].messageArray[0].detail).toEqual('testing error message');
-  }));
-
-  it('ngModelState() should return string with touched', async(() => {
-    const res = app.ngModelState();
+  it('ngModelState() should return string with touched',  async(() => {
+    let ngm: any;
+    const res = hostComponent.ngModelState(ngm);
     expect(res.indexOf('touched')).toEqual(0);
   }));
 

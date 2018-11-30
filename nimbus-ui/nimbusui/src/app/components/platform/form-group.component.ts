@@ -63,6 +63,22 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                 <nm-button [form]="form" [element]="element"> </nm-button>
             </ng-template>
 
+            <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias ===  viewComponent.formGridFiller.toString()">           
+                <nm-form-grid-filler></nm-form-grid-filler>
+            </ng-template>
+
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.link.toString()">
+                <nm-link [element] = "element"> </nm-link>
+            </ng-template>
+
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.paragraph.toString()">
+                <nm-paragraph [element]="element"></nm-paragraph>
+            </ng-template>
+
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.header.toString()">
+                <nm-header [element]="element" ></nm-header>
+            </ng-template> 
+            
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.buttongroup.toString()">
                 <nm-button-group [form]="form" [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass"> 
                 </nm-button-group>
