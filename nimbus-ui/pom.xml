@@ -126,7 +126,7 @@
                             </execution>
                         </executions>
                           <configuration>
-                            <executable>ng</executable>
+                            <executable>${project.basedir}/nimbusui/node_modules/.bin/ng</executable>
                             <workingDirectory>${project.basedir}/nimbusui</workingDirectory>
                             <arguments>
                                 <argument>test </argument>
