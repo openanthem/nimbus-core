@@ -111,6 +111,7 @@ export class LayoutService {
         const pageParam: Param = flowModel.params.find (p => ( p.config &&
                                     p.config.uiStyles && p.config.uiStyles.attributes && 
                                     p.config.uiStyles.attributes.alias === ViewComponent.page.toString()));
+        layout['fixLayout'] = pageParam.config.uiStyles.attributes.fixLayout;
         layout['menu'] = this.getMenu(pageParam.type.model);
         layout['topBar'] = this.getTopBar(pageParam.type.model);
         layout['footer'] = this.getFooterItems(pageParam.type.model);

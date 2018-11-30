@@ -18,13 +18,16 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing'
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { LoaderComponent } from './components/platform/loader/loader.component';
 import { LoaderService } from './services/loader.service';
 import { ServiceConstants } from './services/service.constants';
 import { SvgComponent } from './components/platform/svg/svg.component';
 import { SvgDefinitions } from './components/platform/svg/svg-definitions.component'
+import { setup, TestContext } from './setup.spec';
+import { configureTestSuite } from 'ng-bullet';
+import { Subscription } from 'rxjs';
 
 class MockServiceConstant {
   STOPGAP_APP_HOST: string;
@@ -33,32 +36,39 @@ class MockServiceConstant {
   STOPGAP_APP_PROTOCOL: string;
 }
 
-/**
- * \@author Dinakar.Meda
- * \@author Sandeep.Mantha
- * \@whatItDoes 
- * 
- * \@howToUse 
- * 
- */
-describe('AppComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        AppComponent,
-        LoaderComponent,
-        SvgComponent,
-        SvgDefinitions
-      ],
-      imports: [ RouterTestingModule, AngularSvgIconModule ],
-      providers: [ LoaderService, { provide: ServiceConstants, useClass: MockServiceConstant} ]
-    }).compileComponents();
-  }));
+@Component({
+  template: '<div></div>',
+  selector: 'app-loader'
+})
+export class LoaderComponent {
+  show = false;
+  private subscription: Subscription;
+}
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
+const declarations = [
+  AppComponent,
+  LoaderComponent,
+  SvgComponent,
+  SvgDefinitions
+];
+const imports = [ RouterTestingModule, AngularSvgIconModule ];
+const providers = [ LoaderService, { provide: ServiceConstants, useClass: MockServiceConstant} ];
+
+let fixture, hostComponent;
+
+describe('AppComponent', () => {
+
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AppComponent);
+    hostComponent = fixture.debugElement.componentInstance;
+  });
+
+  it('should create the AppComponent', async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
 });

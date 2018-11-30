@@ -456,4 +456,9 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 		}
 		this.elemLabels = elemLabels;
 	}
+
+	@Override
+	public boolean isEmpty() {
+		return this.findIfNested().getParams() == null || this.findIfNested().getParams().size() <= 0; 
+	}
 }

@@ -296,14 +296,6 @@ describe('LayoutService', () => {
     expect(headerMenus).not.toEqual([]);
   }));
 
-  it('getLeftMenu() should return empty array and call buildMenu()', async(() => {
-    const labelConfig = { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { url: '/url' }, name: 'ViewConfig.Link' } } }] } }, config: { uiStyles: { attributes: { alias: ViewComponent.menupanel.toString()} } } }] };
-    spyOn(service, 'buildMenu').and.returnValue('');
-    const res = service.getLeftMenu(labelConfig);
-    expect(res).toEqual([]);
-    expect(service.buildMenu).toHaveBeenCalled();
-  }));
-
   it('getActionTrayItems() should return param', async(() => {
     const actionTrayParam = { config: { uiStyles: { attributes: { alias: 'ActionTray' } } } };
     const actionTrayConfig = { params: [actionTrayParam] };
@@ -318,15 +310,13 @@ describe('LayoutService', () => {
     expect(res).toEqual(undefined);
   }));
 
-  it('parseLayoutConfig() should call getLeftMenu(), getTopBar(), getFooterItems() and getActionTrayItems()', async(() => {
+  it('parseLayoutConfig() should call getTopBar(), getFooterItems() and getActionTrayItems()', async(() => {
     const flowModel = { params: [{ type: { model: {params: [{config: { uiStyles: { attributes: { alias: '' }}}}]} }, config: { uiStyles: { attributes: { alias: 'Page' } } } }] };
-    spyOn(service, 'getLeftMenu').and.returnValue(1);
     spyOn(service, 'getTopBar').and.returnValue(2);
     spyOn(service, 'getFooterItems').and.returnValue(4);
     spyOn(service, 'getActionTrayItems').and.returnValue(5);
     service.layout$ = { next: () => {} };
     service.parseLayoutConfig(flowModel);
-    expect(service.getLeftMenu).toHaveBeenCalled();
     expect(service.getTopBar).toHaveBeenCalled();
     expect(service.getFooterItems).toHaveBeenCalled();
     expect(service.getActionTrayItems).toHaveBeenCalled();

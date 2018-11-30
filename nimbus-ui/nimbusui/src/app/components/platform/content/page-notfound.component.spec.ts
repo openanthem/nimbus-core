@@ -9,31 +9,37 @@ import { PageNotfoundComponent } from './page-notfound.component';
 import { LoggerService } from '../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
 import { AppInitService } from '../../../services/app.init.service';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
 
+const declarations = [
+  PageNotfoundComponent
+ ];
+ const imports = [
+  StorageServiceModule,
+  HttpModule,
+  HttpClientTestingModule
+ ];
+ const providers = [
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  LoggerService,
+  AppInitService
+ ];
+ let fixture, hostComponent;
 describe('PageNotfoundComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        PageNotfoundComponent
-       ],
-       imports: [
-        StorageServiceModule,
-        HttpModule,
-        HttpClientTestingModule
-       ],
-       providers: [
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        LoggerService,
-        AppInitService
-       ]
-    }).compileComponents();
-  }));
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(PageNotfoundComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(PageNotfoundComponent);
+    hostComponent = fixture.debugElement.componentInstance;
+  });
+
+  it('should create the PageNotfoundComponent',  async(() => {
   }));
 
 });

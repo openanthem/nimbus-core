@@ -169,6 +169,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     pageSize: number = 25; //server side has a default but defaulting here so that coverter can cast to number
     postButton: boolean;
     postButtonUrl: string;
+    postButtonUri: string;
     postButtonTargetPath: string;
     postButtonAlias : string;
     postButtonLabel: string;
@@ -199,8 +200,8 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     acceptLabel: string;
     rowExpander: boolean;
     readonlyInput: boolean;
-	monthNavigator: boolean;
-	yearNavigator: boolean;
+	  monthNavigator: boolean;
+	  yearNavigator: boolean;
     yearRange: string;
     metaData: any;
     captureType: string;
@@ -215,6 +216,14 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     scriptName: string;
     orientation: string;
     showMessages: boolean;
+    stylesheet: string;
+    delay: number;
+    useDelay: boolean;
+    closeAfterPrint: boolean;
+    printPath: string;
+    autoPrint: boolean;
+    dataEntryField: boolean;
+    fixLayout: boolean;
     
     deserialize( inJson ) {
         let obj = this;

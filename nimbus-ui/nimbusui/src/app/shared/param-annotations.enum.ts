@@ -14,6 +14,7 @@ export class ViewConfig extends Enum<string> {
     public static readonly actiontray = new Enum('ViewConfig.ActionTray');
     public static readonly picklist = new Enum('ViewConfig.PickList');
     public static readonly selectedPicklist = new Enum('ViewConfig.PickListSelected');
+    public static readonly printConfig = new Enum('ViewConfig.PrintConfig');
 
     static attributeList(): String[] {
       const keys = Object.keys(ViewConfig);
@@ -45,6 +46,10 @@ export class ViewComponent extends Enum<string> {
     public static readonly tabInfo = new Enum('TabInfo');
     public static readonly picklist = new Enum('PickList');
     public static readonly selectedPicklist = new Enum('PickListSelected');
+    public static readonly paragraph = new Enum('Paragraph');
+    public static readonly header = new Enum('Header');
+    public static readonly formGridFiller = new Enum('FormGridFiller');
+    
 
     static attributeList(): String[] {
       const keys = Object.keys(ViewConfig);
@@ -95,6 +100,7 @@ export class ComponentTypes extends Enum<string> {
   public static readonly plain = new Enum('PLAIN');
   public static readonly destructive = new Enum('DESTRUCTIVE');
   public static readonly validation = new Enum('VALIDATION');
+  public static readonly print = new Enum('PRINT');
   public static readonly toast = new Enum('TOAST');
   public static readonly inputSwitch = new Enum('InputSwitch');
   public static readonly link = new Enum('Link');
