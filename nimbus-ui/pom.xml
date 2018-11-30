@@ -17,7 +17,6 @@
     <properties>
         <sonar.projectName>NIM-Platform Web</sonar.projectName>
         <testconfig.ui.browsers>ChromeHeadless</testconfig.ui.browsers>
-        <webdriver.manager.version>3.0.0</webdriver.manager.version>
     </properties>
  
     <dependencies>
@@ -46,12 +45,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.bonigarcia</groupId>
-            <artifactId>webdrivermanager</artifactId>
-            <version>${webdriver.manager.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
  
@@ -113,30 +106,7 @@
             </activation>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>${exec-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <phase>test</phase>
-                                    <goals>
-                                        <goal>exec</goal>
-                                    </goals>
-                            </execution>
-                        </executions>
-                          <configuration>
-                            <executable>${project.basedir}/nimbusui/node_modules/.bin/ng</executable>
-                            <workingDirectory>${project.basedir}/nimbusui</workingDirectory>
-                            <arguments>
-                                <argument>test </argument>
-                                <argument>--watch=false </argument>
-                                <argument>--code-coverage</argument>
-                                <argument>--browsers</argument>
-                                <argument>${testconfig.ui.browsers}</argument>
-                            </arguments>
-                          </configuration>
-                    </plugin>
+                    
                 </plugins>
             </build>
         </profile>
