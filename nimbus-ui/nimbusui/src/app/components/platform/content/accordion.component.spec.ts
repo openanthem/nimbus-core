@@ -230,6 +230,171 @@ describe('Accordion', () => {
     expect(hostComponent).toBeTruthy();
   }));
 
+  it('Expand All and Collapse All should be created if element.config?.uiStyles?.attributes?.showExpandAll is valid',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Expand All and Collapse All should not be created if element.config?.uiStyles?.attributes?.showExpandAll is invalid',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Onclick of expand all button the openAll() should be called',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Onclick of Collapse all button the closeAll() should be called',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('p-accordion should be created if element.visible is true',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('p-accordion should not be created if element.visible is false',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('p-accordionTab should be created if element.type.model.params[0].visible is true',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('p-accordionTab should be created if element.type.model.params[0].visible is false',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Label in header should be created on providing the element.type.model.params[0].labelConfig display the value provided',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Label in header should not be created on if element.type.model.params[0].labelconfig is empty',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If element.type.model.params[0].type.model.params[i].leafState or element.type.model.params[0].type.model.params[i].config.uiStyles.attributes.info is valid then It should be displayed in pheader',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If element.type.model.params[0].type.model.params[i].leafState or element.type.model.params[0].type.model.params[i].config.uiStyles.attributes.info is invalid then It should not be displayed in pheader',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If element.type.model.params[0].type.model.params[i].leafState or element.type.model.params[0].type.model.params[i].config.uiStyles.attributes.imgSrc is valid then image should be displayed in pheader',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If element.type.model.params[0].type.model.params[i].leafState or element.type.model.params[0].type.model.params[i].config.uiStyles.attributes.imgSrc is invalid then image should not be displayed in pheader',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-counter-message in pheader should be created if element.config?.uiStyles?.attributes?.showMessages is true',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-counter-message in pheader should not be created if element.config?.uiStyles?.attributes?.showMessages is false',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Edit Button should be created if element.type.model.params[0]?.config?.uiStyles?.attributes?.editable is true',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Edit Button should not be created if element.type.model.params[0]?.config?.uiStyles?.attributes?.editable is false',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Onclick of edit button processOnClick() should be called',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If element.type.model.params[0].type.model.params[i] and form is defined then form group should be created',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If element.type.model.params[0].type.model.params[i] and form is undefined then form group should not be created',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias == ButtonGroup then button group should be created ',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias !== ButtonGroup then button group should not be created ',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias == Link then Link should be created ',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias !== Link then Link should not be created ',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias == grid then table should be created ',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias !== grid then table should not be created ',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias == cardDetail then cardDetail should be created ',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias !== cardDetail then cardDetail should not be created ',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias == cardDetailsGrid then cardDetailsGrid should be created ',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias !== cardDetailsGrid then cardDetailsGrid should not be created ',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias == form then form should be created ',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias !== form then form should not be created ',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
   // it('get multiple() should return the this.element.config.uiStyles.attributes.multiple value', async(() => {
   //   fixture.whenStable().then(() => {
   //     hostComponent.element.config.uiStyles.attributes.multiple = false;

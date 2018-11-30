@@ -110,7 +110,7 @@ describe('CardDetailsFieldComponent', () => {
     expect(inplaceEditor).toBeFalsy();
   }));
 
-  it('inplaceEditor should not be created', async(() => {
+  it('inplaceEditor should not be created when imgSrc is available', async(() => {
     hostComponent.element.config.uiStyles.attributes.imgSrc = 't';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -118,7 +118,7 @@ describe('CardDetailsFieldComponent', () => {
     expect(inplaceEditorEle).toBeFalsy();
   }));
 
-  it('inplaceLabel should be created', async(() => {
+  it('inputLabel should be created', async(() => {
     const iLabel = inputLabel;
     hostComponent.element = iLabel;
     fixture.detectChanges();
@@ -127,7 +127,7 @@ describe('CardDetailsFieldComponent', () => {
     expect(inputLabelEle.name).toEqual('nm-input-label');
   }));
 
-  it('inputLabel should not be created', async(() => {
+  it('inputLabel should not be created when element.config.uiStyles.attributes.showName', async(() => {
     const iLabel = inputLabel;
     hostComponent.element = iLabel;
     hostComponent.element.config.uiStyles.attributes.showName = false;
@@ -137,7 +137,7 @@ describe('CardDetailsFieldComponent', () => {
     expect(inputLabelEle).toBeFalsy();
   }));
 
-  it('inplaceLabel should be created', async(() => {
+  it('inputLabel should be created with out date', async(() => {
     const iLabel = inputLabelNoDate;
     hostComponent.element = iLabel;
     fixture.detectChanges();
@@ -146,7 +146,7 @@ describe('CardDetailsFieldComponent', () => {
     expect(inputLabelEle.name).toEqual('nm-input-label');
   }));
 
-  it('inputLabel should not be created', async(() => {
+  it('inputLabel should not be created with out date', async(() => {
     const iLabel = inputLabelNoDate;
     hostComponent.element = iLabel;
     hostComponent.element.config.uiStyles.attributes.showName = false;

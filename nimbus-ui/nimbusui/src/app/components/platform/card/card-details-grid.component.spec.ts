@@ -130,6 +130,26 @@ describe('CardDetailsGrid', () => {
     expect(hostComponent).toBeTruthy();
   }));
 
+  it('Label should be created on providing the element.labelconfig display the value provided',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Label should not be created on if element.labelconfig is empty',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-card-details should be created if element?.type?.model?.params[0].type?.model?.params[0].config?.uiStyles?.attributes?.alias === CardDetail',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-card-details should not be created if element?.type?.model?.params[0].type?.model?.params[0].config?.uiStyles?.attributes?.alias !== CardDetail',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
   // it('ngonint() should call pageService.processEvent', () => {
   //   fixture.whenStable().then(() => {
   //     hostComponent.element.config.uiStyles.attributes.onLoad = true;

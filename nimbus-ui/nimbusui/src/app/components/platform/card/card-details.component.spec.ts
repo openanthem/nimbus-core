@@ -112,7 +112,7 @@ describe('CardDetailsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CardDetailsComponent);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = param;
+    hostComponent.element = element;
     pageService = TestBed.get(PageService);
   });
 
@@ -161,4 +161,282 @@ describe('CardDetailsComponent', () => {
     expect(hostComponent.isHidden).toBeTruthy();
   }));
 
+  it('Label should be created on providing the element.labelconfig and display the value provided', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Label should not be created on if element.labelconfig is empty', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Carddetails header should be created if param.config?.uiStyles?.attributes?.alias === CardDetailsHeader', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Carddetails header should not be created if param.config?.uiStyles?.attributes?.alias !== CardDetailsHeader', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Expandable Button should be created created if element.config.uiStyles.attributes.alias === Carddetail and element.config.uiStyles.attributes.expandable === true', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Expandable Button should not be created created if element.config.uiStyles.attributes.alias === Carddetail and element.config.uiStyles.attributes.expandable === false', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('OnClick of Expandable Button it should call toggle()', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Button group should be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias === ButtonGroup', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Button group should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias !== ButtonGroup', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Paragraph should be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias === Paragraph', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Paragraph should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias !== Paragraph', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('card-details-field should be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias === FieldValue', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('card-details-field should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias !== FieldValue', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('StaticText in card details body should be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias === StaticText', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('StaticText in card details body should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias !== StaticText', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Paragraph in card details body should be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias === Paragraph', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Paragraph in card details body should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias !== Paragraph', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('CardDetailsFieldGroup in card details body should be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias === CardDetailsFieldGroup', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('CardDetailsFieldGroup in card details body should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias !== CardDetailsFieldGroup', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('CardDetailsField in card details body should be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias === CardDetailsField  ', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('CardDetailsField in card details body should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias !== CardDetailsField', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Link should be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.isLink is valid', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Link should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.isLink is invalid', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+
 });
+
+const element: any = {
+  "config": {
+      "active": false,
+      "required": false,
+      "id": "3980",
+      "code": "vcdOwnerInfo",
+      "validations": null,
+      "uiNatures": [],
+      "uiStyles": {
+          "isLink": false,
+          "isHidden": false,
+          "name": "ViewConfig.CardDetail",
+          "attributes": {
+              "hidden": false,
+              "readOnly": false,
+              "submitButton": true,
+              "showName": true,
+              "pageSize": 25,
+              "browserBack": false,
+              "showAsLink": false,
+              "border": false,
+              "cssClass": "contentBox right-gutter bg-alternate mt-0",
+              "draggable": false,
+              "expandable": true,
+              "editable": false,
+              "modelPath": "",
+              "alias": "CardDetail",
+              "imgSrc": ""
+          }
+      },
+      "type": {
+          "collection": false,
+          "nested": true,
+          "name": "VPOwnerInfo.VCDOwnerInfo",
+          "model": {
+              "paramConfigIds": [
+                  "3982",
+                  "3992"
+              ]
+          }
+      }
+  },
+  "enabled": true,
+  "visible": true,
+  "activeValidationGroups": [],
+  "collectionParams": [],
+  "configId": "3980",
+  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo",
+  "type": {
+      "model": {
+          "params": [
+              {
+                  "enabled": true,
+                  "visible": true,
+                  "activeValidationGroups": [],
+                  "collectionParams": [],
+                  "configId": "3982",
+                  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner",
+                  "type": {
+                      "model": {
+                          "params": [                          ]
+                      }
+                  },
+                  "message": [],
+                  "values": [],
+                  "labels": [],
+                  "elemLabels": {}
+              },
+              {
+                  "enabled": true,
+                  "visible": true,
+                  "activeValidationGroups": [],
+                  "collectionParams": [],
+                  "configId": "3992",
+                  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner1",
+                  "type": {
+                      "model": {
+                          "params": [
+                              {
+                                  "enabled": true,
+                                  "visible": true,
+                                  "activeValidationGroups": [],
+                                  "collectionParams": [],
+                                  "configId": "3994",
+                                  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner1/vbgDefault1",
+                                  "type": {
+                                      "model": {
+                                          "params": [
+                                              {
+                                                  "enabled": true,
+                                                  "visible": true,
+                                                  "activeValidationGroups": [],
+                                                  "collectionParams": [],
+                                                  "configId": "3996",
+                                                  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner1/vbgDefault1/submit",
+                                                  "type": {
+                                                      "nested": false,
+                                                      "name": "string",
+                                                      "collection": false
+                                                  },
+                                                  "message": [],
+                                                  "values": [],
+                                                  "labels": [
+                                                      {
+                                                          "locale": "en-US",
+                                                          "text": "Submit"
+                                                      }
+                                                  ],
+                                                  "elemLabels": {}
+                                              },
+                                              {
+                                                  "enabled": true,
+                                                  "visible": true,
+                                                  "activeValidationGroups": [],
+                                                  "collectionParams": [],
+                                                  "configId": "3997",
+                                                  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner1/vbgDefault1/back",
+                                                  "type": {
+                                                      "nested": false,
+                                                      "name": "string",
+                                                      "collection": false
+                                                  },
+                                                  "message": [],
+                                                  "values": [],
+                                                  "labels": [
+                                                      {
+                                                          "locale": "en-US",
+                                                          "text": "Back"
+                                                      }
+                                                  ],
+                                                  "elemLabels": {}
+                                              }
+                                          ]
+                                      }
+                                  },
+                                  "message": [],
+                                  "values": [],
+                                  "labels": [],
+                                  "elemLabels": {}
+                              }
+                          ]
+                      }
+                  },
+                  "message": [],
+                  "values": [],
+                  "labels": [],
+                  "elemLabels": {}
+              }
+          ]
+      }
+  },
+  "message": [],
+  "values": [],
+  "labels": [
+      {
+          "locale": "en-US",
+          "text": "testing card details label"
+      }
+  ],
+  "elemLabels": {}
+};
