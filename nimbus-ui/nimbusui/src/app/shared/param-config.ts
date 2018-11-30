@@ -20,7 +20,6 @@ import { ConfigService } from './../services/config.service';
 import { Converter } from './object.conversion';
 import { Serializable } from './serializable';
 import { ViewConfig } from './param-annotations.enum';
-import { deprecate } from 'util';
 
 /**
  * \@author Sandeep.Mantha
