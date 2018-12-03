@@ -27,6 +27,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -48,8 +49,10 @@ import com.antheminc.oss.nimbus.entity.user.UserRole;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
+import com.antheminc.oss.nimbus.test.domain.support.utils.ParamUtils;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntityAccess;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleTask;
 import com.antheminc.oss.nimbus.test.scenarios.s0.view.SampleCoreEntityAccessLineItem;
 
 /**
@@ -434,6 +437,48 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 				assertEquals(1, pg.getContent().size());
 			}
 		}
+	}
+	
+	@Test
+	public void testLookupSort() {
+		SampleTask task1 = new SampleTask();
+		task1.setId(1L);
+		task1.setTaskName("Play");
+		SampleTask task2 = new SampleTask();
+		task2.setId(2L);
+		task2.setTaskName("Groom");
+		mongo.insert(task1, "sampletask");
+		mongo.insert(task2, "sampletask");
+		
+		Long refId = createOrGetDomainRoot_RefId();
+		
+		final MockHttpServletRequest unsortedRequest = MockHttpRequestBuilder
+				.withUri(VIEW_PARAM_ROOT)
+				.addRefId(refId)
+				.addNested("/page_green/tile/view_sample_form/unsortedDynamicValues")
+				.addAction(Action._get)
+				.getMock();
+		final Object unsortedResponse = controller.handlePost(unsortedRequest, null);
+		Param<List<String>> pUnsorted = ParamUtils.extractResponseByParamPath(unsortedResponse, "/unsortedDynamicValues");
+		Assert.assertEquals(2, pUnsorted.getValues().size());
+		Assert.assertEquals("1", pUnsorted.getValues().get(0).getCode());
+		Assert.assertEquals("Play", pUnsorted.getValues().get(0).getLabel());
+		Assert.assertEquals("2", pUnsorted.getValues().get(1).getCode());
+		Assert.assertEquals("Groom", pUnsorted.getValues().get(1).getLabel());
+		
+		final MockHttpServletRequest sortedRequest = MockHttpRequestBuilder
+				.withUri(VIEW_PARAM_ROOT)
+				.addRefId(refId)
+				.addNested("/page_green/tile/view_sample_form/sortedDynamicValues")
+				.addAction(Action._get)
+				.getMock();
+		final Object sortedResponse = controller.handlePost(sortedRequest, null);
+		Param<List<String>> pSorted = ParamUtils.extractResponseByParamPath(sortedResponse, "/sortedDynamicValues");
+		Assert.assertEquals(2, pSorted.getValues().size());
+		Assert.assertEquals("2", pSorted.getValues().get(0).getCode());
+		Assert.assertEquals("Groom", pSorted.getValues().get(0).getLabel());
+		Assert.assertEquals("1", pSorted.getValues().get(1).getCode());
+		Assert.assertEquals("Play", pSorted.getValues().get(1).getLabel());
 	}
 	
 	@SuppressWarnings("unchecked")
