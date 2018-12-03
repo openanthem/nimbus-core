@@ -57,7 +57,7 @@ export class HeaderCheckBox {
     this.updateToggleRowsWithCheckbox();
     // with below subscription on filter, the select-all checkbox is updated to 'unchecked' since 
     // filter would change the rows that are being displayed from what was selected before
-    this.filterChangeSubscribe(); 
+    this.filterChangeSubscription(); 
 
   }
 
@@ -71,7 +71,7 @@ export class HeaderCheckBox {
     let firstEle = this.dt.first;
     this.dt.onPage.subscribe(val => {
       const filteredValues: any[] = this.dt.filteredValue != null ? this.dt.filteredValue:this.dt.value;
-      
+
       if (this.currentSelection.length > 0 && this.currentSelection[0] === filteredValues[val.first]) {
         this.dt.selection = this.currentSelection;
         this.headerChckbxState = true;
@@ -115,7 +115,7 @@ export class HeaderCheckBox {
     });
   }
 
-  filterChangeSubscribe() {
+  filterChangeSubscription() {
     this.dt.onFilter.subscribe(val => {
         this.headerChckbxState = false;
     });
