@@ -55,6 +55,10 @@ export class HeaderCheckBox {
     this.pageChangeSubscription();
     this.selectionChangeSubscription();
     this.updateToggleRowsWithCheckbox();
+    // with below subscription on filter, the select-all checkbox is updated to 'unchecked' since 
+    // filter would change the rows that are being displayed from what was selected before
+    this.filterChangeSubscription(); 
+
   }
 
   ngDoCheck(): void {
@@ -66,7 +70,9 @@ export class HeaderCheckBox {
   pageChangeSubscription() {
     let firstEle = this.dt.first;
     this.dt.onPage.subscribe(val => {
-      if (this.currentSelection.length > 0 && this.currentSelection[0] === this.dt.value[val.first]) {
+      const filteredValues: any[] = this.dt.filteredValue != null ? this.dt.filteredValue:this.dt.value;
+
+      if (this.currentSelection.length > 0 && this.currentSelection[0] === filteredValues[val.first]) {
         this.dt.selection = this.currentSelection;
         this.headerChckbxState = true;
         firstEle = val.first;
@@ -84,10 +90,12 @@ export class HeaderCheckBox {
     this.dt.selectionChange.subscribe(val => {
       const pageSize = this.element.config.uiStyles.attributes.pageSize;
       let allMatch = true;
-      for (let i = this.dt.first; i < this.dt.value.length && i < (this.dt.first + pageSize); i++) {
+      const filteredValues: any[] = this.dt.filteredValue != null ? this.dt.filteredValue: this.dt.value;
+      for (let i = this.dt.first; i < filteredValues.length && i < (this.dt.first + pageSize); i++) {
         let found = false;
+       
         for (let j = 0; j < val.length; j++) {
-          if (this.dt.value[i] === val[j]) {
+          if (filteredValues[i] === val[j]) {
             found = true;
           }
         }
@@ -104,6 +112,12 @@ export class HeaderCheckBox {
               this.updateDtSelection();
         }
       }
+    });
+  }
+
+  filterChangeSubscription() {
+    this.dt.onFilter.subscribe(val => {
+        this.headerChckbxState = false;
     });
   }
 
@@ -136,8 +150,9 @@ export class HeaderCheckBox {
   updateDtSelection() {
     this.dt.selection = [];
     const pageSize = this.element.config.uiStyles.attributes.pageSize;
-    for (let i = this.dt.first; i < this.dt.value.length && i < (this.dt.first + pageSize); i++) {
-        this.dt.selection.push(this.dt.value[i]);
+    const filteredValues: any[] = this.dt.filteredValue != null ? this.dt.filteredValue:this.dt.value;
+    for (let i = this.dt.first; i < filteredValues.length && i < (this.dt.first + pageSize); i++) {
+        this.dt.selection.push(filteredValues[i]);
     }
     this.currentSelection = this.dt.selection;
   }

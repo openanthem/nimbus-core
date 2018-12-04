@@ -570,6 +570,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     filterCallBack(e: any) {
         this.totalRecords = e.filteredValue.length;
         this.updatePageDetailsState();
+        this.selectedRows.length = 0
+        this.dt.toggleRowsWithCheckbox(e, true);
     }
 
     export() {
