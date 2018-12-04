@@ -145,7 +145,22 @@ describe('CardDetailsGrid', () => {
     const debugElement = fixture.debugElement;
   }));
 
+  it('compare the values rendered in the view with param object provided',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
   it('nm-card-details should not be created if element?.type?.model?.params[0].type?.model?.params[0].config?.uiStyles?.attributes?.alias !== CardDetail',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Updating the param object should add a row',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('gfhfh',async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
   }));

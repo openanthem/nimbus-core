@@ -87,6 +87,11 @@ describe('CardDetailsFieldGroupComponent', () => {
     const debugElement = fixture.debugElement;
   }));
 
+  it('another nm-card-details-field should be added on updating the param',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
   // it('getComponentClass() should return array [testClass, col-sm-12]',  async(() => {
   //     const res = hostComponent.getComponentClass();
   //     expect(res).toEqual(['testClass', 'col-sm-12']);

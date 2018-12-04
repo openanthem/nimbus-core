@@ -161,7 +161,7 @@ describe('CardDetailsComponent', () => {
     expect(hostComponent.isHidden).toBeTruthy();
   }));
 
-  it('Label should be created on providing the element.labelconfig and display the value provided', async(() => {
+  it('Label should be created on providing the element.labelconfig and compare label provided with label displayed', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
   }));
@@ -276,6 +276,40 @@ describe('CardDetailsComponent', () => {
     const debugElement = fixture.debugElement;
   }));
 
+  it('On updating param another paragraph need to be added in carddetails body', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('On updating param another static-text need to be added in carddetails body', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('On updating param another card-details-field-group need to be added in carddetails body', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('On updating param another nm-card-details-field need to be added in carddetails body', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('On updating param another button group need to be added in carddetails header', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('On updating param another paragraph need to be added in carddetails header', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('On updating param another card-details-field need to be added in carddetails header', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
 
 });
 
