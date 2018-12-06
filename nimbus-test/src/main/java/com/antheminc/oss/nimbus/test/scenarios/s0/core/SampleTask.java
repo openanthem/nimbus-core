@@ -15,8 +15,6 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s0.core;
 
-import java.time.LocalDate;
-
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
@@ -31,8 +29,8 @@ import lombok.Setter;
  * @author Sandeep Mantha
  *
  */
-@Domain(value="sampletask", includeListeners={ListenerType.persistence})
-@Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
+@Domain(value = "sampletask", includeListeners = { ListenerType.persistence })
+@Repo(value = Database.rep_mongodb, cache = Cache.rep_device)
 @Getter @Setter
 public class SampleTask extends IdLong {
 	
