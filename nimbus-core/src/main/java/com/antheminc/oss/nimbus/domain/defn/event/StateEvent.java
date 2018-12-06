@@ -32,7 +32,7 @@ public final class StateEvent {
 	
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)
-	@Event
+	@Event(eventType = OnStateLoad.class)
 	@Inherited
 	public @interface OnStateLoad {
 		int order() default Event.DEFAULT_ORDER_NUMBER;
@@ -40,7 +40,7 @@ public final class StateEvent {
 
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)
-	@Event
+	@Event(eventType = OnStateLoadNew.class)
 	@Inherited
 	public @interface OnStateLoadNew {	// Blank Constructor  -- Action._new: OnStateLoadNew
 		int order() default Event.DEFAULT_ORDER_NUMBER;
@@ -48,7 +48,7 @@ public final class StateEvent {
 	
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)
-	@Event
+	@Event(eventType = OnStateLoadGet.class)
 	@Inherited
 	public @interface OnStateLoadGet { // Args Constructor  -- Action._get: OnStateLoadGet
 		int order() default Event.DEFAULT_ORDER_NUMBER;
@@ -57,7 +57,7 @@ public final class StateEvent {
 	
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)
-	@Event
+	@Event(eventType = OnStateChange.class)
 	@Inherited
 	public @interface OnStateChange {
 		int order() default Event.DEFAULT_ORDER_NUMBER;
@@ -65,9 +65,11 @@ public final class StateEvent {
 	
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)
-	@Event
+	@Event(eventType = OnTxnExecute.class)
 	@Inherited
 	public @interface OnTxnExecute {
 		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
+
+
 }

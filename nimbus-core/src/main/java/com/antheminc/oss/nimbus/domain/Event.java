@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -38,4 +39,7 @@ public @interface Event {
 	int DEFAULT_ORDER_NUMBER = Integer.MAX_VALUE; 
 	
 	int order() default DEFAULT_ORDER_NUMBER;
+	
+	Class<? extends Annotation>[] eventType() default {};
+	
 }

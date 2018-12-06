@@ -21,13 +21,13 @@ package com.antheminc.oss.nimbus.domain.config.builder;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -36,9 +36,9 @@ import org.springframework.core.env.PropertyResolver;
 import org.springframework.util.ClassUtils;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
+import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.RepeatContainer;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -134,24 +134,70 @@ public class DefaultAnnotationConfigHandler implements AnnotationConfigHandler {
 				
 				// check that the declared annotation has passed in meta annotation type
 				
-				boolean hasRepeatable = AnnotatedElementUtils.hasAnnotation(repeatableAnnotationDeclared, repeatableMetaAnnotationType);
+				boolean hasRepeatable = AnnotatedElementUtils.hasAnnotation(repeatableAnnotationDeclared, Event.class);
 				if(hasRepeatable) {
 					Object value = AnnotationUtils.getValue(currDeclaredAnnotation);
 					if(value==null || !value.getClass().isArray())
 						throw new InvalidConfigException("Repeatable container annotation is expected to follow convention: '{RepeableAnnotationType}[] value();' but not found in: "+currDeclaredAnnotation);
 					
 					Annotation[] annArr = (Annotation[])value;
-					annotations.addAll(Arrays.asList(annArr));
+					Stream.of(annArr).forEach(ann -> {
+						addIfcontainsAnnotationAsEventType(ann, repeatableMetaAnnotationType, annotations);
+					});
 				}
 			}
 			
 			// handle non-repeating meta annotation
-			if(metaTypesOnCurrDeclaredAnnotation!=null && metaTypesOnCurrDeclaredAnnotation.contains(repeatableMetaAnnotationType.getName())) {
-				annotations.add(currDeclaredAnnotation);
+			if(metaTypesOnCurrDeclaredAnnotation != null && metaTypesOnCurrDeclaredAnnotation.contains(Event.class.getName())) {
+				addIfcontainsAnnotationAsEventType(currDeclaredAnnotation, repeatableMetaAnnotationType, annotations);
 			}
 		}
 		
 		return annotations;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void addIfcontainsAnnotationAsEventType(Annotation ann, Class<? extends Annotation> repeatableMetaAnnotationType, final List<Annotation> annotations) {
+		Class<? extends Annotation>[] attrs = (Class<? extends Annotation>[])AnnotationUtils.getValue(ann, "eventType");
+		if(attrs != null) {
+			if(containsRepeatableMetaAnnotation(attrs, repeatableMetaAnnotationType))
+				annotations.add(ann);
+		}
+		else {
+			findEventMetaAnnotationRecursively(ann, ann.annotationType().getDeclaredAnnotations(), repeatableMetaAnnotationType, annotations);
+		}
+	}
+
+	/**
+	 * do a meta (recursive) search on the annotated element for the {@link Event } type
+	 *
+	 * @param annotatedElement the annotated element
+	 * @param foundAnnotations the already found annotations	
+	 */
+	@SuppressWarnings("unchecked")
+	private void findEventMetaAnnotationRecursively(final Annotation annotation, final Annotation[] declaredAnnotations, Class<? extends Annotation> repeatableMetaAnnotationType, List<Annotation> annotations) {
+		for(Annotation a : declaredAnnotations) {
+			boolean b = a.annotationType() == Event.class || AnnotatedElementUtils.hasAnnotation(a.annotationType(), Event.class);
+			if(b) {
+				Class<? extends Annotation>[] attrs = (Class<? extends Annotation>[])AnnotationUtils.getValue(a, "eventType");
+				if(attrs != null) {
+					if(containsRepeatableMetaAnnotation(attrs, repeatableMetaAnnotationType))
+						annotations.add(annotation);
+					break;
+				}
+				else {
+					findEventMetaAnnotationRecursively(annotation, a.annotationType().getDeclaredAnnotations(), repeatableMetaAnnotationType, annotations);
+				}
+			}
+		}
+	}
+
+	private boolean containsRepeatableMetaAnnotation(Class<? extends Annotation>[] attr, Class<? extends Annotation> repeatableMetaAnnotationType) {
+		return Optional.ofNullable(attr)
+				.map(Stream::of)
+				.orElse(Stream.empty())
+				.anyMatch(v -> v == repeatableMetaAnnotationType);
+		
 	}
 	
 	protected void postProcess(List<AnnotationConfig> acList) {
