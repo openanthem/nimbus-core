@@ -1,3 +1,4 @@
+import { ViewRoot } from './../../shared/app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -125,12 +126,12 @@ export class DomainFlowCmp {
 
     ngOnInit() {
         this._logger.debug('DomainFlowCmp-i ');
-        this._route.data.subscribe((data: { layout: string }) => {
-            let layout: string = data.layout;
-            if (layout) {
+        this._route.data.subscribe((data: { layout: ViewRoot }) => {
+            let viewRoot: ViewRoot = data.layout;
+            if (viewRoot) {
                 this.hasLayout = true;
                 this.infoClass = 'info-card page-content';
-                this.layoutSvc.getLayout(layout);
+                this.layoutSvc.parseLayoutConfig(viewRoot.model);
             } else {
                 this.infoClass = 'page-content';
                 this.hasLayout = false;
