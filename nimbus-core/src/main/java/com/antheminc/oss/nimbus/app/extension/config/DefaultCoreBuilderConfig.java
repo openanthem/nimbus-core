@@ -39,6 +39,7 @@ import com.antheminc.oss.nimbus.domain.config.builder.AnnotationAttributeHandler
 import com.antheminc.oss.nimbus.domain.config.builder.AnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.DefaultAnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.domain.config.builder.EventAnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.ConstraintAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
@@ -135,12 +136,17 @@ public class DefaultCoreBuilderConfig {
 		return new DetourExecutionConfigProvider();
 	}
 	
-	@Bean 
+	@Bean(name="default.annotationConfigBuilder")
 	public AnnotationConfigHandler annotationConfigHandler(PropertyResolver propertyResolver) {
 		Map<Class<? extends Annotation>, AnnotationAttributeHandler> attributeHandlers = new HashMap<>();
 		attributeHandlers.put(Constraint.class, new ConstraintAnnotationAttributeHandler());
 		
 		return new DefaultAnnotationConfigHandler(new DefaultAnnotationAttributeHandler(), attributeHandlers, propertyResolver);
+	}
+	
+	@Bean(name="default.eventAnnotationConfigBuilder")
+	public AnnotationConfigHandler eventAnnotationConfigHandler() {
+		return new EventAnnotationConfigHandler();
 	}
 	
 	@Bean
