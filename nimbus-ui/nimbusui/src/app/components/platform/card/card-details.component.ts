@@ -134,5 +134,20 @@ export class CardDetailsComponent extends BaseElement {
         }
     }
 
+    getFieldClass(parent: Param, child: Param) {
+        if (child.config.uiStyles) {
+            if (child.config.uiStyles.attributes && child.config.uiStyles.attributes.cssClass && child.config.uiStyles.attributes.cssClass != '') {
+                return child.config.uiStyles.attributes.cssClass;
+            } else {
+                if (parent.config.uiStyles && parent.config.uiStyles.attributes && parent.config.uiStyles.attributes.cssClass) {
+                    return parent.config.uiStyles.attributes.cssClass;
+                } else {
+                    return '';
+                }
+            }
+        } else {
+            return '';
+        }
+    }
 }
 

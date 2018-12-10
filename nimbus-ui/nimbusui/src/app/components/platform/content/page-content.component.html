@@ -11,6 +11,5 @@
         <nm-label *ngIf="!isLabelEmpty" [element]="element" [labelClass]="imgSrc + ' page-title'" [size]="labelSize"></nm-label>
     </ng-template>
 
-    <nm-tile [element]="tile" *ngFor="let tile of tilesList" [position]="position+1" [nmPrint]="tile"></nm-tile>
+    <nm-tile [element]="tile" *ngFor="let tile of tilesList" [ngClass]="tile.config.uiStyles.attributes.size" [position]="position+1" [nmPrint]="tile"></nm-tile>
 </ng-template>
-

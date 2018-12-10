@@ -1,5 +1,5 @@
 <nm-message messageContext="{{element?.message.context}}"  [messageArray]="element?.message.messageArray" [life]="element?.message.life" *ngIf="element?.message"></nm-message>
-<div class="card-holder" id="{{code}}" [ngClass]="styleWd" *ngIf="visible==true">
+<div class="card-holder" id="{{code}}" *ngIf="visible==true">
 		<div class="card-header">
 			<nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize" [labelClass]="imgSrc + ' card-title'"></nm-label>
 			<ng-template ngFor let-element [ngForOf]="nestedParams">
@@ -16,7 +16,7 @@
 				</ng-template>
 			</ng-template>		
 		</div>
-	<div class="card card-block {{styleHt}}">
+	<div class="card card-block ">
 		<div class="viewport" >
 			<ng-template ngFor let-element [ngForOf]="nestedParams">
 				<ng-template [ngIf]="element.alias == viewComponent.tile.toString()">
