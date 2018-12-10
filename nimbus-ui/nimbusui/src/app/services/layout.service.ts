@@ -106,7 +106,7 @@ export class LayoutService {
         }
     }
 
-    private parseLayoutConfig(flowModel: Model) {
+    public parseLayoutConfig(flowModel: Model) {
         let layout = {} as Layout;
         const pageParam: Param = flowModel.params.find (p => ( p.config &&
                                     p.config.uiStyles && p.config.uiStyles.attributes && 

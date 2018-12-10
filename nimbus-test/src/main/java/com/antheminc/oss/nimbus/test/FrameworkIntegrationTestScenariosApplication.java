@@ -22,6 +22,12 @@ import org.springframework.context.annotation.Bean;
 import com.antheminc.oss.nimbus.app.extension.config.DefaultCoreConfigMarker;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
+import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestConflictingEventOverrideHandler;
+import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestEventAllowOverrideHandler;
+import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestEventMandatoryOverrideHandler;
+import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestEventNoOverrideHandler;
+import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestOnStateChangeNoOverrideHandler;
+import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestRedundantEventOverrideHandler;
 import com.antheminc.oss.nimbus.test.domain.session.TestSessionProvider;
 
 /**
@@ -39,4 +45,35 @@ public class FrameworkIntegrationTestScenariosApplication {
 	public SessionProvider sessionProvider(BeanResolverStrategy beanResolver){
 		return new TestSessionProvider();
 	}
+	
+	@Bean
+	TestEventNoOverrideHandler testEventNoOverrideHandler(BeanResolverStrategy beanResolver) {
+		return new TestEventNoOverrideHandler(beanResolver);
+	}
+	
+	@Bean
+	TestEventAllowOverrideHandler testEventAllowOverrideHandler(BeanResolverStrategy beanResolver) {
+		return new TestEventAllowOverrideHandler(beanResolver);
+	}
+	
+	@Bean
+	TestConflictingEventOverrideHandler testConflictingEventOverrideHandler(BeanResolverStrategy beanResolver) {
+		return new TestConflictingEventOverrideHandler(beanResolver);
+	}
+	
+	@Bean
+	TestEventMandatoryOverrideHandler testEventMandatoryOverrideHandler(BeanResolverStrategy beanResolver) {
+		return new TestEventMandatoryOverrideHandler(beanResolver);
+	}
+	
+	@Bean
+	TestOnStateChangeNoOverrideHandler testOnStateChangeNoOverrideHandler(BeanResolverStrategy beanResolver) {
+		return new TestOnStateChangeNoOverrideHandler(beanResolver);
+	}
+	
+	@Bean
+	TestRedundantEventOverrideHandler TestRedundantEventOverrideHandler(BeanResolverStrategy beanResolver) {
+		return new TestRedundantEventOverrideHandler(beanResolver);
+	}
+	
 }

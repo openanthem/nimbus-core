@@ -38,7 +38,6 @@ import org.springframework.util.ClassUtils;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.RepeatContainer;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -49,7 +48,6 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @RequiredArgsConstructor
-
 @Getter(value=AccessLevel.PROTECTED)
 public class DefaultAnnotationConfigHandler implements AnnotationConfigHandler {
 	

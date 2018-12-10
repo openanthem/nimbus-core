@@ -89,7 +89,7 @@ abstract public class AbstractEntityConfigBuilder {
 		this.beanResolver = beanResolver;
 		this.rulesEngineFactoryProducer = beanResolver.get(RulesEngineFactoryProducer.class);
 		this.eventHandlerConfigFactory = beanResolver.get(EventHandlerConfigFactory.class);
-		this.annotationConfigHandler = beanResolver.get(AnnotationConfigHandler.class);
+		this.annotationConfigHandler = beanResolver.get(AnnotationConfigHandler.class, "annotationConfigBuilder");
 		this.executionConfigFactory = beanResolver.get(ExecutionConfigFactory.class);
 	}
 	
