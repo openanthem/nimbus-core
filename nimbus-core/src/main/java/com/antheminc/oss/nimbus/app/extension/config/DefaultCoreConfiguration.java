@@ -48,6 +48,7 @@ import com.antheminc.oss.nimbus.domain.rules.DefaultRulesEngineFactoryProducer;
 import com.antheminc.oss.nimbus.domain.rules.drools.DecisionTableConfigBuilder;
 import com.antheminc.oss.nimbus.domain.rules.drools.DrlConfigBuilder;
 import com.antheminc.oss.nimbus.domain.rules.drools.DroolsRulesEngineFactory;
+import com.antheminc.oss.nimbus.support.DefaultLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerReflection;
 
@@ -158,7 +159,11 @@ public class DefaultCoreConfiguration {
 			public Optional<TemporalAccessor> getNow() {
 				return Optional.of(ZonedDateTime.now());
 			}
-		};
-	}
+	    };
+    }
 	
+	@Bean
+	public DefaultLoggingInterceptor defaultLoggingHandler() {
+		return new DefaultLoggingInterceptor();
+	}
 }

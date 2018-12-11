@@ -22,14 +22,17 @@ import java.util.Map;
 
 import javax.validation.Constraint;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.env.PropertyResolver;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.context.DefaultBeanResolverStrategy;
@@ -67,18 +70,18 @@ import lombok.Setter;
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix="domain.model")
 @Getter @Setter
+@RefreshScope
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public class DefaultCoreBuilderConfig {
 	
 	private Map<String, String> typeClassMappings;
-	
+
 	private List<String> basePackages;
 	
 	private List<String> basePackagesToExclude;
 	
 	@Value("${platform.config.secure.regex}")
 	private String secureRegex;
-	
 	
 	@Bean	
 	public BeanResolverStrategy defaultBeanResolver(ApplicationContext appCtx) {
@@ -90,7 +93,8 @@ public class DefaultCoreBuilderConfig {
 		return new ChangeLogCommandEventHandler(beanResolver);
 	}
 	
-	@Bean
+	@Bean(name="default.DomainConfigBuilder")
+	@RefreshScope
 	public DomainConfigBuilder domainConfigBuilder(EntityConfigBuilder configBuilder){
 		return new DomainConfigBuilder(configBuilder, basePackages, basePackagesToExclude);
 	}
@@ -167,9 +171,4 @@ public class DefaultCoreBuilderConfig {
 		return new SecurityUtils(secureRegex);
 	}
 	
-	@Bean
-	public DefaultLoggingInterceptor defaultLoggingHandler() {
-		return new DefaultLoggingInterceptor();
-	}
-
 }
