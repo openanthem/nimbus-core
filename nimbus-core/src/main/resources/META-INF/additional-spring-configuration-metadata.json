@@ -1,0 +1,37 @@
+{"properties": [
+  {
+    "name": "javax.validation.constraints.Future.message",
+    "type": "java.lang.String",
+    "description": "Message to be displayed when annotated with @Future"
+  },
+  {
+    "name": "javax.validation.constraints.Min.message",
+    "type": "java.lang.String",
+    "description": "Message to be displayed when annotated with @Min"
+  },
+  {
+    "name": "javax.validation.constraints.Max.message",
+    "type": "java.lang.String",
+    "description": "Message to be displayed when annotated with @Max"
+  },
+  {
+    "name": "javax.validation.constraints.NotNull.message",
+    "type": "java.lang.String",
+    "description": "Message to be displayed when annotated with @NotNull"
+  },
+  {
+    "name": "javax.validation.constraints.Past.message",
+    "type": "java.lang.String",
+    "description": "Message to be displayed when annotated with @Past"
+  },
+  {
+    "name": "javax.validation.constraints.Pattern.message",
+    "type": "java.lang.String",
+    "description": "Message to be displayed when annotated with @Pattern"
+  },
+  {
+    "name": "javax.validation.constraints.Size.message",
+    "type": "java.lang.String",
+    "description": "Message to be displayed when annotated with @Size"
+  }
+]}
