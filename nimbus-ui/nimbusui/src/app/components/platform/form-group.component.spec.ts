@@ -212,8 +212,7 @@ describe('FrmGroupCmp', () => {
   it('getCssClass() should return elementCss',  () => {
     fixture.whenStable().then(() => {
       hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup';
-      hostComponent.elementCss = 'test1';
-      hostComponent.element.config.uiStyles.attributes.cssClass = null;
+      hostComponent.element.config.uiStyles.attributes.cssClass = 'test1';
       expect(hostComponent.getCssClass()).toEqual('test1');
     });
   });

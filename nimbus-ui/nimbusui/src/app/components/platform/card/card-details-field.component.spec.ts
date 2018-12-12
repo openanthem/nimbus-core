@@ -238,6 +238,7 @@ describe('CardDetailsFieldComponent', () => {
     hostComponent.writeValue(undefined);
     expect(hostComponent.onChange).toHaveBeenCalled();
   }));
+  
   it('registerOnTouched() should update the onTouched property',  async(() => {
     const test = () => {
       return true;
@@ -246,82 +247,86 @@ describe('CardDetailsFieldComponent', () => {
     expect(hostComponent.onTouched).toEqual(test);
   }));
 
-  it('getComponentClass() should return array [testClass, col-sm-12, p-0, clearfix]',  async(() => {
-    fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.cols = '1';
-      hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
-      expect(hostComponent.getComponentClass()).toEqual([
-        'testClass',
-        'p-0',
-        'clearfix',
-        'col-sm-12'
-      ]);
-    });
-  }));
+  // it('getComponentClass() should return array [testClass, col-sm-12, p-0, clearfix]',  async(() => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.cols = '1';
+  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
+  //     expect(hostComponent.getComponentClass()).toEqual([
+  //       'testClass',
+  //       'p-0',
+  //       'clearfix',
+  //       'col-sm-12'
+  //     ]);
+  //   });
+  // }));
 
-  it('getComponentClass() should return array [testClass, col-sm-6, p-0, clearfix]',  async(() => {
-    fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.cols = '2';
-      hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
-      expect(hostComponent.getComponentClass()).toEqual([
-        'testClass',
-        'p-0',
-        'clearfix',
-        'col-sm-6'
-      ]);
-    });
-  }));
+  // it('getComponentClass() should return array [testClass, col-sm-6, p-0, clearfix]',  async(() => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.cols = '2';
+  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
+  //     expect(hostComponent.getComponentClass()).toEqual([
+  //       'testClass',
+  //       'p-0',
+  //       'clearfix',
+  //       'col-sm-6'
+  //     ]);
+  //   });
+  // }));
 
-  it('getComponentClass() should return array [testClass, col-sm-4, p-0, clearfix]',  async(() => {
-    fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.cols = '3';
-      hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
-      expect(hostComponent.getComponentClass()).toEqual([
-        'testClass',
-        'p-0',
-        'clearfix',
-        'col-sm-4'
-      ]);
-    });
-  }));
+  // it('getComponentClass() should return array [testClass, col-sm-4, p-0, clearfix]',  async(() => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.cols = '3';
+  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
+  //     expect(hostComponent.getComponentClass()).toEqual([
+  //       'testClass',
+  //       'p-0',
+  //       'clearfix',
+  //       'col-sm-4'
+  //     ]);
+  //   });
+  // }));
 
-  it('getComponentClass() should return array [testClass, col-sm-3, p-0, clearfix]',  async(() => {
-    fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.cols = '4';
-      hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
-      expect(hostComponent.getComponentClass()).toEqual([
-        'testClass',
-        'p-0',
-        'clearfix',
-        'col-sm-3'
-      ]);
-    });
-  }));
+  // it('getComponentClass() should return array [testClass, col-sm-3, p-0, clearfix]',  async(() => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.cols = '4';
+  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
+  //     expect(hostComponent.getComponentClass()).toEqual([
+  //       'testClass',
+  //       'p-0',
+  //       'clearfix',
+  //       'col-sm-3'
+  //     ]);
+  //   });
+  // }));
 
-  it('getComponentClass() should return array [testClass, col-sm-2, p-0, clearfix]',  async(() => {
-    fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.cols = '6';
-      hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
-      expect(hostComponent.getComponentClass()).toEqual([
-        'testClass',
-        'p-0',
-        'clearfix',
-        'col-sm-2'
-      ]);
-    });
-  }));
+  // it('getComponentClass() should return array [testClass, col-sm-2, p-0, clearfix]',  async(() => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.cols = '6';
+  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
+  //     expect(hostComponent.getComponentClass()).toEqual([
+  //       'testClass',
+  //       'p-0',
+  //       'clearfix',
+  //       'col-sm-2'
+  //     ]);
+  //   });
+  // }));
 
-  it('getComponentClass() should return array [testClass, col-sm-3, p-0, clearfix] when cols is empty',  async(() => {
-    fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.cols = '';
-      hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
-      expect(hostComponent.getComponentClass()).toEqual([
-        'testClass',
-        'p-0',
-        'clearfix',
-        'col-sm-3'
-      ]);
-    });
+  // it('getComponentClass() should return array [testClass, col-sm-3, p-0, clearfix] when cols is empty',  async(() => {
+  //   fixture.whenStable().then(() => {
+  //     hostComponent.element.config.uiStyles.attributes.cols = '';
+  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
+  //     expect(hostComponent.getComponentClass()).toEqual([
+  //       'testClass',
+  //       'p-0',
+  //       'clearfix',
+  //       'col-sm-3'
+  //     ]);
+  //   });
+  // }));
+
+  it('getComponentClass() should return array [mb-3]',  async(() => {
+    expect(hostComponent.getComponentClass()).toEqual(['mb-3']);
   }));
 
   it('value getter() should return _value property value',  async(() => {
