@@ -163,7 +163,7 @@ public class DefaultCoreConfiguration {
     }
 	
 	@Bean
-	public DefaultLoggingInterceptor defaultLoggingHandler() {
-		return new DefaultLoggingInterceptor();
-	}
+ 	public DefaultLoggingInterceptor defaultLoggingHandler() {
+ 		return new DefaultLoggingInterceptor();
+ 	}
 }
