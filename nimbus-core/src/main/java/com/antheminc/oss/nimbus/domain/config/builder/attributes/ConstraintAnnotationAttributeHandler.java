@@ -68,8 +68,9 @@ public class ConstraintAnnotationAttributeHandler implements AnnotationAttribute
 	public ConstraintAnnotationAttributeHandler(BeanResolverStrategy beanResolver) {
 		this(beanResolver, DEFAULT_VALIDATION_MESSAGES_PATH);
 	}
-	
-	public ConstraintAnnotationAttributeHandler(BeanResolverStrategy beanResolver, String defaultValidationMessagesPath) {
+
+	public ConstraintAnnotationAttributeHandler(BeanResolverStrategy beanResolver,
+			String defaultValidationMessagesPath) {
 		this.beanResolver = beanResolver;
 		this.propertyResolver = this.beanResolver.get(PropertyResolver.class);
 		this.env = this.beanResolver.get(Environment.class);
@@ -83,24 +84,24 @@ public class ConstraintAnnotationAttributeHandler implements AnnotationAttribute
 		final HashMap<String, Object> map = new HashMap<>();
 
 		for (final Entry<String, Object> entry : annotationAttributes.entrySet()) {
+			Object resolvedValue = entry.getValue();
 			if (entry.getKey().equals(ATTRIBUTE_MESSAGE_NAME)
 					&& ((String) entry.getValue()).matches(JSR_DEFAULT_MESSAGE_REGEX)) {
-				map.put(entry.getKey(), this.resolveMessage((String) entry.getValue(), annotatedElement, annotation));
-			} else {
-				map.put(entry.getKey(), entry.getValue());
+				resolvedValue = this.resolveMessage((String) entry.getValue(), annotatedElement, annotation);
 			}
+			map.put(entry.getKey(), resolvedValue);
 		}
 		return map;
 	}
 
 	private String resolveMessage(String initialMessageValue, AnnotatedElement annotatedElement,
 			Annotation annotation) {
-		String resolvedMessage = (String) env.getProperty(initialMessageValue);
-		if (null != resolvedMessage) {
-			return resolvedMessage;
-		} else {
-			return resolveDefaultMessage(initialMessageValue, annotatedElement, annotation);
+		String key = this.replacePattern.matcher(initialMessageValue).replaceAll("${messageKey}");
+		String overriddenDefault = this.propertyResolver.getProperty(key);
+		if (null != overriddenDefault) {
+			return overriddenDefault;
 		}
+		return this.resolveDefaultMessage(initialMessageValue, annotatedElement, annotation);
 	}
 
 	private String resolveDefaultMessage(String initialMessageValue, AnnotatedElement annotatedElement,

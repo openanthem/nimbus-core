@@ -94,7 +94,7 @@ public class ConstraintAnnotationAttributeHandlerTest {
 		String expected = "Very Important Field!";
 		final Field annotatedElement = this.getClass().getDeclaredField("t2_str");
 		final Annotation annotation = annotatedElement.getAnnotation(NotNull.class);
-		Mockito.when(this.env.getProperty("{javax.validation.constraints.NotNull.message}")).thenReturn(expected);
+		Mockito.when(this.propertyResolver.getProperty("javax.validation.constraints.NotNull.message")).thenReturn(expected);
 		final Map<String, Object> actual = this.testee.generateFrom(annotatedElement, annotation);
 		Assert.assertEquals(expected, actual.get("message"));
 	}
