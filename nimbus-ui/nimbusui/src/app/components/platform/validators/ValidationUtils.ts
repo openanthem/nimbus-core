@@ -64,7 +64,9 @@ export class ValidationUtils {
         if (check) {
             checks.push(check);
         } else {
-            console.error(`UI Validation is not supported for @${constraint.name}. Remove @${constraint.name} from '${element.config.code}'.`);
+            // TODO - Refactor ValidatonUtils to be a service so that we can inject the LoggerService and output
+            // the error below. For now, we'll silence it.
+            //console.error(`UI Validation is not supported for @${constraint.name}. Remove @${constraint.name} from '${element.config.code}'.`);
         }
     }
 
