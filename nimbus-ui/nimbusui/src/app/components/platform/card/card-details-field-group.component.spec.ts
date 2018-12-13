@@ -143,42 +143,6 @@ describe('CardDetailsFieldGroupComponent', () => {
     expect(res).toEqual([]);
 }));
 
-  // it('getComponentClass() should return array [testClass, col-sm-12]',  async(() => {
-  //     const res = hostComponent.getComponentClass();
-  //     expect(res).toEqual(['testClass', 'col-sm-12']);
-  // }));
-
-  // it('getComponentClass() should return array [testClass, col-sm-6]',  async(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cols = '2';
-  //     expect(hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-6']);
-  // }));
-
-  // it('getComponentClass() should return array [testClass, col-sm-4]',  async(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cols = '3';
-  //     expect(hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-4']);
-  // }));
-
-  // it('getComponentClass() should return array [testClass, col-sm-3]',  async(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cols = '4';
-  //     expect(hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-3']);
-  // }));
-
-  // it('getComponentClass() should return array [testClass, col-sm-2]',  async(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cols = '6';
-  //     expect(hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-2']);
-  // }));
-
-  // it('getComponentClass() should return array [testClass, col-sm-3] when cols is empty',  async(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cols = '';
-  //     expect(hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-3']);
-  // }));
-
-  // it('getComponentClass() should return array [col-sm-3] when cols and cssClass is empty',  async(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cols = '';
-  //     hostComponent.element.config.uiStyles.attributes.cssClass = '';
-  //     expect(hostComponent.getComponentClass()).toEqual(['col-sm-3']);
-  // }));
-
 });
 
 const cardDetailsFieldGroupElement: any = {

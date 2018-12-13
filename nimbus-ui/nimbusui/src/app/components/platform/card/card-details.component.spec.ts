@@ -434,10 +434,13 @@ describe('CardDetailsComponent', () => {
     const debugElement = fixture.debugElement;
     const paragraphEle = document.getElementsByTagName('nm-paragraph');
     expect(paragraphEle.length).toEqual(1);
-    hostComponent.element.type.model.params[0].type.model.params.push(hostComponent.element.type.model.params[0].type.model.params[1]);
+    const newEle = hostComponent.element.type.model.params[0].type.model.params[1];
+    newEle.labels[0].text = 'new paragraph';
+    hostComponent.element.type.model.params[0].type.model.params.push(newEle);
     fixture.detectChanges();
     const updatedParagraphEle = document.getElementsByTagName('nm-paragraph');
     expect(updatedParagraphEle.length).toEqual(2);
+    expect(updatedParagraphEle[1].getElementsByTagName("p")[0].innerHTML).toEqual('new paragraph');
   }));
 
   it('On updating param another card-details-field need to be added in carddetails header', async(() => {
