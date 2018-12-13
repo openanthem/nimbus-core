@@ -84,7 +84,7 @@ export class CardDetailsComponent extends BaseElement {
     ngOnInit() {
         super.ngOnInit();
         this.updatePosition();
-        this.setCardConfig();
+        this.setCardConfig();        
     }
 
     processOnClick() {
