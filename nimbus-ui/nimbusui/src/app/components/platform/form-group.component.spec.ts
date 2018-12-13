@@ -224,4 +224,129 @@ describe('FrmGroupCmp', () => {
     });
   });
 
+  it('Span should be created if the element.visible==true', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Span should not be created if the element.visible!==true', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Span should get the css class from getCssClass()', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('fieldset should be created if element?.config?.uiStyles?.attributes?.alias == FormElementGroup', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('fieldset should not be created if element?.config?.uiStyles?.attributes?.alias !== FormElementGroup', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-input-legend inside should be created', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Nested nm-frm-grp should be created based on the element.type.model.params', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('Nested nm-frm-grp should not be created based on the element.type.model.params', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-element should be created based on the condition !element.type?.model?.params?.length', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-element should be created based on the condition element.config?.type?.collection', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-element should not be created based on the condition element.config?.type?.collection or !element.type?.model?.params?.length', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-element should be created if element?.config?.uiStyles?.attributes?.alias == Picklist', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-element should not be created if element?.config?.uiStyles?.attributes?.alias !== Picklist', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-button should be created if element.config?.uiStyles?.attributes?.alias == Button', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-button should not be created if element.config?.uiStyles?.attributes?.alias !== Button', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-form-grid-filler should be created if element?.config?.uiStyles?.attributes?.alias == FormGridFiller', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-form-grid-filler should not be created if element?.config?.uiStyles?.attributes?.alias !== FormGridFiller', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-link should be created if element.config?.uiStyles?.attributes?.alias == Link', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-link should not be created if element.config?.uiStyles?.attributes?.alias !== Link', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-paragraph should be created if element.config?.uiStyles?.attributes?.alias == Paragraph', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-paragraph should not be created if element.config?.uiStyles?.attributes?.alias !== Paragraph', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-header should be created if element.config?.uiStyles?.attributes?.alias == Header', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-header should not be created if element.config?.uiStyles?.attributes?.alias !== Header', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-button-group should be created if element.config?.uiStyles?.attributes?.alias == ButtonGroup', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-button-group should not be created if element.config?.uiStyles?.attributes?.alias !== ButtonGroup', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
 });

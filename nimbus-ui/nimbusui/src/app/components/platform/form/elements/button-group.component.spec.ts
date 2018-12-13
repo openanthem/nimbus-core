@@ -60,4 +60,19 @@ describe('ButtonGroup', () => {
     expect(hostComponent).toBeTruthy();
   }));
 
+  it('nm-button should be created if element.config?.uiStyles?.attributes?.alias == Button', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('nm-button should not be created if element.config?.uiStyles?.attributes?.alias !== Button', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
+  it('On updating the param the button need to be added', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+  }));
+
 });
