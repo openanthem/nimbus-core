@@ -148,13 +148,12 @@ export class FormElement extends BaseElement {
      */
     updateErrorMessages() {
         var control: AbstractControl = this.form.controls[this.element.config.code];
-        let constraintNames = ValidationUtils.getAllValidationNames();
         if (control.invalid) {
             let errs: ValidationErrors = control.errors;
             for (var key in errs) {
                 let constraintName = ConstraintMapping.getConstraintValue(key);
                     let constraint: Constraint = this.element.config.validation.constraints.find(v => v.name == constraintName);
-                    this.addErrorMessages(constraint.attribute.message ? constraint.attribute.message : ValidationUtils.getDefaultErrorMessage(key));
+                    this.addErrorMessages(constraint.attribute.message);
             }   
         }
     }
