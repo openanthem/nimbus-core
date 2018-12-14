@@ -106,7 +106,7 @@ export class LayoutService {
         }
     }
 
-    private parseLayoutConfig(flowModel: Model) {
+    public parseLayoutConfig(flowModel: Model) {
         let layout = {} as Layout;
         const pageParam: Param = flowModel.params.find (p => ( p.config &&
                                     p.config.uiStyles && p.config.uiStyles.attributes && 
@@ -274,7 +274,7 @@ export class LayoutService {
     }
 
     createMenuItem(element: Param): MenuItem {
-        let item = {} as MenuItem;
+        let item = {} as MenuItem;        
         item.label = this.wcs.findLabelContent(element).text;
         item.path = element.path;
         item.page = element.config.uiStyles.attributes.page;

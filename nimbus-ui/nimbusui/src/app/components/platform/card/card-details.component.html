@@ -2,55 +2,57 @@
     <nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize"></nm-label>
     <ng-template ngFor let-param [ngForOf]="element?.type?.model?.params">
         <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == componentTypes.cardDetailsHeader.toString()">
-          <div class="cardDetailsHeader">
+            <div class="cardDetailsHeader">
                 <button *ngIf="expandable" attr.aria-expanded="{{!isHidden}}" title="Select to toggle" (click)="toggleState()" class="btn btn-icon toggleTrigger"></button>
-            <span class="{{param.config?.uiStyles?.attributes?.cssClass}}" *ngFor="let field of param?.type?.model?.params">
-                <!-- ButtonGroup -->
-                <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.buttonGroup.toString()">
-                    <div class="float-right">
-                        <nm-button-group [buttonList]="field.type?.model?.params" [cssClass]="field.config?.uiStyles?.attributes?.cssClass">
-                        </nm-button-group>
-                    </div>
+                <ng-template ngFor let-field [ngForOf]="param?.type?.model?.params">
+                    <span [ngClass]="getFieldClass(param, field)">
+                        <!-- ButtonGroup -->
+                        <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.buttonGroup.toString()">
+                            <div class="float-right">
+                                <nm-button-group [buttonList]="field.type?.model?.params" [cssClass]="field.config?.uiStyles?.attributes?.cssClass">
+                                </nm-button-group>
+                            </div>
+                        </ng-template>
+                        <!-- Paragraph -->
+                        <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.paragraph.toString()">
+                            <nm-paragraph [element]="field"></nm-paragraph>
+                        </ng-template>
+                        <!-- FieldValue-->
+                        <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
+                            <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>
+                        </ng-template>
+                    </span>
                 </ng-template>
-                <!-- Paragraph -->
-                <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.paragraph.toString()">
-                    <nm-paragraph [element]="field"></nm-paragraph>
-                </ng-template>
-                <!-- FieldValue-->
-                <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
-                    <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>
-                </ng-template>
-            </span>
-          </div> 
+            </div> 
         </ng-template>
         <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == componentTypes.cardDetailsBody.toString()">
             <div  [@accordionAnimation]='expandable ? state : null' (@accordionAnimation.start)="animationStart($event)" (@accordionAnimation.done)="animationDone($event)" 
                   attr.aria-hidden="{{isHidden}}" [ngClass]= "{'displayNone': isHidden}">
-                <span class="{{param.config?.uiStyles?.attributes?.cssClass}}" *ngFor="let field of param?.type?.model?.params">
-                    <!-- StaticText-->
-                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.staticText.toString()">
-                        <nm-static-text [element]="field"></nm-static-text>
-                    </ng-template>
-                    <!-- Paragraph -->
-                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.paragraph.toString()">
-                        <nm-paragraph [element]="field"></nm-paragraph>
-                    </ng-template>
-                    <!-- FieldValueGroup-->
-                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValueGroup.toString()">
-                        <nm-card-details-field-group [element]="field"></nm-card-details-field-group>
-                    </ng-template>
-                    <!-- FieldValue-->
-                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
+                <ng-template ngFor let-field [ngForOf]="param?.type?.model?.params">  
+                    <span [ngClass]="getFieldClass(param, field)">
+                        <!-- StaticText-->
+                        <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.staticText.toString()">
+                            <nm-static-text [element]="field"></nm-static-text>
+                        </ng-template>
+                        <!-- Paragraph -->
+                        <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.paragraph.toString()">
+                            <nm-paragraph [element]="field"></nm-paragraph>
+                        </ng-template>
+                        <!-- FieldValueGroup-->
+                        <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValueGroup.toString()">
+                            <nm-card-details-field-group [element]="field"></nm-card-details-field-group>
+                        </ng-template>
+                        <!-- FieldValue-->
+                        <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
                             <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>
-                    </ng-template>
-                    <ng-template [ngIf]="field.config?.uiStyles?.isLink">
-                        <div class="col-sm-3 p-0 clearfix form-group">
-                            <div>
+                        </ng-template>
+                        <ng-template [ngIf]="field.config?.uiStyles?.isLink">
+                            <div class="form-group">
                                 <nm-link [element]="field"></nm-link>
                             </div>
-                        </div>
-                    </ng-template>
-                </span>
+                        </ng-template>
+                    </span>
+                </ng-template>
             </div>
         </ng-template>
     </ng-template>

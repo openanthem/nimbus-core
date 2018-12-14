@@ -137,9 +137,9 @@ public class DefaultCoreBuilderConfig {
 	}
 	
 	@Bean(name="default.annotationConfigBuilder")
-	public AnnotationConfigHandler annotationConfigHandler(PropertyResolver propertyResolver) {
+	public AnnotationConfigHandler annotationConfigHandler(BeanResolverStrategy beanResolver, PropertyResolver propertyResolver) {
 		Map<Class<? extends Annotation>, AnnotationAttributeHandler> attributeHandlers = new HashMap<>();
-		attributeHandlers.put(Constraint.class, new ConstraintAnnotationAttributeHandler());
+		attributeHandlers.put(Constraint.class, new ConstraintAnnotationAttributeHandler(beanResolver));
 		
 		return new DefaultAnnotationConfigHandler(new DefaultAnnotationAttributeHandler(), attributeHandlers, propertyResolver);
 	}

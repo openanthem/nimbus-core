@@ -1,3 +1,4 @@
+import { ViewRoot } from './../../shared/app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -64,7 +65,7 @@ export class DomainFlowCmp {
                
                 this._logger.debug('domain flow component received layout from layout$ subject');
                 if(this.hasLayout && this.accordions != null && this.accordions !== undefined) {
-                    document.getElementById('main-content').classList.add('withInfoBar');
+                    this.getDocument().getElementById('main-content').classList.add('withInfoBar');
                 }
 
                 this.setLayoutScroll();
@@ -100,23 +101,27 @@ export class DomainFlowCmp {
 
     }
 
+    getDocument() {
+        return document;
+    }
+
     /** Set the layout to fixed or scrollable based on the config param - fixLayout */
     setLayoutScroll() {
         if (this.fixLayout) {
-            document.body.classList.remove("browserScroll");
-            document.body.classList.add("browserFixed");
+            this.getDocument().body.classList.remove("browserScroll");
+            this.getDocument().body.classList.add("browserFixed");
             this.resetInfoCardScrollHeight();
         } else {
-            document.body.classList.remove("browserFixed");
-            document.body.classList.add("browserScroll");
-            document.getElementById('page-content').style.height = 'auto';
+            this.getDocument().body.classList.remove("browserFixed");
+            this.getDocument().body.classList.add("browserScroll");
+            this.getDocument().getElementById('page-content').style.height = 'auto';
         }
     }
 
     /** Calculate the scroll height everytime the view changes */
     resetInfoCardScrollHeight() {
         if (this.fixLayout) {
-            var target = document.getElementById('page-content');
+            var target = this.getDocument().getElementById('page-content');
             var h = target.getBoundingClientRect().top;
             h = window.innerHeight - h - 50; // 50 is padding below viewport
             target.style.height = h + 'px';    
@@ -125,18 +130,18 @@ export class DomainFlowCmp {
 
     ngOnInit() {
         this._logger.debug('DomainFlowCmp-i ');
-        this._route.data.subscribe((data: { layout: string }) => {
-            let layout: string = data.layout;
-            if (layout) {
+        this._route.data.subscribe((data: { layout: ViewRoot }) => {
+            let viewRoot: ViewRoot = data.layout;
+            if (viewRoot) {
                 this.hasLayout = true;
                 this.infoClass = 'info-card page-content';
-                this.layoutSvc.getLayout(layout);
+                this.layoutSvc.parseLayoutConfig(viewRoot.model);
             } else {
                 this.infoClass = 'page-content';
                 this.hasLayout = false;
                 this.fixLayout = false;
                 this.setLayoutScroll();
-                document.getElementById('main-content').classList.remove('withInfoBar');
+                this.getDocument().getElementById('main-content').classList.remove('withInfoBar');
             }
         });
     }
@@ -159,10 +164,10 @@ export class DomainFlowCmp {
 
     @HostListener("scroll", ['$event'])
     onPageContentScroll(event) {
-        if (document.getElementById('page-content').scrollTop >= 10) {
-            document.getElementById('scroll-div-to-top').setAttribute("style", "opacity:1; bottom:50px;")
-        } else if (document.getElementById('page-content').scrollTop < 10) {
-            document.getElementById('scroll-div-to-top').setAttribute("style", "opacity:0; bottom:-50px;")
+        if (this.getDocument().getElementById('page-content').scrollTop >= 10) {
+            this.getDocument().getElementById('scroll-div-to-top').setAttribute("style", "opacity:1; bottom:50px;")
+        } else if (this.getDocument().getElementById('page-content').scrollTop < 10) {
+            this.getDocument().getElementById('scroll-div-to-top').setAttribute("style", "opacity:0; bottom:-50px;")
         }
     }
 }
