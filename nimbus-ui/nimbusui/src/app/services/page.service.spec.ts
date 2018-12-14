@@ -1,5 +1,6 @@
-import { TestBed, inject, async } from '@angular/core/testing';
-import { HttpClient, HttpRequest } from '@angular/common/http';
+import { ParamConfig } from './../shared/param-config';
+import { TestBed, async } from '@angular/core/testing';
+import { HttpClient } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { JL } from 'jsnlog';
@@ -56,7 +57,13 @@ class MockConfigService {
     };
   }
 
-  getViewConfigById() {}
+  getViewConfigById() {
+    return {
+      uiStyles: {
+        attributes: {}
+      }
+    }
+  };
   setLayoutToAppConfig(a, b) {}
 }
 
@@ -790,19 +797,20 @@ describe('PageService_mock', () => {
     loaderService = TestBed.get(LoaderService);
     configService_actual = TestBed.get(ConfigService);
     location = TestBed.get(Location);
-  });
-  
-  it('createGridData() should return nestedGridParam', async(() => {
+  }); 
+
+  it('createGridData() should return empty gridData', async(() => {
     const gridElementParam = new Param(configService_actual);
     gridElementParam.leafState = {nestedGridParam : {type: {model: {nested: false}}}};
     gridElementParam.type = new Type(configService);
     gridElementParam.type.model = new Model(configService);
     gridElementParam.type.model.params = [];
-    const gridData = gridElementParam.leafState;
     const gridParam = new Param(configService_actual);
+    const config = new ParamConfig(configService_actual);
+    spyOn(configService_actual, 'getViewConfigById').and.returnValue(config);
     const res = service.createGridData([gridElementParam], gridParam);
-    expect(res.stateMap).toEqual([{}]);
-    expect(res.leafState).toEqual([gridData]);
+    expect(res.stateMap).toEqual([]);
+    expect(res.leafState).toEqual([]);
   }));
 
 });
