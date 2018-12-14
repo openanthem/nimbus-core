@@ -44,6 +44,7 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepositoryGate
 import com.antheminc.oss.nimbus.domain.model.state.repo.SpringSecurityAuditorAware;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ws.DefaultWSModelRepository;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ws.RemoteWSModelRepository;
 import com.antheminc.oss.nimbus.domain.rules.DefaultRulesEngineFactoryProducer;
 import com.antheminc.oss.nimbus.domain.rules.drools.DecisionTableConfigBuilder;
 import com.antheminc.oss.nimbus.domain.rules.drools.DrlConfigBuilder;
@@ -68,6 +69,11 @@ public class DefaultCoreConfiguration {
 	@Bean(name="default.rep_ws")
 	public DefaultWSModelRepository defaultWSModelRepository(BeanResolverStrategy beanResolver){
 		return new DefaultWSModelRepository(beanResolver);
+	}
+	
+	@Bean(name="default.remote.rep_ws")
+	public RemoteWSModelRepository remoteWSModelRepository(BeanResolverStrategy beanResolver){
+		return new RemoteWSModelRepository(beanResolver);
 	}
 	
 	@Bean(name="default.paramStateAtomicPersistenceEventListener")

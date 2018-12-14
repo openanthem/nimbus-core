@@ -33,7 +33,7 @@ import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
  * @see com.antheminc.oss.nimbus.domain.rules.drools.DecisionTableConfigBuilder
  * @see com.antheminc.oss.nimbus.domain.rules.drools.DrlConfigBuilder
  * @author Swetha Vemuri
- * @since 1.2
+ * @since 2.0
  *
  */
 public abstract class AbstractDroolsConfigBuilder {

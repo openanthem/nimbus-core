@@ -17,7 +17,7 @@ package com.antheminc.oss.nimbus.domain.model.state.repo;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -33,11 +33,10 @@ import lombok.Getter;
 public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 
 	private final BeanResolverStrategy beanResolver;
-	
+		
 	public DefaultModelRepositoryFactory(BeanResolverStrategy beanResolver) {
 		this.beanResolver = beanResolver;
 	}
-	
 	
 	@Override
 	public ModelRepository get(Repo repo) {
@@ -52,6 +51,14 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 	@Override
 	public ModelPersistenceHandler getHandler(Repo repo) {
 		return getBeanResolver().get(ModelPersistenceHandler.class, repo.value().name()+"_handler");
+	}
+
+	@Override
+	public ModelRepository get(ModelConfig<?> mConfig) {
+		if(mConfig.isRemote()) {
+			return getBeanResolver().get(ModelRepository.class, "remote."+mConfig.getRepo().remote().name());
+		} 			
+		return get(mConfig.getRepo().value());
 	}
 	
 }

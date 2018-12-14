@@ -58,6 +58,12 @@ public @interface Repo {
 			return repo!=null && repo.cache()!=Repo.Cache.rep_none;
 		}
 	}
+	
+	public enum Remote {
+		rep_ws,
+		rep_amqp,
+		rep_none
+	}
 
 	
 	String alias() default "";
@@ -65,6 +71,8 @@ public @interface Repo {
 	Database value();	
 	
 	Cache cache() default Cache.rep_device;	
+	
+	Remote remote() default Remote.rep_ws;
 	
 	boolean autoSave() default true;
 	

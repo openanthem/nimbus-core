@@ -76,6 +76,8 @@ public class DefaultCoreBuilderConfig {
 	
 	private List<String> basePackagesToExclude;
 	
+	private Map<String, List<String>> domainSet;
+	
 	@Value("${platform.config.secure.regex}")
 	private String secureRegex;
 	
@@ -148,8 +150,11 @@ public class DefaultCoreBuilderConfig {
 		if(typeClassMappings==null) {
 			typeClassMappings = new HashMap<>();
 		}
+		if(domainSet == null) {
+			domainSet = new HashMap<>();
+		}
 		
-		return new DefaultEntityConfigBuilder(beanResolver, typeClassMappings);
+		return new DefaultEntityConfigBuilder(beanResolver, typeClassMappings, domainSet);
 	}
 	
 	@Bean

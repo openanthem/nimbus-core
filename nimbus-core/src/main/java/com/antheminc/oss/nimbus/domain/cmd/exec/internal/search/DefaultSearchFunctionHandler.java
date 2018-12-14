@@ -55,7 +55,7 @@ public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctio
 		Class<?> criteriaClass = mConfig.getReferredClass();
 		String alias = findRepoAlias(mConfig);
 		
-		ModelRepository rep = getRepFactory().get(mConfig.getRepo());
+		ModelRepository rep = getRepFactory().get(mConfig);
 		
 		return (R)rep._search(criteriaClass, alias, () -> this.createSearchCriteria(executionContext, mConfig, actionParameter));
 	}

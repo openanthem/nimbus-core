@@ -30,7 +30,7 @@ import com.antheminc.oss.nimbus.support.JustLogit;
 /**
  * Implementation of DecisionTable strategy for drools.
  * @author Swetha Vemuri
- * @since 1.2
+ * @since 2.0
  */
 public class DecisionTableConfigBuilder extends AbstractDroolsConfigBuilder implements DroolsConfigBuilderStrategy {
 	

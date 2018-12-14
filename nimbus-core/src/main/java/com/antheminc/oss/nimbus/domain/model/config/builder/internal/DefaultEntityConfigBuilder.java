@@ -20,6 +20,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -30,6 +31,7 @@ import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.ConfigNature;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.model.config.EntityConfig.Scope;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
@@ -51,11 +53,13 @@ import lombok.Getter;
 public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder implements EntityConfigBuilder {
 
 	private final Map<String, String> typeClassMappings;
-	
-	public DefaultEntityConfigBuilder(BeanResolverStrategy beanResolver, Map<String, String> typeClassMappings) {
+	private final Map<String, List<String>> domainSet;
+		
+	public DefaultEntityConfigBuilder(BeanResolverStrategy beanResolver, Map<String, String> typeClassMappings, Map<String, List<String>> domainset) {
 		super(beanResolver);
 		
 		this.typeClassMappings = typeClassMappings;
+		this.domainSet = domainset;
 	}
 	
 
@@ -116,6 +120,19 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 			throw new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param which has Repo: "+mConfig.getRepo());
 		}
 		
+		if(domainSet == null)
+			return mConfig;
+		
+		/*If remote domain set is given in properties, only the alias in remote list are remote domain sets and rest are local*/	
+		List<String> remoteAliasList = domainSet.get(Scope.REMOTE.code);
+		if(CollectionUtils.isEmpty(remoteAliasList)) {
+			return mConfig;
+		}		
+		remoteAliasList.forEach(remote -> remote.trim());
+		if(remoteAliasList.contains(mConfig.getAlias())) {
+			mConfig.setRemote(true);
+		} 
+		//TODO : Add logic for checking local domainset
 		return mConfig;
 	}
 
