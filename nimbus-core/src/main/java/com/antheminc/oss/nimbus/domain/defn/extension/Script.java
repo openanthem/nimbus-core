@@ -15,12 +15,15 @@
  */
 package com.antheminc.oss.nimbus.domain.defn.extension;
 
+import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoadNew;
 
 /**
@@ -28,8 +31,8 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoadNew;
  *
  */
 @Retention(RUNTIME)
-@Target(TYPE)
-@OnStateLoadNew
+@Target({TYPE,FIELD})
+@Event
 public @interface Script {
 
 	enum Type {
@@ -42,4 +45,7 @@ public @interface Script {
 	String value() default "";
 	
 	Type type() default Type.SPEL_INLINE;
+	
+	Class<? extends Annotation>[] eventType() default {OnStateLoadNew.class};
+	
 }
