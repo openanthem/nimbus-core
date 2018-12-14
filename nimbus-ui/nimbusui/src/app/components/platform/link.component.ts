@@ -136,7 +136,7 @@ export class Link extends BaseElement {
             }
         }
         this.pageSvc.eventUpdate$.subscribe(event => {
-            if (event.path == this.element.path && event.leafState != null) {
+            if (event.path == this.element.path && event.leafState && !this.rowData) {
                 this.url = this.resolveUrl();
             }
         });
@@ -146,7 +146,7 @@ export class Link extends BaseElement {
         let resolvedUrl = this.element.config.uiStyles.attributes.url
         return resolvedUrl.replace(new RegExp("{" + this.element.config.code + "}.*", "g"), this.element.leafState);
     }
-    
+
     getAllURLParams(url: string): string[] {
         var pattern = /{([\s\S]*?)}/g;
         return url.match(pattern);
