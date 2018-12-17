@@ -18,6 +18,8 @@ package com.antheminc.oss.nimbus.app.extension.config;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,9 +37,11 @@ import com.antheminc.oss.nimbus.channel.web.WebCommandBuilder;
 import com.antheminc.oss.nimbus.channel.web.WebCommandDispatcher;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.ClassPropertyConverter;
+import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryDetached;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryLocal;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepositoryGateway;
@@ -63,7 +67,13 @@ public class DefaultCoreConfiguration {
 	
 	@Bean
 	public DefaultModelRepositoryFactory defaultModelRepositoryFactory(BeanResolverStrategy beanResolver){
-		return new DefaultModelRepositoryFactory(beanResolver);
+		/*Add ModelRepository implementation beans to a lookup map*/
+		Map<String, ModelRepository> repoBeanLookup = new HashMap<>();
+		repoBeanLookup.put(Repo.Remote.rep_remote_ws.name(), beanResolver.get(ModelRepository.class, Repo.Remote.rep_remote_ws.name()));
+		repoBeanLookup.put(Repo.Database.rep_mongodb.name(), beanResolver.get(ModelRepository.class, Repo.Database.rep_mongodb.name()));
+		repoBeanLookup.put(Repo.Database.rep_ws.name(), beanResolver.get(ModelRepository.class, Repo.Database.rep_ws.name()));
+
+		return new DefaultModelRepositoryFactory(beanResolver, repoBeanLookup);
 	}
 
 	@Bean(name="default.rep_ws")
@@ -71,7 +81,7 @@ public class DefaultCoreConfiguration {
 		return new DefaultWSModelRepository(beanResolver);
 	}
 	
-	@Bean(name="default.remote.rep_ws")
+	@Bean(name="default.rep_remote_ws")
 	public RemoteWSModelRepository remoteWSModelRepository(BeanResolverStrategy beanResolver){
 		return new RemoteWSModelRepository(beanResolver);
 	}

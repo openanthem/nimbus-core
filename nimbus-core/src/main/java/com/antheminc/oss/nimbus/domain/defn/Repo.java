@@ -21,6 +21,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * @author Soham Chakravarti
  *
@@ -60,9 +63,8 @@ public @interface Repo {
 	}
 	
 	public enum Remote {
-		rep_ws,
-		rep_amqp,
-		rep_none
+		rep_remote_ws,
+		rep_remote_none;
 	}
 
 	
@@ -72,7 +74,7 @@ public @interface Repo {
 	
 	Cache cache() default Cache.rep_device;	
 	
-	Remote remote() default Remote.rep_ws;
+	Remote remote() default Remote.rep_remote_ws;
 	
 	boolean autoSave() default true;
 	

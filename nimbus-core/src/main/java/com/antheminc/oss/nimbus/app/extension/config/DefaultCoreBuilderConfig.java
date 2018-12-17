@@ -41,6 +41,7 @@ import com.antheminc.oss.nimbus.domain.config.builder.DefaultAnnotationConfigHan
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.ConstraintAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
+import com.antheminc.oss.nimbus.domain.model.config.EntityConfig.Scope;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultEntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultExecutionConfigProvider;
@@ -76,7 +77,7 @@ public class DefaultCoreBuilderConfig {
 	
 	private List<String> basePackagesToExclude;
 	
-	private Map<String, List<String>> domainSet;
+	private Map<Scope, List<String>> domainSet;
 	
 	@Value("${platform.config.secure.regex}")
 	private String secureRegex;

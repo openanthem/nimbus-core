@@ -53,9 +53,9 @@ import lombok.Getter;
 public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder implements EntityConfigBuilder {
 
 	private final Map<String, String> typeClassMappings;
-	private final Map<String, List<String>> domainSet;
+	private final Map<Scope, List<String>> domainSet;
 		
-	public DefaultEntityConfigBuilder(BeanResolverStrategy beanResolver, Map<String, String> typeClassMappings, Map<String, List<String>> domainset) {
+	public DefaultEntityConfigBuilder(BeanResolverStrategy beanResolver, Map<String, String> typeClassMappings, Map<Scope, List<String>> domainset) {
 		super(beanResolver);
 		
 		this.typeClassMappings = typeClassMappings;
@@ -124,7 +124,7 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 			return mConfig;
 		
 		/*If remote domain set is given in properties, only the alias in remote list are remote domain sets and rest are local*/	
-		List<String> remoteAliasList = domainSet.get(Scope.REMOTE.code);
+		List<String> remoteAliasList = domainSet.get(Scope.REMOTE);
 		if(CollectionUtils.isEmpty(remoteAliasList)) {
 			return mConfig;
 		}		
@@ -133,6 +133,9 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 			mConfig.setRemote(true);
 		} 
 		//TODO : Add logic for checking local domainset
+		if(CollectionUtils.isNotEmpty(domainSet.get(Scope.LOCAL))) {
+			throw new UnsupportedOperationException("Local scope is not supported for domainset configuration. Consider using only domain.model.domainSet.remote property instead");
+		}
 		return mConfig;
 	}
 

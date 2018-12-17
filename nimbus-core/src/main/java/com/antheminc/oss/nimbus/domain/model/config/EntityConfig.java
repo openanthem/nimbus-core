@@ -68,11 +68,8 @@ public interface EntityConfig<T> {
 		public EntityConfig<M> getMapsToConfig();
 	}
 	
-	@Getter @RequiredArgsConstructor
 	public enum Scope {
-		LOCAL("local"),
-		REMOTE("remote");
-		
-		public final String code;			
+		LOCAL,
+		REMOTE;		
 	}
 }
