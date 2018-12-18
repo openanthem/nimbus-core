@@ -120,7 +120,9 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		return eCtx;
 	}
 	
-	protected boolean sessionPutIfApplicable(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
+	protected boolean sessionPutIfApplicable(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {		
+		if (rootDomainConfig.isRemote())
+			return false;	
 		Repo repo = rootDomainConfig.getRepo();
 		if(repo==null)
 			return false;
