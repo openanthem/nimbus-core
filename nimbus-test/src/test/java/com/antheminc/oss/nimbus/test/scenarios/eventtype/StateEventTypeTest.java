@@ -27,9 +27,8 @@ public class StateEventTypeTest extends AbstractFrameworkIntegrationTests {
 	private static final String ENTITY_VIEW_ROOT = PLATFORM_ROOT+"/"+ENTITY_VIEW;
 	
 	
-	
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void t01_initEntity() {
 		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(ENTITY_VIEW_ROOT)
 				.addAction(Action._new)

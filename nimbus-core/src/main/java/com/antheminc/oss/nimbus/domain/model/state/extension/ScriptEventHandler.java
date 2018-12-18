@@ -18,7 +18,6 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.EnumSet;
 import java.util.Optional;
 
 import javax.script.Bindings;
@@ -32,16 +31,10 @@ import org.springframework.core.io.Resource;
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.extension.Script;
 import com.antheminc.oss.nimbus.domain.defn.extension.Script.Type;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
-import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.StateHolder.ParamStateHolder;
-import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
-import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
-import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadNewHandler;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 
@@ -52,9 +45,8 @@ import lombok.Getter;
  *
  */
 @Getter
-public class ScriptEventHandler implements OnStateLoadNewHandler<Script>, OnStateChangeHandler<Script>, OnStateLoadHandler<Script> {
+public class ScriptEventHandler extends EvalExprWithCrudActions<Script> {
 
-	private BeanResolverStrategy beanResolver;
 	private ExpressionEvaluator expressionEvaluator;
 	
 	private static final ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
@@ -62,31 +54,12 @@ public class ScriptEventHandler implements OnStateLoadNewHandler<Script>, OnStat
 	private JustLogit logit = new JustLogit(getClass());
 	
 	public ScriptEventHandler(BeanResolverStrategy beanResolver) {
-		this.beanResolver = beanResolver;
+		super(beanResolver);
 		this.expressionEvaluator = beanResolver.get(ExpressionEvaluator.class);
 	}
 	
 	@Override
-	public void onStateLoadNew(Script configuredAnnotation, Param<?> param) {
-		handleInternal(configuredAnnotation, param);
-	}
-	
-	@Override
-	public void onStateLoad(Script configuredAnnotation, Param<?> param) {
-		handleInternal(configuredAnnotation, param);
-	}
-	
-	@Override
-	public void onStateChange(Script configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event) {
-		EnumSet<Action> validSet = EnumSet.of(Action._new, Action._update, Action._replace, Action._delete);
-		
-		if(!validSet.contains(event.getAction()))
-			return;
-		
-		handleInternal(configuredAnnotation, event.getParam());
-	}
-	
-	protected void handleInternal(Script configuredAnnotation, Param<?> param) {
+	protected void handleInternal(Param<?> param, Script configuredAnnotation) {
 		
 		String value = Optional.of(configuredAnnotation.value())
 				.map(StringUtils::trimToNull)
@@ -156,6 +129,6 @@ public class ScriptEventHandler implements OnStateLoadNewHandler<Script>, OnStat
 		
 		return r;
 	}
-
+	
 
 }
