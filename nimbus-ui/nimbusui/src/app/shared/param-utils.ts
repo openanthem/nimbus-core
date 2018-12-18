@@ -92,24 +92,21 @@ export class ParamUtils {
         }
 
         var serverDateTime = new Date(value);
-        let convertedDate;
         switch(typeClassMapping) {
             case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name: {
-                convertedDate = new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate());
-                break;
+                return new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate());
             }
+
             case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE_TIME.name: {
-                convertedDate = new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate(), 
+                return new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate(), 
                     serverDateTime.getHours(), serverDateTime.getMinutes(), serverDateTime.getSeconds());
-                break;
             }
+
             default: {
-                convertedDate = new Date(serverDateTime.getFullYear(), serverDateTime.getMonth(), serverDateTime.getDate(), 
+                return new Date(serverDateTime.getFullYear(), serverDateTime.getMonth(), serverDateTime.getDate(), 
                     serverDateTime.getHours(), serverDateTime.getMinutes(), serverDateTime.getSeconds());
-                break;
             }
         }
-        return convertedDate;
     }
 
     /**
@@ -120,18 +117,13 @@ export class ParamUtils {
      * @param typeClassMapping the class type of the server date object
      */
     public static getDateFormatForType(typeClassMapping: string): string {
-        let dateTypeMetadata = ParamUtils.getDateTypeConfig(typeClassMapping);
-        return dateTypeMetadata ? dateTypeMetadata.defaultFormat : null;
-    }
-
-    private static getDateTypeConfig(typeClassMapping: string): any {
         for(let x in ParamUtils.DATE_TYPE_METADATA) {
             let dateTypeMetadata = ParamUtils.DATE_TYPE_METADATA[x];
             if (dateTypeMetadata.name === typeClassMapping) {
-                return dateTypeMetadata;
+                return dateTypeMetadata.defaultFormat;
             }
         }
-        return undefined;
+        return null;
     }
 
     /**
