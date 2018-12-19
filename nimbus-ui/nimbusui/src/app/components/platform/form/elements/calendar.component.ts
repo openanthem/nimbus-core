@@ -21,7 +21,6 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { ValidationConstraint } from '../../../../shared/validationconstraints.enum';
-import { ParamUtils } from './../../../../shared/param-utils';
 
 /**
  * \@author Sandeep Mantha
@@ -52,8 +51,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 
         </nm-input-label>
         <p-calendar [(ngModel)]="value"  
-            (onSelect)="handleValueChange($event)"
-            (change)="handleValueChange($event)"
+            (onSelect)="emitValueChangedEvent(this,$event)"
+            (change)="emitValueChangedEvent(this,$event)"
             [showIcon]="true"
             [timeOnly]="element.config?.uiStyles?.attributes?.timeOnly"
             [showTime]="element.config?.uiStyles?.attributes?.showTime" 
@@ -95,10 +94,4 @@ export class Calendar extends BaseControl<Date> {
         }
     }
 
-    handleValueChange($event: any) {
-        if (this.element && this.element.config && ParamUtils.shouldUseBrowserTimeZone(this.element.config.type.name)) {
-            ParamUtils.setDateJsonHandler(this.value);
-        }
-        this.emitValueChangedEvent(this, $event)
-    }
 }
