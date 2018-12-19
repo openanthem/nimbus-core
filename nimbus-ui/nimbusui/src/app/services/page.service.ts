@@ -776,7 +776,7 @@ export class PageService {
                                                 for (var p = 0; p < param.gridData.leafState.length; p++) {
                                                         if (param.gridData.leafState[p]['elemId'] == elemIndex) {
                                                                 let nestedElement = this.getNestedElementParam(param.gridData.leafState[p]['nestedElement'], nestedPath, eventModel.value.path);
-                                                                if (nestedElement) {
+                                                                if (nestedElement && nestedElement.gridData) {
                                                                         nestedElement['gridData'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
                                                                         this.gridValueUpdate.next(nestedElement);
                                                                 }
