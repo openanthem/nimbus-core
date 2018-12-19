@@ -710,7 +710,7 @@ export class PageService {
                 // contains state data for the grid (other than leafState (e.g. style, etc.))
                 let gridStateMap = [];
 
-                if (gridParam.alias == ViewComponent.grid.toString() && gridElementParams) {
+                if (gridElementParams) {
                         gridElementParams.forEach(param => {
                                 let p = new Param(this.configService).deserialize(param, gridParam.path);
                                 if (p != null) {
