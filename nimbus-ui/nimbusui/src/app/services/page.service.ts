@@ -710,7 +710,7 @@ export class PageService {
                 // contains state data for the grid (other than leafState (e.g. style, etc.))
                 let gridStateMap = [];
 
-                if (gridParam.alias == ViewComponent.grid.toString() && gridElementParams) {
+                if (gridElementParams) {
                         gridElementParams.forEach(param => {
                                 let p = new Param(this.configService).deserialize(param, gridParam.path);
                                 if (p != null) {
@@ -788,7 +788,7 @@ export class PageService {
                                                 for (var p = 0; p < param.gridData.leafState.length; p++) {
                                                         if (param.gridData.leafState[p]['elemId'] == elemIndex) {
                                                                 let nestedElement = this.getNestedElementParam(param.gridData.leafState[p]['nestedElement'], nestedPath, eventModel.value.path);
-                                                                if (nestedElement) {
+                                                                if (nestedElement && nestedElement.gridData) {
                                                                         nestedElement['gridData'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
                                                                         this.gridValueUpdate.next(nestedElement);
                                                                 }
