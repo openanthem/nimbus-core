@@ -1,3 +1,4 @@
+import { Message } from './../../shared/message';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing'
@@ -194,10 +195,12 @@ class MockLayoutService {
 class MockPageService {
   public config$: Subject<any>;
   public subdomainconfig$: Subject<any>;
-
+  public messageEvent$: Subject<Message[]>
+  
   constructor() {
     this.config$ = new Subject();
     this.subdomainconfig$ = new Subject();
+    this.messageEvent$ = new Subject();
   }
 
   logError(res) {

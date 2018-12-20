@@ -1,4 +1,3 @@
-import { ViewRoot } from './../../shared/app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -25,6 +24,8 @@ import { Page } from '../../shared/app-config.interface';
 import { Param } from '../../shared/param-state';
 import { LoggerService } from '../../services/logger.service';
 import { MenuItem } from '../../shared/menuitem';
+import { Message } from './../../shared/message';
+import { ViewRoot } from './../../shared/app-config.interface';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -47,6 +48,7 @@ export class DomainFlowCmp {
     public actionTray: Param;
     public modalItems: Param[];
     public _showActionTray: boolean;
+    public messages: Message[];
     items: MenuItem[];
     routeParams: any;
 
@@ -97,6 +99,14 @@ export class DomainFlowCmp {
                 this._logger.debug('sub domain flow component will be navigated to ' + toPage + ' route');
                 this._router.navigate([toPage], { relativeTo: this._route });
             }
+        });
+
+
+        this._pageSvc.messageEvent$.subscribe(messages => {
+            this.messages = messages;
+            setTimeout(() => {
+                this.messages = null;
+            }, 50);
         });
 
     }
