@@ -40,7 +40,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     selector: 'nm-frm-grp',
     providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc],
     template: `
-        <span [hidden]="!this.element.visible" [ngClass]="getCssClass()">
+        <span [hidden]="!element.visible" [ngClass]="getCssClass()">
             <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias == viewComponent.formElementGroup.toString()">
                 <fieldset>
                     <nm-input-legend [element]="element"></nm-input-legend>
@@ -63,7 +63,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                 <nm-button [form]="form" [element]="element"> </nm-button>
             </ng-template>
 
-            <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias ===  viewComponent.formGridFiller.toString()">           
+            <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias ===  viewComponent.formGridFiller.toString()">   
                 <nm-form-grid-filler></nm-form-grid-filler>
             </ng-template>
 
