@@ -68,7 +68,7 @@ describe('ButtonGroup', () => {
     expect(hostComponent).toBeTruthy();
   }));
 
-  it('nm-button should be created if element.config?.uiStyles?.attributes?.alias == Button', async(() => {
+  it('nm-button should be created if @Button is configured', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const buttonEle = debugElement.query(By.css('nm-button'));
@@ -86,7 +86,7 @@ describe('ButtonGroup', () => {
     expect(updatedAllButtonEle.length).toEqual(2);
   }));
 
-  it('nm-button should not be created if element.config?.uiStyles?.attributes?.alias !== Button', async(() => {
+  it('nm-button should not be created if @Button is nmot configured', async(() => {
     hostComponent.buttonList[0].config.uiStyles.attributes.alias = '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;

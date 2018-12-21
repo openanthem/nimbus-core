@@ -277,7 +277,7 @@ describe('FrmGroupCmp', () => {
     expect(inputLegendEle).toBeTruthy();
   }));
 
-  it('fieldset should be created if element?.config?.uiStyles?.attributes?.alias == FormElementGroup', async(() => {
+  it('fieldset should be created if @FormElementGroup is configured', async(() => {
     hostComponent.element = nestedFrmGrpEle as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -285,7 +285,7 @@ describe('FrmGroupCmp', () => {
     expect(fieldSetEle).toBeTruthy();
   }));
 
-  it('fieldset should not be created if element?.config?.uiStyles?.attributes?.alias !== FormElementGroup', async(() => {
+  it('fieldset should not be created if @FormElementGroup is not configured', async(() => {
     hostComponent.element = nestedFrmGrpEle as Param;
     hostComponent.element.config.uiStyles.attributes.alias = '';
     fixture.detectChanges();
@@ -352,7 +352,7 @@ describe('FrmGroupCmp', () => {
     expect(nmElementEle).toBeFalsy();
   }));
 
-  it('nm-element should be created if element?.config?.uiStyles?.attributes?.alias == Picklist', async(() => {
+  it('nm-element should be created if @Picklist is configured', async(() => {
     hostComponent.form = new FormGroup({
       question123: new FormControl(),
       selected: new FormControl()
@@ -366,7 +366,7 @@ describe('FrmGroupCmp', () => {
     expect(picklictEle).toBeTruthy();
   }));
 
-  it('nm-element should not be created if element?.config?.uiStyles?.attributes?.alias !== Picklist', async(() => {
+  it('nm-element should not be created if @Picklist is not configured', async(() => {
     hostComponent.form = new FormGroup({
       question123: new FormControl(),
       selected: new FormControl()
@@ -379,7 +379,7 @@ describe('FrmGroupCmp', () => {
     expect(picklictEle).toBeFalsy();
   }));
 
-  it('nm-button should be created if element.config?.uiStyles?.attributes?.alias == Button', async(() => {
+  it('nm-button should be created if @Button is configured', async(() => {
     hostComponent.element = nmButtonParam as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -387,7 +387,7 @@ describe('FrmGroupCmp', () => {
     expect(nmBtnEle).toBeTruthy();
   }));
 
-  it('nm-button should not be created if element.config?.uiStyles?.attributes?.alias !== Button', async(() => {
+  it('nm-button should not be created if @Button is not configured', async(() => {
     nmButtonParam.config.uiStyles.attributes.alias = '';
     hostComponent.element = nmButtonParam as Param;
     fixture.detectChanges();
@@ -396,7 +396,7 @@ describe('FrmGroupCmp', () => {
     expect(nmBtnEle).toBeFalsy();
   }));
 
-  it('nm-form-grid-filler should be created if element?.config?.uiStyles?.attributes?.alias == FormGridFiller', async(() => {
+  it('nm-form-grid-filler should be created if @FormGridFiller is configured', async(() => {
     hostComponent.element = nmFormGridFiller as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -404,7 +404,7 @@ describe('FrmGroupCmp', () => {
     expect(frmGridFillerEle).toBeTruthy();
   }));
 
-  it('nm-form-grid-filler should not be created if element?.config?.uiStyles?.attributes?.alias !== FormGridFiller', async(() => {
+  it('nm-form-grid-filler should not be created if @FormGridFiller is not configured', async(() => {
     nmFormGridFiller.config.uiStyles.attributes.alias = '';
     hostComponent.element = nmFormGridFiller as Param;
     fixture.detectChanges();
@@ -413,7 +413,7 @@ describe('FrmGroupCmp', () => {
     expect(frmGridFillerEle).toBeFalsy();
   }));
 
-  it('nm-link should be created if element.config?.uiStyles?.attributes?.alias == Link', async(() => {
+  it('nm-link should be created if @Link is configured', async(() => {
     hostComponent.element = nmLinkParam as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -421,7 +421,7 @@ describe('FrmGroupCmp', () => {
     expect(linkEle).toBeTruthy()
   }));
 
-  it('nm-link should not be created if element.config?.uiStyles?.attributes?.alias !== Link', async(() => {
+  it('nm-link should not be created if @Link is not configured', async(() => {
     hostComponent.element = nmLinkParam as Param;
     hostComponent.element.config.uiStyles.attributes.alias = ''
     fixture.detectChanges();
@@ -430,7 +430,7 @@ describe('FrmGroupCmp', () => {
     expect(linkEle).toBeFalsy()
   }));
 
-  it('nm-paragraph should be created if element.config?.uiStyles?.attributes?.alias == Paragraph', async(() => {
+  it('nm-paragraph should be created if @Paragraph is configured', async(() => {
     hostComponent.element = nmParagraphParam as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -438,7 +438,7 @@ describe('FrmGroupCmp', () => {
     expect(paragraphEle).toBeTruthy();
   }));
 
-  it('nm-paragraph should not be created if element.config?.uiStyles?.attributes?.alias !== Paragraph', async(() => {
+  it('nm-paragraph should not be created if @Paragraph is not configured', async(() => {
     nmParagraphParam.config.uiStyles.attributes.alias = '';
     hostComponent.element = nmParagraphParam as Param;
     fixture.detectChanges();
@@ -447,7 +447,7 @@ describe('FrmGroupCmp', () => {
     expect(paragraphEle).toBeFalsy();
   }));
 
-  it('nm-header should be created if element.config?.uiStyles?.attributes?.alias == Header', async(() => {
+  it('nm-header should be created if @Header is configured', async(() => {
     hostComponent.element = nmHeaderParam as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -455,7 +455,7 @@ describe('FrmGroupCmp', () => {
     expect(headerEle).toBeTruthy();
   }));
 
-  it('nm-header should not be created if element.config?.uiStyles?.attributes?.alias !== Header', async(() => {
+  it('nm-header should not be created if @Header is not configured', async(() => {
     hostComponent.element = nmHeaderParam as Param;
     hostComponent.element.config.uiStyles.attributes.alias = '';
     fixture.detectChanges();
@@ -464,7 +464,7 @@ describe('FrmGroupCmp', () => {
     expect(headerEle).toBeFalsy();
   }));
 
-  it('nm-button-group should be created if element.config?.uiStyles?.attributes?.alias == ButtonGroup', async(() => {
+  it('nm-button-group should be created if @ButtonGroup is configured', async(() => {
     hostComponent.element = nmButtonGroupParam as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -472,7 +472,7 @@ describe('FrmGroupCmp', () => {
     expect(btnGrpEle).toBeTruthy()
   }));
 
-  it('nm-button-group should not be created if element.config?.uiStyles?.attributes?.alias !== ButtonGroup', async(() => {
+  it('nm-button-group should not be created if @ButtonGroup is not configured', async(() => {
     hostComponent.element = nmButtonGroupParam as Param;
     hostComponent.element.config.uiStyles.attributes.alias = '';
     fixture.detectChanges();

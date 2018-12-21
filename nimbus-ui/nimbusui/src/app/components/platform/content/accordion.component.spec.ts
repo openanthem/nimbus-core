@@ -252,7 +252,7 @@ describe('Accordion', () => {
     expect(hostComponent).toBeTruthy();
   }));
 
-  it('Expand All and Collapse All should be created if element.config?.uiStyles?.attributes?.showExpandAll is valid',async(() => {
+  it('Expand All and Collapse All should be created if showExpandAll attribute configured',async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const expandAllndCollapseEle = debugElement.queryAll(By.css('.btn.btn-expand'));    
@@ -260,7 +260,7 @@ describe('Accordion', () => {
     expect(expandAllndCollapseEle[1].nativeElement.innerText.toString()).toEqual('Collapse All');    
   }));
 
-  it('Expand All and Collapse All should not be created if element.config?.uiStyles?.attributes?.showExpandAll is invalid',async(() => {
+  it('Expand All and Collapse All should not be created if showExpandAll attribute is not configured',async(() => {
     hostComponent.element.config.uiStyles.attributes.showExpandAll = false;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -319,7 +319,7 @@ describe('Accordion', () => {
     expect(pAccordionTab).toBeTruthy();
   }));
 
-  it('Label in header should be created on providing the element.type.model.params[0].labels display the value provided',async(() => {
+  it('Label in header should be created on configuring @Label',async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const nmLabelEle = debugElement.query(By.css('nm-label'));
@@ -346,7 +346,7 @@ describe('Accordion', () => {
     expect(infoTextEle).toBeFalsy();
   }));
 
-  it('If element.type.model.params[0].type.model.params[i].leafState or element.type.model.params[0].type.model.params[i].config.uiStyles.attributes.imgSrc is valid then image should be displayed in pheader',async(() => {
+  it('If leafState or imgSrc is configured then image should be displayed in pheader',async(() => {
     hostComponent.element.type.model.params[0].config.uiStyles.attributes.selected = true;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -354,7 +354,7 @@ describe('Accordion', () => {
     expect(nmImageEle).toBeTruthy();
   }));
 
-  it('If element.type.model.params[0].type.model.params[i].leafState or element.type.model.params[0].type.model.params[i].config.uiStyles.attributes.imgSrc is invalid then image should not be displayed in pheader',async(() => {
+  it('If leafState or imgSrc is not configured then image should not be displayed in pheader',async(() => {
     hostComponent.element.type.model.params[0].config.uiStyles.attributes.selected = true;
     hostComponent.element.type.model.params[0].type.model.params[1].leafState = null;
     fixture.detectChanges();
@@ -363,7 +363,7 @@ describe('Accordion', () => {
     expect(nmImageEle).toBeFalsy();
   }));
 
-  it('Edit Button should be created if element.type.model.params[0]?.config?.uiStyles?.attributes?.editable is true',async(() => {
+  it('Edit Button should be created if editable is configured',async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const editButtonEle = debugElement.query(By.css('.btn.btn-plain'));    
@@ -378,6 +378,7 @@ describe('Accordion', () => {
     spyOn(hostComponent, 'processOnClick').and.callThrough();
     editButtonEle.nativeElement.click();
     expect(hostComponent.processOnClick).toHaveBeenCalled();
+    expect(hostComponent.processOnClick).toHaveBeenCalledWith(elementWithForm.type.model.params[0]);
   }));
 
   it('If element.type.model.params[0].type.model.params[i] and form is defined then form group should be created',async(() => {
@@ -392,7 +393,7 @@ describe('Accordion', () => {
     expect(frmGrpEle).toBeTruthy();
   }));
 
-  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias == ButtonGroup then button group should be created ',async(() => {
+  it('If form is undefined and @ButtonGroup configured then button group should be created ',async(() => {
     hostComponent.element = elementWithNoForm as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -400,7 +401,7 @@ describe('Accordion', () => {
     expect(buttonGroupEle).toBeTruthy();
   }));
 
-  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias !== ButtonGroup then button group should not be created ',async(() => {
+  it('If form is undefined and @ButtonGroup is not configured then button group should not be created ',async(() => {
     hostComponent.element = elementWithNoForm as Param;
     hostComponent.element.type.model.params[0].type.model.params[5].alias = '';
     fixture.detectChanges();
@@ -409,7 +410,7 @@ describe('Accordion', () => {
     expect(buttonGroupEle).toBeFalsy();
   }));
 
-  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias == Link then Link should be created ',async(() => {
+  it('If form is undefined and @Link is configured then Link should be created ',async(() => {
     hostComponent.element = elementWithNoForm as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -417,7 +418,7 @@ describe('Accordion', () => {
     expect(linkEle).toBeTruthy()
   }));
 
-  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias !== Link then Link should not be created ',async(() => {
+  it('If form is undefined and @Link is not configured then Link should not be created ',async(() => {
     hostComponent.element = elementWithNoForm as Param;
     hostComponent.element.type.model.params[0].type.model.params[6].alias = '';
     fixture.detectChanges();
@@ -426,7 +427,7 @@ describe('Accordion', () => {
     expect(linkEle).toBeFalsy()
   }));
 
-  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias == grid then table should be created ',async(() => {
+  it('If form is undefined and @Grid is configured then table should be created ',async(() => {
     hostComponent.element = elementWithNoForm as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -434,7 +435,7 @@ describe('Accordion', () => {
     expect(gridEle).toBeTruthy()
   }));
 
-  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias !== grid then table should not be created ',async(() => {
+  it('If form is undefined and @Grid is not configured then table should not be created ',async(() => {
     hostComponent.element = elementWithNoForm as Param;
     hostComponent.element.type.model.params[0].type.model.params[7].alias = '';
     fixture.detectChanges();
@@ -443,7 +444,7 @@ describe('Accordion', () => {
     expect(gridEle).toBeFalsy()
   }));
 
-  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias == cardDetail then cardDetail should be created ',async(() => {
+  it('If form is undefined and @CardDetail is configured then cardDetail should be created ',async(() => {
     hostComponent.element = elementWithNoForm as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -451,7 +452,7 @@ describe('Accordion', () => {
     expect(cardDetailEle).toBeTruthy();
   }));
 
-  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias !== cardDetail then cardDetail should not be created ',async(() => {
+  it('If form is undefined and @CardDetail is not configured then cardDetail should not be created ',async(() => {
     hostComponent.element = elementWithNoForm as Param;
     hostComponent.element.type.model.params[0].type.model.params[8].alias = '';
     fixture.detectChanges();
@@ -460,7 +461,7 @@ describe('Accordion', () => {
     expect(cardDetailEle).toBeFalsy();
   }));
 
-  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias == cardDetailsGrid then cardDetailsGrid should be created ',async(() => {
+  it('If form is undefined and @CardDetailsGrid then cardDetailsGrid should be created ',async(() => {
     hostComponent.element = elementWithNoForm as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -468,7 +469,7 @@ describe('Accordion', () => {
     expect(cardDetailsGridEle).toBeTruthy();
   }));
 
-  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias !== cardDetailsGrid then cardDetailsGrid should not be created ',async(() => {
+  it('If form is undefined and @CardDetailsGrid is not configured then cardDetailsGrid should not be created ',async(() => {
     hostComponent.element = elementWithNoForm as Param;
     hostComponent.element.type.model.params[0].type.model.params[9].alias = '';
     fixture.detectChanges();
@@ -477,7 +478,7 @@ describe('Accordion', () => {
     expect(cardDetailsGridEle).toBeFalsy();
   }));
 
-  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias == form then form should be created ',async(() => {
+  it('If form is undefined and form is configured in nested level then form should be created ',async(() => {
     hostComponent.element = elementWithNoForm as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -485,7 +486,7 @@ describe('Accordion', () => {
     expect(formEle).toBeTruthy();
   }));
 
-  it('If form is undefined and element.type.model.params[0].type.model.params[I].alias !== form then form should not be created ',async(() => {
+  it('If form is undefined and form is not configured in nested level also then form should not be created ',async(() => {
     hostComponent.element = elementWithNoForm as Param;
     hostComponent.element.type.model.params[0].type.model.params[10].alias = '';
     fixture.detectChanges();
@@ -594,7 +595,7 @@ describe('Accordion', () => {
   }));
 
 
-it('Edit Button should not be created if element.type.model.params[0]?.config?.uiStyles?.attributes?.editable is false',async(() => {
+it('Edit Button should not be created if editable attribute is configured as false',async(() => {
     hostComponent.element.type.model.params[0].config.uiStyles.attributes.editable = false;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -602,7 +603,7 @@ it('Edit Button should not be created if element.type.model.params[0]?.config?.u
     expect(editButtonEle).toBeFalsy();
 }));
 
-it('If element.type.model.params[0].type.model.params[i] and form is undefined then form group should not be created',async(() => {
+it('If nested param object and form is undefined then form group should not be created',async(() => {
     hostComponent.form = null;
     hostComponent.element.type.model.params[0].type.model.params = [];
     fixture.detectChanges();
@@ -611,7 +612,7 @@ it('If element.type.model.params[0].type.model.params[i] and form is undefined t
     expect(frmGrpEle).toBeFalsy();
   }));
 
-  it('nm-counter-message in pheader should be created if element.config?.uiStyles?.attributes?.showMessages is true',async(() => {
+  it('nm-counter-message in pheader should be created if showMessages attribute is configured as true',async(() => {
     hostComponent.element.type.model.params[0].config.uiStyles.attributes.selected = true;
     hostComponent.element.config.uiStyles.attributes.showMessages = true;
     hostComponent.form = new FormGroup({
@@ -624,7 +625,7 @@ it('If element.type.model.params[0].type.model.params[i] and form is undefined t
     expect(counterMessageEle).toBeTruthy();
   }));
 
-  it('nm-counter-message in pheader should not be created if element.config?.uiStyles?.attributes?.showMessages is false',async(() => {
+  it('nm-counter-message in pheader should not be created if showMessages attribute is configured as false',async(() => {
     hostComponent.element.type.model.params[0].config.uiStyles.attributes.selected = true;
     hostComponent.element.config.uiStyles.attributes.showMessages = false;
     hostComponent.form = new FormGroup({
