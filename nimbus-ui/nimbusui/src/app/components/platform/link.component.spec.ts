@@ -97,6 +97,7 @@ describe('Link', () => {
     it('url should be update from the element', () => {
         fixture.whenStable().then(() => {
             hostComponent.element.config.uiStyles.attributes.url = '/test';
+            hostComponent.ngOnInit();
             expect(hostComponent.url).toEqual('/test');
         });
     });
