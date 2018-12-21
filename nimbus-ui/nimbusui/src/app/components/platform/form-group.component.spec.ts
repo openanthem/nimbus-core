@@ -253,7 +253,7 @@ describe('FrmGroupCmp', () => {
     });
   });
 
-  it('Span should be created if the element.visible==true', async(() => {
+  it('All elements in form group should be created if the element.visible==true', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const spanEle = debugElement.query(By.css('span'));
@@ -313,7 +313,7 @@ describe('FrmGroupCmp', () => {
     expect(frmGrpEle).toBeFalsy();
   }));
 
-  it('nm-element should be created based on the condition !element.type?.model?.params?.length', async(() => {
+  it('nm-element should be created based on the nestedparams length', async(() => {
     hostComponent.form = new FormGroup({
       question123: new FormControl(),
     });
@@ -326,7 +326,7 @@ describe('FrmGroupCmp', () => {
     expect(nmElementEle).toBeTruthy();
   }));
 
-  it('nm-element should be created based on the condition element.config?.type?.collection', async(() => {
+  it('nm-element should be created based on the collection', async(() => {
     hostComponent.form = new FormGroup({
       question123: new FormControl(),
     });
@@ -341,7 +341,7 @@ describe('FrmGroupCmp', () => {
     expect(nmElementEle).toBeTruthy();
   }));
 
-  it('nm-element should not be created based on the condition element.config?.type?.collection or !element.type?.model?.params?.length', async(() => {
+  it('nm-element should not be created based on the collection or with no nestedparams', async(() => {
     nmElementInputParam.config.type.collection = false;
     hostComponent.element = nmElementInputParam as Param;
     fixture.detectChanges();
@@ -481,7 +481,7 @@ describe('FrmGroupCmp', () => {
     expect(btnGrpEle).toBeFalsy()
   }));
 
-  it('Span should be hidden if the element.visible!==false', async(() => {
+  it('All elements in form group should be hidden if the element.visible!==false', async(() => {
     hostComponent.element = nestedFrmGrpEle as Param;
     hostComponent.element.visible = false;
     fixture.detectChanges();
