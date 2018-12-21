@@ -1237,6 +1237,15 @@ public class ViewConfig {
 		String url() default "";
 		
 		boolean dataEntryField() default true;
+		
+		/**
+		 * @Since 1.1.11
+		 * Setting this to true will enable to select all the records in the dataset i.e across all pages 
+		 * within a table when selectAll checkbox in the header is checked. 
+		 * Default behavior is to select all the records only within the current  
+		 * page of the table when the table is paginated.
+		 */
+		boolean headerCheckboxToggleAllPages() default false;
 	}
 
 	/**

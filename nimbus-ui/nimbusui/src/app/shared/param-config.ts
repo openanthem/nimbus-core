@@ -222,7 +222,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     printPath: string;
     autoPrint: boolean;
     dataEntryField: boolean;
-    
+    headerCheckboxToggleAllPages: boolean;
     deserialize( inJson ) {
         let obj = this;
         obj = Converter.convert(inJson,obj);
