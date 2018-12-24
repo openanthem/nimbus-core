@@ -104,7 +104,8 @@ class MockPageService {
         this.gridValueUpdate$ = new Subject();
 
     }
-  processEvent(a, b, c, d) {  }
+  processEvent(a, b, c, d) { 
+   }
 }
 
 @Component({
@@ -538,6 +539,7 @@ describe('Accordion', () => {
     const test = new Param(configService);
     hostComponent.processOnClick(test);
     expect(pageService.processEvent).toHaveBeenCalled();
+    expect(pageService.processEvent).toHaveBeenCalledWith(undefined, '$execute', null, 'POST');
   }));
 
   it('getImageSrc() should return imgSrc', async(() => {
