@@ -2032,6 +2032,8 @@ public class ViewConfig {
 		String labelClass() default "anthem-label";
 
 		boolean postEventOnChange() default false;
+		
+		boolean dataEntryField() default true;
 
 	}
 
