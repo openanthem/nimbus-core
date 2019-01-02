@@ -241,8 +241,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                     this.updatePageDetailsState();
                     this.dt.first = 0;
                 }
-
-                this.cd.markForCheck();
+                this.cd.detectChanges();
                 this.resetMultiSelection();
             }
         });
@@ -395,7 +394,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             });
         }
         item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath, elemIds);
-
+        
         // postButtonUrl is deprecated in @Grid Config from 1.1.11
         // TODO - remove this when the annotation attribute is removed completely in ViewConfig.
         if (this.element.config.uiStyles.attributes.postButtonUrl) {

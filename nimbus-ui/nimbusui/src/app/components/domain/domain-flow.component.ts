@@ -142,10 +142,10 @@ export class DomainFlowCmp {
         this._logger.debug('DomainFlowCmp-i ');
         this._route.data.subscribe((data: { layout: ViewRoot }) => {
             let viewRoot: ViewRoot = data.layout;
-            if (viewRoot) {
+            if (viewRoot.layout) {
                 this.hasLayout = true;
                 this.infoClass = 'info-card page-content';
-                this.layoutSvc.parseLayoutConfig(viewRoot.model);
+                this.layoutSvc.getLayout(viewRoot.layout);
             } else {
                 this.infoClass = 'page-content';
                 this.hasLayout = false;
