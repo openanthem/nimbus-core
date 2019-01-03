@@ -57,6 +57,13 @@ export class BaseLabel {
                 }
             }
         });
+        /* Update the labels when the domain is routed to a new page. In this case, there is no param event update,
+        hence an event is emitted explicitly in PageResolver */
+        this._wcs.routeLabelUpdate$.subscribe(event => {
+            if (event.labels && event.labels.length !== 0) {
+                this.loadLabelConfig(event);
+            }
+        });
     }
 
     /**	

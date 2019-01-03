@@ -19,6 +19,7 @@ import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
 import { AppInitService } from '../../../services/app.init.service';
+import { Subject } from 'rxjs';
 
 let http, backend, service, rustate, breadcrumpservice, pageservice, wcservice, router, loggerService, activatedRoute;
 
@@ -60,6 +61,12 @@ class MockPageService {
 }
 
 class MockWebContentSvc {
+    public routeLabelUpdate: Subject<any>;
+
+    constructor() {
+        this.routeLabelUpdate = new Subject();
+    }
+
     findLabelContent(a) {
         const res = {
             text: 'testing'
@@ -149,6 +156,25 @@ describe('PageResolver', () => {
         expect(breadcrumpservice.push).toHaveBeenCalled();
     });
   })); 
+
+  it('resolve() should emit _wcs routeLabelUpdate when a page is being routed & page has labelText', async(() => {
+    spyOn(wcservice, 'findLabelContent').and.returnValue({'text' : 'page label'});
+    spyOn(wcservice.routeLabelUpdate, 'next').and.callThrough();
+    let result = service.resolve(route, rustate);
+    result.then(data => {
+        expect(wcservice.routeLabelUpdate.next).toHaveBeenCalled();
+    });
+   }));
+
+  it('resolve() should not emit _wcs routeLabelUpdate when a page is being routed & page has no labelText', async(() => {
+    let spy = spyOn(breadcrumpservice, 'push').and.callThrough();
+    spyOn(wcservice, 'findLabelContent').and.returnValue({});
+    spyOn(wcservice.routeLabelUpdate, 'next').and.callThrough();
+    let result = service.resolve(route, rustate);
+    result.then(data => {
+        expect(wcservice.routeLabelUpdate.next).not.toHaveBeenCalled();
+    });
+ }));
 
   it('resolve() should call breadcrumpservice.push() without labelText', async(() => {
     let spy = spyOn(breadcrumpservice, 'push').and.callThrough();

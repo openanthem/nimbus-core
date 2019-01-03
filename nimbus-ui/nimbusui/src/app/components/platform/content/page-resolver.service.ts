@@ -48,11 +48,13 @@ export class PageResolver implements Resolve<Param> {
         //let flow = route.parent.data['domain'];
         let flow = route.parent.url[0]['path'];
         return this._pageSvc.getPageConfigById(pageId, flow).then(page => {
-            if (page) {
+           if (page) {
                 let labelConfig: LabelConfig = this._wcs.findLabelContent(page);
                 let labelText = page.config.code;
                 if (labelConfig.text && labelConfig.text.trim().length > 0) {
                     labelText = labelConfig.text;
+                    /** Emit an event explicitly when route is navigated, since it is not a param update */
+                    this._wcs.routeLabelUpdate.next(page);
                 }
                 // Push the home breadcrumb into memory under the domain name.
                 this._breadcrumbService.push(page.config.code, labelText, route['_routerState'].url);

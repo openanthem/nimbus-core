@@ -21,6 +21,7 @@ import { ServiceConstants } from './service.constants';
 import { LabelConfig } from './../shared/param-config';
 import { Param } from './../shared/param-state';
 import { Converter } from './../shared/object.conversion';
+import { Subject } from 'rxjs';
 
 /**
  * \@author Dinakar.Meda
@@ -32,6 +33,9 @@ import { Converter } from './../shared/object.conversion';
  */
 @Injectable()
 export class WebContentSvc {
+
+    routeLabelUpdate = new Subject<Param>();
+    routeLabelUpdate$ = this.routeLabelUpdate.asObservable();
 
 	constructor() {
 
