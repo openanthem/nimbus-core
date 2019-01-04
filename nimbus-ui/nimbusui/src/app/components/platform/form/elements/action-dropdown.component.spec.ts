@@ -28,8 +28,12 @@ import { SvgComponent } from '../../svg/svg.component';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
 import * as data from '../../../../payload.json';
+import { ActionDropdownLink } from './action-dropdown.component.mockdata.spec';
+import { ServiceConstants } from './../../../../services/service.constants';
+import { By } from '@angular/platform-browser';
+import { ComponentTypes } from './../../../../shared/param-annotations.enum';
 
-let pageservice, configservice, param;
+let pageservice, configservice;
 
 class MockLoggerService {
     debug() { }
@@ -68,12 +72,13 @@ describe('ActionLink', () => {
   configureTestSuite(() => {
     setup( declarations, imports, providers);
   });
-     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
 
   beforeEach(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
     fixture = TestBed.createComponent(ActionLink);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = param;
+    hostComponent.element = ActionDropdownLink;
+    hostComponent.param = ActionDropdownLink.config;
     pageservice = TestBed.get(PageService);
     configservice = TestBed.get(ConfigService);
   });
@@ -100,6 +105,48 @@ describe('ActionLink', () => {
     expect(pageservice.processEvent).not.toHaveBeenCalled();
   }));
 
+  it('should have a label set', async(() => {
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.css('a.mockLink')).nativeElement.innerText).toBe('Edit');
+  }));
+
+  it('should render an external link that opens a new page to google', async(() => {
+    hostComponent.element.enabled = true;
+    hostComponent.element.config.uiStyles.attributes.value = ComponentTypes.external.toString();
+    hostComponent.element.config.uiStyles.attributes.target = '_blank';
+    hostComponent.element.config.uiStyles.attributes.rel = 'nofollow';
+    hostComponent.url = 'https://google.com/';
+    fixture.detectChanges();
+    let linkElement = fixture.debugElement.query(By.css('a.mockLink'));
+    expect(linkElement.nativeElement.target).toBe('_blank');
+    expect(linkElement.nativeElement.rel).toBe('nofollow');
+    expect(linkElement.nativeElement.href).toBe('https://google.com/');
+  }));
+
+  it('should render an disabled link that is nonfunctional', async(() => {
+    hostComponent.element.enabled = false;
+    hostComponent.element.config.uiStyles.attributes.value = ComponentTypes.external.toString();
+    hostComponent.element.config.uiStyles.attributes.rel = 'nofollow';
+    fixture.detectChanges();
+    let linkElement = fixture.debugElement.query(By.css('a.mockLink'));
+    expect(linkElement.nativeElement.rel).toBe('nofollow');
+    expect(linkElement.nativeElement.href).toBe('javascript:void(0)');
+    expect(linkElement.nativeElement.classList.contains('disabled')).toBeTruthy();
+  }));
+
+  it('should show nm-action-link when a link param visible property is true', async(() => {
+    hostComponent.element.visible = true;
+    fixture.detectChanges();
+    expect(hostComponent.visible).toBeTruthy();
+    expect(fixture.debugElement.query(By.css('a.mockLink'))).toBeDefined();
+  }));
+
+  it('should hide nm-action-link when a link param visible property is false', async(() => {
+    hostComponent.element.visible = false;
+    fixture.detectChanges();
+    expect(hostComponent.visible).toBeFalsy();
+    expect(fixture.debugElement.query(By.css('a.mockLink'))).toBeNull();
+  }));
 });
 
 class MockElementRef {
@@ -141,8 +188,8 @@ describe('ActionDropdown', () => {
   configureTestSuite(() => {
     setup( declarations1, imports1, providers1);
   });
-
-       let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
+ 
+  let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.Link\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"Link\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.Link\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"Link\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
   
    
   beforeEach(() => {
@@ -206,5 +253,4 @@ describe('ActionDropdown', () => {
     hostComponent.element.enabled = false;
     expect(hostComponent.enabled).toBeFalsy();
   }));
-  
 });
