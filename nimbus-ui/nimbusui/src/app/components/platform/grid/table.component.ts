@@ -18,7 +18,7 @@
 
 import {
     Component, Input, Output, forwardRef, ViewChild, EventEmitter,
-    ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren
+    ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren, ViewRef
 } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
@@ -241,7 +241,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                     this.updatePageDetailsState();
                     this.dt.first = 0;
                 }
-                this.cd.detectChanges();
+                if(!(<ViewRef>this.cd).destroyed)
+                    this.cd.detectChanges();
                 this.resetMultiSelection();
             }
         });
@@ -394,7 +395,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             });
         }
         item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath, elemIds);
-        
+
         // postButtonUrl is deprecated in @Grid Config from 1.1.11
         // TODO - remove this when the annotation attribute is removed completely in ViewConfig.
         if (this.element.config.uiStyles.attributes.postButtonUrl) {
