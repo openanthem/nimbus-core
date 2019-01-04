@@ -156,7 +156,7 @@ export class ActionDropdown {
                     <a 
                         href="javascript:void(0)" 
                         class="{{param.uiStyles?.attributes?.cssClass}}" 
-                        [class.disabled]="enabled !== undefined && !enabled" 
+                        [class.disabled]="true"
                         rel="{{param.uiStyles?.attributes?.rel}}">
                             {{label}}
                     </a>
