@@ -52,8 +52,7 @@ import { ComponentTypes } from '../../../../shared/param-annotations.enum';
             <ng-template [ngIf]="rowData">
                 <nm-action-link
                     [elementPath]="elementPath" 
-                    [rowData]="rowData" 
-                    [param]="param"
+                    [rowData]="rowData"
                     [element]="element?.type?.model?.params[i]"
                     *ngFor="let param of params; index as i">
                 </nm-action-link>
@@ -140,35 +139,33 @@ export class ActionDropdown {
     ],
     template: `
         <ng-template [ngIf]="visible">
-            <ng-template [ngIf]="param.uiStyles.attributes.value == componentTypes.external.toString()">
+            <ng-template [ngIf]="value == componentTypes.external.toString()">
                 <!-- External Link: Enabled -->
                 <ng-template [ngIf]="enabled">
                     <a 
-                        href="{{url}}" 
-                        class="{{param.uiStyles?.attributes?.cssClass}}" 
-                        target="{{param.uiStyles?.attributes?.target}}" 
-                        rel="{{param.uiStyles?.attributes?.rel}}">
+                        [href]="url" 
+                        [class]="cssClass" 
+                        [target]="target" 
+                        [rel]="rel">
                             {{label}}
                     </a>
                 </ng-template>
                 <!-- External Link: Disabled -->
                 <ng-template [ngIf]="enabled !== undefined && !enabled">
                     <a 
-                        href="javascript:void(0)" 
-                        class="{{param.uiStyles?.attributes?.cssClass}}" 
+                        [class]="cssClass" 
                         [class.disabled]="true"
-                        rel="{{param.uiStyles?.attributes?.rel}}">
+                        [rel]="rel">
                             {{label}}
                     </a>
                 </ng-template>
             </ng-template>
-            <ng-template [ngIf]="param.uiStyles.attributes.value != componentTypes.external.toString()">
+            <ng-template [ngIf]="value != componentTypes.external.toString()">
                 <!-- General Link -->
                 <a 
-                    href="javascript:void(0)" 
-                    class="{{param.uiStyles?.attributes?.cssClass}}" 
+                    [class]="cssClass" 
                     [class.disabled]="enabled !== undefined && !enabled" 
-                    (click)="processOnClick(this.param.code)">
+                    (click)="processOnClick(code)">
                         {{label}}
                 </a>
             </ng-template>
@@ -177,7 +174,6 @@ export class ActionDropdown {
 })
 export class ActionLink extends BaseElement{
     
-        @Input() param: ParamConfig;
         @Input() elementPath: string;
         @Input() rowData: any;
         protected url:string;
@@ -188,12 +184,12 @@ export class ActionLink extends BaseElement{
         }
     
         ngOnInit() {
-            this.loadLabelConfigFromConfigs(this.element.labels, this.param.code);
+            this.loadLabelConfigFromConfigs(this.element.labels, this.element.config.code);
 
             // replace parameters in url enclosed within {}
-            if (this.param.uiStyles && this.param.uiStyles.attributes && this.param.uiStyles.attributes.url) {
-                this.url = this.param.uiStyles.attributes.url;
-                let urlParams: string[] = this.getAllURLParams(this.param.uiStyles.attributes.url);
+            if (this.element.config && this.element.config.uiStyles && this.element.config.uiStyles.attributes && this.element.config.uiStyles.attributes.url) {
+                this.url = this.element.config.uiStyles.attributes.url;
+                let urlParams: string[] = this.getAllURLParams(this.url);
                 if (urlParams && urlParams.length > 0) {
                     if(urlParams!=null) {
                         for (let urlParam of urlParams) {
@@ -221,6 +217,17 @@ export class ActionLink extends BaseElement{
             this.pageSvc.processEvent(this.elementPath + '/' + linkCode, Behavior.execute.value, item, HttpMethod.GET.value);
         }
 
+        get rel(): string {
+            return this.element.config.uiStyles.attributes.rel;
+        }
+
+        get target(): string {
+            return this.element.config.uiStyles.attributes.target;
+        }
+
+        get value(): string {
+            return this.element.config.uiStyles.attributes.value;
+        }
     }
 
 

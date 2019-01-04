@@ -130,7 +130,7 @@ describe('ActionLink', () => {
     fixture.detectChanges();
     let linkElement = fixture.debugElement.query(By.css('a.mockLink'));
     expect(linkElement.nativeElement.rel).toBe('nofollow');
-    expect(linkElement.nativeElement.href).toBe('javascript:void(0)');
+    expect(linkElement.nativeElement.href).toBeFalsy();
     expect(linkElement.nativeElement.classList.contains('disabled')).toBeTruthy();
   }));
 
