@@ -31,6 +31,7 @@ import { LoaderService } from './../../../services/loader.service';
 import { ConfigService } from './../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
 import { AppInitService } from '../../../services/app.init.service';
+import { cardDetailsFieldInputLabel, cardDetailsFieldInputLabelNoDate, cardDetailsFieldParam, cardDetailsFieldNmDisplayValueParam } from 'mockdata';
 
 @Component({
   template: '<div></div>',
@@ -88,7 +89,7 @@ describe('CardDetailsFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CardDetailsFieldComponent);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = param;
+    hostComponent.element = cardDetailsFieldParam;
   });
 
   it('should create the CardDetailsFieldComponent',  async(() => {
@@ -119,7 +120,7 @@ describe('CardDetailsFieldComponent', () => {
   }));
 
   it('inputLabel should be created', async(() => {
-    const iLabel = inputLabel;
+    const iLabel = cardDetailsFieldInputLabel;
     hostComponent.element = iLabel;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -128,7 +129,7 @@ describe('CardDetailsFieldComponent', () => {
   }));
 
   it('inputLabel should not be created when element.config.uiStyles.attributes.showName', async(() => {
-    const iLabel = inputLabel;
+    const iLabel = cardDetailsFieldInputLabel;
     hostComponent.element = iLabel;
     hostComponent.element.config.uiStyles.attributes.showName = false;
     fixture.detectChanges();
@@ -138,7 +139,7 @@ describe('CardDetailsFieldComponent', () => {
   }));
 
   it('inputLabel should be created with out date', async(() => {
-    const iLabel = inputLabelNoDate;
+    const iLabel = cardDetailsFieldInputLabelNoDate;
     hostComponent.element = iLabel;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -147,7 +148,7 @@ describe('CardDetailsFieldComponent', () => {
   }));
 
   it('inputLabel should not be created with out date', async(() => {
-    const iLabel = inputLabelNoDate;
+    const iLabel = cardDetailsFieldInputLabelNoDate;
     hostComponent.element = iLabel;
     hostComponent.element.config.uiStyles.attributes.showName = false;
     fixture.detectChanges();
@@ -267,7 +268,7 @@ describe('CardDetailsFieldComponent', () => {
   }));
 
   it('nmDisplayValue should add leafstate and config.code as class', async(() => {
-    hostComponent.element = nmDisplayValueParam;
+    hostComponent.element = cardDetailsFieldNmDisplayValueParam;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const divNmDisplayValueDivEle = debugElement.query(By.css('.textWrapBreakWord'));    
@@ -277,310 +278,3 @@ describe('CardDetailsFieldComponent', () => {
 
 });
 
-
-const inplaceEditor = {
-  "config": {
-      "active": false,
-      "required": false,
-      "id": "22284",
-      "code": "firstName",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": false,
-          "isHidden": false,
-          "name": "ViewConfig.FieldValue",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "inplaceEditType": "",
-              "cssClass": "",
-              "datePattern": "",
-              "alias": "FieldValue",
-              "applyValueStyles": false,
-              "placeholder": "",
-              "inplaceEdit": true,
-              "type": "Field",
-              "cols": "2",
-              "imgSrc": ""
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": false,
-          "name": "string"
-      }
-  },
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "21196",
-  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/firstName",
-  "type": {
-      "nested": false,
-      "name": "string",
-      "collection": false
-  },
-  "leafState": "test",
-  "previousLeafState": "test",
-  "message": [],
-  "values": [],
-  "labels": [
-      {
-          "locale": "en-US",
-          "text": "First Name"
-      }
-  ],
-  "elemLabels": {}
-};
-
-
-const inputLabel = {
-  "config": {
-      "active": false,
-      "required": false,
-      "id": "24003",
-      "code": "caseStatusDate",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": false,
-          "isHidden": false,
-          "name": "ViewConfig.FieldValue",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "inplaceEditType": "",
-              "cssClass": "",
-              "datePattern": "MM/dd/yyyy",
-              "alias": "FieldValue",
-              "applyValueStyles": false,
-              "placeholder": "",
-              "inplaceEdit": false,
-              "type": "Field",
-              "cols": "3",
-              "imgSrc": ""
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": false,
-          "name": "LocalDateTime"
-      }
-  },
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "24003",
-  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/caseStatusDate",
-  "type": {},
-  "leafState": "2018-09-04T20:47:18.000Z",
-  "message": [],
-  "values": [],
-  "labels": [
-      {
-          "locale": "en-US",
-          "text": "Case Status Date"
-      }
-  ],
-  "elemLabels": {}
-};
-
-
-const inputLabelNoDate = {
-  "config": {
-      "active": false,
-      "required": false,
-      "id": "462",
-      "code": "lastName",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": false,
-          "isHidden": false,
-          "name": "ViewConfig.FieldValue",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "inplaceEditType": "",
-              "cssClass": "",
-              "datePattern": "",
-              "alias": "FieldValue",
-              "applyValueStyles": false,
-              "placeholder": "",
-              "inplaceEdit": false,
-              "type": "Field",
-              "cols": "4",
-              "imgSrc": ""
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": false,
-          "name": "string"
-      }
-  },
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "462",
-  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/lastName",
-  "type": {
-      "nested": false,
-      "name": "string",
-      "collection": false
-  },
-  "leafState": "1",
-  "previousLeafState": "1",
-  "message": [],
-  "values": [],
-  "labels": [
-      {
-          "locale": "en-US",
-          "text": "Last Name"
-      }
-  ],
-  "elemLabels": {}
-};
-
-const param = {
-  "config": {
-      "active": false,
-      "required": false,
-      "id": "1329",
-      "code": "firstName",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": false,
-          "isHidden": false,
-          "name": "ViewConfig.FieldValue",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "inplaceEditType": "",
-              "cssClass": "",
-              "datePattern": "",
-              "alias": "FieldValue",
-              "applyValueStyles": false,
-              "placeholder": "",
-              "inplaceEdit": true,
-              "type": "Field",
-              "cols": "2",
-              "imgSrc": ""
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": false,
-          "name": "string"
-      }
-  },
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "1329",
-  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/firstName",
-  "type": {
-      "nested": false,
-      "name": "string",
-      "collection": false
-  },
-  "leafState": "test",
-  "previousLeafState": "test",
-  "message": [],
-  "values": [],
-  "labels": [
-      {
-          "locale": "en-US",
-          "text": "First Name"
-      }
-  ],
-  "elemLabels": {}
-};
-
-const nmDisplayValueParam = {
-    "config": {
-        "active": false,
-        "required": false,
-        "id": "7839",
-        "code": "firstName1",
-        "validations": null,
-        "uiNatures": [],
-        "uiStyles": {
-            "isLink": false,
-            "isHidden": false,
-            "name": "ViewConfig.FieldValue",
-            "attributes": {
-                "hidden": false,
-                "readOnly": false,
-                "submitButton": true,
-                "showName": true,
-                "pageSize": 25,
-                "browserBack": false,
-                "showAsLink": false,
-                "inplaceEditType": "",
-                "cssClass": "",
-                "datePattern": "",
-                "alias": "FieldValue",
-                "applyValueStyles": true,
-                "inplaceEdit": false,
-                "placeholder": "",
-                "type": "Field",
-                "cols": "2",
-                "imgSrc": ""
-            }
-        },
-        "type": {
-            "collection": false,
-            "nested": false,
-            "name": "string"
-        }
-    },
-    "enabled": true,
-    "visible": true,
-    "activeValidationGroups": [],
-    "collectionParams": [],
-    "configId": "7839",
-    "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/vcdgConcerns/0/vcdOwnerInfo/vcdbOwner/firstName",
-    "type": {
-        "nested": false,
-        "name": "string",
-        "collection": false
-    },
-    "leafState": "test",
-    "previousLeafState": "test",
-    "message": [],
-    "values": [],
-    "labels": [
-        {
-            "locale": "en-US",
-            "text": "First Name---127..."
-        }
-    ],
-    "elemLabels": {}
-};

@@ -90,10 +90,10 @@ import { CardDetailsFieldGroupComponent } from './card/card-details-field-group.
 import { InputLegend } from './form/elements/input-legend.component';
 import { setup, TestContext } from './../../setup.spec';
 import { configureTestSuite } from 'ng-bullet';
-import * as data from '../../payload.json';
 import { Param } from './../../shared/param-state';
 import { FormErrorMessage } from './form-error-message.component';
 import { PrintDirective } from '../../directives/print.directive';
+import { formErrorMessageParam } from 'mockdata';
 
 /**
  * \@author Sandeep.Mantha
@@ -207,10 +207,6 @@ describe("form error message component", () => {
     configureTestSuite(() => {
         setup( declarations, imports, providers);
       });
-    
-    //   let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
-    let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';
-    let param: Param = JSON.parse(payload);
 
     beforeEach(() => {
         fixture = TestBed.createComponent(FormErrorMessage);
@@ -218,10 +214,10 @@ describe("form error message component", () => {
         const fg = new FormGroup({});
         const checks: ValidatorFn[] = [];
         checks.push(Validators.required);
-        param.type.model.params[0].visible = true;
-        fg.addControl(param.type.model.params[0].config.code, new FormControl(param.type.model.params[0].leafState,checks));
+        formErrorMessageParam.type.model.params[0].visible = true;
+        fg.addControl(formErrorMessageParam.type.model.params[0].config.code, new FormControl(formErrorMessageParam.type.model.params[0].leafState,checks));
         hostComponent.form = fg;
-        hostComponent.element = param;
+        hostComponent.element = formErrorMessageParam;
     });
 
     it("check if message is displayed",  () => {
@@ -236,7 +232,7 @@ describe("form error message component", () => {
     it("check if message is re-evaluated on form value change",  () => {
         fixture.whenStable().then(() => {
         fixture.detectChanges();
-        hostComponent.form.controls[param.type.model.params[0].config.code].setValue("");
+        hostComponent.form.controls[formErrorMessageParam.type.model.params[0].config.code].setValue("");
         fixture.detectChanges();
         let messageDom = fixture.debugElement.query(By.css('div'));
         expect(hostComponent).toBeTruthy();

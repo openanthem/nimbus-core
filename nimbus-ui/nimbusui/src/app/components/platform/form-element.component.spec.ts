@@ -1,5 +1,5 @@
 'use strict';
-import { FormsModule, ReactiveFormsModule, AbstractControlDirective, Validators, ValidatorFn, FormGroup, FormControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, AbstractControlDirective, Validators, ValidatorFn, FormGroup, FormControl, NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
 import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, 
     DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule,
     InputSwitchModule, TreeTableModule } from 'primeng/primeng';
@@ -14,7 +14,8 @@ import { HttpModule } from '@angular/http';
 import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren, forwardRef, NO_ERRORS_SCHEMA, ChangeDetectorRef } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing'
 
 import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 import { FormElement } from './form-element.component';
@@ -56,7 +57,7 @@ import { DateTimeFormatPipe } from '../../pipes/date.pipe';
 import { HeaderCheckBox } from '../platform/form/elements/header-checkbox.component';
 import { SvgComponent } from './svg/svg.component';
 import { Image } from './image.component';
-import { TreeGrid } from './tree-grid/tree-grid.component';
+// import { TreeGrid } from './tree-grid/tree-grid.component';
 import { InputSwitch } from './form/elements/input-switch.component';
 import { FormGridFiller } from './form/form-grid-filler.component';
 import { DisplayValueDirective } from '../../directives/display-value.directive';
@@ -80,6 +81,11 @@ import { FormErrorMessage } from './form-error-message.component';
 import { Message } from '../../shared/message';
 import { PrintDirective } from '../../directives/print.directive';
 import { async, TestBed, ComponentFixture } from '@angular/core/testing';
+import { FileService } from '../../services/file.service';
+import { GridService } from '../../services/grid.service';
+import { PrintService } from '../../services/print.service';
+import { GridUtils } from '../../shared/grid-utils';
+import { formInput, formPicklist, formTreeGrid, formTable, formInputSwitch, formUpload, formCheckBoxGrp, formRadio, formCalendar, formSignature, formTextArea, formComboBox, formCheckBox, formMultiSelectCard, formMultiSelect } from 'mockdata'
 
 let param: Param;
 let fixture: ComponentFixture<any>, hostComponent;
@@ -105,6 +111,37 @@ class Button {
   differ: any;
   componentTypes;
 }
+
+@Component({
+  template: '<div></div>',
+  selector: 'nm-treegrid',
+  providers: [ 
+    { 
+        provide: NG_VALUE_ACCESSOR,
+        multi: true,
+        useExisting: forwardRef(() => TreeGrid)
+      }]
+})
+class TreeGrid {
+    @Input() params: any[];
+    @Input() form: any;
+    firstColumn: any;
+    viewComponent: any;
+    treeData: any;
+
+    writeValue(a) {}
+    registerOnChange(z) {}
+    registerOnTouched(a) {}
+    setDisabledState(a) {}
+}
+
+class MockLoggerService {
+  debug() { }
+  info() { }
+  error() { }
+}
+
+
 
 const declarations = [
     FormElement,
@@ -179,12 +216,14 @@ const declarations = [
     HttpClientModule,
     StorageServiceModule,
     HttpModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    RouterTestingModule
   ];
   const providers = [
     { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
     { provide: 'JSNLOG', useValue: JL },
     { provide: LocationStrategy, useClass: HashLocationStrategy },
+    {provide: LoggerService, useClass: MockLoggerService},
     Location,
     WebContentSvc,
     PageService,
@@ -192,34 +231,54 @@ const declarations = [
     SessionStoreService,
     LoaderService,
     ConfigService,
-    LoggerService,
+    // LoggerService,
     AppInitService,
-    MessageService
+    MessageService,
+    FileService,
+    GridService,
+    PrintService,
+    GridUtils,
+    DateTimeFormatPipe,
+    { 
+        provide: NG_VALUE_ACCESSOR,
+        multi: true,
+        useExisting: forwardRef(() => TreeGrid),
+      }
    ];
 
 
 describe('FormElement', () => {
 
   configureTestSuite(() => {
-    //setup(declarations, imports, providers);
     TestBed.configureTestingModule({
       declarations: declarations,
       providers: providers,
-      imports:  imports
+      imports:  imports,
+      schemas:      [ NO_ERRORS_SCHEMA ]
       })
   });
-
-       let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
 
     beforeEach(() => {
       fixture = TestBed.createComponent(FormElement);
       hostComponent = fixture.debugElement.componentInstance;
-      const fg = new FormGroup({});
-      const checks: ValidatorFn[] = [];
-      checks.push(Validators.required);
-      fg.addControl(param.config.code, new FormControl(param.leafState,checks));
-      hostComponent.form = fg;
-      hostComponent.element = param;
+      hostComponent.form = new FormGroup({
+        userGroups: new FormControl(),
+        firstName: new FormControl(),
+        lastName: new FormControl(),
+        testingmulticard: new FormControl(),
+        shouldUseNickname: new FormControl(),
+        notificationPreference: new FormControl(),
+        notes: new FormControl(),
+        q13: new FormControl(),
+        dob: new FormControl(),
+        q1_a: new FormControl(),
+        q9_b: new FormControl(),
+        medications1: new FormControl(),
+        calls: new FormControl(),
+        treegrid: new FormControl(),
+        selected: new FormControl()
+     });
+      hostComponent.element = formMultiSelect as Param;
   });
 
   it('two way binding',  () => {
@@ -234,9 +293,6 @@ describe('FormElement', () => {
       textBox.dispatchEvent(new Event('focusout'));
       fixture.detectChanges();
       expect(hostComponent.form.controls[param.config.code].value).toEqual('abcd123');
-      // hostComponent.form.controls[param.config.code].setValue('testtt');
-      // fixture.detectChanges();
-      // expect(textBox.value).toEqual('testtt');
     });
   });
 
@@ -263,18 +319,12 @@ describe('FormElement', () => {
     hostComponent.getComponentClass();
     hostComponent.form.controls[hostComponent.element.config.code].setValue('test');
     fixture.detectChanges();
-  
       expect(hostComponent.isValid).toBeTruthy();
   }));
 
   it('isValid property should not be updated from form.controls',  async(() => {
     hostComponent.form.controls[hostComponent.element.config.code] = null;
     expect(hostComponent.isValid).toBeTruthy();
-  }));
-
-  it('isPristine property should be updated from element',  async(() => {
-    hostComponent.element.config.code = '{';
-    expect(hostComponent.isPristine).toBeTruthy();
   }));
 
   it('isPristine property should be updated from form.controls',  async(() => {
@@ -341,6 +391,299 @@ describe('FormElement', () => {
     let ngm: any;
     const res = hostComponent.ngModelState(ngm);
     expect(res.indexOf('touched')).toEqual(0);
+  }));
+
+  it('form element should be created if the dataentryfield is configured',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const divEle = debugElement.query(By.css('div'));
+    expect(divEle).toBeTruthy();
+  }));
+
+  it('nm-input should be created if the text is configured',async(() => {
+    hostComponent.element = formInput as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const nmInputEle = debugElement.query(By.css('nm-input'));
+    expect(nmInputEle).toBeTruthy();
+  }));
+
+  it('nm-input should not be created if the text is not configured',async(() => {
+    hostComponent.element = formInput as Param;
+    hostComponent.element.config.uiStyles.attributes.type = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const nmInputEle = debugElement.query(By.css('nm-input'));
+    expect(nmInputEle).toBeFalsy();
+  }));
+
+  it('signature component should be created if the signature is configured',async(() => {
+    hostComponent.element = formSignature as Param;
+    fixture.detectChanges();
+    const signatureEle = document.getElementsByTagName('nm-signature');
+    expect(signatureEle.length > 0).toBeTruthy();
+  }));
+
+  it('signature component should not be created if the signature is not configured',async(() => {
+    hostComponent.element = formSignature as Param;
+    hostComponent.element.config.uiStyles.attributes.type = '';
+    fixture.detectChanges()
+    const signatureEle = document.getElementsByTagName('nm-signature');
+    expect(signatureEle.length === 0 ).toBeTruthy();
+  }));
+
+  it('textarea component should be created if the textarea is configured',async(() => {
+    hostComponent.element = formTextArea as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const textAreaEle = debugElement.query(By.css('nm-input-textarea'));
+    expect(textAreaEle).toBeTruthy();
+  }));
+
+  it('textarea component should not be created if the textarea is not configured',async(() => {
+    hostComponent.element = formTextArea as Param;
+    hostComponent.element.config.uiStyles.attributes.type = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const textAreaEle = debugElement.query(By.css('nm-input-textarea'));
+    expect(textAreaEle).toBeFalsy();
+  }));
+
+  it('calendar component should be created if the calendar is configured',async(() => {
+    hostComponent.element = formCalendar as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const calendarEle = debugElement.query(By.css('nm-input-calendar'));
+    expect(calendarEle).toBeTruthy();
+  }));
+
+  it('calendar component should not be created if the calendar is not configured',async(() => {
+    hostComponent.element = formCalendar as Param;
+    hostComponent.element.config.uiStyles.attributes.type = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const calendarEle = debugElement.query(By.css('nm-input-calendar'));
+    expect(calendarEle).toBeFalsy();
+  }));
+
+  it('comboBox component should be created if the comboBox is configured',async(() => {
+    hostComponent.element = formComboBox as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const comboBoxEle = debugElement.query(By.css('nm-comboBox'));
+    expect(comboBoxEle).toBeTruthy();
+  }));
+
+  it('comboBox component should not be created if the comboBox is not configured',async(() => {
+    hostComponent.element = formComboBox as Param;
+    hostComponent.element.config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const comboBoxEle = debugElement.query(By.css('nm-comboBox'));
+    expect(comboBoxEle).toBeFalsy();
+  }));
+
+  it('radio component should be created if the radio is configured',async(() => {
+    hostComponent.element = formRadio as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const radioEle = debugElement.query(By.css('nm-input-radio'));
+    expect(radioEle).toBeTruthy();
+  }));
+
+  it('radio component should not be created if the radio is not configured',async(() => {
+    hostComponent.element = formRadio as Param;
+    hostComponent.element.config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const radioEle = debugElement.query(By.css('nm-input-radio'));
+    expect(radioEle).toBeFalsy();
+  }));
+
+  it('checkBoxGroup component should be created if the checkBoxGroup is configured',async(() => {
+    hostComponent.element = formCheckBoxGrp as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const checkBoxGroupEle = debugElement.query(By.css('nm-input-checkbox'));
+    expect(checkBoxGroupEle).toBeTruthy();
+  }));
+
+  it('checkBoxGroup component should not be created if the checkBoxGroup is not configured',async(() => {
+    hostComponent.element = formCheckBoxGrp as Param;
+    hostComponent.element.config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const checkBoxGroupEle = debugElement.query(By.css('nm-input-checkbox'));
+    expect(checkBoxGroupEle).toBeFalsy();
+  }));
+
+  it('checkbox component should be created if the checkbox is configured',async(() => {
+    hostComponent.element = formCheckBox as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const checkBoxEle = debugElement.query(By.css('nm-single-checkbox'));
+    expect(checkBoxEle).toBeTruthy();
+  }));
+
+  it('checkbox component should not be created if the checkbox is not configured',async(() => {
+    hostComponent.element = formCheckBox as Param;
+    hostComponent.element.config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const checkBoxEle = debugElement.query(By.css('nm-single-checkbox'));
+    expect(checkBoxEle).toBeFalsy();
+  }));
+
+  it('nm-multi-select-listbox component should be created if the multiSelect is configured',async(() => {
+    hostComponent.element = formMultiSelect as Param;
+    hostComponent.element.config.uiStyles.attributes.alias = 'MultiSelect';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const multiSelectListBoxEle = debugElement.query(By.css('nm-multi-select-listbox'));
+    expect(multiSelectListBoxEle).toBeTruthy();
+  }));
+
+  it('nm-multi-select-listbox component should not be created if the multiSelect is not configured',async(() => {
+    hostComponent.element.config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const multiSelectListBoxEle = debugElement.query(By.css('nm-multi-select-listbox'));
+    expect(multiSelectListBoxEle).toBeFalsy();
+  }));
+
+  it('nm-multiselect-card component should be created if the multiSelectCard is configured',async(() => {
+    hostComponent.element = formMultiSelectCard as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const multiSelectCardEle = debugElement.query(By.css('nm-multiselect-card'));
+    expect(multiSelectCardEle).toBeTruthy();
+  }));
+
+  it('nm-multiselect-card component should not be created if the multiSelectCard is not configured',async(() => {
+    hostComponent.element = formMultiSelectCard as Param;
+    hostComponent.element.config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const multiSelectCardEle = debugElement.query(By.css('nm-multiselect-card'));
+    expect(multiSelectCardEle).toBeFalsy();
+  }));
+
+  it('nm-upload component should be created if the fileUpload is configured',async(() => {
+    hostComponent.element = formUpload as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const uploadEle = debugElement.query(By.css('nm-upload'));
+    expect(uploadEle).toBeTruthy();
+  }));
+
+  it('nm-upload component should not be created if the fileUpload is not configured',async(() => {
+    hostComponent.element = formUpload as Param;
+    hostComponent.element.config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const uploadEle = debugElement.query(By.css('nm-upload'));
+    expect(uploadEle).toBeFalsy();
+  }));
+
+  it('inputSwitch component should be created if the inputSwitch is configured',async(() => {
+    hostComponent.element = formInputSwitch as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const inputSwitchEle = debugElement.query(By.css('nm-input-switch'));
+    expect(inputSwitchEle).toBeTruthy();
+  }));
+
+  it('inputSwitch component should not be created if the inputSwitch is not configured',async(() => {
+    hostComponent.element = formInputSwitch as Param;
+    hostComponent.element.config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const inputSwitchEle = debugElement.query(By.css('nm-input-switch'));
+    expect(inputSwitchEle).toBeFalsy();
+  }));
+
+  it('nm-table component should be created if the grid is configured',async(() => {
+    hostComponent.element = formTable as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const tableEle = debugElement.query(By.css('nm-table'));
+    expect(tableEle).toBeTruthy();
+  }));
+
+  it('nm-table component should not be created if the grid is not configured',async(() => {
+    hostComponent.element = formTable as Param;
+    hostComponent.element.config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const tableEle = debugElement.query(By.css('nm-table'));
+    expect(tableEle).toBeFalsy();
+  }));
+
+  it('nm-treegrid component should be created if the treeGrid is configured',async(() => {
+    hostComponent.element = formTreeGrid as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const treeGridEle = debugElement.query(By.css('nm-treegrid'));
+    expect(treeGridEle).toBeTruthy();
+  }));
+
+  it('nm-treegrid component should not be created if the treeGrid is not configured',async(() => {
+    hostComponent.element = formTreeGrid as Param;
+    hostComponent.element.config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const treeGridEle = debugElement.query(By.css('nm-treegrid'));
+    expect(treeGridEle).toBeFalsy();
+  }));
+
+  it('nm-message component should be created if the element.messages is configured',async(() => {
+    hostComponent.element = formMultiSelect as Param;
+    hostComponent.element.message = [{"messageArray":[{"severity":"warn","summary":"Warn Message","detail":"Message is set","life":5000,"styleClass":""}],"context":"TOAST","type":"WARNING","styleClass":""}];
+    hostComponent.element.config.uiStyles.attributes.dataEntryField = true;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const nmMessageEle = debugElement.query(By.css('nm-message'));
+    expect(nmMessageEle).toBeTruthy();
+  }));
+
+  it('nm-message component should not be created if the element.messages is not configured',async(() => {
+    hostComponent.element = formMultiSelect as Param;
+    hostComponent.element.message = [];
+    hostComponent.element.config.uiStyles.attributes.dataEntryField = true;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const nmMessageEle = debugElement.query(By.css('nm-message'));
+    expect(nmMessageEle).toBeFalsy();
+  }));
+
+  it('pickList component should be created if the picklist is configured',async(() => {
+    hostComponent.element = formPicklist as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const pickListEle = debugElement.query(By.css('nm-pickList'));
+    expect(pickListEle).toBeTruthy();
+  }));
+
+  it('pickList component should not be created if the picklist is not configured',async(() => {
+    hostComponent.element = formPicklist as Param;
+    hostComponent.element.config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const pickListEle = debugElement.query(By.css('nm-pickList'));
+    expect(pickListEle).toBeFalsy();
+  }));
+
+  it('form element should not be created if the dataentryfield is not configured',async(() => {
+    hostComponent.element.config.uiStyles.attributes.dataEntryField = false;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;  
+    const divEle = debugElement.query(By.css('div'));
+    expect(divEle).toBeFalsy();
+  }));
+
+  it('isPristine property should be updated from element',  async(() => {
+    hostComponent.element.config.code = '{';
+    expect(hostComponent.isPristine).toBeTruthy();
   }));
 
 });

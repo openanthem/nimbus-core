@@ -16,7 +16,10 @@
       "dom"
     ],
     "module": "es2015",
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "mockdata": ["app/mockdata"]
+    }
   },
   "angularCompilerOptions": {
     "preserveWhitespaces": false
