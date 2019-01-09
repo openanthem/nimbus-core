@@ -103,4 +103,8 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 		return p.findParamByPath(ArrayUtils.remove(pathArr, 0));
 	}
 	
+	public String getRepoAlias() {
+		return getRepo() != null && StringUtils.isNotBlank(getRepo().alias()) ? getRepo().alias() : getAlias();
+	}
+	
 }

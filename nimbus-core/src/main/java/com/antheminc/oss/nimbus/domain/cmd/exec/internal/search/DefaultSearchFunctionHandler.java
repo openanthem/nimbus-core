@@ -52,12 +52,9 @@ public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctio
 	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
 		ModelConfig<?> mConfig = getRootDomainConfig(executionContext);
 		
-		Class<?> criteriaClass = mConfig.getReferredClass();
-		String alias = findRepoAlias(mConfig);
-		
 		ModelRepository rep = getRepFactory().get(mConfig);
 		
-		return (R)rep._search(criteriaClass, alias, () -> this.createSearchCriteria(executionContext, mConfig, actionParameter));
+		return (R)rep._search(actionParameter, () -> this.createSearchCriteria(executionContext, mConfig, actionParameter));
 	}
 	
 	protected abstract SearchCriteria<?> createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> cmdParam);
@@ -84,12 +81,12 @@ public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctio
 					.map(s -> new Order(Direction.fromString(s[1]), s[0]))
 					.collect(Collectors.toList());
 				
-				Sort sort = new Sort(sortByList);
+				Sort sort = Sort.by(sortByList);
 				
-				return new PageRequest(Integer.valueOf(page), Integer.valueOf(pageSize), sort);
+				return PageRequest.of(Integer.valueOf(page), Integer.valueOf(pageSize), sort);
 			}
 			else{
-				return new PageRequest(Integer.valueOf(page), Integer.valueOf(pageSize));
+				return PageRequest.of(Integer.valueOf(page), Integer.valueOf(pageSize));
 			}
 		}
 		return null;

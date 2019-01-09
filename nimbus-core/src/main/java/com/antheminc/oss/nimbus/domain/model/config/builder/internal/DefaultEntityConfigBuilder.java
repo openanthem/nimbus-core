@@ -128,7 +128,7 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		if(CollectionUtils.isEmpty(remoteAliasList)) {
 			return mConfig;
 		}		
-		remoteAliasList.forEach(remote -> remote.trim());
+		
 		if(remoteAliasList.contains(mConfig.getAlias())) {
 			mConfig.setRemote(true);
 		} 

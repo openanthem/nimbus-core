@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
@@ -57,6 +58,8 @@ import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegration
 import com.antheminc.oss.nimbus.test.domain.support.utils.CommandUtils;
 import com.antheminc.oss.nimbus.test.scenarios.repo.remote.core.SampleRemoteRepo;
 import com.antheminc.oss.nimbus.test.scenarios.repo.remote.core.SampleRemoteRepo.SampleRepoNested;
+import com.antheminc.oss.nimbus.test.scenarios.repo.remote.core.SampleRemoteRepo2;
+import com.antheminc.oss.nimbus.test.scenarios.repo.remote.core.SampleRemoteRepo2.SampleRepoNested2;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -71,14 +74,21 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	@Qualifier("default.processGateway")
 	CommandExecutorGateway commandGateway;
 	
-	private MockRestServiceServer mockServer;
+	private MockRestServiceServer mockServerRemoteWs;
+	private MockRestServiceServer mockServerDefaultWs;
 	
 	@Autowired
-	private RestTemplate restTemplate;
+	@Qualifier("default.rep_remote_ws.restTemplate")
+	private RestTemplate remoteWSrestTemplate;
+	
+	@Autowired
+	@Qualifier("default.rep_ws.restTemplate")
+	private RestTemplate wsRestTemplate;
 	
 	@Before
 	public void setup() {
-		this.mockServer = MockRestServiceServer.createServer(restTemplate);
+		this.mockServerRemoteWs = MockRestServiceServer.createServer(remoteWSrestTemplate);
+		this.mockServerDefaultWs = MockRestServiceServer.createServer(wsRestTemplate);
 	}
 
     protected List<Output<?>> getMultiExecuteOutput(Command command, String rawPayload){
@@ -100,7 +110,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		cmdMsg.setRawPayload(jsonPayload);
 		
 
-		this.mockServer.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerDefaultWs.expect(requestTo(new StringContains(requestUri)))
 		.andExpect(method(HttpMethod.POST))
 		.andExpect(queryParam("fn","example"))
 		.andRespond(withSuccess("[{\"client\": {\"code\": \"example\"}},{\"client\": {\"code\": \"example\" }}]", MediaType.APPLICATION_JSON));
@@ -132,7 +142,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		cmdMsg.setCommand(cmd);
 		
 
-		this.mockServer.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerDefaultWs.expect(requestTo(new StringContains(requestUri)))
 		.andExpect(method(HttpMethod.POST))
 		.andExpect(queryParam("fn","query"))
 		.andExpect(queryParam("where","ext_client.client.code.eq('7')"))
@@ -158,7 +168,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		cmdMsg.setCommand(cmd);
 		
 
-		this.mockServer.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerDefaultWs.expect(requestTo(new StringContains(requestUri)))
 		.andExpect(method(HttpMethod.POST))
 		.andExpect(queryParam("fn","query"))
 		.andExpect(queryParam("where","ext_client.client.code.eq('7')"))
@@ -180,7 +190,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
-		this.mockServer.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerDefaultWs.expect(requestTo(new StringContains(requestUri)))
 			.andRespond(withSuccess("{\"client\": {\"code\":\"example23\"}}", MediaType.APPLICATION_JSON));
 
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
@@ -204,7 +214,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
-		this.mockServer.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerDefaultWs.expect(requestTo(new StringContains(requestUri)))
 			.andRespond(withSuccess("{\"client\": {\"code\":\"example23\"}}", MediaType.APPLICATION_JSON));
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
@@ -224,8 +234,8 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
-		String jsonresp  = mockSingleGenericExecuteResponse();
-		this.mockServer.expect(requestTo(new StringContains(requestUri)))
+		String jsonresp  = mockSingleGenericExecuteResponse_GetNewSearch();
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(requestUri)))
 			.andRespond(withSuccess(jsonresp, MediaType.APPLICATION_JSON));
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
@@ -237,22 +247,24 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		assertNotNull("ParamState (attr1) cannot be null", param.findParamByPath("/attr1").getState());
 		assertNotNull("Param (attr2) cannot ne null", param.findParamByPath("/attr2"));
 		assertNotNull("ParamState (attr2) cannot be null", param.findParamByPath("/attr2").getState());
+		
+		this.mockServerRemoteWs.reset();
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void t6_testSearchByQuery_remote() throws JsonProcessingException {
-		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo/_search";
+		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo/_search?fn=query&where=remote_repo.attr1.eq('example1')";
 		Command cmd = CommandUtils.prepareCommand(requestUri);
-		Map<String, String[]> requestParams = new HashMap<>();
-		requestParams.put("fn", new String[]{"query"});
-		requestParams.put("where", new String[]{"remote_repo.attr1.eq('example1')"});
-		cmd.setRequestParams(requestParams);
+//		Map<String, String[]> requestParams = new HashMap<>();
+//		requestParams.put("fn", new String[]{"query"});
+//		requestParams.put("where", new String[]{"remote_repo.attr1.eq('example1')"});
+//		cmd.setRequestParams(requestParams);
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
-		String jsonresp  = mockGenericExecuteResponse();
-		this.mockServer.expect(requestTo(new StringContains(requestUri)))
+		String jsonresp  = mockGenericExecuteResponse_Search();
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(requestUri)))
 		.andExpect(method(HttpMethod.POST))
 		.andExpect(queryParam("fn","query"))
 		.andExpect(queryParam("where","remote_repo.attr1.eq('example1')"))
@@ -272,19 +284,19 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	
 	@Test
 	public void t7_testSearchByQuery_fetch1_remote() {
-		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo/_search";
+		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo/_search?fn=query&where=remote_repo.attr1.eq('example1')&fetch=1";
 		Command cmd = CommandUtils.prepareCommand(requestUri);
-		Map<String, String[]> requestParams = new HashMap<>();
-		requestParams.put("fn", new String[]{"query"});
-		requestParams.put("where", new String[]{"remote_repo.attr1.eq('example1')"});
-		requestParams.put("fetch", new String[]{"1"});
-		cmd.setRequestParams(requestParams);
+//		Map<String, String[]> requestParams = new HashMap<>();
+//		requestParams.put("fn", new String[]{"query"});
+//		requestParams.put("where", new String[]{"remote_repo.attr1.eq('example1')"});
+//		requestParams.put("fetch", new String[]{"1"});
+//		cmd.setRequestParams(requestParams);
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
-		String resp = mockSingleGenericExecuteResponse();
+		String resp = mockSingleGenericExecuteResponse_GetNewSearch();
 
-		this.mockServer.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(requestUri)))
 		.andExpect(method(HttpMethod.POST))
 		.andExpect(queryParam("fn","query"))
 		.andExpect(queryParam("where","remote_repo.attr1.eq('example1')"))
@@ -303,16 +315,16 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	
 	@Test
 	public void t8_testSearchByExample_remote() {
-		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo/_search";
+		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo/_search?fn=example";
 		Command cmd = CommandUtils.prepareCommand(requestUri);
-		Map<String, String[]> requestParams = new HashMap<>();
-		requestParams.put("fn", new String[]{"example"});
-		cmd.setRequestParams(requestParams);
+//		Map<String, String[]> requestParams = new HashMap<>();
+//		requestParams.put("fn", new String[]{"example"});
+//		cmd.setRequestParams(requestParams);
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
-		String response = mockGenericExecuteResponse();
-		this.mockServer.expect(requestTo(new StringContains(requestUri)))
+		String response = mockGenericExecuteResponse_Search();
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(requestUri)))
 		.andExpect(method(HttpMethod.POST))
 		.andExpect(queryParam("fn","example"))
 		.andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
@@ -330,8 +342,178 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		assertEquals("nested1", sample_remote.get(0).getAttr2().get(0).getNested_attr());
 	}
 	
-	private String mockSingleGenericExecuteResponse() {
+	@Test
+	public void t9_new_remote() throws JsonProcessingException {
+		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo/_new?b=$executeAnd$state";
+		Command cmd = CommandUtils.prepareCommand(requestUri);
+		CommandMessage cmdMsg = new CommandMessage();
+		cmdMsg.setCommand(cmd);
+		
+		final String remoteRequestUri = "piedpiper/encryption_3.9/p/remote_repo/_new";
+		String jsonresp  = mockSingleGenericExecuteResponse_GetNewSearch();
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(remoteRequestUri)))
+			.andRespond(withSuccess(jsonresp, MediaType.APPLICATION_JSON));
+		
+		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(),requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:1/_update")))
+		.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
+	
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		
+		Param<?> param = (Param<?>) multiOp.getSingleResult();
+		
+		assertNotNull("Param (SampleRemoteRepo) cannot be null", param.findParamByPath("/"));
+		assertNotNull("Param (attr1) cannot ne null", param.findParamByPath("/attr1"));
+		assertNotNull("ParamState (attr1) cannot be null", param.findParamByPath("/attr1").getState());
+		assertNotNull("Param (attr2) cannot ne null", param.findParamByPath("/attr2"));
+		assertNotNull("ParamState (attr2) cannot be null", param.findParamByPath("/attr2").getState());
+		
+		this.mockServerRemoteWs.reset();
+	}
+	
+	@Test
+	public void t10_delete_root_remote() throws JsonProcessingException {
+		t5_get_remote();
+		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo:12/_delete";
+		Command cmd = CommandUtils.prepareCommand(requestUri);
+		CommandMessage cmdMsg = new CommandMessage();
+		cmdMsg.setCommand(cmd);
+		
+		
+		String jsonresp  = mockSingleGenericExecuteResponse_GetNewSearch();
+		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_get")))
+			.andRespond(withSuccess(jsonresp, MediaType.APPLICATION_JSON));
+		
+		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_delete")))
+			.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
+		
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		
+		Boolean param = (Boolean) multiOp.getSingleResult();
+		assertNotNull(param);
+		
+		this.mockServerRemoteWs.reset();
+
+	}
+	
+	
+	@Test
+	public void t12_delete_nested_remote() throws JsonProcessingException {
+		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo:12/attr2/0/_delete";
+		Command cmd = CommandUtils.prepareCommand(requestUri);
+		CommandMessage cmdMsg = new CommandMessage();
+		cmdMsg.setCommand(cmd);
+		
+		
+		String jsonresp  = mockSingleGenericExecuteResponse_GetNewSearch();
+		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_get")))
+			.andRespond(withSuccess(jsonresp, MediaType.APPLICATION_JSON));
+		
+		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_update")))
+			.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
+		
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		
+		Boolean param = (Boolean) multiOp.getSingleResult();
+		assertNotNull(param);
+		
+		this.mockServerRemoteWs.reset();
+
+	}
+	
+	
+	@Test
+	public void t13_remote_withExecConfigs_mapped() throws JsonProcessingException {
+		String requestUri = "piedpiper/encryption_3.9/p/vr_remote_repo/_new";
+		Command cmd = CommandUtils.prepareCommand(requestUri);
+		CommandMessage cmdMsg = new CommandMessage();
+		cmdMsg.setCommand(cmd);
+		
+		final String remoteRequestUri = "piedpiper/encryption_3.9/p/remote_repo/_new";
+		String jsonresp  = mockSingleGenericExecuteResponse_GetNewSearch();
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(remoteRequestUri)))
+			.andRespond(withSuccess(jsonresp, MediaType.APPLICATION_JSON));
+		
+		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(),requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:1/_update")))
+		.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
+	
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		
+		Param<?> param = (Param<?>) multiOp.getSingleResult();
+		
+		assertNotNull("Param (SampleRemoteRepo) cannot be null", param.findParamByPath("/.m"));
+		assertNotNull("Param (attr1) cannot ne null", param.findParamByPath("/.m/attr1"));
+		assertNotNull("ParamState (attr1) cannot be null", param.findParamByPath("/.m/attr1").getState());
+		assertNotNull("Param (attr2) cannot ne null", param.findParamByPath("/.m/attr2"));
+		assertNotNull("ParamState (attr2) cannot be null", param.findParamByPath("/.m/attr2").getState());
+		
+		this.mockServerRemoteWs.reset();
+		
+		requestUri = "piedpiper/encryption_3.9/p/vr_remote_repo:1/vr_attr2/_get";
+		cmd = CommandUtils.prepareCommand(requestUri);
+		cmdMsg = new CommandMessage();
+		cmdMsg.setCommand(cmd);
+		
+		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(), requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:1/_update")))
+			.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
+		
+		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/vr_remote_repo2/_new")))
+			.andRespond(withSuccess(mockSingleGenericExecuteResponse_GetNewSearch2(), MediaType.APPLICATION_JSON));
+
+		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo2/_new")))
+			.andRespond(withSuccess(mockSingleGenericExecuteResponse_GetNewSearch2(), MediaType.APPLICATION_JSON));
+	
+		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(), requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo2:1/_update")))
+			.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
+
+		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/vr_remote_repo2:1/_get")))
+			.andRespond(withSuccess(mockSingleGenericExecuteResponse_GetNewSearch2(), MediaType.APPLICATION_JSON));
+		
+		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo2:1/_get")))
+			.andRespond(withSuccess(mockSingleGenericExecuteResponse_GetNewSearch2(), MediaType.APPLICATION_JSON));
+	
+		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/vr_remote_repo2:1/_delete")))
+			.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
+
+		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo2:1/_delete")))
+			.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
+
+		multiOp = this.commandGateway.execute(cmdMsg);
+		
+		Boolean b = (Boolean) multiOp.getSingleResult();
+		assertNotNull(b);
+	
+	}
+	
+	private String mockSingleGenericExecuteResponse_update() {
+		CmdExecuteOutput<Boolean> cmdExecOutput = new CmdExecuteOutput<>();		
+		Map<Integer,ExecuteOutput.BehaviorExecute<CmdExecuteOutput<Boolean>>> outputMap = new HashMap<>();		
+		ExecuteOutput.BehaviorExecute<CmdExecuteOutput<Boolean>> execOutput = new BehaviorExecute<CmdExecuteOutput<Boolean>>(Behavior.$execute,new CmdExecuteOutput<Boolean>());
+		GenericExecute<Boolean> responseValue = new GenericExecute<Boolean>();
+		
+		List<HolderValue<Boolean>> outputs = new ArrayList<>();
+		HolderValue<Boolean> holderValue = new HolderValue<>();
+		holderValue.setValue(true);
+		outputs.add(holderValue);
+		
+		cmdExecOutput.setOutputs(outputs);	
+		execOutput.setResult(cmdExecOutput);
+		outputMap.put(0, execOutput);		
+		responseValue.setResult(outputMap);
+		
+		ObjectMapper om = new ObjectMapper();
+		String jsonresp;
+		try {
+			jsonresp = om.writeValueAsString(responseValue);
+			return jsonresp;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private String mockSingleGenericExecuteResponse_GetNewSearch() {
 		SampleRemoteRepo remoterepo = new SampleRemoteRepo();
+		remoterepo.setId(Long.valueOf("1"));
 		remoterepo.setAttr1("example1");
 		SampleRepoNested nested = new SampleRepoNested();
 		nested.setNested_attr("nested1");
@@ -366,7 +548,44 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		return null;
 	}
 	
-	private String mockGenericExecuteResponse() {
+	private String mockSingleGenericExecuteResponse_GetNewSearch2() {
+		SampleRemoteRepo2 remoterepo = new SampleRemoteRepo2();
+		remoterepo.setId(Long.valueOf("1"));
+		remoterepo.setAttr1("example1");
+		SampleRepoNested2 nested = new SampleRepoNested2();
+		nested.setNested_attr("nested1");
+		
+		List<SampleRepoNested2> nested_list = new ArrayList<>();		
+		nested_list.add(nested);
+		nested_list.add(nested);
+		remoterepo.setAttr2(nested_list);
+		CmdExecuteOutput<SampleRemoteRepo2> cmdExecOutput = new CmdExecuteOutput<>();		
+		Map<Integer,ExecuteOutput.BehaviorExecute<CmdExecuteOutput<SampleRemoteRepo2>>> outputMap = new HashMap<>();		
+		ExecuteOutput.BehaviorExecute<CmdExecuteOutput<SampleRemoteRepo2>> execOutput = new BehaviorExecute<CmdExecuteOutput<SampleRemoteRepo2>>(Behavior.$execute,new CmdExecuteOutput<SampleRemoteRepo2>());
+		GenericExecute<SampleRemoteRepo2> responseValue = new GenericExecute<SampleRemoteRepo2>();
+		
+		List<HolderValue<SampleRemoteRepo2>> outputs = new ArrayList<>();
+		HolderValue<SampleRemoteRepo2> holderValue = new HolderValue<>();
+		holderValue.setValue(remoterepo);
+		outputs.add(holderValue);
+		
+		cmdExecOutput.setOutputs(outputs);	
+		execOutput.setResult(cmdExecOutput);
+		outputMap.put(0, execOutput);		
+		responseValue.setResult(outputMap);
+		
+		ObjectMapper om = new ObjectMapper();
+		String jsonresp;
+		try {
+			jsonresp = om.writeValueAsString(responseValue);
+			return jsonresp;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private String mockGenericExecuteResponse_Search() {
 		List<SampleRemoteRepo> sample_repo_list = new ArrayList<>();
 		SampleRemoteRepo remoterepo1 = new SampleRemoteRepo();
 		remoterepo1.setAttr1("example1");

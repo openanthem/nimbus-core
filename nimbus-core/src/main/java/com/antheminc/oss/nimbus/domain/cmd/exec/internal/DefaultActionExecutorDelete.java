@@ -15,16 +15,16 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
+import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
-import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListElemParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
@@ -50,7 +50,6 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 	}
 	
 	
-	
 	@Override
 	protected Output<Boolean> executeInternal(Input input) {
 		ExecutionContext eCtx = input.getContext();
@@ -59,7 +58,7 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 		
 		// handle domain root only 
 		if(eCtx.getCommandMessage().getCommand().isRootDomainOnly()) {
-			handleRootDelete(eCtx);
+			handleRootDelete(p);
 			
 			loader.unload(eCtx);
 		}
@@ -74,26 +73,17 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 		return Output.instantiate(input, eCtx, Boolean.TRUE);
 	}
 	
-	protected void handleRootDelete(ExecutionContext eCtx) {
-		Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+	protected void handleRootDelete(Param<?> p) {
+		ModelConfig<?> rootDomainConfig = p.getRootDomain().getConfig();
 		
-		ModelConfig<?> rootDomainConfig = getRootDomainConfig(eCtx);
-		Repo repo = rootDomainConfig.getRepo();
+		Optional.ofNullable(getRepositoryFactory().get(rootDomainConfig)).ifPresent(mRepo -> mRepo._delete(p));
 		
-		if(Repo.Database.exists(repo)) {
-			 getRepositoryFactory().get(repo)
-						._delete(refId, rootDomainConfig.getReferredClass(), rootDomainConfig.getAlias());
-		} 
-		
+		if(rootDomainConfig.isRemote())
+			return;
+	
 		if(rootDomainConfig.isMapped()) {
-			ModelConfig<?> mapsToConfig = rootDomainConfig.findIfMapped().getMapsToConfig();
-			Repo mapsToRepo = mapsToConfig.getRepo();
-			
-			if(Repo.Database.exists(mapsToRepo)) {
-				 getRepositoryFactory().get(mapsToRepo)
-						._delete(refId, mapsToConfig.getReferredClass(), mapsToConfig.getAlias());
-			}
-
+			Param<?> mapsToParam = p.getRootDomain().findIfMapped().getMapsTo().getAssociatedParam();
+			Optional.ofNullable(getRepositoryFactory().get(mapsToParam.getRootDomain().getConfig())).ifPresent(mapsToRepo -> mapsToRepo._delete(mapsToParam));
 		}
 	}
 	

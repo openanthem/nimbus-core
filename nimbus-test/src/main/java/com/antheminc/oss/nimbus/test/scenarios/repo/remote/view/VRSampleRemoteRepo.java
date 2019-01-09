@@ -14,17 +14,17 @@
  *  limitations under the License.
  */
 
-package com.antheminc.oss.nimbus.test.scenarios.repo.remote.core;
-
-import java.util.List;
+package com.antheminc.oss.nimbus.test.scenarios.repo.remote.view;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
-import com.antheminc.oss.nimbus.domain.defn.Model;
+import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
+import com.antheminc.oss.nimbus.domain.defn.Executions.Configs;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
+import com.antheminc.oss.nimbus.test.scenarios.repo.remote.core.SampleRemoteRepo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,16 +34,22 @@ import lombok.ToString;
  * @author Swetha Vemuri
  *
  */
-@Domain(value="remote_repo", includeListeners={ListenerType.persistence})
-@Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
+@Domain(value="vr_remote_repo", includeListeners={ListenerType.update})
+@Repo(value=Database.rep_none, cache=Cache.rep_device)
+@MapsTo.Type(SampleRemoteRepo.class)
 @Getter @Setter @ToString(callSuper=true)
-public class SampleRemoteRepo extends IdLong {
-	private static final long serialVersionUID = 1L;
-	private String attr1;
-	private List<SampleRepoNested> attr2;
+public class VRSampleRemoteRepo {
 	
-	@Model @Getter @Setter
-	public static class SampleRepoNested {
-		private String nested_attr;
-	}
+	private String vr_attr1;
+	
+	
+	@Configs({
+		@Config(url="/.d/.m/attr1/_update?rawPayload=\"fromlocalToRemote\""),
+		@Config(url="/p/vr_remote_repo2/_new?fn=_initEntity&target=/.m/attr1&json=\"vr_remote_repo2_attr1_init\""),
+		@Config(url="/p/vr_remote_repo2:1/_delete")
+		
+	})
+	private String vr_attr2;
+	
+	
 }

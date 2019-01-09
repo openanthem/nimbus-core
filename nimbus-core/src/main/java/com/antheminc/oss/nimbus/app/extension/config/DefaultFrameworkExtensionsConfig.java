@@ -21,7 +21,10 @@ import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.antheminc.oss.nimbus.channel.web.ResponseInterceptor;
+import com.antheminc.oss.nimbus.channel.web.HttpRawResponseBodyHeaderInterceptor;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.cmd.exec.MultiExecuteOutput;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
 import com.antheminc.oss.nimbus.domain.model.config.extension.LabelStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AccessConditionalStateEventHandler;
@@ -167,6 +170,11 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean
 	public StaticCodeValueBasedCodeToLabelConverter staticCodeValueBasedCodeToLabelConverter(BeanResolverStrategy beanResolver) {
 		return new StaticCodeValueBasedCodeToLabelConverter(beanResolver);
+	}
+	
+	@Bean(name="default._raw")
+	public ResponseInterceptor<MultiExecuteOutput> remoteModelResponseInterceptor(BeanResolverStrategy beanResolver) {
+		return new HttpRawResponseBodyHeaderInterceptor();
 	}
 	
 }

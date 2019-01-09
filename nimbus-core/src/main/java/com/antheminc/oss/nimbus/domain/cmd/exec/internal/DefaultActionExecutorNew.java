@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
+import com.antheminc.oss.nimbus.domain.bpm.ProcessRepository;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
@@ -60,12 +61,15 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 	
 	private DomainConfigBuilder domainConfigBuilder;
 	
+	private ProcessRepository processRepo; // TODO this dependency is to support process state persistence, temporary, need to re-design
+	
 	public DefaultActionExecutorNew(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 		
 		this.bpmGateway = beanResolver.get(BPMGateway.class);
 		this.commandGateway = getBeanResolver().find(CommandExecutorGateway.class);
 		this.domainConfigBuilder = getBeanResolver().find(DomainConfigBuilder.class);
+		this.processRepo = getBeanResolver().find(ProcessRepository.class);
 	}
 	
 	/**
@@ -117,6 +121,7 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 		
 		// hook up BPM
 		Param<?> rootDomainParam = getRootDomainParam(eCtx);
+		
 		ProcessFlow processEntityState = startBusinessProcess(rootDomainParam);
 		
 		if(processEntityState==null)
@@ -135,7 +140,7 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 	
 	private QuadModel<?, ?> createNewQuad(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
 		// create new entity instance for core & view
-		Object entity = instantiateEntity(eCtx, rootDomainConfig);
+		Object entity = getOrInstantiateEntity(eCtx, rootDomainConfig);
 		
 		// unmapped	
 		if(!rootDomainConfig.isMapped())
@@ -188,17 +193,17 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 	}
 	
 	protected void saveProcessState(String resolvedEntityAlias, ProcessFlow processEntityState) {
-		ModelConfig<?> modelConfig = getDomainConfigBuilder().getModel(ProcessFlow.class);
-		Repo repo = modelConfig.getRepo();
+		ModelConfig<?> processModelConfig = getDomainConfigBuilder().getModel(ProcessFlow.class);
+		Repo repo = processModelConfig.getRepo();
 		
 		if(!Repo.Database.exists(repo))
 			throw new InvalidConfigException(ProcessFlow.class.getSimpleName()+" must have @Repo configured for db persistence, but found none.");
 		
-		String processStateAlias = StringUtils.isBlank(repo.alias()) ? modelConfig.getAlias() : repo.alias();
+		String processStateAlias = processModelConfig.getRepoAlias();
 		
 		String entityProcessAlias = resolvedEntityAlias + "_" + processStateAlias;
 		
-		getRepositoryFactory().get(repo)._save(entityProcessAlias, processEntityState);
+		getProcessRepo()._save(processEntityState, entityProcessAlias);
 	}
 	
 }
