@@ -46,12 +46,6 @@ public class FrameworkRuntimeException extends RuntimeException {
 		super(message, cause);
 		this.execEx = create(message);
 	}
-
-	public FrameworkRuntimeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-		this.execEx = create(message);
-	}
-	
 	
     private ExecuteError create(String msg) {
 		return new ExecuteError(this.getClass(), msg);

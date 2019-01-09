@@ -314,18 +314,6 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 		return (m == null) ? null : (Model<S>)m;
 	}
 	
-	
-	@SuppressWarnings("unchecked")
-	private static <T, P> P read(PropertyDescriptor pd, Supplier<T> mGet) {
-		try {
-			T target = mGet.get();
-			return (target == null) ? null : (P)pd.getReadMethod().invoke(target);
-		}
-		catch (Exception ex) {
-			throw new FrameworkRuntimeException(ex);
-		}
-	}
-	
 	@Override
 	protected void finalize() throws Throwable {
 		// stop rules runtime/session
