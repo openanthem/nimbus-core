@@ -20,7 +20,6 @@ import { ServiceConstants } from '../services/service.constants';
 import { Param } from './param-state';
 import { LabelConfig } from './param-config';
 import { UiNature } from './param-config';
-import * as moment from 'moment';
 
 /**
  * \@author Tony.Lopez
@@ -36,7 +35,7 @@ export class ParamUtils {
         DATE:               { name: 'Date', defaultFormat: 'MM/dd/yyyy hh:mm a' },
         LOCAL_DATE:         { name: 'LocalDate', defaultFormat: 'MM/dd/yyyy' },
         LOCAL_DATE_TIME:    { name: 'LocalDateTime', defaultFormat: 'MM/dd/yyyy hh:mm a' },
-        ZONED_DATE_TIME:    { name: 'ZonedDateTime', defaultFormat: 'MM/dd/yyyy hh:mm a', useBrowserTimezone: true },
+        ZONED_DATE_TIME:    { name: 'ZonedDateTime', defaultFormat: 'MM/dd/yyyy hh:mm a' },
     };
 
     public static DEFAULT_DATE_FORMAT: string = 'MM/dd/yyyy hh:mm a';
@@ -93,36 +92,21 @@ export class ParamUtils {
         }
 
         var serverDateTime = new Date(value);
-        let convertedDate;
         switch(typeClassMapping) {
             case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name: {
-                convertedDate = new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate());
-                break;
+                return new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate());
             }
+
             case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE_TIME.name: {
-                convertedDate = new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate(), 
+                return new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate(), 
                     serverDateTime.getHours(), serverDateTime.getMinutes(), serverDateTime.getSeconds());
-                break;
             }
+
             default: {
-                convertedDate = new Date(serverDateTime.getFullYear(), serverDateTime.getMonth(), serverDateTime.getDate(), 
+                return new Date(serverDateTime.getFullYear(), serverDateTime.getMonth(), serverDateTime.getDate(), 
                     serverDateTime.getHours(), serverDateTime.getMinutes(), serverDateTime.getSeconds());
-                break;
             }
         }
-        if (ParamUtils.shouldUseBrowserTimeZone(typeClassMapping)) {
-            ParamUtils.setDateJsonHandler(convertedDate);
-        }
-        return convertedDate;
-    }
-
-    public static shouldUseBrowserTimeZone(typeClassMapping: string) {
-        let dateTypeMetadata = ParamUtils.getDateTypeConfig(typeClassMapping);
-        return dateTypeMetadata ? dateTypeMetadata.useBrowserTimezone : undefined;
-    }
-
-    public static setDateJsonHandler(date: Date): void {
-        date.toJSON = function() { return moment(this).format(); }
     }
 
     /**
@@ -133,18 +117,13 @@ export class ParamUtils {
      * @param typeClassMapping the class type of the server date object
      */
     public static getDateFormatForType(typeClassMapping: string): string {
-        let dateTypeMetadata = ParamUtils.getDateTypeConfig(typeClassMapping);
-        return dateTypeMetadata ? dateTypeMetadata.defaultFormat : null;
-    }
-
-    private static getDateTypeConfig(typeClassMapping: string): any {
         for(let x in ParamUtils.DATE_TYPE_METADATA) {
             let dateTypeMetadata = ParamUtils.DATE_TYPE_METADATA[x];
             if (dateTypeMetadata.name === typeClassMapping) {
-                return dateTypeMetadata;
+                return dateTypeMetadata.defaultFormat;
             }
         }
-        return undefined;
+        return null;
     }
 
     /**

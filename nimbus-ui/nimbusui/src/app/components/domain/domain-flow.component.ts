@@ -1,4 +1,3 @@
-import { ViewRoot } from './../../shared/app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -25,6 +24,8 @@ import { Page } from '../../shared/app-config.interface';
 import { Param } from '../../shared/param-state';
 import { LoggerService } from '../../services/logger.service';
 import { MenuItem } from '../../shared/menuitem';
+import { Message } from './../../shared/message';
+import { ViewRoot } from './../../shared/app-config.interface';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -47,6 +48,7 @@ export class DomainFlowCmp {
     public actionTray: Param;
     public modalItems: Param[];
     public _showActionTray: boolean;
+    public messages: Message[];
     items: MenuItem[];
     routeParams: any;
 
@@ -99,6 +101,14 @@ export class DomainFlowCmp {
             }
         });
 
+
+        this._pageSvc.messageEvent$.subscribe(messages => {
+            this.messages = messages;
+            setTimeout(() => {
+                this.messages = null;
+            }, 50);
+        });
+
     }
 
     getDocument() {
@@ -132,10 +142,10 @@ export class DomainFlowCmp {
         this._logger.debug('DomainFlowCmp-i ');
         this._route.data.subscribe((data: { layout: ViewRoot }) => {
             let viewRoot: ViewRoot = data.layout;
-            if (viewRoot) {
+            if (viewRoot && viewRoot.layout) {
                 this.hasLayout = true;
                 this.infoClass = 'info-card page-content';
-                this.layoutSvc.parseLayoutConfig(viewRoot.model);
+                this.layoutSvc.getLayout(viewRoot.layout);
             } else {
                 this.infoClass = 'page-content';
                 this.hasLayout = false;

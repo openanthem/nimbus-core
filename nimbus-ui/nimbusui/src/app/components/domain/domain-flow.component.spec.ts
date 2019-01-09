@@ -1,3 +1,5 @@
+import { element } from 'protractor';
+import { Message } from './../../shared/message';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing'
@@ -194,10 +196,12 @@ class MockLayoutService {
 class MockPageService {
   public config$: Subject<any>;
   public subdomainconfig$: Subject<any>;
-
+  public messageEvent$: Subject<Message[]>
+  
   constructor() {
     this.config$ = new Subject();
     this.subdomainconfig$ = new Subject();
+    this.messageEvent$ = new Subject();
   }
 
   logError(res) {
@@ -1293,7 +1297,7 @@ describe('DomainFlowCmp', () => {
     expect(hostComponent).toBeTruthy();
   }));
 
-  it('accordion, button, breadcrump, panelmenu, actiontray and modal should be created', async(() => {
+  it('accordion, button, breadcrump, panelmenu, actiontray and modal should be created', () => {
     hostComponent.actionTray = actionTray;
     hostComponent.modalItems = modalItems;
     hostComponent.accordions = accordions;
@@ -1301,6 +1305,7 @@ describe('DomainFlowCmp', () => {
     hostComponent.actionTray = actionTray;
     hostComponent.modalItems = modalItems;
     hostComponent.accordions = accordions;
+    hostComponent.hasLayout = true;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const breadcrumb  = debugElement.query(By.css('nm-breadcrumb'));
@@ -1315,7 +1320,7 @@ describe('DomainFlowCmp', () => {
     expect(actiontray.name).toEqual('nm-actiontray');    
     expect(accordionEle.name).toEqual('nm-accordion');
     expect(modal.name).toEqual('nm-modal');
-  }));
+  });
 
   it('accordion should not be created', async(() => {
     hostComponent.accordions = null;
