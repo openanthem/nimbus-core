@@ -34,7 +34,10 @@ import { LoggerService } from '../../../services/logger.service';
  */
 @Component({
     selector: 'nm-page-content',
-    templateUrl: './page-content.component.html'
+    templateUrl: './page-content.component.html',
+    providers: [
+        WebContentSvc
+    ],
 })
 
 export class PageContent extends BaseElement{
