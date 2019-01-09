@@ -40,10 +40,8 @@ import { Location, LocationStrategy, HashLocationStrategy } from '@angular/commo
 import { FrmGroupCmp } from '../form-group.component';
 import { SvgComponent } from '../svg/svg.component';
 import { FormElement } from '../form-element.component';
-// import { Button } from '../form/elements/button.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
 import { Signature } from '../form/elements/signature.component';
-// import { DateControl } from '../form/elements/date.component';
 import { Calendar } from '../form/elements/calendar.component';
 import { RadioButton } from '../form/elements/radio.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
@@ -156,7 +154,6 @@ const declarations = [
   Button,
   ButtonGroup,
   Signature,
-  // DateControl,
   Calendar,
   RadioButton,
   CheckBoxGroup,

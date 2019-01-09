@@ -11,7 +11,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CardDetailsComponent } from './card-details.component';
 import { Link } from '../link.component';
-// import { CardDetailsFieldComponent } from './card-details-field.component';
 import { StaticText } from '../content/static-content.component';
 import { InPlaceEditorComponent } from '../form/elements/inplace-editor.component';
 import { InputText } from '../form/elements/textbox.component';
@@ -30,7 +29,6 @@ import { ButtonGroup } from '../../platform/form/elements/button-group.component
 import { Label } from '../content/label.component';
 import { DisplayValueDirective } from '../../../directives/display-value.directive';
 import { InputLabel } from '../../platform/form/elements/input-label.component';
-// import { Button } from '../../platform/form/elements/button.component';
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
 import { configureTestSuite } from 'ng-bullet';

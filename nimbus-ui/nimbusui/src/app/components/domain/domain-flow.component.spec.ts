@@ -35,10 +35,7 @@ import { LoggerService } from '../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 import { AppInitService } from '../../services/app.init.service'
 import { ActionTray } from '../platform/actiontray.component';
-// import { Button } from '../platform/form/elements/button.component';
 import { SvgComponent } from '../platform/svg/svg.component';
-// import { Accordion } from '../platform/content/accordion.component';
-// import { Modal } from '../platform/modal/modal.component';
 import { Image } from '../platform/image.component';
 import { CardDetailsGrid } from '../platform/card/card-details-grid.component';
 import { CardDetailsComponent } from '../platform/card/card-details.component';
@@ -69,7 +66,6 @@ import { DisplayValueDirective } from '../../directives/display-value.directive'
 import { FormGridFiller } from '../platform/form/form-grid-filler.component';
 import { Header } from '../platform/content/header.component';
 import { Signature } from '../platform/form/elements/signature.component';
-// import { DateControl } from '../platform/form/elements/date.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.component';
@@ -333,7 +329,6 @@ export class MockActivatedRoute implements ActivatedRoute {
     FormGridFiller,
     Header,
     Signature,
-    // DateControl,
     Calendar,
     RadioButton,
     CheckBoxGroup,

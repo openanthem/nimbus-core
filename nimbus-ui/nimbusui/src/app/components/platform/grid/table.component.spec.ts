@@ -91,7 +91,7 @@ import { ServiceConstants } from '../../../services/service.constants';
 import { WindowRefService } from '../../../services/window-ref.service';
 import { AppInitService } from '../../../services/app.init.service';
 import { PrintService } from '../../../services/print.service';
-import { tableParams, tableElement } from 'mockdata';
+import { tableParams, tableElement, tableGridValueUpdate } from 'mockdata';
 
 let configService, pageService, elementRef, objectUtils, domHandler, tableService, cd, param, webContentSvc;
 
@@ -157,7 +157,7 @@ class MockPageService {
     }
     postOnChange(a, b, c) { }
     processEvent(a, s, d, f, g) { }
-    logError(a) {
+    logError(a) {        
         this.gridValueUpdate$.next(a);
     }
     notifyErrorEvent(a) {
@@ -492,14 +492,14 @@ describe('DataTable', () => {
         fixture.detectChanges();
         const debugElement = fixture.debugElement;
         const linkEle = debugElement.queryAll(By.css('nm-link'));
-        expect(linkEle.length).toEqual(6);
+        expect(linkEle.length).toEqual(4);
     }));
 
     it('nm-link should be created if it is configure as gridcolumn and showAsLink attribute as true', async(() => {
         fixture.detectChanges();
         const debugElement = fixture.debugElement;
         const linkEle = debugElement.queryAll(By.css('nm-link'));
-        expect(linkEle.length).toEqual(6);
+        expect(linkEle.length).toEqual(4);
     }));
 
     it('nm-link should not be created if it is configure as gridcolumn and showAsLink attribute as false', async(() => {
@@ -560,6 +560,20 @@ describe('DataTable', () => {
         fixture.detectChanges();
         const sectionEle = debugElement.query(By.css('nm-section'));
         expect(sectionEle).toBeTruthy();
+    }));
+
+    it('New rows shpuld be added in the table bases on the gridValueUpdate$ subject', async(() => {
+        hostComponent.element.config.uiStyles.attributes.expandableRows = true;
+        hostComponent.element.gridData.leafState[0]['nestedElement'] = true;
+        fixture.detectChanges();
+        let debugElement = fixture.debugElement;
+        const trEles = debugElement.queryAll(By.css('tr'));
+        pageService.logError(tableGridValueUpdate);
+        fixture.detectChanges();
+        const trEles1 = debugElement.queryAll(By.css('tr'));
+        const spanEles = debugElement.queryAll(By.css('span'));
+        expect(spanEles[40].nativeElement.innerText).toEqual('gridvalueupdate1');
+        expect(trEles.length < trEles1.length).toBeTruthy();
     }));
 
     it('nm-section should not be created if nested row data is not available', async(() => {

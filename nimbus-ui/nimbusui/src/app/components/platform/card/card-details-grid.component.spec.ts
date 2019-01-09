@@ -32,7 +32,6 @@ import { Paragraph } from '../content/paragraph.component';
 import { ButtonGroup } from '../../platform/form/elements/button-group.component';
 import { DisplayValueDirective } from '../../../directives/display-value.directive';
 import { InputLabel } from '../../platform/form/elements/input-label.component';
-// import { Button } from '../../platform/form/elements/button.component';
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
 import { WebContentSvc } from '../../../services/content-management.service';

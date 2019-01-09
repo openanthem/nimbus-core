@@ -26,8 +26,6 @@ import { StaticText } from '../platform/content/static-content.component';
 import { Form } from '../platform/form.component';
 import { Link } from '../platform/link.component';
 import { Menu } from '../platform/menu.component';
-// import { InfiniteScrollGrid } from '../platform/grid/grid.component';
-// import { Button } from '../platform/form/elements/button.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
 import { InputText } from '../platform/form/elements/textbox.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
@@ -50,7 +48,6 @@ import { CheckBox } from '../platform/form/elements/checkbox.component';
 import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.component';
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
-// import { DateControl } from '../platform/form/elements/date.component';
 import { Signature } from '../platform/form/elements/signature.component'
 import { PageService } from '../../services/page.service';
 import { CustomHttpClient } from '../../services/httpclient.service';
@@ -127,7 +124,6 @@ const declarations = [
     Form,
     Link,
     Menu,
-    // InfiniteScrollGrid,
     Button,
     ButtonGroup,
     InputText,
@@ -151,7 +147,6 @@ const declarations = [
     CheckBoxGroup,
     RadioButton,
     Calendar,
-    // DateControl,
     Signature,
     DataTable,
     HeaderCheckBox,

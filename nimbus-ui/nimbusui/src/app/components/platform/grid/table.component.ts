@@ -213,7 +213,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             this.summaryData = data;
         });
 
-        this.pageSvc.gridValueUpdate$.subscribe(event => {
+        this.pageSvc.gridValueUpdate$.subscribe(event => {            
             if (event.path == this.element.path) {
                 this.value = event.gridData.leafState;
                 

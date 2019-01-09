@@ -21,7 +21,6 @@ import { Form } from './form.component';
 import { FrmGroupCmp } from './form-group.component';
 import { Accordion } from '../platform/content/accordion.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
-// import { Button } from '../platform/form/elements/button.component';
 import { FormElement } from './form-element.component';
 import { MessageComponent } from './message/message.component';
 import { DataTable } from './grid/table.component';
@@ -34,7 +33,6 @@ import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.componen
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
-// import { DateControl } from '../platform/form/elements/date.component';
 import { TextArea } from '../platform/form/elements/textarea.component';
 import { Signature } from '../platform/form/elements/signature.component'
 import { InputText } from '../platform/form/elements/textbox.component';
@@ -84,7 +82,7 @@ import { By } from '@angular/platform-browser';
 import { ServiceConstants } from '../../services/service.constants';
 import { PrintService } from '../../services/print.service';
 import { GridService } from '../../services/grid.service';
-import { formElement, formModel } from 'mockdata';
+import { formElement, formModel, textboxnotnullmodel, textboxnotnullelement } from 'mockdata';
 
 class MockLoggerService {
   debug() { }
@@ -156,7 +154,6 @@ const declarations = [
   RadioButton,
   ComboBox,
   Calendar,
-  // DateControl,
   TextArea,
   Signature,
   InputText,
@@ -247,7 +244,8 @@ describe('Form', () => {
     hostComponent.form = new FormGroup({
       calls: new FormControl(),
       medications1: new FormControl(),
-      firstName: new FormControl()
+      firstName: new FormControl(),
+      question1notnull: new FormControl()
    });
     hostComponent.element = formElement as Param;
     hostComponent.model = formModel as Model;
@@ -264,6 +262,9 @@ describe('Form', () => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const nmCounterMessageEle = debugElement.query(By.css('nm-counter-message'));
+    expect(nmCounterMessageEle.attributes['ng-reflect-form']).toBeTruthy();
+    expect(nmCounterMessageEle.attributes['ng-reflect-form'].length).not.toEqual(0);
+    expect(nmCounterMessageEle.attributes['ng-reflect-form']).not.toEqual(null);
     expect(nmCounterMessageEle).toBeTruthy();
   }));
 
@@ -300,6 +301,9 @@ describe('Form', () => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const accordionEle = debugElement.query(By.css('nm-accordion'));
+    expect(accordionEle.attributes['ng-reflect-form']).toBeTruthy();
+    expect(accordionEle.attributes['ng-reflect-form'].length).not.toEqual(0);
+    expect(accordionEle.attributes['ng-reflect-form']).not.toEqual(null);
     expect(accordionEle).toBeTruthy();
   }));
 
@@ -318,6 +322,9 @@ describe('Form', () => {
     const frmGrpEle = debugElement.queryAll(By.css('form nm-frm-grp'));    
     expect(frmGrpEle).toBeTruthy();
     expect(frmGrpEle[5].attributes['ng-reflect-position']).toEqual('2');
+    expect(frmGrpEle[5].attributes['ng-reflect-form']).toBeTruthy();
+    expect(frmGrpEle[5].attributes['ng-reflect-form'].length).not.toEqual(0);
+    expect(frmGrpEle[5].attributes['ng-reflect-form']).not.toEqual(null);
     expect(frmGrpEle.length).toEqual(7);
   }));
 
@@ -339,7 +346,10 @@ describe('Form', () => {
     hostComponent.position = 1;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const frmGrpEle = debugElement.queryAll(By.css('form nm-frm-grp'));    
+    const frmGrpEle = debugElement.queryAll(By.css('form nm-frm-grp'));
+    expect(frmGrpEle[0].attributes['ng-reflect-form']).toBeTruthy();
+    expect(frmGrpEle[0].attributes['ng-reflect-form'].length).not.toEqual(0);
+    expect(frmGrpEle[0].attributes['ng-reflect-form']).not.toEqual(null);
     expect(frmGrpEle).toBeTruthy();    
     expect(frmGrpEle[0].attributes['ng-reflect-position']).toEqual('1');
     expect(frmGrpEle.length).toEqual(7);
@@ -354,6 +364,27 @@ describe('Form', () => {
     const debugElement = fixture.debugElement;
     const frmGrpEle = debugElement.queryAll(By.css('form nm-frm-grp'));
     expect(frmGrpEle.length).toEqual(6);
+  }));
+
+  it('On updating the textbox value the form should be valid', async(() => {
+    const newElement = Object.assign({}, formElement);
+    const newModel = Object.assign({}, formModel);
+    newElement.type.model.params[2].config.type.model.paramConfigIds = ["537", "538", "539", "540", "541", "543", "544"];
+    newElement.type.model.params[2].type.model.params.push(textboxnotnullelement);
+    newModel.params[2].config.type.model.paramConfigIds = ["537", "538", "539", "540", "541", "543", "544"];
+    newModel.params[2].type.model.params.push(textboxnotnullmodel);
+    hostComponent.element = newElement as Param;
+    hostComponent.model = newModel as Model;
+    fixture.detectChanges();
+    const formValue = hostComponent.form.value;
+    expect(formValue).toEqual({"medications1": "", "question1notnull": ""});
+    expect(hostComponent.form.valid).toBeFalsy();
+    const textBox = fixture.debugElement.query(By.css('.form-control.text-input')).nativeElement;
+    textBox.value = 'test-436';
+    textBox.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(hostComponent.form.valid).toBeTruthy();
+    expect(hostComponent.form.value).toEqual({"medications1": "", "question1notnull": "test-436"});
   }));
 
     it('toggle() should update the opened property',  async(() => {

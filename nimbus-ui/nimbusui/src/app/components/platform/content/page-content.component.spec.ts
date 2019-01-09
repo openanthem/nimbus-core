@@ -30,13 +30,11 @@ import { TooltipComponent } from '../tooltip/tooltip.component';
 import { ComboBox } from '../form/elements/combobox.component';
 import { InputText } from '../form/elements/textbox.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
-// import { InfiniteScrollGrid } from '../grid/grid.component';
 import { Accordion } from './accordion.component';
 import { Menu } from '../menu.component';
 import { Link } from '../link.component';
 import { Form } from '../form.component';
 import { StaticText } from './static-content.component';
-// import { Button } from '../form/elements/button.component';
 import { Paragraph } from './paragraph.component';
 import { CardDetailsComponent } from '../card/card-details.component';
 import { CardDetailsGrid } from '../card/card-details-grid.component';
@@ -57,7 +55,6 @@ import { CheckBox } from '../form/elements/checkbox.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
 import { RadioButton } from '../form/elements/radio.component';
 import { Calendar } from '../form/elements/calendar.component';
-// import { DateControl } from '../form/elements/date.component';
 import { Signature } from '../form/elements/signature.component';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
@@ -191,7 +188,6 @@ const declarations = [
   ComboBox,
   InputText,
   ButtonGroup,
-  // InfiniteScrollGrid,
   Accordion,
   Menu,
   Link,
@@ -219,7 +215,6 @@ const declarations = [
   CheckBoxGroup,
   RadioButton,
   Calendar,
-  // DateControl,
   Signature,
   DataTable,
   HeaderCheckBox,

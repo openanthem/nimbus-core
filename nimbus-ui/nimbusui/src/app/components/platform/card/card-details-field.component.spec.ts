@@ -12,7 +12,6 @@ import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from 
 
 import { PageService } from './../../../services/page.service';
 import { CardDetailsFieldComponent } from './card-details-field.component';
-// import { InPlaceEditorComponent } from '../form/elements/inplace-editor.component';
 import { InputText } from '../form/elements/textbox.component';
 import { TextArea } from '../form/elements/textarea.component';
 import { ComboBox } from '../form/elements/combobox.component';

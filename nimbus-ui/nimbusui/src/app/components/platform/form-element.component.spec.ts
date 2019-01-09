@@ -30,7 +30,6 @@ import { CheckBox } from '../platform/form/elements/checkbox.component';
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
-// import { DateControl } from '../platform/form/elements/date.component';
 import { TextArea } from '../platform/form/elements/textarea.component';
 import { Signature } from '../platform/form/elements/signature.component'
 import { InputText } from '../platform/form/elements/textbox.component';
@@ -42,7 +41,6 @@ import { ActionDropdown } from '../platform/form/elements/action-dropdown.compon
 import { TooltipComponent } from '../platform/tooltip/tooltip.component';
 import { SelectItemPipe } from '../../pipes/select-item.pipe';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
-// import { Button } from '../platform/form/elements/button.component';
 import { Accordion } from '../platform/content/accordion.component';
 import { Menu } from '../platform/menu.component';
 import { Link } from '../platform/link.component';
@@ -57,7 +55,6 @@ import { DateTimeFormatPipe } from '../../pipes/date.pipe';
 import { HeaderCheckBox } from '../platform/form/elements/header-checkbox.component';
 import { SvgComponent } from './svg/svg.component';
 import { Image } from './image.component';
-// import { TreeGrid } from './tree-grid/tree-grid.component';
 import { InputSwitch } from './form/elements/input-switch.component';
 import { FormGridFiller } from './form/form-grid-filler.component';
 import { DisplayValueDirective } from '../../directives/display-value.directive';
@@ -156,7 +153,6 @@ const declarations = [
     RadioButton,
     ComboBox,
     Calendar,
-    // DateControl,
     TextArea,
     Signature,
     InputText,
@@ -231,7 +227,6 @@ const declarations = [
     SessionStoreService,
     LoaderService,
     ConfigService,
-    // LoggerService,
     AppInitService,
     MessageService,
     FileService,

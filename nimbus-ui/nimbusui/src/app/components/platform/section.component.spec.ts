@@ -18,8 +18,6 @@ import { Section } from './section.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
 import { InputText } from '../platform/form/elements/textbox.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
-// import { Button } from '../platform/form/elements/button.component';
-// import { InfiniteScrollGrid } from '../platform/grid/grid.component';
 import { Menu } from '../platform/menu.component';
 import { Link } from '../platform/link.component';
 import { Form } from '../platform/form.component';
@@ -47,7 +45,6 @@ import { CheckBox } from '../platform/form/elements/checkbox.component';
 import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.component';
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
-// import { DateControl } from '../platform/form/elements/date.component';
 import { Signature } from '../platform/form/elements/signature.component'
 import { Header } from '../platform/content/header.component';
 import { WebContentSvc } from '../../services/content-management.service';
@@ -117,7 +114,6 @@ const declarations = [
   InputText,
   ButtonGroup,
   Button,
-  // InfiniteScrollGrid,
   Menu,
   Link,
   Form,
@@ -145,7 +141,6 @@ const declarations = [
   CheckBoxGroup,
   RadioButton,
   Calendar,
-  // DateControl,
   Signature,
   Header,
   DataTable,

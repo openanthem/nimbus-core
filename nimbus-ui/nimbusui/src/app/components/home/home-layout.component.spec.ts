@@ -45,7 +45,6 @@ import { LoggerService } from '../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 import { AppInitService } from '../../services/app.init.service'
 import { SvgComponent } from '../platform/svg/svg.component';
-// import { Button } from '../platform/form/elements/button.component';
 import { ActionDropdown, ActionLink } from '../platform/form/elements/action-dropdown.component';
 import { InputLabel } from '../platform/form/elements/input-label.component';
 import { Image } from '../platform/image.component';

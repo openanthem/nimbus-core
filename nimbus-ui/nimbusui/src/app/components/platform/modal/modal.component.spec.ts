@@ -15,12 +15,9 @@ import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from 
 
 import { Modal } from './modal.component';
 import { TooltipComponent } from '../tooltip/tooltip.component';
-// import { Section } from '../section.component';
 import { ComboBox } from '../../platform/form/elements/combobox.component';
 import { InputText } from '../form/elements/textbox.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
-// import { Button } from '../form/elements/button.component';
-// import { InfiniteScrollGrid } from '../grid/grid.component';
 import { Menu } from '../menu.component';
 import { Link } from '../link.component';
 import { Form } from '../form.component';
@@ -47,7 +44,6 @@ import { CheckBox } from '../form/elements/checkbox.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
 import { RadioButton } from '../form/elements/radio.component';
 import { Calendar } from '../form/elements/calendar.component';
-// import { DateControl } from '../form/elements/date.component';
 import { Signature } from '../form/elements/signature.component';
 import { Header } from '../content/header.component';
 import { PageService } from '../../../services/page.service';
@@ -128,7 +124,6 @@ const declarations = [
     InputText,
     ButtonGroup,
     Button,
-    // InfiniteScrollGrid,
     Menu,
     Link,
     Form,
@@ -155,7 +150,6 @@ const declarations = [
     CheckBoxGroup,
     RadioButton,
     Calendar,
-    // DateControl,
     Signature,
     Header,
     DataTable,

@@ -2546,3 +2546,141 @@ export const formModel: any = {
         }
     ]
   };
+
+  export const textboxnotnullmodel: any = {
+    "config": {
+        "active": false,
+        "required": false,
+        "id": "544",
+        "code": "question1notnull",
+        "uiNatures": [],
+        "uiStyles": {
+            "isLink": false,
+            "isHidden": false,
+            "name": "ViewConfig.TextBox",
+            "attributes": {
+                "hidden": false,
+                "readOnly": false,
+                "submitButton": true,
+                "showName": true,
+                "pageSize": 25,
+                "browserBack": false,
+                "showAsLink": false,
+                "help": "",
+                "cssClass": "",
+                "dataEntryField": true,
+                "labelClass": "anthem-label",
+                "alias": "TextBox",
+                "controlId": "",
+                "type": "text",
+                "postEventOnChange": false,
+                "cols": ""
+            }
+        },
+        "type": {
+            "collection": false,
+            "nested": false,
+            "name": "string"
+        },
+        "validation": {
+            "constraints": [
+                {
+                    "name": "NotNull",
+                    "attribute": {
+                        "message": "Field is required.",
+                        "groups": []
+                    }
+                }
+            ]
+        }
+    },
+    "enabled": true,
+    "visible": true,
+    "activeValidationGroups": [],
+    "collectionParams": [],
+    "configId": "544",
+    "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsHistory/vfForm/callSection/question1notnull",
+    "type": {
+        "nested": false,
+        "name": "string",
+        "collection": false
+    },
+    "message": [],
+    "values": [],
+    "labels": [
+        {
+            "locale": "en-US",
+            "text": "Question 1 notnull"
+        }
+    ],
+    "elemLabels": {}
+  };
+  
+  export const textboxnotnullelement:any = {
+    "config": {
+        "active": false,
+        "required": false,
+        "id": "544",
+        "code": "question1notnull",
+        "uiNatures": [],
+        "uiStyles": {
+            "isLink": false,
+            "isHidden": false,
+            "name": "ViewConfig.TextBox",
+            "attributes": {
+                "hidden": false,
+                "readOnly": false,
+                "submitButton": true,
+                "showName": true,
+                "pageSize": 25,
+                "browserBack": false,
+                "showAsLink": false,
+                "help": "",
+                "cssClass": "",
+                "dataEntryField": true,
+                "labelClass": "anthem-label",
+                "alias": "TextBox",
+                "controlId": "",
+                "type": "text",
+                "postEventOnChange": false,
+                "cols": ""
+            }
+        },
+        "type": {
+            "collection": false,
+            "nested": false,
+            "name": "string"
+        },
+        "validation": {
+            "constraints": [
+                {
+                    "name": "NotNull",
+                    "attribute": {
+                        "message": "Field is required.",
+                        "groups": []
+                    }
+                }
+            ]
+        }
+    },
+    "enabled": true,
+    "visible": true,
+    "activeValidationGroups": [],
+    "collectionParams": [],
+    "configId": "544",
+    "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsHistory/vfForm/callSection/question1notnull",
+    "type": {
+        "nested": false,
+        "name": "string",
+        "collection": false
+    },
+    "message": [],
+    "values": [],
+    "labels": [
+        {
+            "locale": "en-US",
+            "text": "Question 1 notnull"
+        }
+    ],
+    "elemLabels": {}
+  };

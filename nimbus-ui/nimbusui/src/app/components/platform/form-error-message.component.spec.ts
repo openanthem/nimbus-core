@@ -35,7 +35,6 @@ import { Form } from './form.component';
 import { FrmGroupCmp } from './form-group.component';
 import { Accordion } from '../platform/content/accordion.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
-// import { Button } from '../platform/form/elements/button.component';
 import { FormElement } from './form-element.component';
 import { MessageComponent } from './message/message.component';
 import { DataTable } from './grid/table.component';
@@ -48,7 +47,6 @@ import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.componen
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
-// import { DateControl } from '../platform/form/elements/date.component';
 import { TextArea } from '../platform/form/elements/textarea.component';
 import { Signature } from '../platform/form/elements/signature.component'
 import { InputText } from '../platform/form/elements/textbox.component';
@@ -143,7 +141,6 @@ const declarations = [ Form,
     RadioButton,
     ComboBox,
     Calendar,
-    // DateControl,
     TextArea,
     Signature,
     InputText,
