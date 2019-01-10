@@ -92,6 +92,7 @@ import { WindowRefService } from '../../../services/window-ref.service';
 import { AppInitService } from '../../../services/app.init.service';
 import { PrintService } from '../../../services/print.service';
 import { tableParams, tableElement, tableGridValueUpdate } from 'mockdata';
+import { GenericDomain } from '../../../model/generic-domain.model';
 
 let configService, pageService, elementRef, objectUtils, domHandler, tableService, cd, param, webContentSvc;
 
@@ -609,7 +610,7 @@ describe('DataTable', () => {
         expect(updatedPaginatorAnchorTags[2].nativeElement.innerText).toEqual('3');
     }));
 
-    it('On click of the nm-header-checkbox should add the ui-state-active class to all the checkboxes', async(() => {
+    it('On click of the nm-header-checkbox should add the ui-state-active class to all the checkboxes and update selectedRows', async(() => {
         hostComponent.element.config.uiStyles.attributes.expandableRows = true;
         hostComponent.element.gridData.leafState[0]['nestedElement'] = true;
         fixture.detectChanges();
@@ -621,6 +622,7 @@ describe('DataTable', () => {
             expect(allCheckBoxEles[i].nativeElement.classList[3] == 'ui-state-active').toBeTruthy();
             expect(allCheckBoxEles[i].nativeElement.classList.length == 4).toBeTruthy();
         }
+        expect(hostComponent.selectedRows).toEqual(hostComponent.element.gridData.leafState);
     }));
 
     it('nm-section should not be created if nested row data is not available', async(() => {
@@ -650,6 +652,23 @@ describe('DataTable', () => {
         const debugElement = fixture.debugElement;
         const postBtnEle = debugElement.query(By.css('.btn.btn-secondary.post-btn'));
         expect(postBtnEle).toBeTruthy();
+    }));
+
+    it('Onclick of post button should call postGridData() and pageService.processEvent', async(() => {
+        hostComponent.element.config.uiStyles.attributes.postButton = true;
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        spyOn(hostComponent, 'postGridData').and.callThrough();
+        spyOn(pageService, 'processEvent').and.callThrough();
+        const resolvedPostButtonUri = ParamUtils.resolveParamUri(hostComponent.element.path, hostComponent.element.config.uiStyles.attributes.postButtonUri);
+        const item: GenericDomain = new GenericDomain();
+        item.addAttribute(hostComponent.element.config.uiStyles.attributes.postButtonTargetPath, ['0', '1']);
+        const postBtnEle = debugElement.query(By.css('.btn.btn-secondary.post-btn'));
+        const allCheckBoxEles = debugElement.queryAll(By.css('.ui-chkbox-box.ui-widget'));
+        allCheckBoxEles[0].nativeElement.click();
+        postBtnEle.nativeElement.click();
+        expect(hostComponent.postGridData).toHaveBeenCalledWith(hostComponent);
+        expect(pageService.processEvent).toHaveBeenCalledWith(resolvedPostButtonUri, null, item, 'POST');
     }));
 
     it('post button should not be created is postButton attribute is configured as false', async(() => {
