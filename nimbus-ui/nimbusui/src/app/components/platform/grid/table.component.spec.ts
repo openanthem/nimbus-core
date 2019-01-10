@@ -309,11 +309,6 @@ describe('DataTable', () => {
 
     it('Filtering should call the inputfilter method', async(() => {
         hostComponent.toggleFilter();
-        hostComponent.inputFilter = (e: any, dt: any, field: string, filterMatchMode: string) => {
-            expect(e.target.value).toEqual('test pet');
-            expect(field).toEqual('petName');
-            expect(filterMatchMode).toEqual('equals');
-        }
         fixture.detectChanges();
         let debugElement = fixture.debugElement;
         spyOn(hostComponent, 'inputFilter').and.callThrough();
@@ -324,10 +319,11 @@ describe('DataTable', () => {
         fixture.detectChanges();
         const divEle1 = debugElement.queryAll(By.css('div.filterHolder')); 
         divEle1[2].childNodes[0].nativeElement.value = 'test pet';
-        divEle1[2].childNodes[0].nativeElement.dispatchEvent(new Event('input'));
-        fixture.detectChanges();
+        const event = new Event('input');
+        divEle1[2].childNodes[0].nativeElement.dispatchEvent(event);
         debugElement = fixture.debugElement;
         expect(hostComponent.inputFilter).toHaveBeenCalled();
+        expect(hostComponent.inputFilter).toHaveBeenCalledWith(event, hostComponent.dt, 'petName', 'equals');
     }));
 
     it('hostComponent._value should update the hostComponent.value', () => {
