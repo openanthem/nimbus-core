@@ -327,6 +327,32 @@ describe('DataTable', () => {
         expect(hostComponent.inputFilter).toHaveBeenCalledWith(event, hostComponent.dt, 'petName', 'equals');
     }));
 
+    it('Onclick of the clear button the clearFilter method should be called and clear the input', async(() => {
+        hostComponent.toggleFilter();
+        fixture.detectChanges();
+        let debugElement = fixture.debugElement;
+        spyOn(hostComponent, 'inputFilter').and.callThrough();
+        for (let i = 0; i < hostComponent.params.length; i++) {
+            hostComponent.params[i].uiStyles.attributes.filter = true;
+        }
+        pageService.emitGridValueUpdate(tableGridValueUpdate);
+        fixture.detectChanges();
+        const allDivEles = debugElement.queryAll(By.css('div.filterHolder'));
+        allDivEles[1].childNodes[0].nativeElement.value = '10/10/2017';
+        const event = new Event('input');
+        allDivEles[1].childNodes[0].nativeElement.dispatchEvent(event);
+        allDivEles[2].childNodes[0].nativeElement.value = 'test pet';
+        allDivEles[2].childNodes[0].nativeElement.dispatchEvent(event);
+        spyOn(hostComponent, 'clearFilter').and.callThrough();
+        allDivEles[1].childNodes[1].nativeElement.click();
+        const allInputEle = document.getElementsByTagName('input');
+        expect(hostComponent.clearFilter).toHaveBeenCalledWith(allInputEle[2], hostComponent.dt, 'ownerName');        
+        allDivEles[2].childNodes[1].nativeElement.click();
+        expect(hostComponent.clearFilter).toHaveBeenCalledWith(allInputEle[3], hostComponent.dt, 'petName');
+        expect(allDivEles[2].childNodes[0].nativeElement.value).toEqual('');
+        expect(allDivEles[1].childNodes[0].nativeElement.value).toEqual('');
+    }));
+
     it('hostComponent._value should update the hostComponent.value', () => {
         hostComponent._value = ['test'];
         expect(hostComponent.value).toEqual(['test']);
