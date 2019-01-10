@@ -157,11 +157,12 @@ class MockPageService {
     }
     postOnChange(a, b, c) { }
     processEvent(a, s, d, f, g) { }
-    logError(a) {        
-        this.gridValueUpdate$.next(a);
-    }
+    logError(a) {}
     notifyErrorEvent(a) {
         this.validationUpdate$.next(a);
+    }
+    emitGridValueUpdate(a) {
+        this.gridValueUpdate$.next(a);
     }
 }
 
@@ -306,6 +307,29 @@ describe('DataTable', () => {
         expect(hostComponent).toBeTruthy();
     });
 
+    it('Filtering should call the inputfilter method', async(() => {
+        hostComponent.toggleFilter();
+        hostComponent.inputFilter = (e: any, dt: any, field: string, filterMatchMode: string) => {
+            expect(e.target.value).toEqual('test pet');
+            expect(field).toEqual('petName');
+            expect(filterMatchMode).toEqual('equals');
+        }
+        fixture.detectChanges();
+        let debugElement = fixture.debugElement;
+        spyOn(hostComponent, 'inputFilter').and.callThrough();
+        for (let i = 0; i < hostComponent.params.length; i++) {
+            hostComponent.params[i].uiStyles.attributes.filter = true;
+        }
+        pageService.emitGridValueUpdate(tableGridValueUpdate);
+        fixture.detectChanges();
+        const divEle1 = debugElement.queryAll(By.css('div.filterHolder')); 
+        divEle1[2].childNodes[0].nativeElement.value = 'test pet';
+        divEle1[2].childNodes[0].nativeElement.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        debugElement = fixture.debugElement;
+        expect(hostComponent.inputFilter).toHaveBeenCalled();
+    }));
+
     it('hostComponent._value should update the hostComponent.value', () => {
         hostComponent._value = ['test'];
         expect(hostComponent.value).toEqual(['test']);
@@ -427,19 +451,13 @@ describe('DataTable', () => {
         expect(thEle).toBeTruthy();
     }));
 
-    // pending
+
     it('span should be created if the filter attribute is configured as true', async(() => {
         hostComponent.toggleFilter();
         fixture.detectChanges();
-        const debugElement = fixture.debugElement;
+        let debugElement = fixture.debugElement;
         const divEle = document.getElementsByClassName('filterHolder');
         expect(divEle[0].parentElement.nodeName).toEqual('SPAN');
-    }));
-
-    it('span should not be created if the filter attribute is configured as false', async(() => {
-        fixture.detectChanges();
-        const debugElement = fixture.debugElement;
-        //expect div is undefined
     }));
 
     it('if the filed type is date then p-calendar should be created and input should not be created', async(() => {
@@ -562,18 +580,51 @@ describe('DataTable', () => {
         expect(sectionEle).toBeTruthy();
     }));
 
-    it('New rows shpuld be added in the table bases on the gridValueUpdate$ subject', async(() => {
+    it('New rows should be added in the table based on the gridValueUpdate$ subject', async(() => {
         hostComponent.element.config.uiStyles.attributes.expandableRows = true;
         hostComponent.element.gridData.leafState[0]['nestedElement'] = true;
         fixture.detectChanges();
         let debugElement = fixture.debugElement;
         const trEles = debugElement.queryAll(By.css('tr'));
-        pageService.logError(tableGridValueUpdate);
+        pageService.emitGridValueUpdate(tableGridValueUpdate);
         fixture.detectChanges();
         const trEles1 = debugElement.queryAll(By.css('tr'));
         const spanEles = debugElement.queryAll(By.css('span'));
         expect(spanEles[40].nativeElement.innerText).toEqual('gridvalueupdate1');
         expect(trEles.length < trEles1.length).toBeTruthy();
+    }));
+
+    it('On updating the records the pagination should be updated', async(() => {
+        hostComponent.element.config.uiStyles.attributes.expandableRows = true;
+        hostComponent.element.gridData.leafState[0]['nestedElement'] = true;
+        fixture.detectChanges();
+        let debugElement = fixture.debugElement;
+        pageService.emitGridValueUpdate(tableGridValueUpdate);
+        fixture.detectChanges();
+        const paginatorAnchorTags = debugElement.queryAll(By.css('a.ui-paginator-page.ui-paginator-element.ui-state-default.ui-corner-all'));
+        expect(paginatorAnchorTags[0].nativeElement.innerText).toEqual('1');
+        expect(paginatorAnchorTags[1].nativeElement.innerText).toEqual('2');
+        tableGridValueUpdate.gridData.leafState.push(tableGridValueUpdate.gridData.leafState[0]);
+        pageService.emitGridValueUpdate(tableGridValueUpdate);
+        fixture.detectChanges();
+        const updatedPaginatorAnchorTags = debugElement.queryAll(By.css('a.ui-paginator-page.ui-paginator-element.ui-state-default.ui-corner-all'));
+        expect(updatedPaginatorAnchorTags[0].nativeElement.innerText).toEqual('1');
+        expect(updatedPaginatorAnchorTags[1].nativeElement.innerText).toEqual('2');
+        expect(updatedPaginatorAnchorTags[2].nativeElement.innerText).toEqual('3');
+    }));
+
+    it('On click of the nm-header-checkbox should add the ui-state-active class to all the checkboxes', async(() => {
+        hostComponent.element.config.uiStyles.attributes.expandableRows = true;
+        hostComponent.element.gridData.leafState[0]['nestedElement'] = true;
+        fixture.detectChanges();
+        let debugElement = fixture.debugElement;
+        const allCheckBoxEles = debugElement.queryAll(By.css('.ui-chkbox-box.ui-widget'));
+        allCheckBoxEles[0].nativeElement.click();
+        fixture.detectChanges();
+        for (let i = 0; i < allCheckBoxEles.length; i ++) {
+            expect(allCheckBoxEles[i].nativeElement.classList[3] == 'ui-state-active').toBeTruthy();
+            expect(allCheckBoxEles[i].nativeElement.classList.length == 4).toBeTruthy();
+        }
     }));
 
     it('nm-section should not be created if nested row data is not available', async(() => {
@@ -765,7 +816,7 @@ describe('DataTable', () => {
             spyOn(hostComponent, 'updatePageDetailsState').and.callThrough();
             hostComponent.element.config.uiStyles.attributes.lazyLoad = true;
             hostComponent.ngAfterViewInit();
-            pageService.logError(eve);
+            pageService.emitGridValueUpdate(eve);
             expect(hostComponent.value).toEqual([]);
             expect(hostComponent.totalRecords).toEqual(100);
             expect(hostComponent.updatePageDetailsState).toHaveBeenCalled();
@@ -779,7 +830,7 @@ describe('DataTable', () => {
         spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
         spyOn(hostComponent, 'updatePageDetailsState').and.callThrough();
         hostComponent.ngAfterViewInit();
-        pageService.logError(eve);
+        pageService.emitGridValueUpdate(eve);
         expect(hostComponent.updatePageDetailsState).not.toHaveBeenCalled();
     });
 
@@ -790,7 +841,7 @@ describe('DataTable', () => {
         spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
         spyOn(hostComponent, 'updatePageDetailsState').and.callThrough();
         hostComponent.ngAfterViewInit();
-        pageService.logError(eve);
+        pageService.emitGridValueUpdate(eve);
         expect(hostComponent.updatePageDetailsState).toHaveBeenCalled();
         expect(hostComponent.dt.first).toEqual(0);
     });
@@ -803,7 +854,7 @@ describe('DataTable', () => {
         spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
         spyOn(hostComponent, 'updatePageDetailsState').and.callThrough();
         hostComponent.ngAfterViewInit();
-        pageService.logError(eve);
+        pageService.emitGridValueUpdate(eve);
         expect(hostComponent.updatePageDetailsState).not.toHaveBeenCalled();
     });
 
