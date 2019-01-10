@@ -15,6 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state;
 
+import java.util.function.Supplier;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,152 +33,56 @@ import com.antheminc.oss.nimbus.domain.model.state.StateHolder.ParamStateHolder.
  *
  */
 public class MappedUnitTest {
-
-	private Mapped<?, ?> testee;
 	
-	private MappedParam<?, ?> mapped;
-	private ParamStateHolder<?> mapsTo;
+	private boolean isUnallowed(Supplier<Object> s) {
+		try {
+			s.get();
+		} catch (InvalidOperationAttemptedException e) {
+			return true;
+		}
+		return false;
+	}
 	
-	@Before
-	public void init() {
-		this.mapped = Mockito.mock(MappedParam.class);
-		this.mapsTo = Mockito.mock(ParamStateHolder.class);
-		this.testee = new Mapped(this.mapped, this.mapsTo);
+	@Test
+	public void testUnallowedAccesses() {
+		MappedParam<?, ?> mapped = Mockito.mock(MappedParam.class);
+		ParamStateHolder<?> mapsTo = Mockito.mock(ParamStateHolder.class);
+		Mapped<?, ?> testee = new Mapped(mapped, mapsTo);
+		
+		Assert.assertTrue(isUnallowed(() -> { testee.handleNotification(null); return null; }));
+		Assert.assertTrue(isUnallowed(() -> testee.requiresConversion()));
+		Assert.assertTrue(isUnallowed(() -> testee.getConfig()));
+		Assert.assertTrue(isUnallowed(() -> testee.getParentModel()));
+		Assert.assertTrue(isUnallowed(() -> testee.getType()));
+		Assert.assertTrue(isUnallowed(() -> testee.findIfCollection()));
+		Assert.assertTrue(isUnallowed(() -> testee.findIfCollectionElem()));
+		Assert.assertTrue(isUnallowed(() -> testee.findIfLeaf()));
+		Assert.assertTrue(isUnallowed(() -> testee.findIfLinked()));
+		Assert.assertTrue(isUnallowed(() -> testee.findIfNested()));
+		Assert.assertTrue(isUnallowed(() -> testee.deregisterConsumer(null)));
+		Assert.assertTrue(isUnallowed(() -> { testee.emitNotification(null); return null; }));
+		Assert.assertTrue(isUnallowed(() -> testee.getValueAccessor()));
+		Assert.assertTrue(isUnallowed(() -> testee.getEventSubscribers()));
+		Assert.assertTrue(isUnallowed(() -> { testee.onStateLoadEvent(); return null; }));
+		Assert.assertTrue(isUnallowed(() -> { testee.onStateChangeEvent(null, null); return null; }));
+		Assert.assertTrue(isUnallowed(() -> { testee.registerConsumer(null); return null; }));
+		Assert.assertTrue(isUnallowed(() -> testee.findModelByPath("")));
+		Assert.assertTrue(isUnallowed(() -> testee.findModelByPath(new String[] { "", "" })));
+		Assert.assertTrue(isUnallowed(() -> testee.getRootDomain()));
+		Assert.assertTrue(isUnallowed(() -> testee.getRootExecution()));
+		Assert.assertTrue(isUnallowed(() -> { testee.initSetup(); return null; }));
+		Assert.assertTrue(isUnallowed(() -> { testee.initState(false); return null; }));
+		Assert.assertTrue(isUnallowed(() -> { testee.setStateInitialized(false); return null; }));
+		Assert.assertTrue(isUnallowed(() -> testee.getLockTemplate()));
+		Assert.assertTrue(isUnallowed(() -> { testee.getAspectHandlers(); return null; }));
 	}
 	
 	@Test
 	public void testGetters() {
-		Assert.assertEquals(this.mapsTo, this.testee.getMapsTo());
-		Assert.assertEquals(this.testee, this.testee.findIfMapped());
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testHandleNotification() {
-		this.testee.handleNotification(null);
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testRequiresConversion() {
-		this.testee.requiresConversion();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testGetConfig() {
-		this.testee.getConfig();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testGetParentModel() {
-		this.testee.getParentModel();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testGetType() {
-		this.testee.getType();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testFindIfCollection() {
-		this.testee.findIfCollection();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testfindIfCollectionElem() {
-		this.testee.findIfCollectionElem();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testFindIfLeaf() {
-		this.testee.findIfLeaf();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testFindIfLinked() {
-		this.testee.findIfLinked();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testFindIfNested() {
-		this.testee.findIfNested();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testDeregisterConsumer() {
-		this.testee.deregisterConsumer(null);
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testEmitNotification() {
-		this.testee.emitNotification(null);
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testGetValueAccessor() {
-		this.testee.getValueAccessor();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testEventSubscribers() {
-		this.testee.getEventSubscribers();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testOnStateLoadEvent() {
-		this.testee.onStateLoadEvent();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testOnStateChangeEvent() {
-		this.testee.onStateChangeEvent(null, null);
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testRegisterConsumer() {
-		this.testee.registerConsumer(null);
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testFindModelByPath() {
-		this.testee.findModelByPath("");
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testFindModelByPathArray() {
-		this.testee.findModelByPath(new String[] { "", "" });
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testGetRootDomain() {
-		this.testee.getRootDomain();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testGetRootExecution() {
-		this.testee.getRootExecution();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testInitSetup() {
-		this.testee.initSetup();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testInitState() {
-		this.testee.initState(false);
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testSetStateInitialized() {
-		this.testee.setStateInitialized(false);
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testGetLockTemplate() {
-		this.testee.getLockTemplate();
-	}
-	
-	@Test(expected = InvalidOperationAttemptedException.class)
-	public void testGetAspectHandlers() {
-		this.testee.getAspectHandlers();
+		MappedParam<?, ?> mapped = Mockito.mock(MappedParam.class);
+		ParamStateHolder<?> mapsTo = Mockito.mock(ParamStateHolder.class);
+		Mapped<?, ?> testee = new Mapped(mapped, mapsTo);
+		Assert.assertEquals(mapsTo, testee.getMapsTo());
+		Assert.assertEquals(testee, testee.findIfMapped());
 	}
 }

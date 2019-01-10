@@ -16,10 +16,16 @@
 package com.antheminc.oss.nimbus.domain.cmd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.FixMethodOrder;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runners.MethodSorters;
+
+import com.antheminc.oss.nimbus.InvalidConfigException;
 
 /**
  * @author Soham Chakravarti
@@ -28,6 +34,9 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CommandTest {
 
+	@Rule
+	public ExpectedException expectedEx = ExpectedException.none();
+	
 	@Test
 	public void t0_relativeUri_complete() {
 		Command in = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
@@ -77,4 +86,69 @@ public class CommandTest {
 		assertEquals("/anthem/fep/icr/p/umcase_view:100"+configUri, out);
 	}
 	
+	@Test
+	public void testToUri() {
+		Command cmd = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
+		assertEquals("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get?b=$execute", cmd.toUri());
+	}
+	
+	@Test
+	public void testToUriMultipleBehaviors() {
+		Command cmd = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
+		cmd.getBehaviors().add(Behavior.$nav);
+		assertEquals("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get?b=$executeAnd$nav", cmd.toUri());
+	}
+	
+	@Test
+	public void testToUriWithEvent() {
+		Command cmd = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
+		cmd.setEvent("someEvent");
+		assertEquals("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get/someEvent?b=$execute", cmd.toUri());
+	}
+	
+	@Test
+	public void testConstructor() {
+		Command cmd = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/_get").getCommand();
+		Command cloned = new Command(cmd);
+		assertNotEquals(cmd, cloned);
+		assertEquals(cmd.getAbsoluteUri(), cloned.getAbsoluteUri());
+		assertEquals(cmd.getAction(), cloned.getAction());
+		assertEquals(cmd.getEvent(), cloned.getEvent());
+		assertEquals(cmd.getBehaviors(), cloned.getBehaviors());
+		assertEquals(cmd.getClientUserId(), cloned.getClientUserId());
+		assertNotNull(cloned.getRoot());
+	}
+	
+	@Test
+	public void testInvalidCommandMissingAction() throws Exception {
+		expectedEx.expect(InvalidConfigException.class);
+		expectedEx.expectMessage("Command with URI: /anthem/p/umcase_view:100 cannot have null Action.");
+		Command cmd = CommandBuilder.withUri("/anthem/p/umcase_view:100").getCommand();
+		cmd.validate();
+	}
+	
+	@Test
+	public void testInvalidCommandMissingBehavior() throws Exception {
+		expectedEx.expect(InvalidConfigException.class);
+		expectedEx.expectMessage("Command with URI: /anthem/org/fep/p/umcase_view:100/_get cannot have null Behavior.");
+		Command cmd = CommandBuilder.withUri("/anthem/org/fep/p/umcase_view:100/_get").getCommand();
+		cmd.setBehaviors(null);
+		cmd.validate();
+	}
+	
+	@Test
+	public void testInvalidCommandMissingAppAlias() throws Exception {
+		expectedEx.expect(InvalidConfigException.class);
+		expectedEx.expectMessage("Command with URI: /anthem/p/umcase_view:100/_get cannot have null AppAlias.");
+		Command cmd = CommandBuilder.withUri("/anthem/p/umcase_view:100/_get").getCommand();
+		cmd.validate();
+	}
+	
+	@Test
+	public void testInvalidCommandMissingDomainAlias() throws Exception {
+		expectedEx.expect(InvalidConfigException.class);
+		expectedEx.expectMessage("Command with URI: /anthem/org/fep/p/_get cannot have null DomainAlias.");
+		Command cmd = CommandBuilder.withUri("/anthem/org/fep/p/_get").getCommand();
+		cmd.validate();
+	}
 }

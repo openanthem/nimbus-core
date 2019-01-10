@@ -47,9 +47,6 @@ public class ParamStateBulkPersistenceEventListener implements BulkEventListener
 
 	@Autowired
 	ModelRepositoryFactory repoFactory;
-	
-	@Getter @Setter
-	List<ModelEvent<Param<?>>> modelEvents;
 
 	public ParamStateBulkPersistenceEventListener(ModelRepositoryFactory repoFactory) {
 		this.repoFactory = repoFactory;
@@ -58,14 +55,17 @@ public class ParamStateBulkPersistenceEventListener implements BulkEventListener
 	@Override
 	public boolean listen(List<AbstractEvent<String, Param<?>>> events) {
 		
-		if(CollectionUtils.isEmpty(events))
+		if(CollectionUtils.isEmpty(events)) {
 			return true;
+		}
+		
 		List<String> domainRootsHandled = new ArrayList<>();
 		
 		events.stream()
 			.filter((event) -> shouldAllow(event.getPayload()))
 			.forEach((event) ->  {
-				if(!domainRootsHandled.contains(event.getPayload().getRootDomain().getConfig().getAlias())) {
+				String alias = event.getPayload().getRootDomain().getConfig().getAlias();
+				if(!domainRootsHandled.contains(alias)) {
 					Repo repo = event.getPayload().getRootDomain().getConfig().getRepo();
 					
 					if(repo != null) {
@@ -74,6 +74,7 @@ public class ParamStateBulkPersistenceEventListener implements BulkEventListener
 						List<ModelEvent<Param<?>>> tempEvents = new ArrayList<>();
 						tempEvents.add(e);
 						handler.handle(tempEvents);
+						domainRootsHandled.add(alias);
 					}
 						
 				}
