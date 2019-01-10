@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 import { Message } from './../../shared/message';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
@@ -435,6 +436,7 @@ describe('DomainFlowCmp', () => {
     hostComponent.actionTray = domainActionTray;
     hostComponent.modalItems = domainModalItems;
     hostComponent.accordions = domainAccordions;
+    hostComponent.hasLayout = true;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const breadcrumb  = debugElement.query(By.css('nm-breadcrumb'));

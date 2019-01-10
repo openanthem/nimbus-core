@@ -51,13 +51,13 @@ export class LayoutResolver implements Resolve<ViewRoot> {
             }
             return this._pageSvc.getFlowLayoutConfig(flowName, routeToDefaultPage).then(layout => {
                 this._logger.debug('layout resolver service flowName can be navigated' + flowName);
-                return this._configSvc.getFlowConfig(layout);
+                return this._configSvc.getFlowConfig(flowName);
             });
         } else {
             this._pageSvc.getLayoutConfigForFlow(flowName);
             return this._pageSvc.layout$.pipe(map(layout => {
                 this._logger.debug('layout resolver service flowName can be navigated' + flowName);
-                return this._configSvc.getFlowConfig(layout);
+                return this._configSvc.getFlowConfig(flowName);
             }),first());
         }
     }

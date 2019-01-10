@@ -27,9 +27,12 @@ import { Link } from '../../link.component';
 import { SvgComponent } from '../../svg/svg.component';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
-import { fieldValueParam } from 'mockdata';
+import { fieldValueParam, MockActionDropdownLink } from 'mockdata';
+import { ServiceConstants } from './../../../../services/service.constants';
+import { By } from '@angular/platform-browser';
+import { ComponentTypes } from './../../../../shared/param-annotations.enum';
 
-let pageservice, configservice, param;
+let pageservice, configservice;
 
 class MockLoggerService {
     debug() { }
@@ -70,9 +73,11 @@ describe('ActionLink', () => {
   });
 
   beforeEach(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
     fixture = TestBed.createComponent(ActionLink);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = fieldValueParam;
+    hostComponent.element = MockActionDropdownLink;
+    hostComponent.param = MockActionDropdownLink.config;
     pageservice = TestBed.get(PageService);
     configservice = TestBed.get(ConfigService);
   });
@@ -99,6 +104,48 @@ describe('ActionLink', () => {
     expect(pageservice.processEvent).not.toHaveBeenCalled();
   }));
 
+  it('should have a label set', async(() => {
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.css('a.mockLink')).nativeElement.innerText).toBe('Edit');
+  }));
+
+  it('should render an external link that opens a new page to google', async(() => {
+    hostComponent.element.enabled = true;
+    hostComponent.element.config.uiStyles.attributes.value = ComponentTypes.external.toString();
+    hostComponent.element.config.uiStyles.attributes.target = '_blank';
+    hostComponent.element.config.uiStyles.attributes.rel = 'nofollow';
+    hostComponent.url = 'https://google.com/';
+    fixture.detectChanges();
+    let linkElement = fixture.debugElement.query(By.css('a.mockLink'));
+    expect(linkElement.nativeElement.target).toBe('_blank');
+    expect(linkElement.nativeElement.rel).toBe('nofollow');
+    expect(linkElement.nativeElement.href).toBe('https://google.com/');
+  }));
+
+  it('should render an disabled link that is nonfunctional', async(() => {
+    hostComponent.element.enabled = false;
+    hostComponent.element.config.uiStyles.attributes.value = ComponentTypes.external.toString();
+    hostComponent.element.config.uiStyles.attributes.rel = 'nofollow';
+    fixture.detectChanges();
+    let linkElement = fixture.debugElement.query(By.css('a.mockLink'));
+    expect(linkElement.nativeElement.rel).toBe('nofollow');
+    expect(linkElement.nativeElement.href).toBeFalsy();
+    expect(linkElement.nativeElement.classList.contains('disabled')).toBeTruthy();
+  }));
+
+  it('should show nm-action-link when a link param visible property is true', async(() => {
+    hostComponent.element.visible = true;
+    fixture.detectChanges();
+    expect(hostComponent.visible).toBeTruthy();
+    expect(fixture.debugElement.query(By.css('a.mockLink'))).toBeDefined();
+  }));
+
+  it('should hide nm-action-link when a link param visible property is false', async(() => {
+    hostComponent.element.visible = false;
+    fixture.detectChanges();
+    expect(hostComponent.visible).toBeFalsy();
+    expect(fixture.debugElement.query(By.css('a.mockLink'))).toBeNull();
+  }));
 });
 
 class MockElementRef {
@@ -202,5 +249,4 @@ describe('ActionDropdown', () => {
     hostComponent.element.enabled = false;
     expect(hostComponent.enabled).toBeFalsy();
   }));
-  
 });
