@@ -54,8 +54,7 @@ public class ConfigConditionalStateChangeHandler extends EvalExprWithCrudActions
 	
 	public ConfigConditionalStateChangeHandler(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
-		setCommandGateway(getBeanResolver().get(CommandExecutorGateway.class));
-		setContextLoader(getBeanResolver().get(ExecutionContextLoader.class));
+		
 	}
 	
 	public void init() {
@@ -68,6 +67,7 @@ public class ConfigConditionalStateChangeHandler extends EvalExprWithCrudActions
 	
 	@Override
 	protected void handleInternal(Param<?> onChangeParam, ConfigConditional configuredAnnotation) {
+		init();
 		
 		boolean isTrue = evalWhen(onChangeParam, configuredAnnotation.when());
 		

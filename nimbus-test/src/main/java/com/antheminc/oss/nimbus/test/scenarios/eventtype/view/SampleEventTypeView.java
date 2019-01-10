@@ -4,7 +4,7 @@ import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
-import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
+import com.antheminc.oss.nimbus.domain.defn.event.EventType;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 import com.antheminc.oss.nimbus.test.domain.defn.extension.EventNoOverrides;
 import com.antheminc.oss.nimbus.test.domain.defn.extension.TestEventType.ConflictingEventOverride;
@@ -34,7 +34,7 @@ public class SampleEventTypeView extends IdLong {
 	})
 	private String attr1;
 	
-	@EventAllowOverride(value = "override allowed event annotation", eventType= OnStateLoad.class)
+	@EventAllowOverride(value = "override allowed event annotation", eventType= EventType.OnStateLoad)
 	private String attr2;
 	
 	@OnStateChangeNoOverride(value = "no override on state change annotation")
@@ -46,7 +46,7 @@ public class SampleEventTypeView extends IdLong {
 	@RedundantEventOverride(value = "redundant event annotaiton")
 	private String attr5;
 	
-	@EventMandatoryOverride(value = "mandatory override event annotation", eventType=OnStateLoad.class)
+	@EventMandatoryOverride(value = "mandatory override event annotation", eventType=EventType.OnStateLoad)
 	private String attr6;
 	
 	
