@@ -77,6 +77,7 @@ import * as data from '../../payload.json';
 import { Param } from '../../shared/param-state';
 import { FormErrorMessage } from './form-error-message.component';
 import { PrintDirective } from '../../directives/print.directive';
+import { TableHeader } from './grid/table-header.component';
 
 let pageService, param: Param;;
 
@@ -153,6 +154,7 @@ const declarations = [
     Calendar,
     // DateControl,
     Signature,
+    TableHeader,
     DataTable,
     HeaderCheckBox,
     SvgComponent,

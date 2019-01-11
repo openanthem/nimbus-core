@@ -76,6 +76,7 @@ import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
 import { LoggerService } from '../../services/logger.service';
 import { By } from '@angular/platform-browser';
+import { TableHeader } from './grid/table-header.component';
 
 let param: Param;
 
@@ -155,6 +156,7 @@ const declarations = [
   InPlaceEditorComponent,
   Signature,
   DataTable,
+  TableHeader,
   HeaderCheckBox,
   SvgComponent,
   Image,

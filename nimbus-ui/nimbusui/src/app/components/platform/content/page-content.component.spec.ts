@@ -1,3 +1,4 @@
+import { TableHeader } from './../grid/table-header.component';
 import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
@@ -222,6 +223,7 @@ const declarations = [
   // DateControl,
   Signature,
   DataTable,
+  TableHeader,
   HeaderCheckBox,
   SvgComponent,
   Image,

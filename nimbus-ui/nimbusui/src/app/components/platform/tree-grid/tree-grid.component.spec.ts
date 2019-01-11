@@ -76,6 +76,7 @@ import { MultiselectCard } from '../form/elements/multi-select-card.component';
 import { FileUploadComponent } from '../fileupload/file-upload.component';
 import { OrderablePickList } from '../form/elements/picklist.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
+import { TableHeader } from '../grid/table-header.component';
 
 let pageService, param;
 
@@ -140,6 +141,7 @@ class MockPageService {
     Menu,
     Accordion,
     DataTable,
+    TableHeader,
     ButtonGroup,
     InputText,
     ComboBox,

@@ -87,6 +87,7 @@ import { setup, TestContext } from '../../setup.spec';
 import { configureTestSuite } from 'ng-bullet';
 import { PrintDirective } from '../../directives/print.directive';
 import { PrintService } from '../../services/print.service';
+import { TableHeader } from '../platform/grid/table-header.component';
 
 let layoutservice, pageservice, router, route;
 
@@ -1169,6 +1170,7 @@ export class MockActivatedRoute implements ActivatedRoute {
     CardDetailsGrid,
     CardDetailsComponent,
     DataTable,
+    TableHeader,
     ButtonGroup,
     FrmGroupCmp,
     Label,

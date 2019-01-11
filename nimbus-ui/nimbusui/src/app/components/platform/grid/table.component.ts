@@ -141,27 +141,15 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         // Set the column headers
         if (this.params) {
             this.params.forEach(column => {
-                column.label = this._wcs.findLabelContentFromConfig(this.element.elemLabels.get(column.id), column.code).text;
-                // Set field and header attributes. TurboTable expects these specific variables.
-                column['field'] = column.code;
-                column['header'] = column.label;
                 if(column.uiStyles) {
                     if (column.uiStyles.attributes.filter) {
                         this.hasFilters = true;
                     }
-                    if (column.uiStyles.attributes.hidden) {
-                        column['exportable'] = false;
-                    } else {
-                        this.columnsToShow ++;
-                        if (TableComponentConstants.allowedColumnStylesAlias.includes(column.uiStyles.attributes.alias)
-                                || column.type.nested === true) {
-                            column['exportable'] = false;
-                        } else {
-                            column['exportable'] = true;
-                        }
-                    }
                     if (column.uiStyles.attributes.rowExpander) {
                         this.rowExpanderKey = column.code;
+                    }
+                    if (!column.uiStyles.attributes.hidden) {
+                        this.columnsToShow ++;
                     }
                 }
             });

@@ -86,6 +86,7 @@ import { setup, TestContext } from '../../../setup.spec';
 import * as data from '../../../payload.json';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { PrintDirective } from '../../../directives/print.directive';
+import { TableHeader } from './table-header.component';
 
 let configService, pageService, elementRef, ngZone, objectUtils, domHandler, tableService, cd, param, webContentSvc;
 
@@ -147,6 +148,7 @@ class MockChangeDetectorRef {
 
 const declarations = [
   DataTable,
+  TableHeader,
   Section,
   ActionDropdown,
   TooltipComponent,
@@ -179,6 +181,7 @@ const declarations = [
   CheckBoxGroup,
   RadioButton,
   Calendar,
+  TableHeader,
   // DateControl,
   Signature,
   Header,
