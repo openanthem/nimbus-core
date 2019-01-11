@@ -1,3 +1,4 @@
+import { TableHeader } from './grid/table-header.component';
 'use strict';
 import { FormsModule, ReactiveFormsModule, AbstractControlDirective, Validators, ValidatorFn, FormGroup, FormControl, NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
 import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, 
@@ -144,6 +145,7 @@ const declarations = [
     FormElement,
     MessageComponent,
     DataTable,
+    TableHeader,
     FileUploadComponent,
     OrderablePickList,
     MultiSelectListBox,

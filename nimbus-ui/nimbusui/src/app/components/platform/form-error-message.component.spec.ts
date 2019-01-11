@@ -1,3 +1,4 @@
+import { TableHeader } from './grid/table-header.component';
 import { By } from '@angular/platform-browser';
 /**
  * @license
@@ -132,6 +133,7 @@ const declarations = [ Form,
     FormElement,
     MessageComponent,
     DataTable,
+    TableHeader,
     FileUploadComponent,
     OrderablePickList,
     MultiselectCard,

@@ -74,6 +74,7 @@ import { Param } from '../../shared/param-state';
 import { FormErrorMessage } from './form-error-message.component';
 import { PrintDirective } from '../../directives/print.directive';
 import { fieldValueParam } from 'mockdata';
+import { TableHeader } from './grid/table-header.component';
 
 let pageService;
 
@@ -148,6 +149,7 @@ const declarations = [
     RadioButton,
     Calendar,
     Signature,
+    TableHeader,
     DataTable,
     HeaderCheckBox,
     SvgComponent,

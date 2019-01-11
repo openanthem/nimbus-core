@@ -74,6 +74,7 @@ import { ConfigService } from '../../services/config.service';
 import { LoggerService } from '../../services/logger.service';
 import { By } from '@angular/platform-browser';
 import { formGroupNmElementInputParam, formGroupNmButtonParam, formGroupnmParagraphParam, formGroupParam, formGroupNmLinkParam, formGroupNmHeaderParam, formGroupNmPickListParam, formGroupNmFormGridFiller, formGroupNestedFrmGrpEle} from 'mockdata';
+import { TableHeader } from './grid/table-header.component';
 
 let param: Param;
 
@@ -151,6 +152,7 @@ const declarations = [
   InPlaceEditorComponent,
   Signature,
   DataTable,
+  TableHeader,
   HeaderCheckBox,
   SvgComponent,
   Image,

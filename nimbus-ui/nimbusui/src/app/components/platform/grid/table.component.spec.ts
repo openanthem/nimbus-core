@@ -93,6 +93,7 @@ import { AppInitService } from '../../../services/app.init.service';
 import { PrintService } from '../../../services/print.service';
 import { tableParams, tableElement, tableGridValueUpdate } from 'mockdata';
 import { GenericDomain } from '../../../model/generic-domain.model';
+import { TableHeader } from './table-header.component';
 
 let configService, pageService, elementRef, objectUtils, domHandler, tableService, cd, param, webContentSvc;
 
@@ -184,6 +185,7 @@ class MockChangeDetectorRef {
 
 const declarations = [
   DataTable,
+  TableHeader,
   Section,
   ActionDropdown,
   TooltipComponent,
@@ -216,6 +218,8 @@ const declarations = [
   CheckBoxGroup,
   RadioButton,
   Calendar,
+  TableHeader,
+  // DateControl,
   Signature,
   Header,
   HeaderCheckBox,

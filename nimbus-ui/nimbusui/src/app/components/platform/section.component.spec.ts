@@ -1,3 +1,4 @@
+import { TableHeader } from './grid/table-header.component';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -144,6 +145,7 @@ const declarations = [
   Signature,
   Header,
   DataTable,
+  TableHeader,
   HeaderCheckBox,
   SvgComponent,
   Image,

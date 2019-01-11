@@ -76,6 +76,7 @@ import { FileUploadComponent } from '../fileupload/file-upload.component';
 import { OrderablePickList } from '../form/elements/picklist.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
 import { fieldValueParam } from 'mockdata';
+import { TableHeader } from '../grid/table-header.component';
 
 let pageService;
 
@@ -140,6 +141,7 @@ class MockPageService {
     Menu,
     Accordion,
     DataTable,
+    TableHeader,
     ButtonGroup,
     InputText,
     ComboBox,
