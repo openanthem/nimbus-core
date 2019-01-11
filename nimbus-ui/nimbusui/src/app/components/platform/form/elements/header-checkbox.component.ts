@@ -226,12 +226,9 @@ export class HeaderCheckBox {
    */
   getMaxRowsAllowed(filteredValuesLength: number): number {
     const pageSize = this.element.config.uiStyles.attributes.pageSize;
-    console.log('TODO: Remove me -> Test 1');
     if (!this.element.config.uiStyles.attributes.headerCheckboxToggleAllPages) {
-      console.log('TODO: Remove me -> Test 2');
       return this.dt.first + pageSize;
     }
-    console.log('TODO: Remove me -> Test 3');
       return filteredValuesLength;
   }
 
