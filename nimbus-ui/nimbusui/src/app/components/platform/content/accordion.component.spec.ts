@@ -1,3 +1,4 @@
+import { TableHeader } from './../grid/table-header.component';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormControl } from '@angular/forms';
@@ -165,6 +166,7 @@ const declarations = [
   OrderablePickList,
   FileUploadComponent,
   DataTable,
+  TableHeader,
   MessageComponent,
   Header,
   Paragraph,
