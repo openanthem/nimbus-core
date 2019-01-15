@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.crossdomainresolver.view;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
@@ -84,4 +85,14 @@ public class VRSampleMultiDomain {
 	private String nested_coll_attr6_action;
 	
 	private List<SampleNested> nested_coll_attr6;
+	
+	@Config(url="/attr7/_replace?rawPayload=\"<!/p/sample_crossdomain_pathresolver/count!>\"")
+	private String attr7_long_action;
+	
+	private Long attr7;
+	
+	@Config(url="/attr8/_replace?rawPayload=\"<!/p/sample_crossdomain_pathresolver/date_attr!>\"")
+	private String attr8_date_action;
+	
+	private LocalDate attr8;
 }
