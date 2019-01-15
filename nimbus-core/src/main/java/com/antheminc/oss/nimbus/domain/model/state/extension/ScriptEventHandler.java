@@ -35,7 +35,6 @@ import com.antheminc.oss.nimbus.domain.defn.extension.Script;
 import com.antheminc.oss.nimbus.domain.defn.extension.Script.Type;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.StateHolder.ParamStateHolder;
-import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadNewHandler;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 
@@ -46,27 +45,26 @@ import lombok.Getter;
  *
  */
 @Getter
-public class ScriptStateLoadNewHandler implements OnStateLoadNewHandler<Script> {
+public class ScriptEventHandler extends EvalExprWithCrudActions<Script> {
 
-	private BeanResolverStrategy beanResolver;
 	private ExpressionEvaluator expressionEvaluator;
 	
 	private static final ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
 	
 	private JustLogit logit = new JustLogit(getClass());
 	
-	public ScriptStateLoadNewHandler(BeanResolverStrategy beanResolver) {
-		this.beanResolver = beanResolver;
+	public ScriptEventHandler(BeanResolverStrategy beanResolver) {
+		super(beanResolver);
 		this.expressionEvaluator = beanResolver.get(ExpressionEvaluator.class);
 	}
 	
 	@Override
-	public void onStateLoadNew(Script configuredAnnotation, Param<?> param) {
-
-		String value = Optional.of(configuredAnnotation.value())
-						.map(StringUtils::trimToNull)
-						.orElseThrow(()->new InvalidConfigException("Script text must not be empty declared on param: "+param));
+	protected void handleInternal(Param<?> param, Script configuredAnnotation) {
 		
+		String value = Optional.of(configuredAnnotation.value())
+				.map(StringUtils::trimToNull)
+				.orElseThrow(()->new InvalidConfigException("Script text must not be empty declared on param: "+param));
+
 		// TODO: strategy pattern
 		try {
 			if(configuredAnnotation.type() == Type.SPEL_INLINE) {
@@ -82,7 +80,6 @@ public class ScriptStateLoadNewHandler implements OnStateLoadNewHandler<Script> 
 		} catch (Exception ex) {
 			throw new FrameworkRuntimeException("Failed to execute script: "+configuredAnnotation+" declared on param: "+param, ex);
 		}
-		
 	}
 	
 	protected void handleSpelInline(String expr, Param<?> param) {
@@ -132,5 +129,6 @@ public class ScriptStateLoadNewHandler implements OnStateLoadNewHandler<Script> 
 		
 		return r;
 	}
+	
 
 }

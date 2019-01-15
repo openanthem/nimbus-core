@@ -32,6 +32,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.RepeatContainer;
+import com.antheminc.oss.nimbus.domain.defn.event.EventType;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 
 import lombok.AccessLevel;
@@ -94,11 +95,14 @@ public class EventAnnotationConfigHandler implements AnnotationConfigHandler {
 		return annotations;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void addIfcontainsAnnotationAsEventType(Annotation ann, Class<? extends Annotation> repeatableMetaAnnotationType, final List<Annotation> annotations) {
-		Class<? extends Annotation>[] attrs = (Class<? extends Annotation>[])AnnotationUtils.getValue(ann, "eventType");
-		if(attrs != null) {
-			if(containsRepeatableMetaAnnotation(attrs, repeatableMetaAnnotationType))
+		Object eventTypes = AnnotationUtils.getValue(ann, "eventType");
+			
+		if(eventTypes != null) {
+			if(!(eventTypes instanceof EventType[]))
+				throw new InvalidConfigException("eventType attribute must contain elements of type "+EventType.class.getName()+" for annotation "+ann);
+				
+			if(containsRepeatableMetaAnnotation((EventType[])eventTypes, repeatableMetaAnnotationType))
 				annotations.add(ann);
 		}
 		else {
@@ -112,14 +116,16 @@ public class EventAnnotationConfigHandler implements AnnotationConfigHandler {
 	 * @param annotatedElement the annotated element
 	 * @param foundAnnotations the already found annotations	
 	 */
-	@SuppressWarnings("unchecked")
 	private void findEventMetaAnnotationRecursively(final Annotation annotation, final Annotation[] declaredAnnotations, Class<? extends Annotation> repeatableMetaAnnotationType, List<Annotation> annotations) {
 		for(Annotation a : declaredAnnotations) {
 			boolean b = a.annotationType() == Event.class || AnnotatedElementUtils.hasAnnotation(a.annotationType(), Event.class);
 			if(b) {
-				Class<? extends Annotation>[] attrs = (Class<? extends Annotation>[])AnnotationUtils.getValue(a, "eventType");
-				if(attrs != null) {
-					if(containsRepeatableMetaAnnotation(attrs, repeatableMetaAnnotationType))
+				Object eventTypes = AnnotationUtils.getValue(a, "eventType");
+				if(eventTypes != null) {
+					if(!(eventTypes instanceof EventType[]))
+						throw new InvalidConfigException("eventType attribute must contain elements of type "+EventType.class.getName()+" for annotation "+a);
+					
+					if(containsRepeatableMetaAnnotation((EventType[])eventTypes, repeatableMetaAnnotationType))
 						annotations.add(annotation);
 					break;
 				}
@@ -130,11 +136,11 @@ public class EventAnnotationConfigHandler implements AnnotationConfigHandler {
 		}
 	}
 
-	private boolean containsRepeatableMetaAnnotation(Class<? extends Annotation>[] attr, Class<? extends Annotation> repeatableMetaAnnotationType) {
-		return Optional.ofNullable(attr)
+	private boolean containsRepeatableMetaAnnotation(EventType[] eventTypes, Class<? extends Annotation> repeatableMetaAnnotationType) {
+		return Optional.ofNullable(eventTypes)
 				.map(Stream::of)
 				.orElse(Stream.empty())
-				.anyMatch(v -> v == repeatableMetaAnnotationType);
+				.anyMatch(e -> e.getAnnotationType() == repeatableMetaAnnotationType);
 		
 	}
 	

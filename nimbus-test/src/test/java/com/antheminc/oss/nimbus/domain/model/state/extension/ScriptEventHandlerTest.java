@@ -28,7 +28,7 @@ import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTest
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ScriptStateLoadNewHandlerTest extends AbstractStateEventHandlerTests {
+public class ScriptEventHandlerTest extends AbstractStateEventHandlerTests {
 
 	@Override
 	protected Command createCommand() {

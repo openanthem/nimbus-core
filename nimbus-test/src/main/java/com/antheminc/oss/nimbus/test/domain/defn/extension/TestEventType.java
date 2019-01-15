@@ -3,15 +3,14 @@ package com.antheminc.oss.nimbus.test.domain.defn.extension;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.Event;
+import com.antheminc.oss.nimbus.domain.defn.event.EventType;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
-import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 
 /**
  * @author Rakesh Patel
@@ -23,7 +22,7 @@ public class TestEventType {
 	@Retention(RUNTIME)
 	@Target(FIELD)
 	@Repeatable(EventNoOverrides.class)
-	@Event(eventType=OnStateLoad.class)
+	@Event(eventType=EventType.OnStateLoad)
 	public @interface EventNoOverride {
 
 		String value() default "";
@@ -36,7 +35,7 @@ public class TestEventType {
 		
 		String value() default "";
 		
-		Class<? extends Annotation>[] eventType() default {OnStateChange.class};
+		EventType[] eventType() default {EventType.OnStateChange};
 	}
 	
 	@Retention(RUNTIME)
@@ -60,7 +59,7 @@ public class TestEventType {
 		
 		String value() default "";
 		
-		Class<? extends Annotation>[] eventType() default {OnStateLoad.class};
+		EventType[] eventType() default {EventType.OnStateLoad};
 	}
 	
 	/**
@@ -75,7 +74,7 @@ public class TestEventType {
 		
 		String value() default "";
 		
-		Class<? extends Annotation>[] eventType() default {OnStateChange.class};
+		EventType[] eventType() default {EventType.OnStateChange};
 	}
 	
 	/**
@@ -90,7 +89,7 @@ public class TestEventType {
 		
 		String value() default "";
 		
-		Class<? extends Annotation>[] eventType() default {};
+		EventType[] eventType() default {};
 	}
 }
 
