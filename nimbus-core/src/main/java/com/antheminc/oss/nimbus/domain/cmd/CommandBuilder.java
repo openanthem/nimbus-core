@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.cmd;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -56,6 +57,26 @@ public class CommandBuilder {
 		CommandBuilder cb = new CommandBuilder(new Command(absoluteUri));
 		cb.handleUriAndParamsIfAny(absoluteUri);
 		return cb;
+	}
+	
+	public static CommandBuilder withCommand(Command cmd) {
+		CommandBuilder cb = new CommandBuilder(cmd);
+		cb.handleUriAndParamsIfAny(cmd.getAbsoluteUri());
+		return cb;
+	}
+	
+	/**
+	 * Builds a CommandBuilder by appending a given platform path to a uri untill a given end CommandElementType 
+	 * @param rootCmd
+	 * @param endWhenType
+	 * @param appendPath
+	 * @return
+	 */
+	public static CommandBuilder withPlatformRelativePath(Command rootCmd, Type endWhenType, String appendPath) {
+		String hostUri = rootCmd.buildUri(endWhenType);
+		StringBuilder absoluteUri = new StringBuilder(hostUri);
+		absoluteUri.append(appendPath);
+		return withUri(absoluteUri.toString());	
 	}
 	
 	public static CommandBuilder withDomainRelativePath(Command rootCmd, String domainRelPath) {
@@ -233,4 +254,13 @@ public class CommandBuilder {
 		return this;
 	}
 	
+	public CommandBuilder setAction(Action action) {
+		cmd.setAction(action);
+		return withCommand(cmd);
+	}
+	
+	public CommandBuilder setBehaviors(List<Behavior> behaviors) {
+		cmd.setBehaviors(behaviors);
+		return withCommand(cmd);
+	}
 }
