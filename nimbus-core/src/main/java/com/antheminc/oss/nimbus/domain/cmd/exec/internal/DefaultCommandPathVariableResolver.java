@@ -207,13 +207,11 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 	 * @since 1.1.11
 	 */
 	protected Object mapCrossDomain(Param<?> commandParam, String pathToResolve) {
-		String hostUri = commandParam.getRootExecution().getRootCommand().buildUri(Type.AppAlias);
-		StringBuilder uri = new StringBuilder(hostUri);
-		uri.append(pathToResolve);
-		
-		Command cmd = CommandBuilder.withUri(uri.toString()).getCommand();
-		cmd.setAction(Action._get);
-		cmd.setBehaviors(new LinkedList<>(Arrays.asList(Behavior.$state)));
+		Command rootCmd = commandParam.getRootExecution().getRootCommand();
+		CommandBuilder cmdBuilder = CommandBuilder.withPlatformRelativePath(rootCmd, Type.AppAlias, pathToResolve);
+		cmdBuilder.setAction(Action._get);
+		cmdBuilder.setBehaviors(new LinkedList<>(Arrays.asList(Behavior.$state)));
+		Command cmd = cmdBuilder.getCommand();
 		CommandMessage cmdMsg = new CommandMessage(cmd, null);		
 		MultiOutput output = executorGateway.execute(cmdMsg);
 		Object response = output.getSingleResult();
