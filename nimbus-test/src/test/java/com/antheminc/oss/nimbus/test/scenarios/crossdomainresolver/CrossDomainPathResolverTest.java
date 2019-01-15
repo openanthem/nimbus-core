@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -278,13 +279,42 @@ public class CrossDomainPathResolverTest extends AbstractStateEventHandlerTests 
 		assertEquals("yellow", multi_root_param.findParamByPath("/attr3").getState());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void t10_resolve_attr_long() {
-		//TODO
+		Param<Long> count_param = _q.getRoot().findParamByPath("/sample_crossdomain_pathresolver/count");
+		count_param.setState(new Long("99"));
+		
+		Holder<MultiOutput> multi_new_resp = (Holder<MultiOutput>) controller.handleGet(createRequest(SAMPLE_VIEW_MULTI_PARAM_ROOT, Action._new), null);
+		assertNotNull(multi_new_resp);
+		
+		controller.handleGet(createRequest(SAMPLE_VIEW_MULTI_PARAM_ROOT+"/attr7_long_action", Action._get), null);	
+		
+		Holder<MultiOutput> multi_get_resp = (Holder<MultiOutput>) controller.handleGet(createRequest(SAMPLE_VIEW_MULTI_PARAM_ROOT, Action._get), null);
+		assertNotNull(multi_get_resp);
+		final MultiOutput singleOut = MultiOutput.class.cast(Holder.class.cast(multi_get_resp).getState());
+		Param<?> multi_root_param = (Param<?>) singleOut.getSingleResult();
+		assertNotNull(multi_root_param);
+		assertEquals(new Long("99"), multi_root_param.findParamByPath("/attr7").getState());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void t11_resolve_attr_date() {
-		//TODO
+		Param<LocalDate> date_param = _q.getRoot().findParamByPath("/sample_crossdomain_pathresolver/date_attr");
+		LocalDate now = LocalDate.now();
+		date_param.setState(now);
+		
+		Holder<MultiOutput> multi_new_resp = (Holder<MultiOutput>) controller.handleGet(createRequest(SAMPLE_VIEW_MULTI_PARAM_ROOT, Action._new), null);
+		assertNotNull(multi_new_resp);
+		
+		controller.handleGet(createRequest(SAMPLE_VIEW_MULTI_PARAM_ROOT+"/attr8_date_action", Action._get), null);	
+		
+		Holder<MultiOutput> multi_get_resp = (Holder<MultiOutput>) controller.handleGet(createRequest(SAMPLE_VIEW_MULTI_PARAM_ROOT, Action._get), null);
+		assertNotNull(multi_get_resp);
+		final MultiOutput singleOut = MultiOutput.class.cast(Holder.class.cast(multi_get_resp).getState());
+		Param<?> multi_root_param = (Param<?>) singleOut.getSingleResult();
+		assertNotNull(multi_root_param);
+		assertEquals(now, multi_root_param.findParamByPath("/attr8").getState());
 	}
 }

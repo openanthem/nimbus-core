@@ -15,6 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -208,15 +210,10 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 		String hostUri = commandParam.getRootExecution().getRootCommand().buildUri(Type.AppAlias);
 		StringBuilder uri = new StringBuilder(hostUri);
 		uri.append(pathToResolve);
-		/* action */
-		uri.append(Constants.SEPARATOR_URI.code).append(Action._get.name()); // /_get
 		
-		/* behavior */
-		uri.append(Constants.REQUEST_PARAMETER_MARKER.code).append(Constants.MARKER_URI_BEHAVIOR.code)
-			.append(Constants.PARAM_ASSIGNMENT_MARKER.code); // ?b=
-		uri.append(Behavior.$state.name()); // '$state'
-				
 		Command cmd = CommandBuilder.withUri(uri.toString()).getCommand();
+		cmd.setAction(Action._get);
+		cmd.setBehaviors(new LinkedList<>(Arrays.asList(Behavior.$state)));
 		CommandMessage cmdMsg = new CommandMessage(cmd, null);		
 		MultiOutput output = executorGateway.execute(cmdMsg);
 		Object response = output.getSingleResult();
