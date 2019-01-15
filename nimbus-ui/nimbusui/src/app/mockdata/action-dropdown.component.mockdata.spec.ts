@@ -1,4 +1,4 @@
-export const ActionDropdownLink = {
+export const MockActionDropdownLink = {
     "activeValidationGroups": [],
     "alias": "Link",
     "collectionParams": [],

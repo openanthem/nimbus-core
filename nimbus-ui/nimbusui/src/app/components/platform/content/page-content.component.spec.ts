@@ -31,13 +31,11 @@ import { TooltipComponent } from '../tooltip/tooltip.component';
 import { ComboBox } from '../form/elements/combobox.component';
 import { InputText } from '../form/elements/textbox.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
-// import { InfiniteScrollGrid } from '../grid/grid.component';
 import { Accordion } from './accordion.component';
 import { Menu } from '../menu.component';
 import { Link } from '../link.component';
 import { Form } from '../form.component';
 import { StaticText } from './static-content.component';
-// import { Button } from '../form/elements/button.component';
 import { Paragraph } from './paragraph.component';
 import { CardDetailsComponent } from '../card/card-details.component';
 import { CardDetailsGrid } from '../card/card-details-grid.component';
@@ -58,7 +56,6 @@ import { CheckBox } from '../form/elements/checkbox.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
 import { RadioButton } from '../form/elements/radio.component';
 import { Calendar } from '../form/elements/calendar.component';
-// import { DateControl } from '../form/elements/date.component';
 import { Signature } from '../form/elements/signature.component';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
@@ -83,9 +80,9 @@ import { InputLegend } from '../form/elements/input-legend.component';
 import { FormErrorMessage } from '../form-error-message.component';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
-import * as data from '../../../payload.json';
 import { PrintDirective } from '../../../directives/print.directive';
 import { PrintService } from '../../../services/print.service';
+import { fieldValueParam } from 'mockdata';
 
 let logger, pageService, param, printService;
 
@@ -192,7 +189,6 @@ const declarations = [
   ComboBox,
   InputText,
   ButtonGroup,
-  // InfiniteScrollGrid,
   Accordion,
   Menu,
   Link,
@@ -220,7 +216,6 @@ const declarations = [
   CheckBoxGroup,
   RadioButton,
   Calendar,
-  // DateControl,
   Signature,
   DataTable,
   TableHeader,
@@ -284,12 +279,10 @@ describe('PageContent', () => {
     setup( declarations, imports, providers);
   });
 
-     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
-
   beforeEach(() => {
     fixture = TestBed.createComponent(PageContent);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = param;
+    hostComponent.element = fieldValueParam;
     logger = TestBed.get(LoggerService);
     pageService = TestBed.get(PageService)
     printService = TestBed.get(PrintService);
