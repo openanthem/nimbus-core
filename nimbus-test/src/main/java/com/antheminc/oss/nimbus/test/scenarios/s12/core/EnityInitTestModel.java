@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.antheminc.oss.nimbus.test.scenarios.s12.core;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
@@ -9,6 +6,7 @@ import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
+import com.antheminc.oss.nimbus.domain.defn.event.EventType;
 import com.antheminc.oss.nimbus.domain.defn.extension.ConfigConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.Script;
 import com.antheminc.oss.nimbus.domain.defn.extension.Script.Type;
@@ -37,9 +35,10 @@ public class EnityInitTestModel extends IdLong{
 	@Script(type=Type.SPEL_INLINE, value="findParamByPath('/parameter2').setState('Value2')")
 	@Getter @Setter
 	public static class Action1{
-		@ConfigConditional(
-				config= {@Config(url="/inline_para/parameter3/_process?fn=_set&value=Value3")}
-		)
+//		@ConfigConditional(
+//				config= {@Config(url="/inline_para/parameter3/_process?fn=_set&value=Value3")}
+//		)
+		@Script(type=Type.SPEL_INLINE, value="findParamByPath('/../parameter2').getState() == 'Value2' ? findParamByPath('/../parameter3').setState('Value3'):''", eventType=EventType.OnStateChange)
 		private String parameter2;
 		
 		private String parameter3;
