@@ -18,11 +18,18 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal.search;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
@@ -93,24 +100,57 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		return (R) searchResult.get(0).getParamValues();
 	}
 	
+//	private R getDynamicParamValues(LookupSearchCriteria lookupSearchCriteria, Class<?> criteriaClass, List<?> searchResult) {
+//		List<String> list = new ArrayList<String>(lookupSearchCriteria.getProjectCriteria().getMapsTo().values());
+//		
+//		if(list.size() > 2)
+//			throw new IllegalStateException("ParamValues lookup failed due to more than 2 fields provided to create the param values. the criteria class is "+criteriaClass);
+//		
+//		PropertyDescriptor codePd = CustomBeanUtils.getPropertyDescriptor(criteriaClass, list.get(0));
+//		PropertyDescriptor labelPd = CustomBeanUtils.getPropertyDescriptor(criteriaClass, list.get(1));
+//		String[] names = list.get(1).split("\\.");
+//		try {
+//			List<ParamValue> paramValues = new ArrayList<>();
+//			Object mod;
+//			for(Object model: searchResult) {
+//				if(names.length > 1) {
+//					mod = PropertyUtils.getProperty(model, names[names.length - 2]);
+//				} else {
+//					mod = model;
+//				}
+//				paramValues.add(new ParamValue(codePd.getReadMethod().invoke(model).toString(),labelPd.getReadMethod().invoke(mod).toString()));
+//			}
+//			return (R)paramValues;
+//		}
+//		catch(Exception ex) {
+//			throw new FrameworkRuntimeException("Failed to execute read on property: "+codePd+" and "+labelPd, ex);
+//		}
+//	}
+	
 	private R getDynamicParamValues(LookupSearchCriteria lookupSearchCriteria, Class<?> criteriaClass, List<?> searchResult) {
 		List<String> list = new ArrayList<String>(lookupSearchCriteria.getProjectCriteria().getMapsTo().values());
-		
+
 		if(list.size() > 2)
-			throw new IllegalStateException("ParamValues lookup failed due to more than 2 fields provided to create the param values. the criteria class is "+criteriaClass);
+		throw new IllegalStateException("ParamValues lookup failed due to more than 2 fields provided to create the param values. the criteria class is "+criteriaClass);
 		
-		PropertyDescriptor codePd = BeanUtils.getPropertyDescriptor(criteriaClass, list.get(0));
-		PropertyDescriptor labelPd = BeanUtils.getPropertyDescriptor(criteriaClass, list.get(1));
-		
+		String cd = list.get(0).replaceAll("\\.", "\\?.");
+		String lb = list.get(1).replaceAll("\\.", "\\?.");
 		try {
 			List<ParamValue> paramValues = new ArrayList<>();
 			for(Object model: searchResult) {
-				paramValues.add(new ParamValue(codePd.getReadMethod().invoke(model).toString(), (String)labelPd.getReadMethod().invoke(model)));
+				StandardEvaluationContext context = new StandardEvaluationContext(model);
+				ExpressionParser expressionParser = new SpelExpressionParser();
+	
+				Object code = expressionParser.parseExpression(cd).getValue(context);
+				Object label = expressionParser.parseExpression(lb).getValue(context);
+				if(code!= null && label !=null) {
+					paramValues.add(new ParamValue(code.toString(), label.toString()));
+				}
 			}
 			return (R)paramValues;
 		}
 		catch(Exception ex) {
-			throw new FrameworkRuntimeException("Failed to execute read on property: "+codePd+" and "+labelPd, ex);
+			throw new FrameworkRuntimeException("Failed to parse property - code: "+list.get(0)+" and label: "+list.get(1), ex);
 		}
 	}
 	
