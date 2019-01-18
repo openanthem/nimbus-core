@@ -256,6 +256,9 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		assertNotNull(values1);
 		assertEquals(2, values1.size());
+		
+		assertEquals("nestedAttribute1", values1.get(0).getLabel());
+		assertEquals("nestedAttribute2", values1.get(1).getLabel());
 	
 	}
 	
