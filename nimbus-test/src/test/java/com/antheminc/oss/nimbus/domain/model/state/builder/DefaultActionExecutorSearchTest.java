@@ -260,6 +260,15 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		assertEquals("nestedAttribute1", values1.get(0).getLabel());
 		assertEquals("nestedAttribute2", values1.get(1).getLabel());
 	
+		
+		CommandMessage cmdMsg2 = build(PLATFORM_ROOT+"/sample_domain/_search?fn=lookup&projection.mapsTo=code:id,label:attr_NestedEntity.nested_attr_String2");
+		try {
+			MultiOutput multiOp2 = this.commandGateway.execute(cmdMsg2);
+			List<Output<?>> ops2  = multiOp2.getOutputs();
+		} catch(Exception ex) {
+			assertNotNull(ex);
+			assertEquals(ex.getCause().getMessage(),"EL1008E: Property or field 'nested_attr_String2' cannot be found on object of type 'com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleNestedDomain' - maybe not public or not valid?");
+		}
 	}
 	
 	@Test
