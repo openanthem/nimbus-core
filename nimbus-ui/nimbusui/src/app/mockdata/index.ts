@@ -13,3 +13,5 @@ export * from './form-error-message.component.mockdata.spec';
 export * from './button-group.component.mockdata.spec';
 export * from './form-group.component.mockdata.spec';
 export * from './action-dropdown.component.mockdata.spec';
+export * from './button.component.mockdata.spec';
+export * from './calendar.component.mockdata.spec';

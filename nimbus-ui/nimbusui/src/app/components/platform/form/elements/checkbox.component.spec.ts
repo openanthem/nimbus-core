@@ -20,8 +20,17 @@ import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
 import { Param } from '../../../../shared/param-state';
 import { fieldValueParam } from 'mockdata';
+import { By } from '@angular/platform-browser';
+import { ServiceConstants } from '../../../../services/service.constants';
+import { WindowRefService } from './../../../../services/window-ref.service';
 
 let param: Param;
+
+class MockLoggerService {
+  debug() { }
+  info() { }
+  error() { }
+}
 
 const declarations = [
   CheckBox,
@@ -37,14 +46,15 @@ const declarations = [
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   { provide: 'JSNLOG', useValue: JL },
   { provide: LocationStrategy, useClass: HashLocationStrategy },
+  {provide: LoggerService, useClass: MockLoggerService},
   Location,
   PageService,
   CustomHttpClient,
   LoaderService,
   ConfigService,
-  LoggerService,
   SessionStoreService,
-  AppInitService
+  AppInitService,
+  WindowRefService
  ];
  let fixture, hostComponent;
 describe('CheckBox', () => {
@@ -57,11 +67,97 @@ describe('CheckBox', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckBox);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = fieldValueParam;
+    hostComponent.element = checkboxElement as Param;
   });
 
   it('should create the CheckBox', async(() => {
     expect(hostComponent).toBeTruthy();
   }));
 
+it('input should be created', async(() => {
+  fixture.detectChanges();
+  const debugElement = fixture.debugElement;
+  const inputEle = debugElement.query(By.css('input'));
+  expect(inputEle).toBeTruthy();
+}));
+
+it('change event on input should call emitValueChangedEvent()', async(() => {
+  fixture.detectChanges();
+  const debugElement = fixture.debugElement;
+  spyOn(hostComponent, 'emitValueChangedEvent').and.callThrough();
+  const inputEle = debugElement.query(By.css('input')).nativeElement;
+  inputEle.click();
+    expect(hostComponent.emitValueChangedEvent).toHaveBeenCalled();
+}));
+
+it('nm-tooltip should be created if helpText is configured', async(() => {
+  ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+  fixture.detectChanges();
+  const debugElement = fixture.debugElement;
+  const tooltipEle = debugElement.query(By.css('nm-tooltip'));
+  expect(tooltipEle).toBeTruthy();
+}));
+
+it('nm-tooltip should not be created if helpText is not configured', async(() => {
+  ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+  hostComponent.element.labels = [];
+  fixture.detectChanges();
+  const debugElement = fixture.debugElement;
+  const tooltipEle = debugElement.query(By.css('nm-tooltip'));
+  expect(tooltipEle).toBeFalsy();
+}));
+
 });
+
+const checkboxElement: any = {
+  "config": {
+      "active": false,
+      "required": false,
+      "id": "561",
+      "code": "admin",
+      "validations": null,
+      "uiNatures": [],
+      "uiStyles": {
+          "isLink": false,
+          "isHidden": false,
+          "name": "ViewConfig.CheckBox",
+          "attributes": {
+              "hidden": false,
+              "readOnly": false,
+              "submitButton": true,
+              "showName": true,
+              "pageSize": 25,
+              "browserBack": false,
+              "showAsLink": false,
+              "help": "testing tool tip",
+              "cssClass": "",
+              "dataEntryField": true,
+              "labelClass": "anthem-label",
+              "alias": "CheckBox",
+              "controlId": "",
+              "postEventOnChange": true,
+              "cols": ""
+          }
+      },
+      "type": {
+          "collection": false,
+          "nested": false,
+          "name": "boolean"
+      }
+  },
+  "enabled": true,
+  "visible": true,
+  "activeValidationGroups": [],
+  "collectionParams": [],
+  "configId": "561",
+  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsHistory/vfForm/admin",
+  "type": {},
+  "message": [],
+  "values": [],
+  "labels": [      {
+    "locale": "en-US",
+    "text": "Please rate each part of your visit:",
+    "helpText": "testing tooltip"
+  }],
+  "elemLabels": {}
+};

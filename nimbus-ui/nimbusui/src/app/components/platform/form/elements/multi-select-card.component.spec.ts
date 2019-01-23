@@ -20,6 +20,7 @@ import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
 import { FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms';
 import { fieldValueParam } from 'mockdata';
+import { By } from '@angular/platform-browser';
 
 let param, pageService;
 
@@ -66,14 +67,37 @@ describe('MultiselectCard', () => {
     const fg = new FormGroup({});
     const checks: ValidatorFn[] = [];
     checks.push(Validators.required);
-    fg.addControl(fieldValueParam.config.code, new FormControl(fieldValueParam.leafState, checks));
+    fg.addControl(multiselectCardElement.config.code, new FormControl(multiselectCardElement.leafState, checks));
     hostComponent.form = fg;
-    hostComponent.element = fieldValueParam;
+    hostComponent.element = multiselectCardElement;
     pageService = TestBed.get(PageService);
   });
 
   it('should create the MultiselectCard', async(() => {
     expect(hostComponent).toBeTruthy();
+  }));
+
+  it('span to display code should be created', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const allSpanEles = debugElement.queryAll(By.css('span'));
+    expect(allSpanEles[0].nativeElement.innerText).toEqual('testingmulticard');
+  }));
+
+  it('span to display value should be created', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const allSpanEles = debugElement.queryAll(By.css('span'));
+    expect(allSpanEles[1].nativeElement.innerText).toEqual('testing multi select card label');
+  }));
+
+  it('onClick of anchor tag should call selectOption()', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const anchorEle = debugElement.query(By.css('a'));
+    spyOn(hostComponent, 'selectOption').and.callThrough()
+    anchorEle.nativeElement.click();
+    expect(hostComponent.selectOption).toHaveBeenCalledWith('testingmulticard', hostComponent);
   }));
 
   it('set value() should update the value property', async(() => {
@@ -131,18 +155,69 @@ describe('MultiselectCard', () => {
       });
     });
 
-    // it('ngOnInit() should update the selectedOptions and call form.controls.a.setValue()', () => {
-    //   fixture.whenStable().then(() => {
-    //     hostComponent.element.leafState = '';
-    //     hostComponent.element.path = 'test';
-    //     spyOn(hostComponent, 'setState').and.returnValue('');
-    //     spyOn(hostComponent.form.controls.firstName, 'setValue').and.callThrough();
-    //     const eve = { config: { code: 'firstName' }, path: 'test', leafState: '' };
-    //     hostComponent.ngOnInit();
-    //     pageService.logError(eve);
-    //     expect((hostComponent as any).selectedOptions).toEqual('');
-    //     expect(hostComponent.form.controls.firstName.setValue).toHaveBeenCalled();
-    //   });
-    // });
+    it('ngOnInit() should update the selectedOptions and call form.controls.a.setValue()', () => {
+      fixture.whenStable().then(() => {
+        hostComponent.element.leafState = '';
+        hostComponent.element.path = 'test';
+        spyOn(hostComponent, 'setState').and.returnValue('');
+        spyOn(hostComponent.form.controls.firstName, 'setValue').and.callThrough();
+        const eve = { config: { code: 'firstName' }, path: 'test', leafState: '' };
+        hostComponent.ngOnInit();
+        pageService.logError(eve);
+        expect((hostComponent as any).selectedOptions).toEqual('');
+        expect(hostComponent.form.controls.firstName.setValue).toHaveBeenCalled();
+      });
+    });
     
 });
+
+const multiselectCardElement: any = {
+  "config": {
+      "active": false,
+      "required": false,
+      "id": "594",
+      "code": "testingmulticard",
+      "validations": null,
+      "uiNatures": [],
+      "uiStyles": {
+          "isLink": false,
+          "isHidden": false,
+          "name": "ViewConfig.MultiSelectCard",
+          "attributes": {
+              "hidden": false,
+              "readOnly": false,
+              "submitButton": true,
+              "showName": true,
+              "pageSize": 25,
+              "browserBack": false,
+              "showAsLink": false,
+              "cssClass": "",
+              "dataEntryField": true,
+              "alias": "MultiSelectCard"
+          }
+      },
+      "type": {
+          "collection": false,
+          "nested": false,
+          "name": "string"
+      }
+  },
+  "enabled": true,
+  "visible": true,
+  "activeValidationGroups": [],
+  "collectionParams": [],
+  "configId": "594",
+  "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/testingmulticard",
+  "type": {
+      "nested": false,
+      "name": "string",
+      "collection": false
+  },
+  "message": [],
+  "values": [{
+    "code": "testingmulticard",
+    "label": "testing multi select card label" 
+  }],
+  "labels": [],
+  "elemLabels": {}
+};

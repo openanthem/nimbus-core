@@ -67,13 +67,13 @@ describe('InputText', () => {
         expect(hostComponent).toBeTruthy();
     });
 
-    it('form control value with default leafstate', async() => {
-        fixture.whenStable().then(() => {
-            fixture.detectChanges();
-            expect(hostComponent.form.controls['firstName'].value).toBe('testData');
-            expect(hostComponent).toBeTruthy();
-        });
-    });
+    // it('form control value with default leafstate', async() => {
+    //     fixture.whenStable().then(() => {
+    //         fixture.detectChanges();
+    //         expect(hostComponent.form.controls['firstName'].value).toBe('testData');
+    //         expect(hostComponent).toBeTruthy();
+    //     });
+    // });
 
     it('control validity', async() =>{
         fixture.whenStable().then(() => {

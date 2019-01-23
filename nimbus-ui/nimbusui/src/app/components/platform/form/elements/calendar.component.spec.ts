@@ -21,7 +21,9 @@ import { AppInitService } from '../../../../services/app.init.service';
 import { InputLabel } from './input-label.component';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
-import { fieldValueParam } from 'mockdata';
+import { calendarElement } from 'mockdata';
+import { By } from '@angular/platform-browser';
+import { ServiceConstants } from '../../../../services/service.constants';
 
 const declarations = [
   Calendar,
@@ -59,18 +61,42 @@ describe('Calendar', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(Calendar);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = fieldValueParam;
+    hostComponent.element = calendarElement as Param;
   });
 
   it('should create the Calendar', async(() => {
     expect(hostComponent).toBeTruthy();
   }));
 
-  // it('ngOnInit() should call applyDateConstraint()', async(() => {
-  //   const spy = spyOn((hostComponent as any), 'applyDateConstraint').and.returnValue('');
-  //   hostComponent.ngOnInit();
-  //   expect(spy).toHaveBeenCalled();
-  // }));
+  it('nm-input-label should be created if the label is configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('nm-input-label'));
+    expect(labelEle).toBeTruthy();
+  }));
+
+  it('nm-input-label should not be created if the label is not configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    hostComponent.element.labels = [];
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('nm-input-label'));
+    expect(labelEle).toBeFalsy();
+  }));
+
+  it('p-calendar should be created', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const pCalendarEle = debugElement.query(By.css('p-calendar'));
+    expect(pCalendarEle).toBeTruthy();
+  }));
+
+  it('ngOnInit() should call applyDateConstraint()', async(() => {
+    const spy = spyOn((hostComponent as any), 'applyDateConstraint').and.returnValue('');
+    hostComponent.ngOnInit();
+    expect(spy).toHaveBeenCalled();
+  }));
 
   it('ngOnInit() should update minDate and maxDate', async(() => {
     (hostComponent as any).getConstraint = () => {

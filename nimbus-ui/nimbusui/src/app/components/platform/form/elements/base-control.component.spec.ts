@@ -186,35 +186,38 @@ describe('BaseControl', () => {
 
   it('hidden property should be updated from element',() => {
     fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.hidden = true;
+      hostComponent.element.config.uiStyles.attributes = {"hidden": true};
+      // .hidden = true;
       expect(hostComponent.hidden).toBeTruthy();
     });
   });
 
   it('readOnly property should be updated from element',() => {
     fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.readOnly = true;
+      hostComponent.element.config.uiStyles.attributes = {"readOnly": true};
+      // .readOnly = true;
       expect(hostComponent.readOnly).toBeTruthy();
     });
   });
 
   it('type property should be updated from element',() => {
     fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.type = 'type';
+      hostComponent.element.config.uiStyles.attributes = {"type": 'type'};
+      //  = 'type';
       expect(hostComponent.type).toEqual('type');
     });
   });
 
   it('help property should be updated from element',() => {
     fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.help = 'help';
+      hostComponent.element.config.uiStyles.attributes = {"help": 'help'};
       expect(hostComponent.help).toEqual('help');
     });
   });
 
   it('getConstraint() should return undefined',() => {
     fixture.whenStable().then(() => {
-      hostComponent.element.config.validation.constraints = [];
+      hostComponent.element.config.validation = {"constraints": []};
       expect(hostComponent.getConstraint('test')).toBeFalsy();
     });
   });
@@ -223,7 +226,7 @@ describe('BaseControl', () => {
     fixture.whenStable().then(() => {
       const constraint = new Constraint();
       constraint.name = 'test';
-      hostComponent.element.config.validation.constraints = [constraint];
+      hostComponent.element.config.validation = {"constraints": [constraint]};
       expect(hostComponent.getConstraint('test')).toEqual(constraint);
     });
   });

@@ -29,19 +29,21 @@ import { FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms'
 import { PrintDirective } from '../../../../directives/print.directive';
 import { PrintService } from '../../../../services/print.service';
 import { EventPropagationDirective } from './event-propagation.directive';
-import { fieldValueParam } from 'mockdata';
+import { By } from '@angular/platform-browser';
+import { buttonPrimaryElement, buttonSecondaryElement, buttonDestructiveElement, buttonValidationElement, buttonPrintElement, buttonPlainElement } from 'mockdata';
 
-let location, pageService, param, fileService;
+let location, pageService, fileService;
 
 class MockLocation {
     back() { }
 }
 
 class MockPageService {
-    validationUpdate$: Subject<any>
-
+    validationUpdate$: Subject<any>;
+    postResponseProcessing$: Subject<any>;
     constructor() {
         this.validationUpdate$ = new Subject();
+        this.postResponseProcessing$ = new Subject();
     }
     processEvent(a, b, c, d) {
 
@@ -98,12 +100,10 @@ describe('Button', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(Button);
     hostComponent = fixture.debugElement.componentInstance;
-    const fg = new FormGroup({});
-    const checks: ValidatorFn[] = [];
-    checks.push(Validators.required);
-    fg.addControl(fieldValueParam.config.code, new FormControl(fieldValueParam.leafState, checks));
-    hostComponent.form = fg;
-    hostComponent.element = fieldValueParam;
+    hostComponent.form = new FormGroup({
+      search: new FormControl()
+   });
+    hostComponent.element = buttonPrimaryElement;
     pageService = TestBed.get(PageService);
     location = TestBed.get(Location);
     fileService = TestBed.get(FileService);
@@ -131,50 +131,13 @@ describe('Button', () => {
     });
   });
 
-  // it('ngOnInit() should update disabled property as false', () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.enabled = true;
-  //     hostComponent.ngOnInit();
-  //     expect((hostComponent as any).disabled).toBeFalsy();
-  //   });
-  // });
-
-  // it('ngOnInit() should update call pageService.processEvent()', () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.enabled = true;
-  //     const attributes = new UiAttribute();
-  //     attributes.b = 'a';
-  //     attributes.method = 'method';
-  //     hostComponent.element.path = 'test';
-  //     hostComponent.element.config.uiStyles.attributes = attributes;
-  //     const eve = { element: { config: { uiStyles: { attributes: { b: 'a', method: 'method' } } }, path: 'test' } };
-  //     (hostComponent as any).buttonClickEvent = new Subject();
-  //     spyOn(pageService, 'processEvent').and.callThrough();
-  //     hostComponent.ngOnInit();
-  //     hostComponent.buttonClickEvent.next(eve);
-  //     expect(pageService.processEvent).toHaveBeenCalled();
-  //   });
-  // });
-
-  // it('ngOnInit() should update disabled property as true based on pageService.validationUpdate$ subject', () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.enabled = false;
-  //     const eve = { path: 'test', enabled: false };
-  //     hostComponent.ngOnInit();
-  //     pageService.logError(eve);
-  //     expect((hostComponent as any).disabled).toBeTruthy();
-  //   });
-  // });
-
-  // it('ngOnInit() should update disabled property as false based on pageService.validationUpdate$ subject', () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.enabled = true;
-  //     const eve = { path: '1test', enabled: false };
-  //     hostComponent.ngOnInit();
-  //     pageService.logError(eve);
-  //     expect((hostComponent as any).disabled).toBeFalsy();
-  //   });
-  // });
+  it('ngOnInit() should update disabled property as false', () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.enabled = true;
+      hostComponent.ngOnInit();
+      expect((hostComponent as any).disabled).toBeFalsy();
+    });
+  });
 
   it('checkObjectType() should return false', async(() => {
       expect(hostComponent.checkObjectType('test', { test: 'test' })).toBeFalsy();
@@ -268,5 +231,192 @@ describe('Button', () => {
   it('getAllURLParams() should return null', async(() => {
     expect(hostComponent.getAllURLParams('www.test.com')).toBeFalsy();
   }));
+
+  it('Button should be created if the imgSrc is not provided', async(() => {
+    hostComponent.element = buttonPrimaryElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();
+  }));
+
+  it('nm-image should not be created if imgSrc is not provided', async(() => {
+    hostComponent.element = buttonPrimaryElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const imageEle = debugElement.query(By.css('nm-image'));
+    expect(imageEle).toBeFalsy();
+  }));
+
+  it('nm-image should be created if imgSrc is provided', async(() => {
+    hostComponent.element = buttonPrintElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const imageEle = debugElement.query(By.css('nm-image'));
+    expect(imageEle).toBeTruthy();
+  }));
+
+  it('On click image button should call emitEvent()', async(() => {
+    hostComponent.element = buttonPrintElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    spyOn(hostComponent, 'emitEvent').and.callThrough();
+    buttonEle.nativeElement.click();
+    fixture.whenStable().then(() => {
+      expect(hostComponent.emitEvent).toHaveBeenCalled();
+    });
+  }));
+
+  it('Primary button should be created if style is configured as primary', async(() => {
+    hostComponent.element = buttonPrimaryElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-primary');
+  }));
+
+  it('On click primary button should call onSubmit()', async(() => {
+    hostComponent.element = buttonPrimaryElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    spyOn(hostComponent, 'onSubmit').and.callThrough();
+    buttonEle.nativeElement.click();
+    fixture.whenStable().then(() => {
+      expect(hostComponent.onSubmit).toHaveBeenCalled();
+    });
+  }));
+
+  it('secondary button should be created if style is configured as secondary', async(() => {
+    hostComponent.element = buttonSecondaryElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-secondary');
+  }));
+
+  it('On click secondary button should call emitEvent()', async(() => {
+    hostComponent.element = buttonSecondaryElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    spyOn(hostComponent, 'emitEvent').and.callThrough();
+    buttonEle.nativeElement.click();
+    fixture.whenStable().then(() => {
+      expect(hostComponent.emitEvent).toHaveBeenCalled();
+    });
+  }));
+
+  it('plain button should be created if style is configured as plain', async(() => {
+    hostComponent.element = buttonPlainElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-plain');
+  }));
+
+  it('On click plain button should call emitEvent()', async(() => {
+    hostComponent.element = buttonPlainElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    spyOn(hostComponent, 'emitEvent').and.callThrough();
+    buttonEle.nativeElement.click();
+    fixture.whenStable().then(() => {
+      expect(hostComponent.emitEvent).toHaveBeenCalled();
+    });
+  }));
+
+  it('destructive button should be created if style is configured as destructive', async(() => {
+    hostComponent.element = buttonDestructiveElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-delete');
+  }));
+
+  it('On click destructive button should call emitEvent()', async(() => {
+    hostComponent.element = buttonDestructiveElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    spyOn(hostComponent, 'emitEvent').and.callThrough();
+    buttonEle.nativeElement.click();
+    fixture.whenStable().then(() => {
+      expect(hostComponent.emitEvent).toHaveBeenCalled();
+    });
+  }));
+
+  it('validation button should be created if style is configured as validation', async(() => {
+    hostComponent.element = buttonValidationElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();    
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-primary');
+  }));
+
+  it('On click validation button should call emitEvent()', async(() => {
+    hostComponent.element = buttonValidationElement as Param;
+    hostComponent.form = new FormGroup({
+      validationButton: new FormControl()
+   });
+   hostComponent.form.controls['validationButton'].setErrors({'incorrect': true});
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    spyOn(hostComponent, 'emitEvent').and.callThrough();
+    buttonEle.nativeElement.click();
+    fixture.whenStable().then(() => {
+      expect(hostComponent.emitEvent).toHaveBeenCalled();
+    });
+  }));
+
+  it('print button should be created if style is configured as print', async(() => {
+    hostComponent.element = buttonPrintElement as Param;
+    hostComponent.element.config.uiStyles.attributes.imgSrc = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-secondary');
+  }));
+
+  it('On click print button should call emitEvent()', async(() => {
+    hostComponent.element = buttonPrintElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    spyOn(hostComponent, 'emitEvent').and.callThrough();
+    buttonEle.nativeElement.click();
+    fixture.whenStable().then(() => {
+      expect(hostComponent.emitEvent).toHaveBeenCalled();
+    });
+  }));
+
+  it('ngOnInit() should update disabled property as true based on pageService.validationUpdate$ subject', () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.enabled = false;
+      const eve = { path: 'test', enabled: false };
+      hostComponent.ngOnInit();
+      pageService.logError(eve);
+      expect((hostComponent as any).disabled).toBeTruthy();
+    });
+  });
+
+  it('ngOnInit() should update disabled property as false based on pageService.validationUpdate$ subject', () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.enabled = true;
+      const eve = { path: '1test', enabled: false };
+      hostComponent.ngOnInit();
+      pageService.logError(eve);
+      expect((hostComponent as any).disabled).toBeFalsy();
+    });
+  });
 
 });
