@@ -27,6 +27,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ConfigConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ConfigConditionals;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.test.scenarios.crossdomainresolver.view.VRSampleCrossDomain.SampleNested;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -95,4 +96,17 @@ public class VRSampleMultiDomain {
 	private String attr8_date_action;
 	
 	private LocalDate attr8;
+	
+	@Config(url="/attr9_string/_replace?rawPayload=\"<!/p/sample_core:<!/../attr9_id!>/attr_String!>\"")
+	private String attr9_crossdomain_refId_action;
+	
+	@Config(url="/attr9/_replace?rawPayload=<!json(/p/sample_core:<!/../attr9_id!>)!>")
+	private String attr9_crossdomain_with_refId_nested_action;
+	
+	private SampleCoreEntity attr9;
+	
+	private String attr9_string;
+	
+	private Long attr9_id;
+	
 }

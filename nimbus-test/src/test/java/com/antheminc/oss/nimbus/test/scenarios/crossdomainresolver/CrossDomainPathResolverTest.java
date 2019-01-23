@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.FixMethodOrder;
@@ -41,6 +42,7 @@ import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.session.TestSessionProvider;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.scenarios.crossdomainresolver.view.VRSampleCrossDomain.SampleNested;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
 /**
  * @author Swetha Vemuri
@@ -316,5 +318,56 @@ public class CrossDomainPathResolverTest extends AbstractStateEventHandlerTests 
 		Param<?> multi_root_param = (Param<?>) singleOut.getSingleResult();
 		assertNotNull(multi_root_param);
 		assertEquals(now, multi_root_param.findParamByPath("/attr8").getState());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void t11_resolve_domain_with_refID() {
+		Long id = new Random().nextLong();
+		SampleCoreEntity sample_core = new SampleCoreEntity();
+		sample_core.setId(id);
+		sample_core.setAttr_String("orange");
+		mongo.insert(sample_core, "sample_core");
+		
+		Holder<MultiOutput> multi_new_resp = (Holder<MultiOutput>) controller.handleGet(createRequest(SAMPLE_VIEW_MULTI_PARAM_ROOT, Action._new), null);
+		assertNotNull(multi_new_resp);
+		final MultiOutput output = MultiOutput.class.cast(Holder.class.cast(multi_new_resp).getState());
+		Param<?> param = (Param<?>) output.getSingleResult();
+		param.findParamByPath("/attr9_id").setState(id);
+		
+		controller.handleGet(createRequest(SAMPLE_VIEW_MULTI_PARAM_ROOT+"/attr9_crossdomain_refId_action", Action._get), null);	
+		
+		Holder<MultiOutput> multi_get_resp = (Holder<MultiOutput>) controller.handleGet(createRequest(SAMPLE_VIEW_MULTI_PARAM_ROOT, Action._get), null);
+		assertNotNull(multi_get_resp);
+		final MultiOutput singleOut = MultiOutput.class.cast(Holder.class.cast(multi_get_resp).getState());
+		Param<?> multi_root_param = (Param<?>) singleOut.getSingleResult();
+		assertNotNull(multi_root_param);
+		assertEquals("orange", multi_root_param.findParamByPath("/attr9_string").getLeafState());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void t11_resolve_domain_with_refID_entity_replace() {
+		Long id = new Random().nextLong();
+		SampleCoreEntity sample_core = new SampleCoreEntity();
+		sample_core.setId(id);
+		sample_core.setAttr_String("orange");
+		mongo.insert(sample_core, "sample_core");
+		
+		Holder<MultiOutput> multi_new_resp = (Holder<MultiOutput>) controller.handleGet(createRequest(SAMPLE_VIEW_MULTI_PARAM_ROOT, Action._new), null);
+		assertNotNull(multi_new_resp);
+		final MultiOutput output = MultiOutput.class.cast(Holder.class.cast(multi_new_resp).getState());
+		Param<?> param = (Param<?>) output.getSingleResult();
+		param.findParamByPath("/attr9_id").setState(id);
+		
+		controller.handleGet(createRequest(SAMPLE_VIEW_MULTI_PARAM_ROOT+"/attr9_crossdomain_with_refId_nested_action", Action._get), null);	
+		
+		Holder<MultiOutput> multi_get_resp = (Holder<MultiOutput>) controller.handleGet(createRequest(SAMPLE_VIEW_MULTI_PARAM_ROOT, Action._get), null);
+		assertNotNull(multi_get_resp);
+		final MultiOutput singleOut = MultiOutput.class.cast(Holder.class.cast(multi_get_resp).getState());
+		Param<?> multi_root_param = (Param<?>) singleOut.getSingleResult();
+		assertNotNull(multi_root_param);
+		assertEquals(sample_core.getId(), multi_root_param.findParamByPath("/attr9/id").getLeafState());
+		assertEquals(sample_core.getAttr_String(), multi_root_param.findParamByPath("/attr9/attr_String").getLeafState());
 	}
 }
