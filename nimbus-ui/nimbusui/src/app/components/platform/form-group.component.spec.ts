@@ -1,3 +1,5 @@
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './charts/chart.component';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
@@ -165,7 +167,8 @@ const declarations = [
   CardDetailsFieldGroupComponent,
   InputLegend,
   FormErrorMessage,
-  PrintDirective
+  PrintDirective,
+  NmChart
  ];
  const imports = [
      FormsModule,
@@ -188,7 +191,8 @@ const declarations = [
      ToastModule,
      InputSwitchModule, 
      TreeTableModule,
-     StorageServiceModule
+     StorageServiceModule,
+     ChartModule
  ];
  const providers = [
      { provide: WebContentSvc, useClass: MockWebContentSvc },

@@ -49,7 +49,7 @@ export class ViewComponent extends Enum<string> {
     public static readonly paragraph = new Enum('Paragraph');
     public static readonly header = new Enum('Header');
     public static readonly formGridFiller = new Enum('FormGridFiller');
-    
+    public static readonly chart = new Enum('Chart');
 
     static attributeList(): String[] {
       const keys = Object.keys(ViewConfig);
@@ -104,6 +104,8 @@ export class ComponentTypes extends Enum<string> {
   public static readonly toast = new Enum('TOAST');
   public static readonly inputSwitch = new Enum('InputSwitch');
   public static readonly link = new Enum('Link');
+  public static readonly chart = new Enum('Chart');
+
   
   static attributeList(): String[] {
     const keys = Object.keys(ComponentTypes);

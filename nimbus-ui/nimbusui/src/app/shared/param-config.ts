@@ -225,6 +225,8 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     dataEntryField: boolean;
     fixLayout: boolean;
     headerCheckboxToggleAllPages: boolean;
+    xAxisLabel: string;
+    yAxisLabel: string;
     deserialize( inJson ) {
         let obj = this;
         obj = Converter.convert(inJson,obj);

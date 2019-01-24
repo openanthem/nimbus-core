@@ -51,6 +51,7 @@ import { WindowRefService } from './services/window-ref.service';
 import { HeaderCheckBox } from './components/platform/form/elements/header-checkbox.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ToastModule } from 'primeng/toast';
+import { ChartModule } from 'primeng/chart';
 
 // Platform Imports
 // Components
@@ -107,6 +108,7 @@ import { Label } from './components/platform/content/label.component';
 import { InputLabel } from './components/platform/form/elements/input-label.component';
 import { BaseTableElement } from './components/platform/base-table-element.component';
 import { TableHeader } from './components/platform/grid/table-header.component';
+
 // Services
 import { WebContentSvc } from './services/content-management.service';
 import { STOMPStatusComponent } from './services/stomp-status.component';
@@ -156,6 +158,7 @@ import { InputSwitch } from './components/platform/form/elements/input-switch.co
 import { InputLegend } from './components/platform/form/elements/input-legend.component';
 import { FormErrorMessage } from './components/platform/form-error-message.component';
 import { EventPropagationDirective } from './components/platform/form/elements/event-propagation.directive';
+import { NmChart } from './components/platform/charts/chart.component';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -205,7 +208,8 @@ export function init_app(appinitservice: AppInitService) {
         StorageServiceModule,
         AngularSvgIconModule,
         ToastModule,
-        InputSwitchModule
+        InputSwitchModule,
+        ChartModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, CheckBoxGroup,
@@ -222,7 +226,7 @@ export function init_app(appinitservice: AppInitService) {
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, LoaderComponent, MessageComponent,
         HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, 
-        MenuRouteLink, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage, BaseTableElement, EventPropagationDirective, TableHeader
+        MenuRouteLink, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage, BaseTableElement, EventPropagationDirective, TableHeader, NmChart
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,

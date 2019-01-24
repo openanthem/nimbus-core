@@ -1,3 +1,5 @@
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './../charts/chart.component';
 import { TableHeader } from './../grid/table-header.component';
 import { Param } from './../../../shared/param-state';
 'use strict';
@@ -167,7 +169,8 @@ const declarations = [
     FormGridFiller,
     InputLegend,
     FormErrorMessage,
-    PrintDirective
+    PrintDirective,
+    NmChart
    ];
    const imports = [
        DialogModule,
@@ -191,7 +194,8 @@ const declarations = [
        AngularSvgIconModule,
        ToastModule,
        InputSwitchModule,
-       TreeTableModule
+       TreeTableModule,
+       ChartModule
    ];
    const providers = [
     {provide: PageService, useClass: MockPageService},

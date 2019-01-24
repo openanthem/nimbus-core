@@ -1,3 +1,5 @@
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './charts/chart.component';
 import { TableHeader } from './grid/table-header.component';
 import { By } from '@angular/platform-browser';
 /**
@@ -173,7 +175,8 @@ const declarations = [ Form,
     Label,
     CardDetailsFieldGroupComponent,
     InputLegend ,
-    PrintDirective
+    PrintDirective,
+    NmChart
 ];
 const imports = [   FormsModule, ReactiveFormsModule,
     GrowlModule,
@@ -197,7 +200,9 @@ const imports = [   FormsModule, ReactiveFormsModule,
     AngularSvgIconModule,
     ToastModule,
     InputSwitchModule, 
-    TreeTableModule ];
+    TreeTableModule,
+    ChartModule
+ ];
 const providers = [];
 
 let fixture, hostComponent;

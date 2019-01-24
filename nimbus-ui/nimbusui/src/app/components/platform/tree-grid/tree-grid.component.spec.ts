@@ -1,3 +1,5 @@
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './../charts/chart.component';
 import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
@@ -171,7 +173,8 @@ class MockPageService {
     FileUploadComponent,
     OrderablePickList,
     CheckBoxGroup,
-    DateTimeFormatPipe
+    DateTimeFormatPipe,
+    NmChart
  ];
 const imports = [
      DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
@@ -185,7 +188,8 @@ const imports = [
      ReactiveFormsModule, 
      ToastModule,
      TableModule,
-     KeyFilterModule
+     KeyFilterModule,
+     ChartModule
  ];
 const providers = [
      { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },

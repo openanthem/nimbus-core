@@ -1,3 +1,5 @@
+import { NmChart } from './charts/chart.component';
+import { ChartModule } from 'primeng/chart';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -163,7 +165,8 @@ const declarations = [
     FormGridFiller,
     InputLegend,
     FormErrorMessage,
-    PrintDirective
+    PrintDirective,
+    NmChart
    ];
 const imports = [
     FormsModule,
@@ -188,7 +191,8 @@ const imports = [
     AngularSvgIconModule,
     ToastModule,
     TreeTableModule, 
-    InputSwitchModule
+    InputSwitchModule,
+    ChartModule
    ];
 const providers = [
     {provide: PageService, useClass: MockPageService},

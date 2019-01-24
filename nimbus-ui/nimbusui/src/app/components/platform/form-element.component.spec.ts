@@ -1,3 +1,5 @@
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './charts/chart.component';
 import { TableHeader } from './grid/table-header.component';
 'use strict';
 import { FormsModule, ReactiveFormsModule, AbstractControlDirective, Validators, ValidatorFn, FormGroup, FormControl, NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
@@ -190,7 +192,8 @@ const declarations = [
     CardDetailsFieldGroupComponent,
     InputLegend,
     FormErrorMessage,
-    PrintDirective
+    PrintDirective,
+    NmChart
    ];
   const imports = [
     FormsModule, 
@@ -215,7 +218,8 @@ const declarations = [
     StorageServiceModule,
     HttpModule,
     BrowserAnimationsModule,
-    RouterTestingModule
+    RouterTestingModule,
+    ChartModule
   ];
   const providers = [
     { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },

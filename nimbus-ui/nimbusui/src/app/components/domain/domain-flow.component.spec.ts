@@ -1,3 +1,5 @@
+import { NmChart } from './../platform/charts/chart.component';
+import { ChartModule } from 'primeng/chart';
 import { element } from 'protractor';
 import { Message } from './../../shared/message';
 'use strict';
@@ -344,7 +346,8 @@ export class MockActivatedRoute implements ActivatedRoute {
     SelectItemPipe,
     InputLegend,
     FormErrorMessage,
-    PrintDirective
+    PrintDirective,
+    NmChart
  ];
  const imports =  [
      RouterTestingModule,
@@ -375,7 +378,8 @@ export class MockActivatedRoute implements ActivatedRoute {
      FormsModule,
      ReactiveFormsModule,
      ToastModule,
-     BrowserAnimationsModule
+     BrowserAnimationsModule,
+     ChartModule
  ];
  const providers = [
      {provide: LayoutService, useClass: MockLayoutService},

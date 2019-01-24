@@ -1,3 +1,5 @@
+import { NmChart } from './../charts/chart.component';
+import { ChartModule } from 'primeng/chart';
 import { TableHeader } from './../grid/table-header.component';
 import { Param } from './../../../shared/param-state';
 'use strict';
@@ -231,7 +233,8 @@ const declarations = [
   FormGridFiller,
   InputLegend,
   FormErrorMessage,
-  PrintDirective
+  PrintDirective,
+  NmChart
  ];
  const imports = [
   GrowlModule,
@@ -256,7 +259,8 @@ const declarations = [
   AngularSvgIconModule,
   ToastModule,
   InputSwitchModule,
-  TreeTableModule
+  TreeTableModule,
+  ChartModule
  ];
  const providers = [
   {provide: WebContentSvc, useClass: MockWebContentSvc},

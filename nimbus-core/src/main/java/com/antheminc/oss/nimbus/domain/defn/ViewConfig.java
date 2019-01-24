@@ -2820,4 +2820,31 @@ public class ViewConfig {
 	public @interface ViewStyle {
 
 	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface Chart {
+		public enum Type {
+			BAR, LINE, PIE, DOUGHNUT
+		}
+
+		String alias() default "Chart";
+
+		/**
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
+		 */
+		String cssClass() default "";
+		
+		String colorScheme() default "default";
+		
+		String xAxisLabel() default "";
+		
+		String yAxisLabel() default "";
+		
+		Type value() default Type.BAR;
+											
+	}
 }

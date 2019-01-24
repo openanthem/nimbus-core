@@ -16,6 +16,7 @@ import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
 import { ParamUtils } from './../shared/param-utils';
 import { Param, Type, Model } from '../shared/param-state';
 import { ExecuteException } from '../shared/app-config.interface';
+import { formInput } from 'mockdata';
 let http, backend, service, location, loggerService, sessionStoreService, loaderService, configService, configService_actual;
 
 class MockLocation {
@@ -66,6 +67,8 @@ class MockConfigService {
     }
   };
   setLayoutToAppConfig(a, b) {}
+  setViewConfigToParamConfigMap(a,b) {}
+
 }
 
 class MockLoaderService {
@@ -229,9 +232,10 @@ describe('PageService', () => {
     }));
 
     it('traverseParam() should call updateParam()', async(() => {
-      const eve = { value: { path: 'tPath' } };
+      //const eve = { value: { path: 'page/memberSearch/memberSearch/memberSearch/nestedName' } };
+      const eve = {value: formInput}
       spyOn(service, 'updateParam').and.returnValue('');
-      service.traverseParam({}, eve);
+      service.traverseParam(formInput, eve);
       expect(service.updateParam).toHaveBeenCalled();
     }));
 
