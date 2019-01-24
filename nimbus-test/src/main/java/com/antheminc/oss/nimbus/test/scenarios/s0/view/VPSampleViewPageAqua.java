@@ -11,6 +11,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.defn.extension.LabelConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.LabelConditional.Condition;
 import com.antheminc.oss.nimbus.domain.defn.extension.MessageConditional;
+import com.antheminc.oss.nimbus.domain.defn.extension.Rule;
 import com.antheminc.oss.nimbus.domain.defn.extension.Style;
 import com.antheminc.oss.nimbus.domain.defn.extension.StyleConditional;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
@@ -103,6 +104,9 @@ public class VPSampleViewPageAqua {
 			private String p7_messagetest;
 			
 			private String p8_message;
+			
+			@Rule("p9_message_onload")
+			private String p9_message;
 			
 		}
 		

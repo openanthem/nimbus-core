@@ -45,12 +45,12 @@ import { LoggerService } from '../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 import { AppInitService } from '../../services/app.init.service'
 import { SvgComponent } from '../platform/svg/svg.component';
-// import { Button } from '../platform/form/elements/button.component';
 import { ActionDropdown, ActionLink } from '../platform/form/elements/action-dropdown.component';
 import { InputLabel } from '../platform/form/elements/input-label.component';
 import { Image } from '../platform/image.component';
 import { setup, TestContext } from '../../setup.spec';
 import { configureTestSuite } from 'ng-bullet';
+import { Homelayout } from 'mockdata'
 
 @Component({
   template: '<div></div>',
@@ -236,10 +236,10 @@ describe('HomeLayoutCmp', () => {
   }));
 
   it('button, panelMenu, headerGlobal, footer should be created', async(() => {
-    layoutService.parseLayoutConfig(layout);
+    layoutService.parseLayoutConfig(Homelayout);
     fixture.detectChanges();
     hostComponent.ngOnInit();
-    layoutService.parseLayoutConfig(layout);
+    layoutService.parseLayoutConfig(Homelayout);
     const debugElement = fixture.debugElement;
     const panelMenu = debugElement.query(By.css('nm-panelMenu'));
     const button  = debugElement.query(By.css(".navbar-toggler.collapsed"));
@@ -255,7 +255,7 @@ describe('HomeLayoutCmp', () => {
   it('ngOnInint() should get layout from layout service',  async(() => {
     spyOn(layoutService, 'getLayout').and.callThrough();
     hostComponent.ngOnInit();
-    layoutService.parseLayoutConfig(layout);
+    layoutService.parseLayoutConfig(Homelayout);
     expect(layoutService.getLayout).toHaveBeenCalled();
   }));
 
@@ -263,16 +263,16 @@ describe('HomeLayoutCmp', () => {
     spyOn(layoutService, 'getLayout').and.callThrough();
     activatedRoute.data['value']['layout'] = null;
     hostComponent.ngOnInit();
-    layoutService.parseLayoutConfig(layout);
+    layoutService.parseLayoutConfig(Homelayout);
     expect(layoutService.getLayout).not.toHaveBeenCalled();
   }));
 
   it('ngOnInint() should update the class properties',  async(() => {
     hostComponent.ngOnInit();
-    layoutService.parseLayoutConfig(layout);
+    layoutService.parseLayoutConfig(Homelayout);
     const res: any = 'test';
-    expect(hostComponent.branding).toEqual(layout.topBar.branding);
-    expect(hostComponent.topMenuItems).toEqual(layout.topBar.headerMenus);
+    expect(hostComponent.branding).toEqual(Homelayout.topBar.branding);
+    expect(hostComponent.topMenuItems).toEqual(Homelayout.topBar.headerMenus);
   }));
 
   it('ngOnInint() should not update the class properties',  async(() => {
@@ -325,128 +325,3 @@ describe('HomeLayoutCmp', () => {
 });
 
 
-const layout:any = {
-  "menu": [
-      {
-          "label": "Home",
-          "path": "/home/vpHome/vsHomeLeftBar/home",
-          "page": "",
-          "icon": "tasksIcon",
-          "imgType": "FA",
-          "url": "petclinicdashboard/vpDashboard",
-          "type": "INTERNAL",
-          "target": "",
-          "rel": "",
-          "routerLink": "/h/petclinicdashboard/vpDashboard",
-          "code": "home"
-      },
-      {
-          "label": "Veterinarians",
-          "path": "/home/vpHome/vsHomeLeftBar/vets",
-          "page": "",
-          "icon": "caseHistoryIcon",
-          "imgType": "FA",
-          "url": "veterinarianview/vpVeterenarians",
-          "type": "INTERNAL",
-          "target": "",
-          "rel": "",
-          "routerLink": "/h/veterinarianview/vpVeterenarians",
-          "code": "vets"
-      },
-      {
-          "label": "Owners",
-          "path": "/home/vpHome/vsHomeLeftBar/owners",
-          "page": "",
-          "icon": "caseHistoryIcon",
-          "imgType": "FA",
-          "url": "ownerlandingview/vpOwners",
-          "type": "INTERNAL",
-          "target": "",
-          "rel": "",
-          "routerLink": "/h/ownerlandingview/vpOwners",
-          "code": "owners"
-      },
-      {
-          "label": "Pets",
-          "path": "/home/vpHome/vsHomeLeftBar/pets",
-          "page": "",
-          "icon": "caseHistoryIcon",
-          "imgType": "FA",
-          "url": "petview/vpAllPets",
-          "type": "INTERNAL",
-          "target": "",
-          "rel": "",
-          "routerLink": "/h/petview/vpAllPets",
-          "code": "pets"
-      },
-      {
-          "label": "Notes",
-          "path": "/home/vpHome/vsHomeLeftBar/notes",
-          "page": "",
-          "icon": "notesIcon",
-          "imgType": "FA",
-          "url": "petclinicdashboard/vpNotes",
-          "type": "INTERNAL",
-          "target": "",
-          "rel": "",
-          "routerLink": "/h/petclinicdashboard/vpNotes",
-          "code": "notes"
-      }
-  ],
-  "topBar": {
-      "branding": {
-          "logo": {
-              "configSvc": {
-                  "flowConfigs": {
-                      "ownerview": {
-                          "model": {
-                              "params": [ ]
-                          },
-                          "layout": "home"
-                      },
-                      "home": {
-                          "model": {
-                              "params": [ ]
-                          }
-                      }
-                  }
-              },
-              "enabled": true,
-              "visible": true,
-              "activeValidationGroups": [],
-              "collectionParams": [],
-              "configId": "3923",
-              "path": "/home/vpHome/vsHomeHeader/linkHomeLogo",
-              "type": {
-                  "nested": false,
-                  "name": "string",
-                  "collection": false
-              },
-              "message": [],
-              "values": [],
-              "labels": [
-                  {
-                      "locale": "en-US",
-                      "text": "Anthem"
-                  }
-              ],
-              "elemLabels": {}
-          }
-      },
-      "headerMenus": [],
-      "accordions": [
-          null
-      ]
-  },
-  "footer": {
-      "links": [
-          null,
-          null,
-          null,
-          null
-      ]
-  },
-  "modalList": [
-      null
-  ]
-};

@@ -33,6 +33,8 @@ import { LoaderService } from '../../../services/loader.service';
 import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
 import { AppInitService } from '../../../services/app.init.service';
+import { cardDetailsFieldGroupElement, newCardDetailsFieldGroupElement } from 'mockdata';
+import { Paragraph } from '../content/paragraph.component';
 
 let fixture,hostComponent;
 
@@ -47,7 +49,8 @@ const declarations = [
   TooltipComponent,
   SelectItemPipe,
   DisplayValueDirective,
-  InputLabel
+  InputLabel,
+  Paragraph
 ];
 const imports = [
     FormsModule, 
@@ -125,196 +128,10 @@ describe('CardDetailsFieldGroupComponent', () => {
     const debugElement = fixture.debugElement;
     const allCardDetailsFieldEles = debugElement.queryAll(By.css('nm-card-details-field'));
     expect(allCardDetailsFieldEles.length).toEqual(1);
-    hostComponent.element.type.model.params.push(newElement);
+    hostComponent.element.type.model.params.push(newCardDetailsFieldGroupElement);
     fixture.detectChanges();
     const newAllCardDetailsFieldEles = debugElement.queryAll(By.css('nm-card-details-field'));
     expect(newAllCardDetailsFieldEles.length).toEqual(2);
   }));
 
-  it('getComponentClass() should return array [testClass]',  async(() => {
-      hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass'
-      const res = hostComponent.getComponentClass();
-      expect(res).toEqual(['testClass']);
-  }));
-
-  it('getComponentClass() should return array []',  async(() => {
-    hostComponent.element.config.uiStyles.attributes.cssClass = null;
-    const res = hostComponent.getComponentClass();
-    expect(res).toEqual([]);
-}));
-
 });
-
-const cardDetailsFieldGroupElement: any = {
-  "config": {
-      "active": false,
-      "required": false,
-      "id": "3750",
-      "code": "fgCardBodyCase1",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": false,
-          "isHidden": false,
-          "name": "ViewConfig.FieldValueGroup",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "cssClass": "",
-              "alias": "FieldValueGroup",
-              "cols": "5"
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": true,
-          "name": "VPOwnerInfo.FieldGroup_CardBodyCase1",
-          "model": {
-              "paramConfigIds": [
-                  "3752"
-              ]
-          }
-      }
-  },
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "3750",
-  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/fgCardBodyCase1",
-  "type": {
-      "model": {
-          "params": [
-              {
-                "config": {
-                  "active": false,
-                  "required": false,
-                  "id": "3752",
-                  "code": "id",
-                  "validations": null,
-                  "uiNatures": [],
-                  "uiStyles": {
-                      "isLink": false,
-                      "isHidden": false,
-                      "name": "ViewConfig.FieldValue",
-                      "attributes": {
-                          "hidden": false,
-                          "readOnly": false,
-                          "submitButton": true,
-                          "showName": true,
-                          "pageSize": 25,
-                          "browserBack": false,
-                          "showAsLink": false,
-                          "inplaceEditType": "",
-                          "cssClass": "label-left align-right",
-                          "datePattern": "",
-                          "alias": "FieldValue",
-                          "applyValueStyles": false,
-                          "placeholder": "",
-                          "inplaceEdit": false,
-                          "type": "Field",
-                          "cols": "1",
-                          "imgSrc": ""
-                      }
-                  },
-                  "type": {
-                      "collection": false,
-                      "nested": false,
-                      "name": "string"
-                  }
-              },
-                  "enabled": true,
-                  "visible": true,
-                  "activeValidationGroups": [],
-                  "collectionParams": [],
-                  "configId": "3752",
-                  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/fgCardBodyCase1/id",
-                  "type": {
-                      "nested": false,
-                      "name": "string",
-                      "collection": false
-                  },
-                  "message": [],
-                  "values": [],
-                  "labels": [
-                      {
-                          "locale": "en-US",
-                          "text": "Case ID"
-                      }
-                  ],
-                  "elemLabels": {}
-              }
-          ]
-      }
-  },
-  "message": [],
-  "values": [],
-  "labels": [
-  ],
-  "elemLabels": {}
-};
-
-const newElement =               {
-  "config": {
-    "active": false,
-    "required": false,
-    "id": "3752",
-    "code": "id",
-    "validations": null,
-    "uiNatures": [],
-    "uiStyles": {
-        "isLink": false,
-        "isHidden": false,
-        "name": "ViewConfig.FieldValue",
-        "attributes": {
-            "hidden": false,
-            "readOnly": false,
-            "submitButton": true,
-            "showName": true,
-            "pageSize": 25,
-            "browserBack": false,
-            "showAsLink": false,
-            "inplaceEditType": "",
-            "cssClass": "label-left align-right",
-            "datePattern": "",
-            "alias": "FieldValue",
-            "applyValueStyles": false,
-            "placeholder": "",
-            "inplaceEdit": false,
-            "type": "Field",
-            "cols": "1",
-            "imgSrc": ""
-        }
-    },
-    "type": {
-        "collection": false,
-        "nested": false,
-        "name": "string"
-    }
-},
-    "enabled": true,
-    "visible": true,
-    "activeValidationGroups": [],
-    "collectionParams": [],
-    "configId": "3752",
-    "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/fgCardBodyCase1/id",
-    "type": {
-        "nested": false,
-        "name": "string",
-        "collection": false
-    },
-    "message": [],
-    "values": [],
-    "labels": [
-        {
-            "locale": "en-US",
-            "text": "Case ID"
-        }
-    ],
-    "elemLabels": {}
-};

@@ -15,13 +15,15 @@
  * limitations under the License.
  */
 'use strict';
-import { Component, Input, ViewChild, SimpleChanges, SimpleChange } from '@angular/core';
+import { Component, Input, ViewChild, SimpleChanges, SimpleChange, ContentChildren, QueryList, ChangeDetectorRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Param } from '../../../shared/param-state';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 import { PageService } from '../../../services/page.service';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
+import { AccordionTab } from './accordion-tab.component';
+import { Subscription } from 'rxjs';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -40,7 +42,9 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
         </div>
         <p-accordion #accordion [multiple]="multiple" [activeIndex]="index" *ngIf="element?.visible">
             <ng-template ngFor let-tab [ngForOf]="nestedParams">
-                <p-accordionTab  [selected]="tab?.config?.uiStyles?.attributes?.selected" *ngIf="tab?.visible">
+
+                <p-accordionTab [selected]="tab?.config?.uiStyles?.attributes?.selected" [ngStyle]="{'display':getTabDisplayStyle(tab.visible)}" id="{{tab?.config?.code}}">
+                    
                     <p-header>
                         <nm-label *ngIf="tab" [element]="tab" [size]="labelSize"></nm-label>
                         <span [ngClass]="getTabInfoClass(tab)" *ngIf="getInfoText(tab)">
@@ -115,28 +119,72 @@ export class Accordion extends BaseElement {
     index: number[]; 
     @ViewChild('accordion') accordion: Accordion;
 
-    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
+
+    @ContentChildren(AccordionTab) nmTabList: QueryList<AccordionTab>;
+    nmTabListSubscription: Subscription;
+    public nmTabs: AccordionTab[] = [];
+
+    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService, public changeDetector: ChangeDetectorRef) {
         super(wcsvc);
     }
 
     ngOnInit() {
         super.ngOnInit();
         this.updatePositionWithNoLabel();     
+
+        /** Handling updates to Accordions **/
+        this.pageSvc.eventUpdate$.subscribe(event => {
+            let parentPath: string = event.path.substr(0, event.path.lastIndexOf('/'));
+            if (parentPath == this.element.path) {
+                var visibletabelem = undefined;
+                this.nestedParams.forEach(aTab => {
+                    if (aTab.path == event.path) {
+                        if (event.visible) { // Tab became visible
+                            visibletabelem = document.getElementById(aTab.config.code);
+                            if (visibletabelem) {
+                                visibletabelem.setAttribute('style', 'display: block;');
+                                
+                                //this.scrollToMe(tabelem);
+                            }
+
+                        } else {
+                            var tabelem = document.getElementById(aTab.config.code);
+                            if (tabelem) {
+                                tabelem.setAttribute('style', 'display: none;');
+                            }
+                        }
+                    }
+                });
+                if (visibletabelem) {
+                    this.scrollToMe(visibletabelem);
+                }
+            }
+        });
     }
 
-    /** Handling model changes to Accordions **/
-    ngOnChanges(changes: SimpleChanges) {
-        const model: SimpleChange = changes.model;
-        console.log('here .. ' + model);
+    scrollToMe(elem){
+        // let elem = document.getElementById(elemId);
+        if (document.body.classList.contains('browserFixed'))
+        {
+            document.getElementById('page-content').scrollTo({ top: elem.offsetTop, behavior: 'smooth' });
+        }
+        else {
+            var offsetTop = this.getOffsetTop(elem);
+            window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        }
     }
-
-    ngAfterViewInit() {
-        console.log('here ngAfterViewInit .. ');
+    
+    getOffsetTop(elem){
+        // loop through all parents to get offset relative to body
+        var offsetTop = 0;
+        do {
+          if ( !isNaN( elem.offsetTop ) )
+          {
+              offsetTop += elem.offsetTop;
+          }
+        } while( elem = elem.offsetParent );
+        return offsetTop;
     }
-
-    // ngDoCheck() {
-    //     console.log('here ngAfterViewChecked .. ');
-    // }
 
     /**
      * Expand Multiple Tabs?
@@ -241,4 +289,11 @@ export class Accordion extends BaseElement {
         }
     }
 
+    getTabDisplayStyle(visible: boolean) : string {
+        if (visible) {
+            return 'block';
+        } else {
+            return 'none';
+        }
+    }
 }

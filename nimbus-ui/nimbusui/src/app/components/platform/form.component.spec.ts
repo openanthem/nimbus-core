@@ -1,3 +1,4 @@
+import { TableHeader } from './grid/table-header.component';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms';
@@ -14,12 +15,13 @@ import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-servic
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import {ToastModule} from 'primeng/toast';
 import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { Form } from './form.component';
 import { FrmGroupCmp } from './form-group.component';
 import { Accordion } from '../platform/content/accordion.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
-// import { Button } from '../platform/form/elements/button.component';
 import { FormElement } from './form-element.component';
 import { MessageComponent } from './message/message.component';
 import { DataTable } from './grid/table.component';
@@ -32,7 +34,6 @@ import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.componen
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
-// import { DateControl } from '../platform/form/elements/date.component';
 import { TextArea } from '../platform/form/elements/textarea.component';
 import { Signature } from '../platform/form/elements/signature.component'
 import { InputText } from '../platform/form/elements/textbox.component';
@@ -78,8 +79,11 @@ import { configureTestSuite } from 'ng-bullet';
 import * as data from '../../payload.json';
 import { Param } from '../../shared/param-state';
 import { PrintDirective } from '../../directives/print.directive';
-
-let formElementsService, pageService, configService, param: Param;;
+import { By } from '@angular/platform-browser';
+import { ServiceConstants } from '../../services/service.constants';
+import { PrintService } from '../../services/print.service';
+import { GridService } from '../../services/grid.service';
+import { formElement, formModel, textboxnotnullmodel, textboxnotnullelement } from 'mockdata';
 
 class MockLoggerService {
   debug() { }
@@ -117,14 +121,20 @@ class MockFormElementsService {
 
 class MockPageService {
     eventUpdate$: Subject<any>;
+    validationUpdate$: Subject<any>;
+    gridValueUpdate$: Subject<any>;
 
     constructor() {
         this.eventUpdate$ = new Subject();
+        this.validationUpdate$ = new Subject();
+        this.gridValueUpdate$ = new Subject();
     }
 
     logError(a) {
         this.eventUpdate$.next(a);
     }
+
+    processEvent() {}
 }
 
 const declarations = [
@@ -136,6 +146,7 @@ const declarations = [
   FormElement,
   MessageComponent,
   DataTable,
+  TableHeader,
   FileUploadComponent,
   OrderablePickList,
   MultiselectCard,
@@ -145,7 +156,6 @@ const declarations = [
   RadioButton,
   ComboBox,
   Calendar,
-  // DateControl,
   TextArea,
   Signature,
   InputText,
@@ -202,21 +212,27 @@ const imports = [
    AngularSvgIconModule,
    ToastModule,
    InputSwitchModule, 
-   TreeTableModule
+   TreeTableModule,
+   BrowserAnimationsModule
 ];
 const providers = [
-{provide: FormElementsService, useClass: MockFormElementsService},
-{provide: PageService, useClass: MockPageService},
+  FormElementsService,
+PageService,
 { provide: 'JSNLOG', useValue: JL },
 { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
 {provide: LoggerService, useClass: MockLoggerService},
+{ provide: LocationStrategy, useClass: HashLocationStrategy },
+Location,
  CustomHttpClient,
  LoaderService,
  ConfigService,
- AppInitService
+ AppInitService,
+ PrintService,
+ GridService,
+ SessionStoreService
 ];
 
-let fixture, hostComponent;
+let fixture, hostComponent, pageService, formElementsService, configService;
 
 describe('Form', () => {
 
@@ -224,17 +240,17 @@ describe('Form', () => {
     setup( declarations, imports, providers);
   });
 
-     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
-
   beforeEach( () => {
     fixture = TestBed.createComponent(Form);
     hostComponent = fixture.debugElement.componentInstance;
-    const fg = new FormGroup({});
-    const checks: ValidatorFn[] = [];
-    checks.push(Validators.required);
-    fg.addControl(param.config.code, new FormControl(param.leafState,checks));
-    hostComponent.form = fg;
-    hostComponent.element = param;
+    hostComponent.form = new FormGroup({
+      calls: new FormControl(),
+      medications1: new FormControl(),
+      firstName: new FormControl(),
+      question1notnull: new FormControl()
+   });
+    hostComponent.element = formElement as Param;
+    hostComponent.model = formModel as Model;
     formElementsService = TestBed.get(FormElementsService);
     pageService = TestBed.get(PageService);
     configService = TestBed.get(ConfigService);
@@ -244,7 +260,136 @@ describe('Form', () => {
     expect(hostComponent).toBeTruthy();
   }));
 
-  it('toggle() should update the opened property',  async(() => {
+  it('nm-counter-message should be created if the showmessages attribute is configured as true',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const nmCounterMessageEle = debugElement.query(By.css('nm-counter-message'));
+    expect(nmCounterMessageEle.attributes['ng-reflect-form']).toBeTruthy();
+    expect(nmCounterMessageEle.attributes['ng-reflect-form'].length).not.toEqual(0);
+    expect(nmCounterMessageEle.attributes['ng-reflect-form']).not.toEqual(null);
+    expect(nmCounterMessageEle).toBeTruthy();
+  }));
+
+  it('nm-counter-message should not be created if the showmessages attribute is configured as false',async(() => {
+    hostComponent.element.config.uiStyles.attributes.showMessages = false;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const nmCounterMessageEle = debugElement.query(By.css('nm-counter-message'));
+    expect(nmCounterMessageEle).toBeFalsy();
+  }));
+
+  it('nm-label should be created if the label is configured',async(() => {
+    hostComponent.position = 1;
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;    
+    const nmLabelEle = debugElement.queryAll(By.css('nm-label'));
+    expect(nmLabelEle.length).toEqual(2);
+  }));
+
+  it('nm-label should not be created if the label is not configured',async(() => {
+    const newElement = Object.assign({}, formElement);
+    newElement.labels =[];
+    hostComponent.element = newElement as Param;
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    hostComponent.position = 1;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const nmLabelEle = debugElement.queryAll(By.css('form nm-label'));    
+    expect(nmLabelEle.length === 1).toBeTruthy();
+  }));
+
+  it('nm-accordion should be created if the accordion is configured',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const accordionEle = debugElement.query(By.css('nm-accordion'));
+    expect(accordionEle.attributes['ng-reflect-form']).toBeTruthy();
+    expect(accordionEle.attributes['ng-reflect-form'].length).not.toEqual(0);
+    expect(accordionEle.attributes['ng-reflect-form']).not.toEqual(null);
+    expect(accordionEle).toBeTruthy();
+  }));
+
+  it('nm-accordion should not be created if the accordion is not configured',async(() => {    
+    hostComponent.model.params[0].config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const accordionEle = debugElement.query(By.css('nm-accordion'));
+    expect(accordionEle).toBeFalsy();
+  }));
+
+  it('nm-frm-grp should be created if the elementgroup is configured',async(() => {
+    hostComponent.position = 1;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const frmGrpEle = debugElement.queryAll(By.css('form nm-frm-grp'));    
+    expect(frmGrpEle).toBeTruthy();
+    expect(frmGrpEle[5].attributes['ng-reflect-position']).toEqual('2');
+    expect(frmGrpEle[5].attributes['ng-reflect-form']).toBeTruthy();
+    expect(frmGrpEle[5].attributes['ng-reflect-form'].length).not.toEqual(0);
+    expect(frmGrpEle[5].attributes['ng-reflect-form']).not.toEqual(null);
+    expect(frmGrpEle.length).toEqual(7);
+  }));
+
+  it('nm-frm-grp should not be created if the elementgroup is not configured',async(() => {
+    const newModel = Object.assign({}, formModel); 
+    newModel.params[2].type.model.params[4].config.uiStyles.attributes.alias = '';
+    hostComponent.model = newModel as Model;
+    hostComponent.position = 1;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const frmGrpEle = debugElement.queryAll(By.css('form nm-frm-grp'));
+    expect(frmGrpEle.length).toEqual(7);
+    for (let i = 0; i < frmGrpEle.length; i++) {
+      expect(frmGrpEle[i].attributes['ng-reflect-position']).not.toEqual('2');
+    }
+  }));
+
+  it('nm-frm-grp should be created if the element is configured',async(() => {
+    hostComponent.position = 1;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const frmGrpEle = debugElement.queryAll(By.css('form nm-frm-grp'));
+    expect(frmGrpEle[0].attributes['ng-reflect-form']).toBeTruthy();
+    expect(frmGrpEle[0].attributes['ng-reflect-form'].length).not.toEqual(0);
+    expect(frmGrpEle[0].attributes['ng-reflect-form']).not.toEqual(null);
+    expect(frmGrpEle).toBeTruthy();    
+    expect(frmGrpEle[0].attributes['ng-reflect-position']).toEqual('1');
+    expect(frmGrpEle.length).toEqual(7);
+  }));
+
+  it('nm-frm-grp should not be created if the element is not configured',async(() => {
+    const newModel = Object.assign({}, formModel);
+    delete newModel.params[0];
+    hostComponent.model = newModel as Model;
+    hostComponent.position = 1;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const frmGrpEle = debugElement.queryAll(By.css('form nm-frm-grp'));
+    expect(frmGrpEle.length).toEqual(6);
+  }));
+
+  it('On updating the textbox value the form should be valid', async(() => {
+    const newElement = Object.assign({}, formElement);
+    const newModel = Object.assign({}, formModel);
+    newElement.type.model.params[2].config.type.model.paramConfigIds = ["537", "538", "539", "540", "541", "543", "544"];
+    newElement.type.model.params[2].type.model.params.push(textboxnotnullelement);
+    newModel.params[2].config.type.model.paramConfigIds = ["537", "538", "539", "540", "541", "543", "544"];
+    newModel.params[2].type.model.params.push(textboxnotnullmodel);
+    hostComponent.element = newElement as Param;
+    hostComponent.model = newModel as Model;
+    fixture.detectChanges();
+    const formValue = hostComponent.form.value;
+    expect(formValue).toEqual({"medications1": "", "question1notnull": ""});
+    expect(hostComponent.form.valid).toBeFalsy();
+    const textBox = fixture.debugElement.query(By.css('.form-control.text-input')).nativeElement;
+    textBox.value = 'test-436';
+    textBox.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(hostComponent.form.valid).toBeTruthy();
+    expect(hostComponent.form.value).toEqual({"medications1": "", "question1notnull": "test-436"});
+  }));
+
+    it('toggle() should update the opened property',  async(() => {
     hostComponent.opened = true;
     hostComponent.toggle();
     expect(hostComponent.opened).toBeFalsy();
@@ -275,71 +420,71 @@ describe('Form', () => {
     expect(hostComponent.buildFormElements).toHaveBeenCalled();
   }));
 
-  // it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is sixColumn',  () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'sixColumn';
-  //     hostComponent.ngOnInit();
-  //     expect(hostComponent.elementCss).toEqual('col-lg-2 col-md-4 col-sm-12');
-  //   });
-  // });
+  it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is sixColumn',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.cssClass = 'sixColumn';
+      hostComponent.ngOnInit();
+      expect(hostComponent.elementCss).toEqual('sixColumn');
+    });
+  });
 
-  // it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is fourColumn',  () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'fourColumn';
-  //     hostComponent.ngOnInit();
-  //     expect(hostComponent.elementCss).toEqual('col-lg-3 col-md-6 col-sm-12');
-  //   });
-  // });
+  it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is fourColumn',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.cssClass = 'fourColumn';
+      hostComponent.ngOnInit();
+      expect(hostComponent.elementCss).toEqual('fourColumn');
+    });
+  });
 
-  // it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is threeColumn',  () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'threeColumn';
-  //     hostComponent.ngOnInit();
-  //     expect(hostComponent.elementCss).toEqual('col-lg-4 col-md-6 col-sm-12');
-  //   });
-  // });
+  it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is threeColumn',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.cssClass = 'threeColumn';
+      hostComponent.ngOnInit();
+      expect(hostComponent.elementCss).toEqual('threeColumn');
+    });
+  });
 
-  // it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is twoColumn',  () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'twoColumn';
-  //     hostComponent.ngOnInit();
-  //     expect(hostComponent.elementCss).toEqual('col-sm-12 col-md-6');
-  //   });
-  // });
+  it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is twoColumn',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.cssClass = 'twoColumn';
+      hostComponent.ngOnInit();
+      expect(hostComponent.elementCss).toEqual('twoColumn');
+    });
+  });
 
-  // it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is oneColumn',  () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'oneColumn';
-  //     hostComponent.ngOnInit();
-  //     expect(hostComponent.elementCss).toEqual('col-sm-12');
-  //   });
-  // });
+  it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is oneColumn',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.cssClass = 'oneColumn';
+      hostComponent.ngOnInit();
+      expect(hostComponent.elementCss).toEqual('oneColumn');
+    });
+  });
 
-  // it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is inline',  () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'inline';
-  //     hostComponent.ngOnInit();
-  //     expect(hostComponent.elementCss).toEqual('d-block d-md-inline-block mr-3');
-  //   });
-  // });
+  it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is inline',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.cssClass = 'inline';
+      hostComponent.ngOnInit();
+      expect(hostComponent.elementCss).toEqual('d-block d-md-inline-block mr-3');
+    });
+  });
  
-  // it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is questionGroup',  () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'questionGroup';
-  //     hostComponent.ngOnInit();
-  //     expect(hostComponent.elementCss).toEqual(' questionGroup');
-  //   });
-  // });
+  it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is questionGroup',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.cssClass = 'questionGroup';
+      hostComponent.ngOnInit();
+      expect(hostComponent.elementCss).toEqual('questionGroup');
+    });
+  });
 
-  // it('ngOnInit() should update the elementCss property based on element.config.uiStyles.attributes.cssClass',  () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cssClass = 'test';
-  //     spyOn(hostComponent, 'buildFormElements').and.callThrough();
-  //     hostComponent.ngOnInit();
-  //     expect(hostComponent.elementCss).toEqual('test');
-  //     expect(hostComponent.buildFormElements).toHaveBeenCalled();
-  //   });
-  // });
+  it('ngOnInit() should update the elementCss property based on element.config.uiStyles.attributes.cssClass',  () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.cssClass = 'test';
+      spyOn(hostComponent, 'buildFormElements').and.callThrough();
+      hostComponent.ngOnInit();
+      expect(hostComponent.elementCss).toEqual('test');
+      expect(hostComponent.buildFormElements).toHaveBeenCalled();
+    });
+  });
 
   it('buildFormElements() should update the groupFormElements()',  async(() => {
     const model: any = {};
@@ -438,3 +583,4 @@ describe('Form', () => {
   }));
 
 });
+

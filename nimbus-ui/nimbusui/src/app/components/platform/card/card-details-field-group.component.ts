@@ -31,7 +31,7 @@ import { WebContentSvc } from '../../../services/content-management.service';
 @Component({
     selector: 'nm-card-details-field-group',
     template:`
-        <div [ngClass]="getComponentClass()">
+        <div>
             <nm-input-label *ngIf="!isLabelEmpty"
                 [element]="element" 
                 [required]="false">
@@ -40,6 +40,10 @@ import { WebContentSvc } from '../../../services/content-management.service';
                 <!-- FieldValue-->
                 <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
                     <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>
+                </ng-template>
+                <!-- Paragraph -->
+                <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.paragraph.toString()">
+                    <nm-paragraph [element]="field"></nm-paragraph>
                 </ng-template>
             </ng-template>
         </div>
@@ -51,15 +55,6 @@ export class CardDetailsFieldGroupComponent extends BaseElement {
 
     constructor(private _wcs: WebContentSvc) {
         super(_wcs);
-    }
-    
-    getComponentClass() {
-        let componentClass: string[] = [];
-        if (this.cssClass) {
-            componentClass.push(this.cssClass);
-        }
-
-        return componentClass;
     }
 
 }
