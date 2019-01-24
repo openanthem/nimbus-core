@@ -25,6 +25,10 @@ import lombok.Setter;
 @Getter @Setter
 public class VRSampleChart {
 	
+	/*
+	 * Below configuration is only for test case purpose. When @Chart is used for view configuration in live applications, 
+	 * please look at PetClinic implementaion for configuration options
+	 */
 	private List<DataGroup> actionPerDomainRoot;
 	
 	@Config(url="<!#this!>/../actionPerDomainRoot/_process?fn=_set&url=/p/samplechart/_search?fn=query&where={\n" + 
