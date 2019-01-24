@@ -17,7 +17,7 @@ package com.antheminc.oss.nimbus.entity.aggregate.chart;
 
 import java.util.List;
 
-import com.antheminc.oss.nimbus.domain.defn.Domain;
+import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
@@ -27,7 +27,7 @@ import lombok.Setter;
  * @author Rakesh Patel
  *
  */
-@Domain("datagroup")
+@Model
 @Getter @Setter
 public class DataGroup extends IdString {
 
