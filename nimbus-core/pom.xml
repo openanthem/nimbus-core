@@ -11,7 +11,7 @@
 
 	<properties>
 		<sonar.jacoco.reportPaths>target/jacoco.exec, ../nimbus-test/target/jacoco.exec</sonar.jacoco.reportPaths>
-		<sonar.coverage.exclusions>src/main/java/com/antheminc/oss/nimbus/entity/**/*.java</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>src/main/java/com/antheminc/oss/nimbus/entity/**/*.java, src/main/java/com/antheminc/oss/nimbus/domain/defn/ViewConfig.java</sonar.coverage.exclusions>
 	</properties>
 
 	<dependencies>

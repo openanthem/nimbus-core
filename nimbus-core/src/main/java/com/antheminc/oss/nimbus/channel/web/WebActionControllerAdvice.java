@@ -66,6 +66,8 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	
 	private JustLogit logit = new JustLogit(this.getClass());
 	
+	private static final String RESPONSE_INTERCEPTOR_BEAN_PREFIX = "httpresponsebodyinterceptor.";
+	
 	@Value("${application.error.metricLoggingEnabled:true}")
 	private boolean metricLoggingEnabled;
 	
@@ -84,6 +86,7 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 		return true;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, 
 			Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
@@ -98,7 +101,7 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 		if(StringUtils.isBlank(responseBodyHeader))
 			return multiOutput;
 		
-		ResponseInterceptor<MultiExecuteOutput> interceptor = beanResolver.find(ResponseInterceptor.class, responseBodyHeader);
+		ResponseInterceptor<MultiExecuteOutput> interceptor = beanResolver.find(ResponseInterceptor.class, RESPONSE_INTERCEPTOR_BEAN_PREFIX+responseBodyHeader);
 		
 		if(interceptor == null)
 			return multiOutput;

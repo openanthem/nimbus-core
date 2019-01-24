@@ -172,7 +172,7 @@ public class DefaultFrameworkExtensionsConfig {
 		return new StaticCodeValueBasedCodeToLabelConverter(beanResolver);
 	}
 	
-	@Bean(name="default._raw")
+	@Bean(name="default.httpresponsebodyinterceptor._raw")
 	public ResponseInterceptor<MultiExecuteOutput> remoteModelResponseInterceptor(BeanResolverStrategy beanResolver) {
 		return new HttpRawResponseBodyHeaderInterceptor();
 	}

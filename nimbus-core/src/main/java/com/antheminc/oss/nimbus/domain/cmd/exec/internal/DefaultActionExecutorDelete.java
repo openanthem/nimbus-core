@@ -63,11 +63,11 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 			loader.unload(eCtx);
 		}
 		else if(p.isCollection())
-			handleCollection(eCtx, p.findIfCollection());
+			handleCollection(p.findIfCollection());
 		else if(p.isCollectionElem())
-			handleCollectionElem(eCtx, p.findIfCollectionElem());
+			handleCollectionElem(p.findIfCollectionElem());
 		else
-			handleParam(eCtx, p);
+			handleParam(p);
 			
 		
 		return Output.instantiate(input, eCtx, Boolean.TRUE);
@@ -87,15 +87,15 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 		}
 	}
 	
-	protected void handleCollection(ExecutionContext eCtx, ListParam<Object> p) {
+	protected void handleCollection(ListParam<Object> p) {
 		p.clear();
 	}
 	
-	protected void handleCollectionElem(ExecutionContext eCtx, ListElemParam<Object> p) {
+	protected void handleCollectionElem(ListElemParam<Object> p) {
 		p.remove();
 	}
 	
-	protected void handleParam(ExecutionContext eCtx, Param<Object> p) {
+	protected void handleParam(Param<Object> p) {
 		p.setState(null);
 	}
 } 
