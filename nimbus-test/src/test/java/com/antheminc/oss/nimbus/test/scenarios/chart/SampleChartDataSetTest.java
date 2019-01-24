@@ -159,59 +159,59 @@ public class SampleChartDataSetTest  extends AbstractFrameworkIntegrationTests {
 	}
 	
 	
-	@Test
-	public void t2_testChartAggregationOnView_singleDataGroup() {
-		mongo.dropCollection("samplechartaggregateview");
-		
-		DataGroup dg1 = new DataGroup();
-		DataGroup dg2 = new DataGroup();
-		dg1.setLegend("_search");
-		dg2.setLegend("_new");
-		
-		List<DataPoint<?,?>> dps1 = new ArrayList<>();
-		DataPoint<String, Integer> dp1 = new DataPoint<>();
-		dp1.setX("pet");
-		dp1.setY(1);
-		
-		DataPoint<String, Integer> dp2 = new DataPoint<>();
-		dp2.setX("owner");
-		dp2.setY(2);
-		
-		dps1.add(dp1);
-		dps1.add(dp2);
-		dg1.setDataPoints(dps1);
-		
-		List<DataPoint<?,?>> dps2 = new ArrayList<>();
-		DataPoint<String, Integer> dp3 = new DataPoint<>();
-		dp3.setX("visit");
-		dp3.setY(1);
-		
-		DataPoint<String, Integer> dp4 = new DataPoint<>();
-		dp4.setX("audit");
-		dp4.setY(1);
-		
-		dps2.add(dp3);
-		dps2.add(dp4);
-		dg2.setDataPoints(dps2);
-		
-		mongo.insert(dg1, "samplechartaggregateview");
-		mongo.insert(dg2, "samplechartaggregateview");
-		
-		String request = "/samplechartaggregateview/_search?fn=query&where=samplechartaggregateview.legend.eq('_search')&fetch=1";
-		
-		HttpServletRequest httpReq = MockHttpRequestBuilder.withUri(PLATFORM_ROOT+request)
-				.getMock();
-			
-		Object controllerResp = controller.handleGet(httpReq, null);
-		assertThat(controllerResp).isNotNull();
-		
-		DataGroup dataGrp = (DataGroup) ExtractResponseOutputUtils.extractOutput(controllerResp);
-		assertThat(dataGrp).isNotNull();
-		
-		assertThat(dataGrp).extracting("dataPoints").isNotEmpty();
-		
-		assertThat(dataGrp.getDataPoints()).extracting("x","y").contains(tuple("pet",1));
-		
-	}
+//	@Test
+//	public void t2_testChartAggregationOnView_singleDataGroup() {
+//		mongo.dropCollection("samplechartaggregateview");
+//		
+//		DataGroup dg1 = new DataGroup();
+//		DataGroup dg2 = new DataGroup();
+//		dg1.setLegend("_search");
+//		dg2.setLegend("_new");
+//		
+//		List<DataPoint<?,?>> dps1 = new ArrayList<>();
+//		DataPoint<String, Integer> dp1 = new DataPoint<>();
+//		dp1.setX("pet");
+//		dp1.setY(1);
+//		
+//		DataPoint<String, Integer> dp2 = new DataPoint<>();
+//		dp2.setX("owner");
+//		dp2.setY(2);
+//		
+//		dps1.add(dp1);
+//		dps1.add(dp2);
+//		dg1.setDataPoints(dps1);
+//		
+//		List<DataPoint<?,?>> dps2 = new ArrayList<>();
+//		DataPoint<String, Integer> dp3 = new DataPoint<>();
+//		dp3.setX("visit");
+//		dp3.setY(1);
+//		
+//		DataPoint<String, Integer> dp4 = new DataPoint<>();
+//		dp4.setX("audit");
+//		dp4.setY(1);
+//		
+//		dps2.add(dp3);
+//		dps2.add(dp4);
+//		dg2.setDataPoints(dps2);
+//		
+//		mongo.insert(dg1, "samplechartaggregateview");
+//		mongo.insert(dg2, "samplechartaggregateview");
+//		
+//		String request = "/samplechartaggregateview/_search?fn=query&where=samplechartaggregateview.legend.eq('_search')&fetch=1";
+//		
+//		HttpServletRequest httpReq = MockHttpRequestBuilder.withUri(PLATFORM_ROOT+request)
+//				.getMock();
+//			
+//		Object controllerResp = controller.handleGet(httpReq, null);
+//		assertThat(controllerResp).isNotNull();
+//		
+//		DataGroup dataGrp = (DataGroup) ExtractResponseOutputUtils.extractOutput(controllerResp);
+//		assertThat(dataGrp).isNotNull();
+//		
+//		assertThat(dataGrp).extracting("dataPoints").isNotEmpty();
+//		
+//		assertThat(dataGrp.getDataPoints()).extracting("x","y").contains(tuple("pet",1));
+//		
+//	}
 	
 }
