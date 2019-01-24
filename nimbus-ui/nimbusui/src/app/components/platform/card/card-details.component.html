@@ -17,6 +17,10 @@
                         <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.paragraph.toString()">
                             <nm-paragraph [element]="field"></nm-paragraph>
                         </ng-template>
+                        <!-- FieldValueGroup-->
+                        <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValueGroup.toString()">
+                            <nm-card-details-field-group [element]="field"></nm-card-details-field-group>
+                        </ng-template>
                         <!-- FieldValue-->
                         <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
                             <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>

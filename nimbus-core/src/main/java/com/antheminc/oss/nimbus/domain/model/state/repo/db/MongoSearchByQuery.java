@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
@@ -55,6 +56,9 @@ import lombok.RequiredArgsConstructor;
 public class MongoSearchByQuery extends MongoDBSearch {
 
 	private static final ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
+	
+	private static final String AGGREGATION_QUERY_REGEX = ".*aggregate\\s*:.*";
+	private static final Pattern AGGREGATION_QUERY_REGEX_PATTERN = Pattern.compile(AGGREGATION_QUERY_REGEX, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
 	
 	public MongoSearchByQuery(BeanResolverStrategy beanResolver) {
@@ -120,7 +124,8 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	
 	@Override
 	public <T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria) {
-		if(StringUtils.contains((String)criteria.getWhere(),Constants.SEARCH_REQ_AGGREGATE_MARKER.code)) {
+		String where = (String) criteria.getWhere();
+		if(StringUtils.isNotBlank(where) && AGGREGATION_QUERY_REGEX_PATTERN.matcher(where).matches()) {
 			return searchByAggregation(referredClass, alias, criteria);
 		}
 		return searchByQuery(referredClass, alias, criteria);

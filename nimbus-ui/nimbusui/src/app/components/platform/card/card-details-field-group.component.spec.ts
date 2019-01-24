@@ -34,6 +34,7 @@ import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
 import { AppInitService } from '../../../services/app.init.service';
 import { cardDetailsFieldGroupElement, newCardDetailsFieldGroupElement } from 'mockdata';
+import { Paragraph } from '../content/paragraph.component';
 
 let fixture,hostComponent;
 
@@ -48,7 +49,8 @@ const declarations = [
   TooltipComponent,
   SelectItemPipe,
   DisplayValueDirective,
-  InputLabel
+  InputLabel,
+  Paragraph
 ];
 const imports = [
     FormsModule, 
@@ -131,17 +133,5 @@ describe('CardDetailsFieldGroupComponent', () => {
     const newAllCardDetailsFieldEles = debugElement.queryAll(By.css('nm-card-details-field'));
     expect(newAllCardDetailsFieldEles.length).toEqual(2);
   }));
-
-  it('getComponentClass() should return array [testClass]',  async(() => {
-      hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass'
-      const res = hostComponent.getComponentClass();
-      expect(res).toEqual(['testClass']);
-  }));
-
-  it('getComponentClass() should return array []',  async(() => {
-    hostComponent.element.config.uiStyles.attributes.cssClass = null;
-    const res = hostComponent.getComponentClass();
-    expect(res).toEqual([]);
-}));
 
 });

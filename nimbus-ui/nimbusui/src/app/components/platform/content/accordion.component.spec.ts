@@ -15,7 +15,7 @@ import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, Drag
   import { TableModule } from 'primeng/table';
   import { KeyFilterModule } from 'primeng/keyfilter';
   import { ToastModule } from 'primeng/toast';
-  import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
+  import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren, ChangeDetectorRef } from '@angular/core';
   import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { Accordion } from './accordion.component';
@@ -234,9 +234,10 @@ const providers = [
   AppInitService,
   Location,
   GridService,
-  PrintService
+  PrintService,
+  ChangeDetectorRef
 ];
-let fixture, hostComponent;
+let fixture, hostComponent, changeDetectorRef;
 describe('Accordion', () => {
 
   configureTestSuite(() => {
@@ -250,6 +251,7 @@ describe('Accordion', () => {
     pageService = TestBed.get(PageService);
     webContentSvc = TestBed.get(WebContentSvc);
     configService = TestBed.get(ConfigService);
+    changeDetectorRef = TestBed.get(ChangeDetectorRef);
   });
 
   it('should create the Accordion', async(() => {
@@ -305,14 +307,6 @@ describe('Accordion', () => {
     const debugElement = fixture.debugElement;
     const pAccordionEle = debugElement.query(By.css('p-accordion'));
     expect(pAccordionEle).toBeTruthy();
-  }));
-
-  it('p-accordionTab should be created if element.type.model.params[0].visible is false',async(() => {
-      hostComponent.element.type.model.params[0].visible = false;
-    fixture.detectChanges();
-    const debugElement = fixture.debugElement;
-    const pAccordionTab = debugElement.query(By.css('p-accordionTab'));
-    expect(pAccordionTab).toBeFalsy();
   }));
 
   it('p-accordionTab should be created if element.type.model.params[0].visible is true',async(() => {
@@ -507,7 +501,7 @@ describe('Accordion', () => {
   }));
 
   it('closeAll should clear the index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService);
+    hostComponent.accordion = new Accordion(webContentSvc, pageService, changeDetectorRef);
     hostComponent.accordion['tabs'] = true;
     hostComponent.index = [1, 2, 3];
     hostComponent.closeAll();
@@ -515,7 +509,7 @@ describe('Accordion', () => {
   }));
 
   it('closeAll should not clear the index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService);
+    hostComponent.accordion = new Accordion(webContentSvc, pageService, changeDetectorRef);
     hostComponent.accordion['tabs'] = false;
     hostComponent.index = [1, 2, 3];
     hostComponent.closeAll();
@@ -523,7 +517,7 @@ describe('Accordion', () => {
   }));
 
   it('openAll() should update index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService);
+    hostComponent.accordion = new Accordion(webContentSvc, pageService, changeDetectorRef);
     hostComponent.accordion['tabs'] = [1, 2, 3];
     hostComponent.index = [];
     hostComponent.openAll();
@@ -531,7 +525,7 @@ describe('Accordion', () => {
   }));
 
   it('openAll() should not update index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService);
+    hostComponent.accordion = new Accordion(webContentSvc, pageService, changeDetectorRef);
     hostComponent.index = [];
     hostComponent.openAll();
     expect(hostComponent.index.length).toEqual(0);
