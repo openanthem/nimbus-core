@@ -223,6 +223,10 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     printPath: string;
     autoPrint: boolean;
     dataEntryField: boolean;
+    mask: string;
+    slotChar: string;
+    charRegex: string;
+    maskPlaceHolder: string;
     fixLayout: boolean;
     headerCheckboxToggleAllPages: boolean;
     deserialize( inJson ) {

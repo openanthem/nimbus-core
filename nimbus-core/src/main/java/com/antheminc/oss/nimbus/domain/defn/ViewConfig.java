@@ -2681,6 +2681,45 @@ public class ViewConfig {
 		String type() default "text";
 
 	}
+	
+	
+	/**
+	 * <p>InputMask is a text input component.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>InputMask will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Form}</li>
+	 * 
+	 * <p>InputMask should decorate a field having a simple type.
+	 * 
+	 * @since 1.0
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface InputMask {
+		String alias() default "InputMask";
+		
+		boolean dataEntryField() default true;
+		
+		/**
+		 * <p> maskStyle can be used to define the restricted format user is expected to enter.
+		 * For example maskStyle="99-9999" would let user enter only 6 numerical values in the i/p box.
+		 */
+		String mask() default "";
+		
+		/**
+		 * <p> Please visit PrimeNG's website for details on the below parameters.
+		 */
+		
+		String slotChar() default "_";	
+		
+		String charRegex() default "[A-Za-z]";
+		
+		String maskPlaceHolder() default "";		
+		
+	}
 
 	/**
 	 * <p>Tile is a container component that groups a collection of contents.

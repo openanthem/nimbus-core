@@ -41,7 +41,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
-    FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
+    FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, InputMaskModule, RadioButtonModule, 
     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
@@ -71,6 +71,7 @@ import { ComboBox } from './components/platform/form/elements/combobox.component
 import { RadioButton } from './components/platform/form/elements/radio.component';
 import { Signature } from './components/platform/form/elements/signature.component';
 import { InputText } from './components/platform/form/elements/textbox.component';
+import { InputMask } from './components/platform/form/elements/input-mask.component';
 import { CheckBoxGroup } from './components/platform/form/elements/checkbox-group.component';
 import { MultiselectCard } from './components/platform/form/elements/multi-select-card.component';
 import { ActionDropdown, ActionLink } from './components/platform/form/elements/action-dropdown.component';
@@ -180,6 +181,7 @@ export function init_app(appinitservice: AppInitService) {
         HttpModule,
         FormsModule,
         DropdownModule,
+        InputMaskModule,
         DataTableModule,
         TableModule,
         TreeTableModule,
@@ -208,7 +210,7 @@ export function init_app(appinitservice: AppInitService) {
         InputSwitchModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
-        Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, CheckBoxGroup,
+        Tile, Section, Header, Form, FormElement, InputText, InputMask, ComboBox, RadioButton, Signature, CheckBoxGroup,
         InPlaceEditorComponent, Paragraph, Value, BaseElement, FormGridFiller, 
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldGroupComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         Accordion, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
