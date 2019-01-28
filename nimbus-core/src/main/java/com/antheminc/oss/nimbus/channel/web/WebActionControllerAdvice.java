@@ -96,7 +96,7 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 		
 		MultiExecuteOutput multiOutput = defaultInterceptor.handleResponse(body);
 		
-		String responseBodyHeader = request.getHeaders().getFirst("responseBody");
+		String responseBodyHeader = request.getHeaders().getFirst(Constants.HTTP_RESPONSEBODY_INTERCEPTOR_HEADER.code);
 		
 		if(StringUtils.isBlank(responseBodyHeader))
 			return multiOutput;

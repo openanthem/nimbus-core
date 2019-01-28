@@ -32,12 +32,11 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
-import com.antheminc.oss.nimbus.InvalidArgumentException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
+import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement;
-import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
@@ -72,7 +71,7 @@ public abstract class AbstractWSModelRepository implements ExternalModelReposito
 	
 	@Override
 	public <T> T _new(Command cmd, ModelConfig<T> mConfig) {
-		final String url = addActionToRootDomainUrlIfMissing(cmd.buildUri(CommandElement.Type.DomainAlias), Action._new);
+		final String url = cmd.toRemoteUri(CommandElement.Type.ParamName, Action._new, Behavior.$execute);
 		
 		URI _newUri = createUriForAlias(mConfig.getAlias(), url);
 		
@@ -81,7 +80,7 @@ public abstract class AbstractWSModelRepository implements ExternalModelReposito
 	
 	@Override
 	public <T> T _get(Command cmd, ModelConfig<T> mConfig) {
-		final String url = addActionToRootDomainUrlIfMissing(cmd.buildUri(CommandElement.Type.DomainAlias), Action._get);
+		final String url = cmd.toRemoteUri(CommandElement.Type.ParamName, Action._get, Behavior.$execute);
 		
 		URI _getUri = createUriForAlias(mConfig.getAlias(), url);
 		
@@ -101,7 +100,7 @@ public abstract class AbstractWSModelRepository implements ExternalModelReposito
 	
 	@Override
 	public <T> T _update(Param<?> param, T state) {
-		final String url = addActionToRootDomainUrlIfMissing(param.getRootExecution().getRootCommand().buildUri(CommandElement.Type.DomainAlias), Action._update);
+		final String url = param.getRootExecution().getRootCommand().toRemoteUri(CommandElement.Type.ParamName, Action._update, Behavior.$execute);
 		
 		URI _updateUri = createUriForAlias(param.getRootDomain().getConfig().getAlias(), url);
 		
@@ -110,7 +109,7 @@ public abstract class AbstractWSModelRepository implements ExternalModelReposito
 	
 	@Override
 	public <T> T _delete(Param<?> param) {
-		final String url = addActionToRootDomainUrlIfMissing(param.getRootExecution().getRootCommand().buildUri(CommandElement.Type.DomainAlias), Action._delete);
+		final String url = param.getRootExecution().getRootCommand().toRemoteUri(CommandElement.Type.ParamName, Action._delete, Behavior.$execute);
 		
 		URI _deleteUri = createUriForAlias(param.getRootDomain().getConfig().getAlias(), url);
 	
@@ -130,27 +129,6 @@ public abstract class AbstractWSModelRepository implements ExternalModelReposito
 		} catch (URISyntaxException e) {
 			throw new FrameworkRuntimeException("Cannot create URI for ["+urlToConstruct+"]", e);
 		}
-	}
-	
-	protected String addActionToRootDomainUrlIfMissing(String rootDomainUrl, Action action) {
-		String[] splitUrl = StringUtils.split(rootDomainUrl, "?", 2);
-		
-		if(splitUrl == null || splitUrl.length < 1) {
-			throw new InvalidArgumentException("Received invalid rootDomainUrl during remote model ws call: "+rootDomainUrl);
-		}
-		
-		int indexOf = StringUtils.indexOf(splitUrl[0], Constants.SEPARATOR_URI.code+action.name());
-		
-		if(indexOf != -1) {
-			return rootDomainUrl;
-		}
-		
-		StringBuilder urlWithAction = new StringBuilder(splitUrl[0]).append(Constants.SEPARATOR_URI.code+action.name());
-		if(splitUrl.length == 2)
-			return urlWithAction.append(splitUrl[1]).toString();
-		else
-			return urlWithAction.toString();
-	
 	}
 	
 	protected Object execute(Supplier<RequestEntity<?>> reqEntitySupplier, Supplier<ParameterizedTypeReference<?>> responseTypeSupplier) {

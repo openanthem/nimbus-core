@@ -135,9 +135,9 @@ ext:
 remote:
   repository:
     serviceUrl:
-      remote_repo: http://remote-repo
-      remote_repo2: http://remote_repo
-      vr_remote_repo2: http://remote_repo
+      remote_repo: http://remote-repo/contextpath
+      remote_repo2: http://remote_repo/contextpath
+      vr_remote_repo2: http://remote_repo/contextpath
       remote_repo_withcontext: http://remote-repo/contextpath
       cliententity: http://cliententity
       client: http://client

@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -26,6 +27,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runners.MethodSorters;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 
 /**
  * @author Soham Chakravarti
@@ -104,6 +106,33 @@ public class CommandTest {
 		Command cmd = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
 		cmd.setEvent("someEvent");
 		assertEquals("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get/someEvent?b=$execute", cmd.toUri());
+	}
+	
+	@Test
+	public void testToUriWithQueryParams() {
+		Command cmd = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get?b=$state&abc=cba&abc=xyz&pqr=mnc").getCommand();
+		String uriWithQueryParams = cmd.toUri();
+		Command cmd2 = CommandBuilder.withUri(uriWithQueryParams).getCommand();
+		assertThat(cmd.getRequestParams().size()).isEqualTo(cmd2.getRequestParams().size());
+	}
+	
+	@Test
+	public void testToUriWithDefaultBehaviorAndQueryParams() {
+		Command cmd = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get?abc=cba&abc=xyz&pqr=mnc").getCommand();
+		String uriWithQueryParams = cmd.toUri();
+		Command cmd2 = CommandBuilder.withUri(uriWithQueryParams).getCommand();
+		assertThat(cmd.getRequestParams().size()).isLessThan(cmd2.getRequestParams().size());
+	}
+	
+	@Test
+	public void testBuildRemoteUri() {
+		String uri = "/client_xyz/app_abc/p/domainRoot_alias/nestedDomain/abc/_new?b=$executeAnd$save&criteria=customer.name.eq(\"John\")";
+		Command cmd = CommandBuilder.withUri(uri).getCommand();
+		assertNotNull(cmd);
+		
+		String buildUri = cmd.toRemoteUri(Type.ParamName, Action._new, Behavior.$execute);
+		
+		assertThat(buildUri).isEqualTo("/client_xyz/app_abc/p/domainRoot_alias/nestedDomain/abc/_new?b=$execute");
 	}
 	
 	@Test

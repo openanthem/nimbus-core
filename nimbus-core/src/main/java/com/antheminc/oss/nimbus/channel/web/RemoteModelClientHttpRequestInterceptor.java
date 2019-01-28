@@ -16,10 +16,7 @@
 package com.antheminc.oss.nimbus.channel.web;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -27,9 +24,6 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.support.HttpRequestWrapper;
 
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
-import com.antheminc.oss.nimbus.InvalidArgumentException;
-import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 
 /**
@@ -38,9 +32,6 @@ import com.antheminc.oss.nimbus.domain.defn.Constants;
  */
 public class RemoteModelClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
 	
-	private static final String BEHAVIOR_KEY = Constants.MARKER_URI_BEHAVIOR.code+Constants.PARAM_ASSIGNMENT_MARKER.code;
-	private static final String BEHAVIOR_EXECUTE = Constants.MARKER_URI_BEHAVIOR.code+Constants.PARAM_ASSIGNMENT_MARKER.code+Behavior.$execute.name();
-
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
 			throws IOException {
@@ -56,39 +47,9 @@ public class RemoteModelClientHttpRequestInterceptor implements ClientHttpReques
 		}
 		
 		@Override
-		public URI getURI() {
-			URI uri = super.getURI();
-			
-			String commandUri = uri.toString();
-			
-			//Override behavior to $execute for remote model ws calls
-			int indexOf = StringUtils.indexOf(commandUri, BEHAVIOR_KEY);
-			if(indexOf != -1) {
-				int startIndex = StringUtils.indexOf(commandUri, BEHAVIOR_KEY);
-				int endIndex = StringUtils.indexOf(commandUri, Constants.REQUEST_PARAMETER_DELIMITER.code, startIndex);
-				
-				String behaviorToReplace = "";
-				
-				if(endIndex == -1) 
-					behaviorToReplace = StringUtils.substring(commandUri, startIndex);
-				else
-					behaviorToReplace = StringUtils.substring(commandUri, startIndex, endIndex);
-				
-				commandUri = StringUtils.replace(commandUri, behaviorToReplace, BEHAVIOR_EXECUTE);
-			}
-			
-			try {
-				return new URI(commandUri);
-			} catch (URISyntaxException e) {
-				throw new FrameworkRuntimeException("Could not override behaviors in remote model's ws uri: "+uri, e);
-			}
-			
-		}
-
-		@Override
 		public HttpHeaders getHeaders() {
 			HttpHeaders headers = super.getHeaders();
-			headers.add("responseBody", "_raw");
+			headers.add(Constants.HTTP_RESPONSEBODY_INTERCEPTOR_HEADER.code, Constants.HTTP_RESPONSEBODY_INTERCEPTOR_HEADER_RAW.code);
 			return headers;
 		}
 	}

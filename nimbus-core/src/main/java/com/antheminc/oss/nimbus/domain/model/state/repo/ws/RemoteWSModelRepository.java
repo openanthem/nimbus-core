@@ -32,11 +32,8 @@ import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.cmd.Action;
-import com.antheminc.oss.nimbus.domain.cmd.CommandElement;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput.GenericExecute;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput.GenericListExecute;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.AbstractWSModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 
@@ -66,20 +63,6 @@ public class RemoteWSModelRepository extends AbstractWSModelRepository {
 	protected <T> T handleNew(Class<?> referredClass, URI _newUri) {
 		Object response = execute(() -> new RequestEntity<GenericExecute<T>>(HttpMethod.GET, _newUri), 
 				() -> createGenericRespEntity(referredClass));
-		
-		GenericExecute<T> output = (GenericExecute<T>) response;
-		
-		return output.extractSingleValue();
-	}
-	
-	@Override
-	public <T> T _delete(Param<?> param) {
-		final String url = addActionToRootDomainUrlIfMissing(param.getRootExecution().getRootCommand().buildUri(CommandElement.Type.DomainAlias), Action._delete);
-		
-		URI _deleteUri = createUriForAlias(param.getRootDomain().getConfig().getAlias(), url);
-		
-		Object response = execute(() -> new RequestEntity<GenericExecute<T>>(HttpMethod.GET, _deleteUri), 
-				() -> createGenericRespEntity(Boolean.class));
 		
 		GenericExecute<T> output = (GenericExecute<T>) response;
 		
