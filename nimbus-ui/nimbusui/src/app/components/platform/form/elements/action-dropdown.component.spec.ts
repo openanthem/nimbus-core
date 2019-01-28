@@ -27,10 +27,11 @@ import { Link } from '../../link.component';
 import { SvgComponent } from '../../svg/svg.component';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
-import { fieldValueParam, MockActionDropdownLink } from 'mockdata';
+import { actionDropDownRowData, actionDropDownElement, actionDropDownParams, ActionDropDownLinkElement, actionDropDownLinkParams, MockActionDropdownLink } from 'mockdata';
 import { ServiceConstants } from './../../../../services/service.constants';
 import { By } from '@angular/platform-browser';
 import { ComponentTypes } from './../../../../shared/param-annotations.enum';
+import { Subject } from 'rxjs';
 
 let pageservice, configservice;
 
@@ -153,6 +154,10 @@ class MockElementRef {
 }
 
 class MockPageService {
+    eventUpdate$: Subject<any>;
+    constructor() {
+        this.eventUpdate$ = new Subject();
+    }
     processEvent(a, b, c) {}
 }
 
@@ -191,7 +196,6 @@ describe('ActionDropdown', () => {
   beforeEach(() => {
       fixture = TestBed.createComponent(ActionDropdown);
       hostComponent = fixture.debugElement.componentInstance;
-      // hostComponent.element = fieldValueParam;
       hostComponent.element = actionDropDownElement as Param;
       hostComponent.params = actionDropDownParams as ParamConfig[];
       pageservice = TestBed.get(PageService);
@@ -247,11 +251,6 @@ describe('ActionDropdown', () => {
     expect(hostComponent.enabled).toEqual(true);
   }));
 
-  it('enabled property should not be created', async(() => {
-    hostComponent.element.enabled = false;
-    expect(hostComponent.enabled).toBeFalsy();
-  }));
-
   it('Button should be created if the element.visible is configured as true',async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -261,19 +260,16 @@ describe('ActionDropdown', () => {
   }));
 
 
-  // it('OnClick of the button the toggleOpen() should be called',async(() => {
-  //   hostComponent.params = actionDropDownLinkParams as ParamConfig[];
-  //   hostComponent.element = actionDropDownElement as Param;
-  //   hostComponent.toggleOpen = () => {
-  //     console.log('testing toggle open...');
-  //   }
-  //   fixture.detectChanges();
-  //   const debugElement = fixture.debugElement;
-  //   spyOn(hostComponent, 'toggleOpen').and.callThrough();
-  //   const buttonEle = debugElement.query(By.css('button'));
-  //   buttonEle.nativeElement.click();
-  //   expect(hostComponent.toggleOpen).toHaveBeenCalled();
-  // }));
+  it('OnClick of the button the toggleOpen() should be called',async(() => {
+    hostComponent.params = actionDropDownLinkParams as ParamConfig[];
+    hostComponent.element = actionDropDownElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    spyOn(hostComponent, 'toggleOpen').and.callThrough();
+    const buttonEle = debugElement.query(By.css('button'));    
+    buttonEle.nativeElement.click();
+    expect(hostComponent.toggleOpen).toHaveBeenCalled();    
+  }));
 
   it('OnClick of the button the dropdownContent should be visible',async(() => {
     fixture.detectChanges();
@@ -281,44 +277,56 @@ describe('ActionDropdown', () => {
     const buttonEle = debugElement.query(By.css('button'));
     buttonEle.nativeElement.click();
     const divContentEle = debugElement.query(By.css('.dropdownContent'));
-    // console.log('divContentEle', divContentEle);
-    
-  }));
-
-  it('OnClick of the button second time the dropdownContent should be hidden',async(() => {
-    fixture.detectChanges();
-    const debugElement = fixture.debugElement;    
+    expect(divContentEle).toBeTruthy();
   }));
 
   it('Nm-image should be created if the imgSrc is configured',async(() => {
     fixture.detectChanges();
-    const debugElement = fixture.debugElement;    
+    const debugElement = fixture.debugElement;
+    const nmImageEle = debugElement.query(By.css('nm-image'));
+    expect(nmImageEle).toBeTruthy();
   }));
 
   it('Nm-image should not be created if the imgSrc is not configured',async(() => {
+      hostComponent.element.config.uiStyles.attributes.imgSrc = '';
     fixture.detectChanges();
-    const debugElement = fixture.debugElement;    
+    const debugElement = fixture.debugElement;
+    const nmImageEle = debugElement.query(By.css('nm-image'));
+    expect(nmImageEle).toBeFalsy();
   }));
 
   it('If rowData is available then nm-action-link should be created',async(() => {
+      hostComponent.rowData = actionDropDownRowData;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;    
+    const actionLinkEle = debugElement.query(By.css('nm-action-link'));
+    expect(actionLinkEle).toBeTruthy();
   }));
 
   it('If rowData is not available then nm-action-link should not be created',async(() => {
-    fixture.detectChanges();
-    const debugElement = fixture.debugElement;    
-  }));
-
-  it('If rowData is not available then nm-link should be created',async(() => {
-    fixture.detectChanges();
-    const debugElement = fixture.debugElement;    
+    hostComponent.element = ActionDropDownLinkElement as Param;
+    hostComponent.params = actionDropDownLinkParams as ParamConfig[];
+  fixture.detectChanges();
+  const debugElement = fixture.debugElement;    
+  const actionLinkEle = debugElement.query(By.css('nm-action-link'));
+  expect(actionLinkEle).toBeFalsy();
   }));
 
   it('If rowData is available then nm-link should not be created',async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;    
+    const linkEle = debugElement.query(By.css('nm-link'));
+    expect(linkEle).toBeFalsy();
   }));
+
+  it('If rowData is not available then nm-link should be created',async(() => {
+    hostComponent.element = ActionDropDownLinkElement as Param;
+    hostComponent.params = actionDropDownLinkParams as ParamConfig[];
+  fixture.detectChanges();
+  const debugElement = fixture.debugElement;    
+  const linkEle = debugElement.query(By.css('nm-link'));
+  expect(linkEle).toBeTruthy();
+}));
 
   it('Button should not be created if the element.visible is configured as false',async(() => {
     hostComponent.element.visible = false;
@@ -327,432 +335,10 @@ describe('ActionDropdown', () => {
     const buttonEle = debugElement.query(By.css('button'));
     expect(buttonEle).toBeFalsy();
   }));
+
+    it('enabled property should not be created', async(() => {
+    hostComponent.element.enabled = false;
+    expect(hostComponent.enabled).toBeFalsy();
+  }));
 });
 
-const actionDropDownElement: any = {
-  "config": {
-      "active": false,
-      "required": false,
-      "id": "613",
-      "code": "vlmCaseItemLinks",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": true,
-          "isHidden": false,
-          "name": "ViewConfig.LinkMenu",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "cssClass": "dropdownTrigger",
-              "alias": "LinkMenu",
-              "imgSrc": "",
-              "imgType": "FA"
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": true,
-          "name": "OwnerLineItem.VLMCaseItemLinks",
-          "model": {
-              "paramConfigIds": [
-                  "615",
-                  "616"
-              ]
-          }
-      }
-  },
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "613",
-  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks",
-  "type": {
-      "model": {
-          "params": [
-              {
-                  "config": {
-                      "active": false,
-                      "required": false,
-                      "id": "615",
-                      "code": "edit",
-                      "validations": null,
-                      "uiNatures": [],
-                      "uiStyles": {
-                          "isLink": true,
-                          "isHidden": false,
-                          "name": "ViewConfig.Link",
-                          "attributes": {
-                              "hidden": false,
-                              "readOnly": false,
-                              "submitButton": true,
-                              "showName": true,
-                              "pageSize": 25,
-                              "browserBack": false,
-                              "showAsLink": false,
-                              "b": "$executeAnd$nav",
-                              "cssClass": "",
-                              "method": "GET",
-                              "altText": "",
-                              "rel": "",
-                              "alias": "Link",
-                              "value": "DEFAULT",
-                              "imgSrc": "edit.png",
-                              "url": "",
-                              "target": ""
-                          }
-                      },
-                      "type": {
-                          "collection": false,
-                          "nested": false,
-                          "name": "string"
-                      }
-                  },
-                  "enabled": true,
-                  "visible": true,
-                  "activeValidationGroups": [],
-                  "collectionParams": [],
-                  "configId": "615",
-                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/edit",
-                  "type": {
-                      "nested": false,
-                      "name": "string",
-                      "collection": false
-                  },
-                  "message": [],
-                  "values": [],
-                  "labels": [
-                      {
-                          "locale": "en-US",
-                          "text": "Edit"
-                      }
-                  ],
-                  "elemLabels": {}
-              },
-              {
-                  "config": {
-                      "active": false,
-                      "required": false,
-                      "id": "616",
-                      "code": "ownerInfo",
-                      "validations": null,
-                      "uiNatures": [],
-                      "uiStyles": {
-                          "isLink": true,
-                          "isHidden": false,
-                          "name": "ViewConfig.Link",
-                          "attributes": {
-                              "hidden": false,
-                              "readOnly": false,
-                              "submitButton": true,
-                              "showName": true,
-                              "pageSize": 25,
-                              "browserBack": false,
-                              "showAsLink": false,
-                              "b": "$executeAnd$nav",
-                              "cssClass": "",
-                              "method": "GET",
-                              "altText": "",
-                              "rel": "",
-                              "alias": "Link",
-                              "value": "DEFAULT",
-                              "imgSrc": "task.svg",
-                              "url": "",
-                              "target": ""
-                          }
-                      },
-                      "type": {
-                          "collection": false,
-                          "nested": false,
-                          "name": "string"
-                      }
-                  },
-                  "enabled": true,
-                  "visible": true,
-                  "activeValidationGroups": [],
-                  "collectionParams": [],
-                  "configId": "616",
-                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/ownerInfo",
-                  "type": {
-                      "nested": false,
-                      "name": "string",
-                      "collection": false
-                  },
-                  "message": [],
-                  "values": [],
-                  "labels": [
-                      {
-                          "locale": "en-US",
-                          "text": "Owner Info"
-                      }
-                  ],
-                  "elemLabels": {}
-              }
-          ]
-      }
-  },
-  "message": [],
-  "values": [],
-  "labels": [],
-  "elemLabels": {}
-};
-
-const actionDropDownParams:any = [
-  {
-      "active": false,
-      "required": false,
-      "id": "615",
-      "code": "edit",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": true,
-          "isHidden": false,
-          "name": "ViewConfig.Link",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "b": "$executeAnd$nav",
-              "cssClass": "",
-              "method": "GET",
-              "altText": "",
-              "rel": "",
-              "alias": "Link",
-              "value": "DEFAULT",
-              "imgSrc": "edit.png",
-              "url": "",
-              "target": ""
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": false,
-          "name": "string"
-      }
-  },
-  {
-      "active": false,
-      "required": false,
-      "id": "616",
-      "code": "ownerInfo",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": true,
-          "isHidden": false,
-          "name": "ViewConfig.Link",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "b": "$executeAnd$nav",
-              "cssClass": "",
-              "method": "GET",
-              "altText": "",
-              "rel": "",
-              "alias": "Link",
-              "value": "DEFAULT",
-              "imgSrc": "task.svg",
-              "url": "",
-              "target": ""
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": false,
-          "name": "string"
-      }
-  }
-];
-
-const ActionDropDownLinkElement: any = {
-  "config": {
-      "active": false,
-      "required": false,
-      "id": "451",
-      "code": "vlm1",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": true,
-          "isHidden": false,
-          "name": "ViewConfig.LinkMenu",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "cssClass": "dropdownTrigger",
-              "alias": "LinkMenu",
-              "imgSrc": "",
-              "imgType": "FA"
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": true,
-          "name": "VSHomeHeader.VLM1",
-          "model": {
-              "paramConfigIds": [
-                  "453"
-              ]
-          }
-      }
-  },
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "451",
-  "path": "/home/vpHome/vsHomeHeader/testingLinkMenu/vlm1",
-  "type": {
-      "model": {
-          "params": [
-              {
-                  "config": {
-                      "active": false,
-                      "required": false,
-                      "id": "453",
-                      "code": "delete1",
-                      "validations": null,
-                      "uiNatures": [],
-                      "uiStyles": {
-                          "isLink": true,
-                          "isHidden": false,
-                          "name": "ViewConfig.Link",
-                          "attributes": {
-                              "hidden": false,
-                              "readOnly": false,
-                              "submitButton": true,
-                              "showName": true,
-                              "pageSize": 25,
-                              "browserBack": false,
-                              "showAsLink": false,
-                              "b": "$executeAnd$nav",
-                              "cssClass": "",
-                              "method": "GET",
-                              "altText": "",
-                              "rel": "",
-                              "alias": "Link",
-                              "value": "DEFAULT",
-                              "imgSrc": "",
-                              "url": "",
-                              "target": ""
-                          }
-                      },
-                      "type": {
-                          "collection": false,
-                          "nested": false,
-                          "name": "string"
-                      }
-                  },
-                  "enabled": true,
-                  "visible": true,
-                  "activeValidationGroups": [],
-                  "collectionParams": [],
-                  "configId": "453",
-                  "path": "/home/vpHome/vsHomeHeader/testingLinkMenu/vlm1/delete1",
-                  "type": {
-                      "nested": false,
-                      "name": "string",
-                      "collection": false
-                  },
-                  "message": [],
-                  "values": [],
-                  "labels": [
-                      {
-                          "locale": "en-US",
-                          "text": "Remove Pet"
-                      }
-                  ],
-                  "elemLabels": {}
-              }
-          ]
-      }
-  },
-  "message": [],
-  "values": [],
-  "labels": [],
-  "elemLabels": {}
-};
-
-const actionDropDownLinkParams:any = [{
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "613",
-  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks",
-  "type": {
-      "model": {
-          "params": [
-              {
-                  "enabled": true,
-                  "visible": true,
-                  "activeValidationGroups": [],
-                  "collectionParams": [],
-                  "configId": "615",
-                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/edit",
-                  "type": {
-                      "nested": false,
-                      "name": "string",
-                      "collection": false
-                  },
-                  "message": [],
-                  "values": [],
-                  "labels": [
-                      {
-                          "locale": "en-US",
-                          "text": "Edit"
-                      }
-                  ],
-                  "elemLabels": {}
-              },
-              {
-                  "enabled": true,
-                  "visible": true,
-                  "activeValidationGroups": [],
-                  "collectionParams": [],
-                  "configId": "616",
-                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/ownerInfo",
-                  "type": {
-                      "nested": false,
-                      "name": "string",
-                      "collection": false
-                  },
-                  "message": [],
-                  "values": [],
-                  "labels": [
-                      {
-                          "locale": "en-US",
-                          "text": "Owner Info"
-                      }
-                  ],
-                  "elemLabels": {}
-              }
-          ]
-      }
-  },
-  "message": [],
-  "values": [],
-  "labels": [],
-  "elemLabels": {}
-}];

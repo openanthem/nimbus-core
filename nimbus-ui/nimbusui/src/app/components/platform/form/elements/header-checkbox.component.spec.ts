@@ -30,27 +30,27 @@ describe('HeaderCheckBox', () => {
     expect(hostComponent).toBeTruthy();
   });
 
-  // it('selectingAll() should update dt.selection and headerChckbxState', async function(this: TestContext<HeaderCheckBox>) {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.dt = { selection: [], value: [1, 2, 3, 4, 5], toggleRowsWithCheckbox: (a, b) => {} } as Table;
-  //     hostComponent.element.config.uiStyles.attributes.pageSize = 5;
-  //     hostComponent.selectingAll('', true);
-  //     expect(hostComponent.dt.selection).toEqual([]);
-  //     expect(hostComponent.headerChckbxState).toBeFalsy();
-  //   });
-  // });
+  it('selectingAll() should update dt.selection and headerChckbxState', async function(this: TestContext<HeaderCheckBox>) {
+    fixture.whenStable().then(() => {
+      hostComponent.dt = { selection: [], value: [1, 2, 3, 4, 5], toggleRowsWithCheckbox: (a, b) => {} } as Table;
+      hostComponent.element.config.uiStyles.attributes.pageSize = 5;
+      hostComponent.selectingAll('', true);
+      expect(hostComponent.dt.selection).toEqual([]);
+      expect(hostComponent.headerChckbxState).toBeFalsy();
+    });
+  });
 
-  // it('selectingAll() should update dt.selection and headerChckbxState and call onClickSelectAll()', async function(this: TestContext<HeaderCheckBox>) {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.dt = { selection: [], value: [1, 2, 3, 4, 5], toggleRowsWithCheckbox: (a, b) => {}, first: 0 } as Table;
-  //     hostComponent.element.config.uiStyles.attributes.pageSize = 5;
-  //     spyOn(hostComponent, 'onClickSelectAll').and.returnValue('');
-  //     hostComponent.selectingAll('', false);
-  //     expect(hostComponent.dt.selection).toEqual([1, 2, 3, 4, 5]);
-  //     expect(hostComponent.headerChckbxState).toBeTruthy();
-  //     expect(hostComponent.onClickSelectAll).toHaveBeenCalled();
-  //   });
-  // });
+  it('selectingAll() should update dt.selection and headerChckbxState and call onClickSelectAll()', async function(this: TestContext<HeaderCheckBox>) {
+    fixture.whenStable().then(() => {
+      hostComponent.dt = { selection: [], value: [1, 2, 3, 4, 5], toggleRowsWithCheckbox: (a, b) => {}, first: 0 } as Table;
+      hostComponent.element.config.uiStyles.attributes.pageSize = 5;
+      spyOn(hostComponent, 'onClickSelectAll').and.returnValue('');
+      hostComponent.selectingAll('', false);
+      expect(hostComponent.dt.selection).toEqual([1, 2, 3, 4, 5]);
+      expect(hostComponent.headerChckbxState).toBeTruthy();
+      expect(hostComponent.onClickSelectAll).toHaveBeenCalled();
+    });
+  });
 
   it('onClickSelectAll() should call dt.toggleRowsWithCheckbox()', async function(this: TestContext<HeaderCheckBox>) {
     hostComponent.dt = { toggleRowsWithCheckbox: (a, b) => {}, value: [1] } as Table;
@@ -89,48 +89,48 @@ describe('HeaderCheckBox', () => {
     expect(hostComponent.dt.tableService.onSelectionChange).toHaveBeenCalled();
   });
 
-  // it('ngOnInit() should update headerChckbxState as true', async function(this: TestContext<HeaderCheckBox>) {
-  //   fixture.whenStable().then(() => {
-  //     const sChange = observableOf([1, 2, 3, 4, 5]);
-  //     hostComponent.dt = { selectionChange: sChange, first: 0, value: [1, 2, 3, 4, 5], onPage: observableOf(
-  //         {
-  //           first: ''
-  //         }
-  //       ) } as Table;
-  //     hostComponent.element.config.uiStyles.attributes.pageSize = 5;
-  //     hostComponent.ngOnInit();
-  //     expect(hostComponent.headerChckbxState).toBeTruthy();
-  //   });
-  // });
+  it('ngOnInit() should update headerChckbxState as true', async function(this: TestContext<HeaderCheckBox>) {
+    fixture.whenStable().then(() => {
+      const sChange = observableOf([1, 2, 3, 4, 5]);
+      hostComponent.dt = { selectionChange: sChange, first: 0, value: [1, 2, 3, 4, 5], onPage: observableOf(
+          {
+            first: ''
+          }
+        ) } as Table;
+      hostComponent.element.config.uiStyles.attributes.pageSize = 5;
+      hostComponent.ngOnInit();
+      expect(hostComponent.headerChckbxState).toBeTruthy();
+    });
+  });
 
-  // it('ngOnInit() should update headerChckbxState as false', async function(this: TestContext<HeaderCheckBox>) {
-  //   fixture.whenStable().then(() => {
-  //     const sChange = observableOf([1, 2, 3, 4, 5]);
-  //     hostComponent.dt = { selectionChange: sChange, first: 0, value: [1, 2, 3, 4, 6], onPage: observableOf(
-  //         {
-  //           first: 3
-  //         }
-  //       ) } as Table;
-  //     hostComponent.currentSelection = [2];
-  //     hostComponent.element.config.uiStyles.attributes.pageSize = 5;
-  //     hostComponent.ngOnInit();
-  //     expect(hostComponent.headerChckbxState).toBeFalsy();
-  //   });
-  // });
+  it('ngOnInit() should update headerChckbxState as false', async function(this: TestContext<HeaderCheckBox>) {
+    fixture.whenStable().then(() => {
+      const sChange = observableOf([1, 2, 3, 4, 5]);
+      hostComponent.dt = { selectionChange: sChange, first: 0, value: [1, 2, 3, 4, 6], onPage: observableOf(
+          {
+            first: 3
+          }
+        ) } as Table;
+      hostComponent.currentSelection = [2];
+      hostComponent.element.config.uiStyles.attributes.pageSize = 5;
+      hostComponent.ngOnInit();
+      expect(hostComponent.headerChckbxState).toBeFalsy();
+    });
+  });
 
-  // it('ngOnInit() should update headerChckbxState and call updateToggleRowsWithCheckbox()', async function(this: TestContext<HeaderCheckBox>) {
-  //   fixture.whenStable().then(() => {
-  //     const sChange = observableOf([1, 2, 3, 4, 5]);
-  //     hostComponent.dt = { selectionChange: sChange, first: 0, value: [1, 2, 3, 4, 6], onPage: observableOf(
-  //         {
-  //           first: ''
-  //         }
-  //       ) } as Table;
-  //     hostComponent.element.config.uiStyles.attributes.pageSize = 5;
-  //     spyOn(hostComponent, 'updateToggleRowsWithCheckbox').and.callThrough();
-  //     hostComponent.ngOnInit();
-  //     expect(hostComponent.headerChckbxState).toBeFalsy();
-  //     expect(hostComponent.updateToggleRowsWithCheckbox).toHaveBeenCalled();
-  //   });
-  // });
+  it('ngOnInit() should update headerChckbxState and call updateToggleRowsWithCheckbox()', async function(this: TestContext<HeaderCheckBox>) {
+    fixture.whenStable().then(() => {
+      const sChange = observableOf([1, 2, 3, 4, 5]);
+      hostComponent.dt = { selectionChange: sChange, first: 0, value: [1, 2, 3, 4, 6], onPage: observableOf(
+          {
+            first: ''
+          }
+        ) } as Table;
+      hostComponent.element.config.uiStyles.attributes.pageSize = 5;
+      spyOn(hostComponent, 'updateToggleRowsWithCheckbox').and.callThrough();
+      hostComponent.ngOnInit();
+      expect(hostComponent.headerChckbxState).toBeFalsy();
+      expect(hostComponent.updateToggleRowsWithCheckbox).toHaveBeenCalled();
+    });
+  });
 });

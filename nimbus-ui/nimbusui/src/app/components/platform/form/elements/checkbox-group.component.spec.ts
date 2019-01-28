@@ -16,14 +16,15 @@ import { LoaderService } from '../../../../services/loader.service';
 import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { Subject } from 'rxjs';
-// import { InputLegend } from '../../../platform/form/elements/input-legend.component';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
 import { ValidationUtils } from '../../validators/ValidationUtils';
-import { fieldValueParam } from 'mockdata';
+import { checkBoxGroupElement } from 'mockdata';
 import { By } from '@angular/platform-browser';
 import { ServiceConstants } from '../../../../services/service.constants';
 import { WindowRefService } from '../../../../services/window-ref.service';
+
+
 let pageService;
 
 @Component({
@@ -101,16 +102,10 @@ describe('CheckBoxGroup', () => {
     ServiceConstants.LOCALE_LANGUAGE = 'en-US';
     fixture = TestBed.createComponent(CheckBoxGroup);
     hostComponent = fixture.debugElement.componentInstance;
-    // const fg = new FormGroup({});
-    // const checks: ValidatorFn[] = [];
-    // checks.push(Validators.required);
-    // fg.addControl(checkBoxGroupElement.config.code, new FormControl(checkBoxGroupElement.leafState, checks));
-    // hostComponent.form = fg;
     hostComponent.form = new FormGroup({
       firstName: new FormControl(),
       surveyLabel: new FormControl()
    });
-    // hostComponent.element = fieldValueParam;
     hostComponent.element = checkBoxGroupElement as Param;
     pageService = TestBed.get(PageService);
   });
@@ -196,7 +191,6 @@ describe('CheckBoxGroup', () => {
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
       spyOn(ValidationUtils, 'applyelementStyle').and.returnValue('');
       spyOn(ValidationUtils, 'assessControlValidation').and.returnValue('');
-      console.log('hostComponent.form.controls[eve.config.code]', hostComponent.form.controls['firstName']);
       const frmCtrl = hostComponent.form.controls[eve.config.code];
       hostComponent.element.path = 'atest';
       spyOn(frmCtrl, 'setValue').and.returnValue('');
@@ -275,93 +269,3 @@ describe('CheckBoxGroup', () => {
   }));
 
 });
-
-
-const checkBoxGroupElement: any = {
-  "config": {
-      "active": false,
-      "required": false,
-      "id": "910",
-      "code": "surveyLabel",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": false,
-          "isHidden": false,
-          "name": "ViewConfig.CheckBoxGroup",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "help": "",
-              "cssClass": "",
-              "dataEntryField": true,
-              "labelClass": "anthem-label",
-              "level": "0",
-              "alias": "CheckBoxGroup",
-              "controlId": "",
-              "postEventOnChange": false,
-              "cols": ""
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": false,
-          "name": "string"
-      }
-  },
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "910",
-  "path": "/petassessmentview/vpMain/vtMain/vsPetGeneralAssessment/petForm/petFormBody/petAssessment_Accordion_tab/surveyLabel",
-  "type": {
-      "nested": false,
-      "name": "string",
-      "collection": false
-  },
-  "message": [],
-  "values": [
-    {
-        "code": "Routine vaccination appointment/checkup",
-        "label": "Routine vaccination appointment/checkup"
-    },
-    {
-        "code": "Medical problem/illness appointment",
-        "label": "Medical problem/illness appointment"
-    },
-    {
-        "code": "Emergency visit",
-        "label": "Emergency visit"
-    },
-    {
-        "code": "Grooming",
-        "label": "Grooming"
-    },
-    {
-        "code": "Boarding",
-        "label": "Boarding"
-    },
-    {
-        "code": "To purchase food or medications",
-        "label": "To purchase food or medications"
-    },
-    {
-        "code": "Other",
-        "label": "Other"
-    }
-],
-  "labels": [
-      {
-          "locale": "en-US",
-          "text": "Please rate each part of your visit:",
-          "helpText": "testing tooltip"
-      }
-  ],
-  "elemLabels": {}
-};

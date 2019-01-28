@@ -23,6 +23,7 @@ import { setup, TestContext } from '../../../../setup.spec';
 import { Param } from '../../../../shared/param-state';
 import { By } from '@angular/platform-browser';
 import { ServiceConstants } from '../../../../services/service.constants';
+import { textAreaElement } from 'mockdata';
 
 let fixture, hostComponent;
 
@@ -67,128 +68,106 @@ describe('TextArea', () => {
    });
   });
 
-  it('should create the TextArea', async(() =>  {
-    expect(hostComponent).toBeTruthy();
-  }));
+    it("should create the TextArea", async(() => {
+      expect(hostComponent).toBeTruthy();
+    }));
 
-  it('nm-input-label should be created if the label is configured', async(() => {
-    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
-    fixture.detectChanges();
-    console.log('labelConfig', hostComponent.labelConfig);
-    
-    const debugElement = fixture.debugElement;
-    // const labelEle = debugElement.query(By.css('nm-input-label'));
-    const labelEle = document.getElementsByTagName('nm-input-label');
-    
-    console.log('labelEle---82-aaaa', labelEle.length, labelEle[0]);
-    expect(labelEle.length > 0).toBeTruthy();
-    // expect(labelEle).toBeTruthy();
-  }));
+    it("nm-input-label should be created if the label is configured", async(() => {
+      ServiceConstants.LOCALE_LANGUAGE = "en-US";
+      fixture.detectChanges();
+      const labelEle = document.getElementsByTagName("nm-input-label");
+      expect(labelEle.length).toEqual(1);
+    }));
 
-  it('textarea should be created if the readOnly attribute is configured as false', async(() => {
-    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
-    fixture.detectChanges();
-    const debugElement = fixture.debugElement;
-    const textareaEle = debugElement.query(By.css('textarea'));
-    expect(textareaEle).toBeTruthy();
-  }));
+    it("nm-input-label should not be created if the label is not configured", async(() => {
+      hostComponent.element.labels = [];
+      ServiceConstants.LOCALE_LANGUAGE = "en-US";
+      fixture.detectChanges();
+      const labelEle = document.getElementsByTagName("nm-input-label");
+      expect(labelEle.length).toEqual(0);
+    }));
 
-  it('span should be created if the @max is configured', async(() => {
-    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
-    fixture.detectChanges();
-    const debugElement = fixture.debugElement;
-    const spanEle = debugElement.query(By.css('span'));
-    expect(spanEle).toBeTruthy();
-    expect(spanEle.nativeElement.innerText).toEqual('483 Characters left');
-  }));
+    it("textarea should be created if the readOnly attribute is configured as false", async(() => {
+      ServiceConstants.LOCALE_LANGUAGE = "en-US";
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const textareaEle = debugElement.query(By.css("textarea"));
+      expect(textareaEle).toBeTruthy();
+    }));
 
-  it('textarea should not be created if the readOnly attribute is configured as true', async(() => {
-    hostComponent.element.config.uiStyles.attributes.readOnly = true;
-    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
-    fixture.detectChanges();
-    const debugElement = fixture.debugElement;
-    const textareaEle = debugElement.query(By.css('textarea'));
-    expect(textareaEle).toBeFalsy();
-  }));
+    it("span should be created if the @max is configured", async(() => {
+      ServiceConstants.LOCALE_LANGUAGE = "en-US";
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const spanEle = debugElement.query(By.css("span"));
+      expect(spanEle).toBeTruthy();
+      expect(spanEle.nativeElement.innerText).toEqual("483 Characters left");
+    }));
 
+    it("span should not be created if the @max is not configured", async(() => {
+      hostComponent.element.config.validation.constraints = [];
+      ServiceConstants.LOCALE_LANGUAGE = "en-US";
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const spanEle = debugElement.query(By.css("span"));
+      expect(spanEle).toBeFalsy();
+    }));
+
+    it("pre should be created if the readOnly is configured as false", async(() => {
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const preEle = debugElement.query(By.css("pre"));
+      expect(preEle).toBeTruthy();
+      expect(preEle.nativeElement.innerText).toEqual(hostComponent.element.leafState);
+    }));
+
+    it("p should be created and display leafState if the leafState is configured and readOnly is true", async(() => {
+      hostComponent.element.config.uiStyles.attributes.readOnly = true;
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const pEle = debugElement.query(By.css("p"));
+      expect(pEle.nativeElement.innerText).toEqual("testing leafstate");
+    }));
+
+    it('p should not be created if the readOnly is configured as false', async(() => {
+        hostComponent.element.config.uiStyles.attributes.readOnly = false;
+        fixture.detectChanges();
+        const pEles = document.getElementsByTagName('p');
+        expect(pEles.length).toEqual(0);
+    }));
+
+    it("pre should not be created if the readOnly is configured as true", async(() => {
+      hostComponent.element.config.uiStyles.attributes.readOnly = true;
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const preEle = debugElement.query(By.css("pre"));
+      expect(preEle).toBeFalsy();
+    }));
+
+    it("div should be created if the controlId is configured", async(() => {
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const divEles = debugElement.queryAll(By.css("div"));
+      expect(divEles[1].nativeElement.innerText).toEqual("test");
+      expect(divEles[1].nativeElement.classList[0]).toEqual("number");
+      expect(divEles.length).toEqual(2);
+    }));
+
+    it("div should not be created if the controlId is not configured", async(() => {
+      hostComponent.element.config.uiStyles.attributes.controlId = "";
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const divEles = debugElement.queryAll(By.css("div"));
+      expect(divEles.length).toEqual(1);
+    }));
+
+    it("textarea should not be created if the readOnly attribute is configured as true", async(() => {
+      hostComponent.element.config.uiStyles.attributes.readOnly = true;
+      ServiceConstants.LOCALE_LANGUAGE = "en-US";
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const textareaEle = debugElement.query(By.css("textarea"));
+      expect(textareaEle).toBeFalsy();
+    }));
 
 });
-
-const textAreaElement: any = {
-  "config": {
-      "active": false,
-      "required": false,
-      "id": "786",
-      "code": "noteDescription1",
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": false,
-          "isHidden": false,
-          "name": "ViewConfig.TextArea",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "help": "",
-              "cssClass": "",
-              "dataEntryField": true,
-              "labelClass": "anthem-label",
-              "alias": "TextArea",
-              "controlId": "test",
-              "type": "textarea",
-              "rows": "5",
-              "postEventOnChange": false,
-              "cols": ""
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": false,
-          "name": "string"
-      },
-      "validation": {
-          "constraints": [
-              {
-                  "name": "NotNull",
-                  "attribute": {
-                      "message": "Field is required.",
-                      "groups": []
-                  }
-              },
-              {
-                "name": "Max",
-                "attribute": {
-                    "message": "Field does not meet min/max requirement.",
-                    "value": 500,
-                    "groups": []
-                }
-            }
-          ]
-      }
-  },
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "786",
-  "path": "/petview/vpAddEditPet/vtAddEditPet/vsAddEditPet/vfAddEditPet/noteDescription1",
-  "type": {
-      "nested": false,
-      "name": "string",
-      "collection": false
-  },
-  "message": [],
-  "values": [],
-  "labels": [
-      {
-          "locale": "en-US",
-          "text": "Note Description"
-      }
-  ],
-  "elemLabels": {},
-  "leafState": "testing leafstate"
-}

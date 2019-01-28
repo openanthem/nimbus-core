@@ -24,7 +24,7 @@ import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/sessio
 import { AppInitService } from '../../../../services/app.init.service';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
-import { fieldValueParam } from 'mockdata';
+import { inputSwitchElement } from 'mockdata';
 import { By } from '@angular/platform-browser';
 import { ServiceConstants } from '../../../../services/service.constants';
 
@@ -84,22 +84,22 @@ describe('InputSwitch', () => {
   it('should create the InputSwitch', async(() => {
     expect(hostComponent).toBeTruthy();
   }));
-  
+
   it('nm-input-label should be created if the label is configured', async(() => {
     ServiceConstants.LOCALE_LANGUAGE = 'en-US';
     fixture.detectChanges();
-      const debugElement = fixture.debugElement;
-      const labelEle = debugElement.query(By.css('nm-input-label'));
-      expect(labelEle).toBeTruthy();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('nm-input-label'));
+    expect(labelEle).toBeTruthy();
   }));
 
   it('nm-input-label should not be created if the label is not configured', async(() => {
     ServiceConstants.LOCALE_LANGUAGE = 'en-US';
     hostComponent.element.labels = [];
     fixture.detectChanges();
-      const debugElement = fixture.debugElement;
-      const labelEle = debugElement.query(By.css('nm-input-label'));
-      expect(labelEle).toBeFalsy();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('nm-input-label'));
+    expect(labelEle).toBeFalsy();
   }));
 
   it('p-inputSwitch should be created', async(() => {
@@ -133,54 +133,3 @@ describe('InputSwitch', () => {
 
 });
 
-const inputSwitchElement: any = {
-  "config": {
-      "active": false,
-      "required": false,
-      "id": "548",
-      "code": "medications1",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": false,
-          "isHidden": false,
-          "name": "ViewConfig.InputSwitch",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "orientation": "DEFAULT",
-              "cssClass": "col-lg-5 inline",
-              "dataEntryField": true,
-              "alias": "InputSwitch",
-              "controlId": "",
-              "postEventOnChange": true
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": false,
-          "name": "boolean"
-      }
-  },
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "548",
-  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsHistory/vfForm/callSection/medications1",
-  "type": {},
-  "message": [],
-  "values": [],
-  "labels": [
-      {
-          "locale": "en-US",
-          "text": "testing inputswitch"
-      }
-  ],
-  "elemLabels": {}
-};
