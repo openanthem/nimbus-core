@@ -26,6 +26,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
@@ -36,6 +37,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.LookupSearchCriteria;
 import com.antheminc.oss.nimbus.entity.StaticCodeValue;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 
 /**
  * @author Rakesh Patel
@@ -47,6 +49,11 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 
 	protected static final String toReplace = "//.";
 	protected static final String replaceWith = "//?.";
+	private ExpressionEvaluator expressionEvaluator;
+	
+	public DefaultSearchFunctionHandlerLookup(BeanResolverStrategy beanResolver) {
+		this.expressionEvaluator = beanResolver.find(ExpressionEvaluator.class);
+	}
 	
 	@Override
 	@Cacheable(value="staticcodevalues", 
@@ -108,11 +115,8 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		try {
 			List<ParamValue> paramValues = new ArrayList<>();
 			for(Object model: searchResult) {
-				StandardEvaluationContext context = new StandardEvaluationContext(model);
-				ExpressionParser expressionParser = new SpelExpressionParser();
-	
-				Object code = expressionParser.parseExpression(cd).getValue(context);
-				Object label = expressionParser.parseExpression(lb).getValue(context);
+				Object code = this.expressionEvaluator.getValue(cd, model);
+				Object label = this.expressionEvaluator.getValue(lb, model);
 				if(code!= null && label !=null) {
 					paramValues.add(new ParamValue(code.toString(), label.toString()));
 				}
