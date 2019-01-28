@@ -1,3 +1,4 @@
+import { EditorModule } from 'primeng/editor';
 import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
@@ -77,6 +78,7 @@ import { OrderablePickList } from '../form/elements/picklist.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
 import { fieldValueParam } from 'mockdata';
 import { TableHeader } from '../grid/table-header.component';
+import { RichText } from '../form/elements/rich-text.component';
 
 let pageService;
 
@@ -171,7 +173,8 @@ class MockPageService {
     FileUploadComponent,
     OrderablePickList,
     CheckBoxGroup,
-    DateTimeFormatPipe
+    DateTimeFormatPipe,
+    RichText
  ];
 const imports = [
      DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
@@ -185,7 +188,8 @@ const imports = [
      ReactiveFormsModule, 
      ToastModule,
      TableModule,
-     KeyFilterModule
+     KeyFilterModule,
+     EditorModule
  ];
 const providers = [
      { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },

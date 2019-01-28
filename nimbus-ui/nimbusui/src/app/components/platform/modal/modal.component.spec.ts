@@ -4,7 +4,7 @@ import { Param } from './../../../shared/param-state';
 import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule  } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule, EditorModule  } from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, FormControl } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -70,6 +70,7 @@ import { PrintDirective } from '../../../directives/print.directive';
 import { Subject } from 'rxjs';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { fieldValueParam } from 'mockdata';
+import { RichText } from '../form/elements/rich-text.component';
 
 @Component({
     template: '<div></div>',
@@ -167,7 +168,8 @@ const declarations = [
     FormGridFiller,
     InputLegend,
     FormErrorMessage,
-    PrintDirective
+    PrintDirective,
+    RichText
    ];
    const imports = [
        DialogModule,
@@ -191,7 +193,8 @@ const declarations = [
        AngularSvgIconModule,
        ToastModule,
        InputSwitchModule,
-       TreeTableModule
+       TreeTableModule,
+       EditorModule
    ];
    const providers = [
     {provide: PageService, useClass: MockPageService},
