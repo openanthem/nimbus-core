@@ -57,7 +57,7 @@ public class MongoSearchByQuery extends MongoDBSearch {
 
 	private static final ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
 	
-	private static final String AGGREGATION_QUERY_REGEX = ".*aggregate\\s*:.*";
+	private static final String AGGREGATION_QUERY_REGEX = ".*\"?aggregate\"?\\s*:.*";
 	private static final Pattern AGGREGATION_QUERY_REGEX_PATTERN = Pattern.compile(AGGREGATION_QUERY_REGEX, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
 	
