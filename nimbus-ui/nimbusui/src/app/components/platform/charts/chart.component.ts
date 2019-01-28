@@ -1,6 +1,3 @@
-import { GenericDomain } from './../../../model/generic-domain.model';
-import { PageService } from './../../../services/page.service';
-
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -21,6 +18,8 @@ import { PageService } from './../../../services/page.service';
 import { Component, Input } from '@angular/core';
 import { Param } from '../../../shared/param-state';
 import { DataSets, ChartData, DataGroup, ChartType } from './chartdata';
+import { WebContentSvc } from './../../../services/content-management.service';
+import { PageService } from './../../../services/page.service';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -31,22 +30,23 @@ import { DataSets, ChartData, DataGroup, ChartType } from './chartdata';
 @Component({
   selector: 'nm-chart',
   template: `
-        <ng-template [ngIf]="element?.visible">
-            <p-chart [type]="type" [data]="data" [options]="options"></p-chart>
+        <ng-template [ngIf]="element?.visible"> 
+            <nm-input-label *ngIf="!isLabelEmpty" [element]="element" [for]="element.config?.code" [required]="requiredCss">
+            </nm-input-label>
+            <p-chart [type]="chartType" [data]="data" [options]="options"></p-chart>
         </ng-template>
    `
 })
 export class NmChart {
-
     @Input() element: Param;
     @Input() data: any;
-    type: String;
+    chartType: String;
     options: any;
     constructor(private pageSvc: PageService) {}
     
     ngOnInit() {
-      this.type = this.element.config.uiStyles.attributes.value.toLocaleLowerCase();
-      if(this.type !== ChartType.pie.toString() && this.type !== ChartType.doughnut.toString()) {
+      this.chartType = this.element.config.uiStyles.attributes.value.toLocaleLowerCase();
+      if(this.chartType !== ChartType.pie.toString() && this.chartType !== ChartType.doughnut.toString()) {
         this.options = {
             scales: {
                 xAxes: [ {
@@ -93,7 +93,7 @@ export class NmChart {
                 if(!chartData.labels.includes(dp.x)){
                     chartData.labels.push(dp.x);
                 }
-                if(this.type === ChartType.pie.toString() || this.type === ChartType.doughnut.toString()) {
+                if(this.chartType === ChartType.pie.toString() || this.chartType === ChartType.doughnut.toString()) {
                     dts['backgroundColor'].push(this.generateColor(null));
                     dts['hoverBackgroundColor'].push(this.generateColor(null));
                 }
@@ -106,15 +106,15 @@ export class NmChart {
     }
 
     setMetadata(dts: DataSets, dtGroup: DataGroup) {
-        if(this.type === ChartType.bar.toString()) {
+        if(this.chartType === ChartType.bar.toString()) {
             dts['backgroundColor'] = this.generateColor(null);
             dts['borderColor'] = this.generateColor(null);
             dts.label = dtGroup.legend;
-        } else if(this.type === ChartType.pie.toString() || this.type === ChartType.doughnut.toString()) {
+        } else if(this.chartType === ChartType.pie.toString() || this.chartType === ChartType.doughnut.toString()) {
             dts['backgroundColor'] = [];
             dts['hoverBackgroundColor'] = [];
         }
-        else if(this.type === ChartType.line.toString()) {
+        else if(this.chartType === ChartType.line.toString()) {
             dts['borderColor'] = this.generateColor(null);
             dts['fill'] = false;
             dts.label = dtGroup.legend;

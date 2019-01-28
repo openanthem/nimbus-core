@@ -16,6 +16,9 @@ import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
 import { NmChart } from './chart.component';
 import { chartMockParam } from 'mockdata';
+import { TooltipComponent } from './../tooltip/tooltip.component';
+import { InputLabel } from '../form/elements/input-label.component';
+
 let  param;
 
 class MockPageService {
@@ -34,12 +37,23 @@ class MockPageService {
         this.eventUpdate$.next(a);
     }
 }
+
+class MockWebContentSvc {
+    findLabelContent(param1) {
+      const test = {
+        text: 'testing'
+      };
+      return test;
+    }
+}
+
 let fixture, hostComponent, pageService;
-const declarations = [ NmChart ];
+const declarations = [ NmChart, InputLabel, TooltipComponent ];
 const imports = [ChartModule];
 const providers = [
    CustomHttpClient,
    {provide: PageService, useClass: MockPageService},
+   { provide: WebContentSvc, useClass: MockWebContentSvc },
    { provide: 'JSNLOG', useValue: JL },
    LoggerService,
    AppInitService
