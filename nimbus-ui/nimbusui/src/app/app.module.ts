@@ -18,6 +18,7 @@
 import { LoaderService } from './services/loader.service';
 import { InPlaceEditorComponent } from './components/platform/form/elements/inplace-editor.component';
 import { TextArea } from './components/platform/form/elements/textarea.component';
+import { RichText } from './components/platform/form/elements/rich-text.component';
 import { MultiSelectListBox } from './components/platform/form/elements/multi-select-listbox.component';
 import { BreadcrumbComponent } from './components/platform/breadcrumb/breadcrumb.component';
 import { BreadcrumbService } from './components/platform/breadcrumb/breadcrumb.service';
@@ -44,6 +45,7 @@ import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, Drag
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
+import { EditorModule } from 'primeng/editor';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -205,14 +207,15 @@ export function init_app(appinitservice: AppInitService) {
         StorageServiceModule,
         AngularSvgIconModule,
         ToastModule,
-        InputSwitchModule
+        InputSwitchModule,
+        EditorModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, CheckBoxGroup,
         InPlaceEditorComponent, Paragraph, Value, BaseElement, FormGridFiller, 
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldGroupComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         Accordion, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
-        STOMPStatusComponent, DataTable, SubHeaderCmp, TextArea, LandingPage,
+        STOMPStatusComponent, DataTable, SubHeaderCmp, TextArea, LandingPage, RichText,
         LayoutService, ContentContainer,
         DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,

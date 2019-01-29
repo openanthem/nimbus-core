@@ -1,3 +1,4 @@
+import { EditorModule } from 'primeng/editor';
 import { TableHeader } from './grid/table-header.component';
 import { By } from '@angular/platform-browser';
 /**
@@ -93,6 +94,7 @@ import { Param } from './../../shared/param-state';
 import { FormErrorMessage } from './form-error-message.component';
 import { PrintDirective } from '../../directives/print.directive';
 import { formErrorMessageParam } from 'mockdata';
+import { RichText } from './form/elements/rich-text.component';
 
 /**
  * \@author Sandeep.Mantha
@@ -173,7 +175,8 @@ const declarations = [ Form,
     Label,
     CardDetailsFieldGroupComponent,
     InputLegend ,
-    PrintDirective
+    PrintDirective,
+    RichText
 ];
 const imports = [   FormsModule, ReactiveFormsModule,
     GrowlModule,
@@ -197,7 +200,9 @@ const imports = [   FormsModule, ReactiveFormsModule,
     AngularSvgIconModule,
     ToastModule,
     InputSwitchModule, 
-    TreeTableModule ];
+    TreeTableModule,
+    EditorModule
+ ];
 const providers = [];
 
 let fixture, hostComponent;

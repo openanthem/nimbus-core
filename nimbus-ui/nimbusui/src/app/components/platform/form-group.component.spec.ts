@@ -3,7 +3,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, 
     DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule,
-    InputSwitchModule, TreeTableModule } from 'primeng/primeng';
+    InputSwitchModule, TreeTableModule, EditorModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { TableModule } from 'primeng/table';
@@ -75,6 +75,7 @@ import { LoggerService } from '../../services/logger.service';
 import { By } from '@angular/platform-browser';
 import { formGroupNmElementInputParam, formGroupNmButtonParam, formGroupnmParagraphParam, formGroupParam, formGroupNmLinkParam, formGroupNmHeaderParam, formGroupNmPickListParam, formGroupNmFormGridFiller, formGroupNestedFrmGrpEle} from 'mockdata';
 import { TableHeader } from './grid/table-header.component';
+import { RichText } from './form/elements/rich-text.component';
 
 let param: Param;
 
@@ -165,7 +166,8 @@ const declarations = [
   CardDetailsFieldGroupComponent,
   InputLegend,
   FormErrorMessage,
-  PrintDirective
+  PrintDirective,
+  RichText
  ];
  const imports = [
      FormsModule,
@@ -188,7 +190,8 @@ const declarations = [
      ToastModule,
      InputSwitchModule, 
      TreeTableModule,
-     StorageServiceModule
+     StorageServiceModule,
+     EditorModule
  ];
  const providers = [
      { provide: WebContentSvc, useClass: MockWebContentSvc },

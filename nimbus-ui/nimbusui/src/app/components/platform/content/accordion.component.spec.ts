@@ -1,3 +1,4 @@
+import { EditorModule } from 'primeng/editor';
 import { TableHeader } from './../grid/table-header.component';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
@@ -80,6 +81,7 @@ import { By } from '@angular/platform-browser';
 import { GridService } from '../../../services/grid.service';
 import { PrintService } from '../../../services/print.service';
 import { accordionElementWithForm, accordionElementWithNoForm } from 'mockdata';
+import { RichText } from '../form/elements/rich-text.component';
 
 let pageService, webContentSvc, configService;
 
@@ -184,7 +186,8 @@ const declarations = [
   InputSwitch,
   InputLegend,
   FormErrorMessage,
-  PrintDirective
+  PrintDirective,
+  RichText
 ];
 const imports = [
   FormsModule,
@@ -214,7 +217,8 @@ const imports = [
   ToastModule,
   InputSwitchModule, 
   TreeTableModule,
-  BrowserAnimationsModule
+  BrowserAnimationsModule,
+  EditorModule
 ];
 const providers = [
   { provide: WebContentSvc, useClass: MockWebContentSvc },
