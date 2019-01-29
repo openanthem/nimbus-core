@@ -94,5 +94,13 @@ describe('ButtonGroup', () => {
     expect(buttonEle).toBeFalsy();
   }));
 
+  it('nm-button should not be created if @Button is not configured', async(() => {
+    hostComponent.buttonList[0].config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('nm-button'));
+    expect(buttonEle).toBeFalsy();
+  }));
+
 });
 

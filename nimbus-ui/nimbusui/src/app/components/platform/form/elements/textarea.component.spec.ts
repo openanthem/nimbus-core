@@ -1,6 +1,6 @@
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, FormGroup, FormControl } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { KeyFilterModule } from 'primeng/keyfilter';
@@ -21,6 +21,9 @@ import { InputLabel } from './input-label.component';
 import { configureTestSuite, TestCtx } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
 import { Param } from '../../../../shared/param-state';
+import { By } from '@angular/platform-browser';
+import { ServiceConstants } from '../../../../services/service.constants';
+import { textAreaElement } from 'mockdata';
 
 let fixture, hostComponent;
 
@@ -59,10 +62,112 @@ describe('TextArea', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TextArea);
     hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = textAreaElement as Param;
+    hostComponent.form = new FormGroup({
+      notes: new FormControl()
+   });
   });
 
-  it('should create the TextArea', async(() =>  {
-    expect(hostComponent).toBeTruthy();
-  }));
+    it("should create the TextArea", async(() => {
+      expect(hostComponent).toBeTruthy();
+    }));
+
+    it("nm-input-label should be created if the label is configured", async(() => {
+      ServiceConstants.LOCALE_LANGUAGE = "en-US";
+      fixture.detectChanges();
+      const labelEle = document.getElementsByTagName("nm-input-label");
+      expect(labelEle.length).toEqual(1);
+    }));
+
+    it("nm-input-label should not be created if the label is not configured", async(() => {
+      hostComponent.element.labels = [];
+      ServiceConstants.LOCALE_LANGUAGE = "en-US";
+      fixture.detectChanges();
+      const labelEle = document.getElementsByTagName("nm-input-label");
+      expect(labelEle.length).toEqual(0);
+    }));
+
+    it("textarea should be created if the readOnly attribute is configured as false", async(() => {
+      ServiceConstants.LOCALE_LANGUAGE = "en-US";
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const textareaEle = debugElement.query(By.css("textarea"));
+      expect(textareaEle).toBeTruthy();
+    }));
+
+    it("span should be created if the @max is configured", async(() => {
+      ServiceConstants.LOCALE_LANGUAGE = "en-US";
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const spanEle = debugElement.query(By.css("span"));
+      expect(spanEle).toBeTruthy();
+      expect(spanEle.nativeElement.innerText).toEqual("483 Characters left");
+    }));
+
+    it("span should not be created if the @max is not configured", async(() => {
+      hostComponent.element.config.validation.constraints = [];
+      ServiceConstants.LOCALE_LANGUAGE = "en-US";
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const spanEle = debugElement.query(By.css("span"));
+      expect(spanEle).toBeFalsy();
+    }));
+
+    it("pre should be created if the readOnly is configured as false", async(() => {
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const preEle = debugElement.query(By.css("pre"));
+      expect(preEle).toBeTruthy();
+      expect(preEle.nativeElement.innerText).toEqual(hostComponent.element.leafState);
+    }));
+
+    it("p should be created and display leafState if the leafState is configured and readOnly is true", async(() => {
+      hostComponent.element.config.uiStyles.attributes.readOnly = true;
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const pEle = debugElement.query(By.css("p"));
+      expect(pEle.nativeElement.innerText).toEqual("testing leafstate");
+    }));
+
+    it('p should not be created if the readOnly is configured as false', async(() => {
+        hostComponent.element.config.uiStyles.attributes.readOnly = false;
+        fixture.detectChanges();
+        const pEles = document.getElementsByTagName('p');
+        expect(pEles.length).toEqual(0);
+    }));
+
+    it("pre should not be created if the readOnly is configured as true", async(() => {
+      hostComponent.element.config.uiStyles.attributes.readOnly = true;
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const preEle = debugElement.query(By.css("pre"));
+      expect(preEle).toBeFalsy();
+    }));
+
+    it("div should be created if the controlId is configured", async(() => {
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const divEles = debugElement.queryAll(By.css("div"));
+      expect(divEles[1].nativeElement.innerText).toEqual("test");
+      expect(divEles[1].nativeElement.classList[0]).toEqual("number");
+      expect(divEles.length).toEqual(2);
+    }));
+
+    it("div should not be created if the controlId is not configured", async(() => {
+      hostComponent.element.config.uiStyles.attributes.controlId = "";
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const divEles = debugElement.queryAll(By.css("div"));
+      expect(divEles.length).toEqual(1);
+    }));
+
+    it("textarea should not be created if the readOnly attribute is configured as true", async(() => {
+      hostComponent.element.config.uiStyles.attributes.readOnly = true;
+      ServiceConstants.LOCALE_LANGUAGE = "en-US";
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      const textareaEle = debugElement.query(By.css("textarea"));
+      expect(textareaEle).toBeFalsy();
+    }));
 
 });
