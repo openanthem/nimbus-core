@@ -868,7 +868,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface FilterButton {
 		String alias() default "FilterButton";
-
+Chart
 		String b() default "$execute";
 
 		/**
@@ -2374,7 +2374,7 @@ public class ViewConfig {
 	 * <li>{@link ButtonGroup}</li> <li>{@link CardDetail}</li>
 	 * <li>{@link CardDetailsGrid}</li> <li>{@link ComboBox}</li>
 	 * <li>{@link Form}</li> <li>{@link Grid}</li> <li>{@link Link}</li>
-	 * <li>{@link Menu}</li> <li>{@link Paragraph}</li>
+	 * <li>{@link Menu}</li> <li>{@link Paragraph}</li><li>{@link Chart}</li>
 	 * <li>{@link StaticText}</li> <li>{@link TextBox}</li> </ul>
 	 * 
 	 * @since 1.0
@@ -2821,6 +2821,16 @@ public class ViewConfig {
 
 	}
 	
+	/**
+	 * <p>Chart is readonly component with some interaction(hide/show charts when the corresponding legend is clicked.
+	 * 
+	 * <p><b>The projection object for the chart is List<DataGroup></b>
+	 * 
+	 * <p>Chart will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Section}</li>
+	 * 
+	 * @since 1.2
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
@@ -2838,12 +2848,19 @@ public class ViewConfig {
 		 */
 		String cssClass() default "";
 		
-		String colorScheme() default "default";
-		
+		/**
+		 * <p>Provides the title to x-axis, if the graph is cartesian </p>
+		 */
 		String xAxisLabel() default "";
 		
+		/**
+		 * <p>Provides the title to y-axis, if the graph is cartesian </p>
+		 */
 		String yAxisLabel() default "";
 		
+		/**
+		 * <p>Specify the type of graph</p>
+		 */
 		Type value() default Type.BAR;
 											
 	}
