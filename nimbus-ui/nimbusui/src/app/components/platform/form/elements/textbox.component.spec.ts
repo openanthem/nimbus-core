@@ -31,7 +31,8 @@ import { StorageServiceModule } from 'angular-webstorage-service';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext, instantiateComponent } from '../../../../setup.spec';
-import { fieldValueParam } from 'mockdata';
+import { textBoxElement } from 'mockdata';
+import { ServiceConstants } from '../../../../services/service.constants';
 
 /**
  * \@author Sandeep.Mantha
@@ -57,25 +58,25 @@ describe('InputText', () => {
         const fg = new FormGroup({});
         const checks: ValidatorFn[] = [];
         checks.push(Validators.required);
-        fg.addControl(fieldValueParam.config.code, new FormControl(fieldValueParam.leafState, checks));
+        fg.addControl(textBoxElement.config.code, new FormControl(textBoxElement.leafState, checks));
         hostComponent.form = fg;
-        hostComponent.element = fieldValueParam;
+        hostComponent.element = textBoxElement as Param;
         controlService = TestBed.get(ControlSubscribers);
     });
   
-    it('should create the InputText', async() =>{
+    it('should create the InputText', async () => {
         expect(hostComponent).toBeTruthy();
     });
 
-    it('form control value with default leafstate', async() => {
+    it('form control value with default leafstate', async () => {
         fixture.whenStable().then(() => {
             fixture.detectChanges();
-            expect(hostComponent.form.controls['firstName'].value).toBe('testData');
+            expect(hostComponent.form.controls['firstName'].value).toBe('testing textbox leafState');
             expect(hostComponent).toBeTruthy();
         });
     });
 
-    it('control validity', async() =>{
+    it('control validity', async () => {
         fixture.whenStable().then(() => {
             hostComponent.form.controls['firstName'].setValue('');
             fixture.detectChanges();
@@ -83,11 +84,12 @@ describe('InputText', () => {
         });
     });
 
-    it('post on focus out', async() =>{
+    it('post on focus out', async () => {
+        const debugElement = fixture.debugElement;
         fixture.whenStable().then(() => {
             fixture.detectChanges();
             spyOn(hostComponent, 'emitValueChangedEvent').and.callThrough();
-            const textBox = fixture.debugElement.children[0].nativeElement;
+            const textBox = debugElement.query(By.css('.form-control.text-input'));
             textBox.value = 'abcd123';
             textBox.dispatchEvent(new Event('input'));
             textBox.dispatchEvent(new Event('focusout'));
@@ -95,5 +97,78 @@ describe('InputText', () => {
             expect(hostComponent.emitValueChangedEvent).toHaveBeenCalled();
         });
     });
-  
+
+    it('nm-input-label should be created if the label is configured', async(() => {
+        ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+        fixture.detectChanges();
+        const labelEle = document.getElementsByTagName('nm-input-label');
+        expect(labelEle.length).toEqual(1);
+    }));
+
+    it('nm-input-label should not be created if the label is not configured', async(() => {
+        ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+        hostComponent.element.labels = [];
+        fixture.detectChanges();
+        const labelEle = document.getElementsByTagName('nm-input-label');
+        expect(labelEle.length).toEqual(0);
+    }));
+
+    it('input should be created if the hidden and readOnly is configured as false', async(() => {
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const textBox = debugElement.query(By.css('.form-control.text-input'));
+        expect(textBox).toBeTruthy();
+    }));
+
+    it('input should not be created if the hidden and readOnly is configured as true', async(() => {
+        hostComponent.element.config.uiStyles.attributes.hidden = true;
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const textBox = debugElement.query(By.css('.form-control.text-input'));
+        expect(textBox).toBeFalsy();
+    }));
+
+    it('input should be created if the hidden is configured as true', async(() => {
+        hostComponent.element.config.uiStyles.attributes.hidden = true;
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const textBox = debugElement.query(By.css('input'));
+        expect(textBox).toBeTruthy();
+    }));
+
+    it('pre should be created if the hidden and readonly is configured as false and display value', async(() => {
+        hostComponent.element.config.uiStyles.attributes.hidden = false;
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const preEle = debugElement.query(By.css('pre'));
+        expect(preEle).toBeTruthy();
+        expect(preEle.nativeElement.innerText).toEqual('testing textbox leafState');
+    }));
+
+    it('pre should be created if the hidden is false and readonly is configured as true', async(() => {
+        hostComponent.element.config.uiStyles.attributes.hidden = false;
+        hostComponent.element.config.uiStyles.attributes.readOnly = true;
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const preEle = debugElement.query(By.css('pre'));
+        expect(preEle).toBeFalsy();
+    }));
+
+    it('p should be created if the if readOnly is configured as true and display the leafState', async(() => {
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const pEle = debugElement.query(By.css('p'));
+        expect(pEle).toBeTruthy();
+        expect(pEle.nativeElement.innerText).toEqual('testing textbox leafState');
+    }));
+
+    it('p should not be created if the if readOnly is configured as false', async(() => {
+        hostComponent.element.config.uiStyles.attributes.readOnly = false;
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const pEle = debugElement.query(By.css('p'));
+        expect(pEle).toBeFalsy();
+    }));
+
 });
+

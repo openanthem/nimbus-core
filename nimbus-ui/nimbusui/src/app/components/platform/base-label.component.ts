@@ -50,6 +50,9 @@ export abstract class BaseLabel {
      * Get the tooltip help text for this element.
      */
     public get helpText(): string {
+        if (!this.labelConfig) {
+            this.loadLabelConfig(this.element);
+        }
         return ParamUtils.getHelpText(this.labelConfig);
     }
 
@@ -57,8 +60,10 @@ export abstract class BaseLabel {
      * Get the label text for this element.
      */
     public get label(): string {
-        this.loadLabelConfig(this.element);
-        return ParamUtils.getLabelText(this.labelConfig);
+        if (!this.labelConfig) {
+            this.loadLabelConfig(this.element);
+        }
+                return ParamUtils.getLabelText(this.labelConfig);
     }
 
     /**

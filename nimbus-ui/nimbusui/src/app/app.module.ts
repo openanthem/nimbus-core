@@ -138,7 +138,6 @@ import { CustomErrorHandler } from './shared/custom.error.handler';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { SessionStoreService, CUSTOM_STORAGE } from './services/session.store';
 import { SvgComponent } from './components/platform/svg/svg.component';
-import { SvgDefinitions } from './components/platform/svg/svg-definitions.component'
 
 // Declarations
 import { LoginCmp } from './components/login/login.component';
@@ -224,7 +223,7 @@ export function init_app(appinitservice: AppInitService) {
         HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, LoaderComponent, MessageComponent,
-        HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, 
+        HeaderCheckBox, SvgComponent, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, 
         MenuRouteLink, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage, BaseTableElement, EventPropagationDirective, TableHeader
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],

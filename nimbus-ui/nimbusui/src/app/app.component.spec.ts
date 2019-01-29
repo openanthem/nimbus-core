@@ -24,7 +24,6 @@ import { AppComponent } from './app.component';
 import { LoaderService } from './services/loader.service';
 import { ServiceConstants } from './services/service.constants';
 import { SvgComponent } from './components/platform/svg/svg.component';
-import { SvgDefinitions } from './components/platform/svg/svg-definitions.component'
 import { setup, TestContext } from './setup.spec';
 import { configureTestSuite } from 'ng-bullet';
 import { Subscription } from 'rxjs';
@@ -48,8 +47,7 @@ export class LoaderComponent {
 const declarations = [
   AppComponent,
   LoaderComponent,
-  SvgComponent,
-  SvgDefinitions
+  SvgComponent
 ];
 const imports = [ RouterTestingModule, AngularSvgIconModule ];
 const providers = [ LoaderService, { provide: ServiceConstants, useClass: MockServiceConstant} ];
