@@ -918,7 +918,8 @@ public class ViewConfig {
 	 * <li>{@link MultiSelect}</li> <li>{@link MultiSelectCard}</li>
 	 * <li>{@link Paragraph}</li> <li>{@link PickList}</li>
 	 * <li>{@link Radio}</li> <li>{@link Signature}</li>
-	 * <li>{@link TextArea}</li> <li>{@link TextBox}</li> </ul>
+	 * <li>{@link TextArea}</li> <li>{@link TextBox}</li>
+	 * <li>{@link InputMask}</li> </ul>
 	 * 
 	 * <p><i>*Note: Nested class fields will <b>not</b> be rendered in the same
 	 * manner as fields declared directly under the Form decorated field. This
@@ -2710,13 +2711,20 @@ public class ViewConfig {
 		String mask() default "";
 		
 		/**
-		 * <p> Please visit PrimeNG's website for details on the below parameters.
+		 * <p> Please visit PrimeNG's website for details on the below parameter.
 		 */
 		
-		String slotChar() default "_";	
+		String slotChar() default "_";
 		
+		/**
+		 * <p> Please visit PrimeNG's website for details on the below parameter.
+		 */		
 		String charRegex() default "[A-Za-z]";
 		
+		
+		/**
+		 * <p> Please visit PrimeNG's website for details on the below parameter.
+		 */
 		String maskPlaceHolder() default "";		
 		
 	}

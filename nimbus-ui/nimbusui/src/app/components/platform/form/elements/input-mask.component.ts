@@ -90,30 +90,33 @@ export class InputMask extends BaseControl<String> implements ControlValueAccess
 			});
 	}
 
-	public onChange: any = (_) => { /*Empty*/ }
-	public onTouched: any = () => { /*Empty*/ }
+// These will be needed if validations are done through PrimeNG's (onInput) event (available in version 7).
+// For now these are commented as it might affect coverage reports. 
 
-	get value() {
-		return this._value;
-	}
+	// public onChange: any = (_) => { /*Empty*/ }
+	// public onTouched: any = () => { /*Empty*/ }
 
-	set value(val) {
-		this._value = val;
-		this.onChange(val);
-		this.onTouched();
-	}
+	// get value() {
+	// 	return this._value;
+	// }
 
-	writeValue(value) {
-		if (value) {
-		}
-	}
+	// set value(val) {
+	// 	this._value = val;
+	// 	this.onChange(val);
+	// 	this.onTouched();
+	// }
 
-	registerOnChange(fn) {
-		this.onChange = fn;
-	}
+	// writeValue(value) {
+	// 	if (value) {
+	// 	}
+	// }
 
-	registerOnTouched(fn) {
-		this.onTouched = fn;
-	}
+	// registerOnChange(fn) {
+	// 	this.onChange = fn;
+	// }
+
+	// registerOnTouched(fn) {
+	// 	this.onTouched = fn;
+	// }
 
 }
