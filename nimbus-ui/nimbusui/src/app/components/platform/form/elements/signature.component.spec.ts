@@ -164,15 +164,15 @@ describe('Signature', () => {
     expect(hostComponent.getUpdatedSignature).toHaveBeenCalled();
   }));
 
-  // it('ngOnInit() should update the height and width properties', () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.config.uiStyles.attributes.width = '100';
-  //     hostComponent.element.config.uiStyles.attributes.height = '200';
-  //     hostComponent.ngOnInit();
-  //     expect(hostComponent.width).toEqual(100);
-  //     expect(hostComponent.height).toEqual(200);
-  //   });
-  // });
+  it('ngOnInit() should update the height and width properties', () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.width = '100';
+      hostComponent.element.config.uiStyles.attributes.height = '200';
+      hostComponent.ngOnInit();
+      expect(hostComponent.width).toEqual(100);
+      expect(hostComponent.height).toEqual(200);
+    });
+  });
 
   it('zoomCanvas() should update zoomFactor as 2 and zoomClass as zoom', async(() => {
     hostComponent.zoomCanvas();
@@ -186,12 +186,12 @@ describe('Signature', () => {
     expect(hostComponent.zoomClass).toEqual('');
   }));
 
-  // it('ngAfterViewInit() should call initCanvasElement()', async(() => {
-  //   (hostComponent as any).initCanvasElement = () => { };
-  //   const spy = spyOn((hostComponent as any), 'initCanvasElement').and.callThrough();
-  //   hostComponent.ngAfterViewInit();
-  //   expect(spy).toHaveBeenCalled();
-  // }));
+  it('ngAfterViewInit() should call initCanvasElement()', async(() => {
+    (hostComponent as any).initCanvasElement = () => { };
+    const spy = spyOn((hostComponent as any), 'initCanvasElement').and.callThrough();
+    hostComponent.ngAfterViewInit();
+    expect(spy).toHaveBeenCalled();
+  }));
 
   it('initCanvasElement() should call applyContextRules(), renderExistingSignature(), registerCaptureEvents()', async(() => {
     (hostComponent as any).applyContextRules = () => { };
