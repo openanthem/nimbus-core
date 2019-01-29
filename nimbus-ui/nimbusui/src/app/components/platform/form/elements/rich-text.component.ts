@@ -57,13 +57,14 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             (focusout)="emitValueChangedEvent(this, value)"
             [placeholder]="element?.config?.uiStyles?.attributes?.placeholder"
             [disabled]="!element?.enabled"
-            [readonly]="!element?.enabled"
+            [readonly]="!element?.enabled || element?.config?.uiStyles?.attributes?.readOnly"
+            [attr.readonly]="element?.config?.uiStyles?.attributes?.readOnly ? true : null"
             [style]="element?.config?.uiStyles?.attributes?.inlineStyle"
             [styleClass]="element?.config?.uiStyles?.attributes?.cssClass"
             [formats]="element?.config?.uiStyles?.attributes?.formats"
             >
             
-            <p-header>
+            <p-header [hidden]="element?.config?.uiStyles?.attributes?.readOnly">
                 <ng-template ngFor let-toolbarFeature [ngForOf]="element?.config?.uiStyles?.attributes?.toolbarFeatures">
 
                     <ng-template [ngIf]="toolbarFeature === 'HEADER'">
@@ -186,6 +187,10 @@ export class RichText extends BaseControl<String> {
     }
 
     ngOnInit() {
+
+        if (this.element.config.uiStyles.attributes.readOnly) {
+            return;
+        }
 
         let fontConfig = this.buildConfigFromNature(ViewConfig.fonts.toString());
         if (fontConfig) {
