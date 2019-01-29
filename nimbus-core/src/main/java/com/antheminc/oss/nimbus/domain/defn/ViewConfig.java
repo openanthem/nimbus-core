@@ -2425,6 +2425,12 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 
 		/**
+		 * <p>Marks if this rich text box should be used in readonly mode. Using this mode will
+		 * simply display a readonly text field with the rich text formatting preserved.
+		 */
+		boolean readOnly() default false;
+		
+		/**
 		 * <p>The features to include when rendering the toolbar.<p>Features
 		 * will be rendered in the order they are configured.
 		 */
