@@ -868,7 +868,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface FilterButton {
 		String alias() default "FilterButton";
-Chart
+		
 		String b() default "$execute";
 
 		/**
