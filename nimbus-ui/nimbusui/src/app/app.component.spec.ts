@@ -47,8 +47,7 @@ export class LoaderComponent {
 const declarations = [
   AppComponent,
   LoaderComponent,
-  SvgComponent,
-  SvgDefinitions
+  SvgComponent
 ];
 const imports = [ RouterTestingModule, AngularSvgIconModule ];
 const providers = [ LoaderService, { provide: ServiceConstants, useClass: MockServiceConstant} ];
