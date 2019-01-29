@@ -1,10 +1,11 @@
+import { RichText } from './../form/elements/rich-text.component';
 import { TableHeader } from './../grid/table-header.component';
 import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule  } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, EditorModule  } from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing'
 import { HttpClientModule } from '@angular/common/http';
@@ -231,7 +232,8 @@ const declarations = [
   FormGridFiller,
   InputLegend,
   FormErrorMessage,
-  PrintDirective
+  PrintDirective,
+  RichText
  ];
  const imports = [
   GrowlModule,
@@ -256,7 +258,8 @@ const declarations = [
   AngularSvgIconModule,
   ToastModule,
   InputSwitchModule,
-  TreeTableModule
+  TreeTableModule,
+  EditorModule
  ];
  const providers = [
   {provide: WebContentSvc, useClass: MockWebContentSvc},

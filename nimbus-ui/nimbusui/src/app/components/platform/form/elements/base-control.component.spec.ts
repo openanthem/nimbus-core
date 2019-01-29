@@ -132,51 +132,51 @@ describe('BaseControl', () => {
     expect(controlSubscribers.controlValueChanged.emit).toHaveBeenCalled();
   }));
 
-  // it('ngOnInit() should update the value property',async(() => {
-  //   hostComponent.element.leafState = 'testState';
-  //   hostComponent.ngOnInit();
-  //   expect(hostComponent.value).toEqual('testState');
-  // }));
+  it('ngOnInit() should update the value property',async(() => {
+    hostComponent.element.leafState = 'testState';
+    hostComponent.ngOnInit();
+    expect(hostComponent.value).toEqual('testState');
+  }));
 
-  // it('ngOnInit() should not update requiredCss Property from ValidationUtils.rebindValidations()',() => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.activeValidationGroups = ['1'];
-  //     hostComponent.element.leafState = 'testState';
-  //     hostComponent.element.config.uiStyles.attributes.alias = '';
-  //     hostComponent.element.config.validation.constraints[0].name = '';
-  //     hostComponent.element.config.validation.constraints[0].attribute.groups = ['1'];
-  //     spyOn(ValidationUtils, 'rebindValidations').and.returnValue(false);
-  //     hostComponent.ngOnInit();
-  //     expect(hostComponent.requiredCss).toBeFalsy();
-  //   });
-  // });
+  it('ngOnInit() should not update requiredCss Property from ValidationUtils.rebindValidations()',() => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.activeValidationGroups = ['1'];
+      hostComponent.element.leafState = 'testState';
+      hostComponent.element.config.uiStyles.attributes.alias = '';
+      hostComponent.element.config.validation.constraints[0].name = '';
+      hostComponent.element.config.validation.constraints[0].attribute.groups = ['1'];
+      spyOn(ValidationUtils, 'rebindValidations').and.returnValue(false);
+      hostComponent.ngOnInit();
+      expect(hostComponent.requiredCss).toBeFalsy();
+    });
+  });
 
-  // it('ngOnInit() should not update requiredCss Property from ValidationUtils.applyelementStyle()',async(() => {
-  //   hostComponent.element.activeValidationGroups = ['1'];
-  //   hostComponent.element.leafState = 'testState';
-  //   hostComponent.form = null;
-  //   hostComponent.ngOnInit();
-  //   expect(hostComponent.requiredCss).toBeFalsy();
-  // }));
+  it('ngOnInit() should not update requiredCss Property from ValidationUtils.applyelementStyle()',async(() => {
+    hostComponent.element.activeValidationGroups = ['1'];
+    hostComponent.element.leafState = 'testState';
+    hostComponent.form = null;
+    hostComponent.ngOnInit();
+    expect(hostComponent.requiredCss).toBeFalsy();
+  }));
 
-  // it('ngAfterViewInit() should call controlSubscribers.validationUpdateSubscriber() and controlSubscribers.onChangeEventSubscriber()',async(() => {
-  //   spyOn(hostComponent, 'setState').and.returnValue('');
-  //   spyOn(controlSubscribers, 'validationUpdateSubscriber').and.callThrough();
-  //   spyOn(controlSubscribers, 'onChangeEventSubscriber').and.callThrough();
-  //   hostComponent.ngAfterViewInit();
-  //   expect(controlSubscribers.validationUpdateSubscriber).toHaveBeenCalled();
-  //   expect(controlSubscribers.onChangeEventSubscriber).toHaveBeenCalled();
-  // }));
+  it('ngAfterViewInit() should call controlSubscribers.validationUpdateSubscriber() and controlSubscribers.onChangeEventSubscriber()',async(() => {
+    spyOn(hostComponent, 'setState').and.returnValue('');
+    spyOn(controlSubscribers, 'validationUpdateSubscriber').and.callThrough();
+    spyOn(controlSubscribers, 'onChangeEventSubscriber').and.callThrough();
+    hostComponent.ngAfterViewInit();
+    expect(controlSubscribers.validationUpdateSubscriber).toHaveBeenCalled();
+    expect(controlSubscribers.onChangeEventSubscriber).toHaveBeenCalled();
+  }));
 
-  // it('ngAfterViewInit() should not call controlSubscribers.validationUpdateSubscriber() and call controlSubscribers.onChangeEventSubscriber()',async(() => {
-  //   hostComponent.element.config.code = '';
-  //   spyOn(hostComponent, 'setState').and.returnValue('');
-  //   spyOn(controlSubscribers, 'validationUpdateSubscriber').and.callThrough();
-  //   spyOn(controlSubscribers, 'onChangeEventSubscriber').and.callThrough();
-  //   hostComponent.ngAfterViewInit();
-  //   expect(controlSubscribers.validationUpdateSubscriber).not.toHaveBeenCalled();
-  //   expect(controlSubscribers.onChangeEventSubscriber).toHaveBeenCalled();
-  // }));
+  it('ngAfterViewInit() should not call controlSubscribers.validationUpdateSubscriber() and call controlSubscribers.onChangeEventSubscriber()',async(() => {
+    hostComponent.element.config.code = '';
+    spyOn(hostComponent, 'setState').and.returnValue('');
+    spyOn(controlSubscribers, 'validationUpdateSubscriber').and.callThrough();
+    spyOn(controlSubscribers, 'onChangeEventSubscriber').and.callThrough();
+    hostComponent.ngAfterViewInit();
+    expect(controlSubscribers.validationUpdateSubscriber).not.toHaveBeenCalled();
+    expect(controlSubscribers.onChangeEventSubscriber).toHaveBeenCalled();
+  }));
 
   it('setInPlaceEditContext() should update the inPlaceEditContext property',async(() => {
     hostComponent.setInPlaceEditContext('test');
@@ -186,35 +186,35 @@ describe('BaseControl', () => {
 
   it('hidden property should be updated from element',() => {
     fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.hidden = true;
+      hostComponent.element.config.uiStyles.attributes = {"hidden": true};
       expect(hostComponent.hidden).toBeTruthy();
     });
   });
 
   it('readOnly property should be updated from element',() => {
     fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.readOnly = true;
+      hostComponent.element.config.uiStyles.attributes = {"readOnly": true};
       expect(hostComponent.readOnly).toBeTruthy();
     });
   });
 
   it('type property should be updated from element',() => {
     fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.type = 'type';
+      hostComponent.element.config.uiStyles.attributes = {"type": 'type'};
       expect(hostComponent.type).toEqual('type');
     });
   });
 
   it('help property should be updated from element',() => {
     fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.help = 'help';
+      hostComponent.element.config.uiStyles.attributes = {"help": 'help'};
       expect(hostComponent.help).toEqual('help');
     });
   });
 
   it('getConstraint() should return undefined',() => {
     fixture.whenStable().then(() => {
-      hostComponent.element.config.validation.constraints = [];
+      hostComponent.element.config.validation = {"constraints": []};
       expect(hostComponent.getConstraint('test')).toBeFalsy();
     });
   });
@@ -223,7 +223,7 @@ describe('BaseControl', () => {
     fixture.whenStable().then(() => {
       const constraint = new Constraint();
       constraint.name = 'test';
-      hostComponent.element.config.validation.constraints = [constraint];
+      hostComponent.element.config.validation = {"constraints": [constraint]};
       expect(hostComponent.getConstraint('test')).toEqual(constraint);
     });
   });
