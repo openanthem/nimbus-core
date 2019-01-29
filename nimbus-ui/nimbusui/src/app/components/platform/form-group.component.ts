@@ -45,7 +45,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                 <fieldset>
                     <nm-input-legend [element]="element"></nm-input-legend>
                     <ng-template ngFor let-frmElem [ngForOf]="element.type.model.params">
-                        <nm-frm-grp [element]="frmElem" [form]="form" [position]="position"> 
+                        <nm-frm-grp [element]="frmElem" [hidden]="!frmElem.visible" [form]="form" [position]="position"> 
                         </nm-frm-grp>
                     </ng-template>
                 </fieldset>
