@@ -1,5 +1,3 @@
-import { EditorModule } from 'primeng/editor';
-import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
@@ -79,7 +77,10 @@ import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
 import { fieldValueParam } from 'mockdata';
 import { TableHeader } from '../grid/table-header.component';
 import { RichText } from '../form/elements/rich-text.component';
-
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './../charts/chart.component';
+import { EditorModule } from 'primeng/editor';
+import { Param } from './../../../shared/param-state';
 let pageService;
 
 @Component({
@@ -174,6 +175,7 @@ class MockPageService {
     OrderablePickList,
     CheckBoxGroup,
     DateTimeFormatPipe,
+    NmChart,
     RichText
  ];
 const imports = [
@@ -189,6 +191,7 @@ const imports = [
      ToastModule,
      TableModule,
      KeyFilterModule,
+     ChartModule,
      EditorModule
  ];
 const providers = [

@@ -1,10 +1,11 @@
+import { NmChart } from './charts/chart.component';
 import { TableHeader } from './grid/table-header.component';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms';
 import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, 
     DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, 
-    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule, EditorModule } from 'primeng/primeng';
+    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule, EditorModule, ChartModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { HttpModule } from '@angular/http';
@@ -188,6 +189,7 @@ const declarations = [
   InputLegend,
   FormErrorMessage,
   PrintDirective,
+  NmChart,
   RichText
 ];
 const imports = [
@@ -216,6 +218,7 @@ const imports = [
    InputSwitchModule, 
    TreeTableModule,
    BrowserAnimationsModule,
+   ChartModule,
    EditorModule
 ];
 const providers = [

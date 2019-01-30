@@ -1,4 +1,3 @@
-import { TableHeader } from './grid/table-header.component';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -76,7 +75,9 @@ import { Param } from '../../shared/param-state';
 import { PrintDirective } from '../../directives/print.directive';
 import { fieldValueParam } from 'mockdata';
 import { RichText } from './form/elements/rich-text.component';
-
+import { NmChart } from './charts/chart.component';
+import { ChartModule } from 'primeng/chart';
+import { TableHeader } from './grid/table-header.component';
 @Component({
   template: '<div></div>',
   selector: 'nm-button'
@@ -161,6 +162,7 @@ const declarations = [
   InputLegend,
   FormErrorMessage,
   PrintDirective,
+  NmChart,
   RichText
  ];
 const imports = [
@@ -185,6 +187,7 @@ const imports = [
   ToastModule,
   TreeTableModule,
   InputSwitchModule,
+  ChartModule,
   EditorModule
  ];
 const providers = [

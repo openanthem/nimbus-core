@@ -1,5 +1,3 @@
-import { TableHeader } from './../grid/table-header.component';
-import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
@@ -71,7 +69,10 @@ import { Subject } from 'rxjs';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { fieldValueParam } from 'mockdata';
 import { RichText } from '../form/elements/rich-text.component';
-
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './../charts/chart.component';
+import { TableHeader } from './../grid/table-header.component';
+import { Param } from './../../../shared/param-state';
 @Component({
     template: '<div></div>',
     selector: 'nm-button'
@@ -169,6 +170,7 @@ const declarations = [
     InputLegend,
     FormErrorMessage,
     PrintDirective,
+    NmChart,
     RichText
    ];
    const imports = [
@@ -194,6 +196,7 @@ const declarations = [
        ToastModule,
        InputSwitchModule,
        TreeTableModule,
+       ChartModule,
        EditorModule
    ];
    const providers = [

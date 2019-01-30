@@ -1,3 +1,5 @@
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './charts/chart.component';
 import { RichText } from './form/elements/rich-text.component';
 import { TableHeader } from './grid/table-header.component';
 'use strict';
@@ -192,6 +194,7 @@ const declarations = [
     InputLegend,
     FormErrorMessage,
     PrintDirective,
+    NmChart,
     RichText
    ];
   const imports = [
@@ -218,6 +221,7 @@ const declarations = [
     HttpModule,
     BrowserAnimationsModule,
     RouterTestingModule,
+    ChartModule,
     EditorModule
   ];
   const providers = [

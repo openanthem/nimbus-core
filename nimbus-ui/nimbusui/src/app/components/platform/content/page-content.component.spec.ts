@@ -1,6 +1,3 @@
-import { RichText } from './../form/elements/rich-text.component';
-import { TableHeader } from './../grid/table-header.component';
-import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
@@ -84,7 +81,11 @@ import { setup, TestContext } from '../../../setup.spec';
 import { PrintDirective } from '../../../directives/print.directive';
 import { PrintService } from '../../../services/print.service';
 import { fieldValueParam } from 'mockdata';
-
+import { NmChart } from './../charts/chart.component';
+import { ChartModule } from 'primeng/chart';
+import { RichText } from './../form/elements/rich-text.component';
+import { TableHeader } from './../grid/table-header.component';
+import { Param } from './../../../shared/param-state';
 let logger, pageService, param, printService;
 
 export class MockActivatedRoute implements ActivatedRoute {
@@ -233,6 +234,7 @@ const declarations = [
   InputLegend,
   FormErrorMessage,
   PrintDirective,
+  NmChart,
   RichText
  ];
  const imports = [
@@ -259,6 +261,7 @@ const declarations = [
   ToastModule,
   InputSwitchModule,
   TreeTableModule,
+  ChartModule,
   EditorModule
  ];
  const providers = [

@@ -76,7 +76,8 @@ import { By } from '@angular/platform-browser';
 import { formGroupNmElementInputParam, formGroupNmButtonParam, formGroupnmParagraphParam, formGroupParam, formGroupNmLinkParam, formGroupNmHeaderParam, formGroupNmPickListParam, formGroupNmFormGridFiller, formGroupNestedFrmGrpEle} from 'mockdata';
 import { TableHeader } from './grid/table-header.component';
 import { RichText } from './form/elements/rich-text.component';
-
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './charts/chart.component';
 let param: Param;
 
 class MockWebContentSvc {
@@ -167,6 +168,7 @@ const declarations = [
   InputLegend,
   FormErrorMessage,
   PrintDirective,
+  NmChart,
   RichText
  ];
  const imports = [
@@ -191,6 +193,7 @@ const declarations = [
      InputSwitchModule, 
      TreeTableModule,
      StorageServiceModule,
+     ChartModule,
      EditorModule
  ];
  const providers = [

@@ -1,5 +1,3 @@
-import { EditorModule } from 'primeng/editor';
-import { TableHeader } from './../grid/table-header.component';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormControl } from '@angular/forms';
@@ -82,7 +80,10 @@ import { GridService } from '../../../services/grid.service';
 import { PrintService } from '../../../services/print.service';
 import { accordionElementWithForm, accordionElementWithNoForm } from 'mockdata';
 import { RichText } from '../form/elements/rich-text.component';
-
+import { NmChart } from './../charts/chart.component';
+import { ChartModule } from 'primeng/chart';
+import { EditorModule } from 'primeng/editor';
+import { TableHeader } from './../grid/table-header.component';
 let pageService, webContentSvc, configService;
 
 class MockWebContentSvc {
@@ -187,6 +188,7 @@ const declarations = [
   InputLegend,
   FormErrorMessage,
   PrintDirective,
+  NmChart,
   RichText
 ];
 const imports = [
@@ -200,6 +202,7 @@ const imports = [
   SharedModule, 
   OverlayPanelModule, 
   PickListModule, 
+  ChartModule,
   DragDropModule, 
   CalendarModule, 
   FileUploadModule, 

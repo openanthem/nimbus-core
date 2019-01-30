@@ -16,6 +16,7 @@ import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
 import { ParamUtils } from './../shared/param-utils';
 import { Param, Type, Model } from '../shared/param-state';
 import { ExecuteException } from '../shared/app-config.interface';
+import { formInput } from 'mockdata';
 let http, backend, service, location, loggerService, sessionStoreService, loaderService, configService, configService_actual;
 
 class MockLocation {
@@ -66,6 +67,8 @@ class MockConfigService {
     }
   };
   setLayoutToAppConfig(a, b) {}
+  setViewConfigToParamConfigMap(a,b) {}
+
 }
 
 class MockLoaderService {
@@ -229,29 +232,11 @@ describe('PageService', () => {
     }));
 
     it('traverseParam() should call updateParam()', async(() => {
-      const eve = { value: { path: 'tPath' } };
+      const eve = {value: formInput}
       spyOn(service, 'updateParam').and.returnValue('');
-      service.traverseParam({}, eve);
+      service.traverseParam(formInput, eve);
       expect(service.updateParam).toHaveBeenCalled();
     }));
-
-  /*  it('createRowData() should return the updated row data', async(() => {
-      const resObj = { type: { model: { params: true } } };
-      const param = { leafState: { nestedGridParam: '' }, type: { model: { params: [resObj] } } };
-      const result = service.createRowData(param);
-      expect(result.nestedGridParam).toEqual('');
-    })); 
-
-    it('createRowData() should return the updated row data even when nestedGridParam is not a collection', async(() => {
-      const resObj = { type: { model: { params: true } } };
-      const nestedGridParams = [ {alias: 'Button', configId: 1 }, {alias: 'Link', configId: 2 } ];
-      // tslint:disable-next-line:max-line-length
-      const nestedParams = [{ alias: 'name', leafState: 'John' } , { alias: 'Button', configId: 1 , type : { collection : false} } , { alias: 'Link', configId: 2 , type : { collection : false} } ];
-      // tslint:disable-next-line:max-line-length
-      const inputparam = { leafState: { nestedGridParam: [nestedGridParams] }, type: { model: { params: [nestedParams] } } };
-      const result = service.createRowData(inputparam);
-      expect(result.nestedGridParam).toEqual([nestedGridParams]);
-    })); */
 
     it('getUpdatedParamPath() should return updated path', async(() => {
       const eveModel = 'test/123/#';
@@ -801,20 +786,6 @@ describe('PageService_mock', () => {
     loaderService = TestBed.get(LoaderService);
     configService_actual = TestBed.get(ConfigService);
     location = TestBed.get(Location);
-  }); 
-
-  // it('createGridData() should return empty gridData', async(() => {
-  //   const gridElementParam = new Param(configService_actual);
-  //   gridElementParam.leafState = {nestedGridParam : {type: {model: {nested: false}}}};
-  //   gridElementParam.type = new Type(configService);
-  //   gridElementParam.type.model = new Model(configService);
-  //   gridElementParam.type.model.params = [];
-  //   const gridParam = new Param(configService_actual);
-  //   const config = new ParamConfig(configService_actual);
-  //   spyOn(configService_actual, 'getViewConfigById').and.returnValue(config);
-  //   const res = service.createGridData([gridElementParam], gridParam);
-  //   expect(res.stateMap).toEqual([]);
-  //   expect(res.leafState).toEqual([]);
-  // }));
+  });
 
 });

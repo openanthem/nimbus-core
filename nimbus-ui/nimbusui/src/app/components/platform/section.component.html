@@ -40,6 +40,9 @@
             <ng-template [ngIf]="element.alias == componentTypes.accordion.toString()">
                 <nm-accordion [position]="position+1" [element]="element" [nmPrint]="element"></nm-accordion>
             </ng-template>
+            <ng-template [ngIf]="element.alias == componentTypes.chart.toString()">
+                <nm-chart [element]="element"></nm-chart>
+            </ng-template>
             <!-- Grid Param -->
             <ng-template [ngIf]="element.alias == componentTypes.grid.toString()">
                 <nm-table

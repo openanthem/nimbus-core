@@ -76,7 +76,8 @@ import { PrintDirective } from '../../directives/print.directive';
 import { fieldValueParam } from 'mockdata';
 import { TableHeader } from './grid/table-header.component';
 import { RichText } from './form/elements/rich-text.component';
-
+import { NmChart } from './charts/chart.component';
+import { ChartModule } from 'primeng/chart';
 let pageService;
 
 class MockPageService {
@@ -165,6 +166,7 @@ const declarations = [
     InputLegend,
     FormErrorMessage,
     PrintDirective,
+    NmChart,
     RichText
    ];
 const imports = [
@@ -191,6 +193,7 @@ const imports = [
     ToastModule,
     TreeTableModule, 
     InputSwitchModule,
+    ChartModule,
     EditorModule
    ];
 const providers = [

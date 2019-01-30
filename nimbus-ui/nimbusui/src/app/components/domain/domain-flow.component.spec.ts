@@ -1,3 +1,5 @@
+import { NmChart } from './../platform/charts/chart.component';
+import { ChartModule } from 'primeng/chart';
 import { EditorModule } from 'primeng/editor';
 import { element } from 'protractor';
 import { Message } from './../../shared/message';
@@ -347,6 +349,7 @@ export class MockActivatedRoute implements ActivatedRoute {
     InputLegend,
     FormErrorMessage,
     PrintDirective,
+    NmChart,
     RichText
  ];
  const imports =  [
@@ -379,6 +382,7 @@ export class MockActivatedRoute implements ActivatedRoute {
      ReactiveFormsModule,
      ToastModule,
      BrowserAnimationsModule,
+     ChartModule,
      EditorModule
  ];
  const providers = [

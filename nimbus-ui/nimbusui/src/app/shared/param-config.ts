@@ -225,6 +225,9 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     dataEntryField: boolean;
     fixLayout: boolean;
     headerCheckboxToggleAllPages: boolean;
+    xAxisLabel: string;
+    yAxisLabel: string;
+    stepSize: string;
     inlineStyle: string;
     formats: string;
     toolbarFeatures: string[];

@@ -1,6 +1,3 @@
-import { EditorModule } from 'primeng/editor';
-import { TableHeader } from './grid/table-header.component';
-import { By } from '@angular/platform-browser';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -95,7 +92,11 @@ import { FormErrorMessage } from './form-error-message.component';
 import { PrintDirective } from '../../directives/print.directive';
 import { formErrorMessageParam } from 'mockdata';
 import { RichText } from './form/elements/rich-text.component';
-
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './charts/chart.component';
+import { EditorModule } from 'primeng/editor';
+import { TableHeader } from './grid/table-header.component';
+import { By } from '@angular/platform-browser';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -176,6 +177,7 @@ const declarations = [ Form,
     CardDetailsFieldGroupComponent,
     InputLegend ,
     PrintDirective,
+    NmChart,
     RichText
 ];
 const imports = [   FormsModule, ReactiveFormsModule,
@@ -201,6 +203,7 @@ const imports = [   FormsModule, ReactiveFormsModule,
     ToastModule,
     InputSwitchModule, 
     TreeTableModule,
+    ChartModule,
     EditorModule
  ];
 const providers = [];
