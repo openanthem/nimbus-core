@@ -59,7 +59,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             [disabled]="!element?.enabled"
             [readonly]="!element?.enabled || element?.config?.uiStyles?.attributes?.readOnly"
             [attr.readonly]="element?.config?.uiStyles?.attributes?.readOnly ? true : null"
-            [style]="element?.config?.uiStyles?.attributes?.inlineStyle"
             [styleClass]="element?.config?.uiStyles?.attributes?.cssClass"
             [formats]="element?.config?.uiStyles?.attributes?.formats"
             >
@@ -187,7 +186,7 @@ export class RichText extends BaseControl<String> {
     }
 
     ngOnInit() {
-
+        super.ngOnInit();
         if (this.element.config.uiStyles.attributes.readOnly) {
             return;
         }

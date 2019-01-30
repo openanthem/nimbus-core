@@ -30,13 +30,14 @@ export const MockRichText = {
                     "CLEAN"
                 ],
                 "formats": "",
-                "cssClass": "",
+                "cssClass": "nm-sample-style-class",
                 "dataEntryField": true,
                 "alias": "RichText",
-                "placeholder": "",
+                "placeholder": "Please enter a value",
                 "controlId": "",
                 "postEventOnChange": true,
-                "cols": ""
+                "readOnly": false,
+                "cols": "",
             }
         },
         "validations": null,
@@ -53,5 +54,7 @@ export const MockRichText = {
         "text": "Sample @RichText Component (w/ postEventOnChange = true)"
       }
     ],
-    "leafState": ""
+    "enabled": true,
+    "visible": true,
+    "leafState": "<p>Hello <strong>World</strong>!</p>"
   };
