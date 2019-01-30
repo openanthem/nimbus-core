@@ -326,7 +326,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		createQueues();
 		
 		String query = "{" + 
-				"    \"aggregate\" : \"clientusergroup\"," + 
+				"    aggregate : \"clientusergroup\"," + 
 				"    \"pipeline\" : [ " + 
 				"        {" + 
 				"			$match: {" + 

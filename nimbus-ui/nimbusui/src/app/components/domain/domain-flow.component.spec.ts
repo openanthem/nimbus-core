@@ -1,5 +1,6 @@
 import { NmChart } from './../platform/charts/chart.component';
 import { ChartModule } from 'primeng/chart';
+import { EditorModule } from 'primeng/editor';
 import { element } from 'protractor';
 import { Message } from './../../shared/message';
 'use strict';
@@ -87,6 +88,7 @@ import { PrintDirective } from '../../directives/print.directive';
 import { PrintService } from '../../services/print.service';
 import {domainModalItems, domainActionTray, domainItems, domainAccordions, domainMockLayout} from 'mockdata';
 import { TableHeader } from '../platform/grid/table-header.component';
+import { RichText } from '../platform/form/elements/rich-text.component';
 
 let layoutservice, pageservice, router, route;
 
@@ -347,7 +349,8 @@ export class MockActivatedRoute implements ActivatedRoute {
     InputLegend,
     FormErrorMessage,
     PrintDirective,
-    NmChart
+    NmChart,
+    RichText
  ];
  const imports =  [
      RouterTestingModule,
@@ -379,7 +382,8 @@ export class MockActivatedRoute implements ActivatedRoute {
      ReactiveFormsModule,
      ToastModule,
      BrowserAnimationsModule,
-     ChartModule
+     ChartModule,
+     EditorModule
  ];
  const providers = [
      {provide: LayoutService, useClass: MockLayoutService},

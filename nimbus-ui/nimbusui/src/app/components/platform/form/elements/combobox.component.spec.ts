@@ -22,7 +22,9 @@ import { InputLabel } from './input-label.component';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
 import { Param } from '../../../../shared/param-state';
-import { fieldValueParam } from 'mockdata';
+import { comboBoxElement } from 'mockdata';
+import { ServiceConstants } from '../../../../services/service.constants';
+import { By } from '@angular/platform-browser';
 
 
 const declarations = [
@@ -61,11 +63,35 @@ describe('ComboBox', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ComboBox);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = fieldValueParam;
+    hostComponent.element = comboBoxElement as Param;
   });
 
-  it('should create the ComboBox', async(() => {
-    expect(hostComponent).toBeTruthy();
-  }));
+    it('should create the ComboBox', async(() => {
+        expect(hostComponent).toBeTruthy();
+    }));
+
+    it('nm-input-label should be created if the label is configured', async(() => {
+        ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+        hostComponent.element.visible = true;
+        fixture.detectChanges();
+        const labelEle = document.getElementsByTagName('nm-input-label');
+        expect(labelEle.length > 0).toBeTruthy();
+    }));
+
+    it('p-dropdown should be created', async(() => {
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const pDropDownEle = debugElement.query(By.css('p-dropdown'));
+        expect(pDropDownEle).toBeTruthy();
+    }));
+
+    it('nm-input-label should not be created if the label is not configured', async(() => {
+        ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+        hostComponent.element.labels = [];
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const labelEle = debugElement.query(By.css('nm-input-label'));
+        expect(labelEle).toBeFalsy();
+    }));
 
 });

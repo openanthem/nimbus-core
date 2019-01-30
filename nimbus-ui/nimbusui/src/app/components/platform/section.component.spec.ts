@@ -1,12 +1,10 @@
-import { NmChart } from './charts/chart.component';
-import { ChartModule } from 'primeng/chart';
-import { TableHeader } from './grid/table-header.component';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalendarModule, RadioButtonModule, CheckboxModule, ListboxModule, FileUploadModule, 
   GrowlModule, DropdownModule, DataTableModule, AccordionModule, PickListModule, TreeTableModule, 
-  InputSwitchModule } from 'primeng/primeng';
+  InputSwitchModule, 
+  EditorModule} from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { TableModule } from 'primeng/table';
@@ -76,7 +74,10 @@ import { configureTestSuite } from 'ng-bullet';
 import { Param } from '../../shared/param-state';
 import { PrintDirective } from '../../directives/print.directive';
 import { fieldValueParam } from 'mockdata';
-
+import { RichText } from './form/elements/rich-text.component';
+import { NmChart } from './charts/chart.component';
+import { ChartModule } from 'primeng/chart';
+import { TableHeader } from './grid/table-header.component';
 @Component({
   template: '<div></div>',
   selector: 'nm-button'
@@ -161,7 +162,8 @@ const declarations = [
   InputLegend,
   FormErrorMessage,
   PrintDirective,
-  NmChart
+  NmChart,
+  RichText
  ];
 const imports = [
   FormsModule,
@@ -185,7 +187,8 @@ const imports = [
   ToastModule,
   TreeTableModule,
   InputSwitchModule,
-  ChartModule
+  ChartModule,
+  EditorModule
  ];
 const providers = [
   { provide: PageService, useClass: MockPageService },

@@ -1,6 +1,3 @@
-import { ChartModule } from 'primeng/chart';
-import { NmChart } from './../charts/chart.component';
-import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
@@ -79,7 +76,11 @@ import { OrderablePickList } from '../form/elements/picklist.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
 import { fieldValueParam } from 'mockdata';
 import { TableHeader } from '../grid/table-header.component';
-
+import { RichText } from '../form/elements/rich-text.component';
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './../charts/chart.component';
+import { EditorModule } from 'primeng/editor';
+import { Param } from './../../../shared/param-state';
 let pageService;
 
 @Component({
@@ -174,7 +175,8 @@ class MockPageService {
     OrderablePickList,
     CheckBoxGroup,
     DateTimeFormatPipe,
-    NmChart
+    NmChart,
+    RichText
  ];
 const imports = [
      DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
@@ -189,7 +191,8 @@ const imports = [
      ToastModule,
      TableModule,
      KeyFilterModule,
-     ChartModule
+     ChartModule,
+     EditorModule
  ];
 const providers = [
      { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },

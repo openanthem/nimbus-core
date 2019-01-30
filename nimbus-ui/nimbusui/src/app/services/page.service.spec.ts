@@ -333,7 +333,7 @@ describe('PageService', () => {
     it('traverseConfig() should call traversePageConfig()', async(() => {
       spyOn(service, 'getUpdatedParamPath').and.returnValue('test/123');
       spyOn(service, 'traversePageConfig').and.returnValue('');
-      const params = [{ config: { code: 'test' } }];
+      const params: any = [{ config: { code: 'test' } }];
       service.traverseConfig(params, { value: { path: '/t' } });
       expect(service.traversePageConfig).toHaveBeenCalled();
     }));
@@ -553,7 +553,7 @@ describe('PageService', () => {
     it('traversePageConfig() should call processModelEvent()', async(() => {
       const rootParam = { config: { code: '' }, type: { model: { params: [{ config: { code: undefined, type: { collection: 'c' } } }] } } };
       const eventModel = { value: { path: '', collectionElem: true } };
-      spyOn(service, 'processModelEvent').and.callThrough();
+      spyOn(service, 'processModelEvent').and.returnValue('');
       service.traversePageConfig(rootParam, eventModel, 0);
       expect(service.processModelEvent).toHaveBeenCalled();
     }));
@@ -561,7 +561,7 @@ describe('PageService', () => {
     it('traversePageConfig() should call traversePageConfig()', async(() => {
       const rootParam = { config: { code: undefined }, type: { model: { params: [{ config: { code: undefined, type: { collection: true } } }] } } };
       const eventModel = { value: { path: '', collectionElem: false } };
-      spyOn(service, 'traversePageConfig').and.callThrough();
+      spyOn(service, 'traversePageConfig').and.returnValue('');
       service.traversePageConfig(rootParam, eventModel, -2);
       expect(service.traversePageConfig).toHaveBeenCalled();
     }));
@@ -646,7 +646,7 @@ describe('PageService', () => {
     it('updateParam() should call updateNestedParameters()', async(() => {
       const rParam = { configId: '', path: '' };
       spyOn(configService, 'getViewConfigById').and.returnValue('a');
-      spyOn(service, 'updateNestedParameters').and.callThrough();
+      spyOn(service, 'updateNestedParameters').and.returnValue('');
       service.updateParam({}, rParam);
       expect(service.updateNestedParameters).toHaveBeenCalled();
     }));
