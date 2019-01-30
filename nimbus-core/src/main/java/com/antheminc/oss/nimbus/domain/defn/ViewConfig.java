@@ -2863,17 +2863,10 @@ public class ViewConfig {
 		 */
 		Type value() default Type.BAR;
 		
+		/**
+		 * <p>Specify the increments on the y-axis. Default is number algorithm based on different y axes values</p>
+		 */
 		String stepSize() default "";
 											
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface Autocomplete {
-		
-		String alias() default "Autocomplete";
-					
-		String url() default "";
 	}
 }
