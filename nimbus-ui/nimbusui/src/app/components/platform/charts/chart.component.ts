@@ -67,7 +67,8 @@ export class NmChart {
                         fontStyle: 'bold'
                     },
                     ticks: {
-                        fontStyle: 'bold'
+                        fontStyle: 'bold',
+                        stepSize: this.element.config.uiStyles.attributes.stepSize?this.element.config.uiStyles.attributes.stepSize:null
                     }
                 }]
             }

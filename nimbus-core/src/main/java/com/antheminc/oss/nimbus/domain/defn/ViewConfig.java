@@ -2862,6 +2862,18 @@ public class ViewConfig {
 		 * <p>Specify the type of graph</p>
 		 */
 		Type value() default Type.BAR;
+		
+		String stepSize() default "";
 											
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface Autocomplete {
+		
+		String alias() default "Autocomplete";
+					
+		String url() default "";
 	}
 }
