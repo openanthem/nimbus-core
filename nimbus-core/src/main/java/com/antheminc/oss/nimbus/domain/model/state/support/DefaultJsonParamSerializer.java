@@ -19,8 +19,10 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Chart;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TreeGrid;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
@@ -104,7 +106,13 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 			if(ArrayUtils.isNotEmpty(activeValidationGroups))
 				gen.writeObjectField(K_ACTIVE_VALS, p.getActiveValidationGroups());
 			
-			writer.writeObjectIfNotNull(K_MESSAGE, p::getMessages);
+			if(CollectionUtils.isNotEmpty(p.getMessages())) {
+				writer.writeObjectIfNotNull(K_MESSAGE, p::getMessages);
+				// Resetting the message in param, so that once the message is read through the http response, it is removed from param state.
+				/* TODO Scenarios where further conditional processing is done based on the message text needs to be addressed,
+				 since the message state has been reset. There will be a sync issue until a state is reloaded and message is set.*/
+				p.setMessages(null);
+			}
 			writer.writeObjectIfNotNull(K_VALUES, p::getValues);
 			writer.writeObjectIfNotNull(K_LABELS, p::getLabels);
 			writer.writeObjectIfNotNull(K_STYLE, p::getStyle);
@@ -163,7 +171,9 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 			if(colParam.getConfig().getUiStyles()==null)
 				return false;
 			
-			return ((colParam.getConfig().getUiStyles().getAnnotation().annotationType()==Grid.class) || (colParam.getConfig().getUiStyles().getAnnotation().annotationType() == TreeGrid.class));
+			return ((colParam.getConfig().getUiStyles().getAnnotation().annotationType()==Grid.class) || (colParam.getConfig().getUiStyles().getAnnotation().annotationType()==Chart.class)
+					|| (colParam.getConfig().getUiStyles().getAnnotation().annotationType() == TreeGrid.class));
+			
 		}
 	}
 }

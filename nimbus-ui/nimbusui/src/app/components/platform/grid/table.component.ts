@@ -18,7 +18,7 @@
 
 import {
     Component, Input, Output, forwardRef, ViewChild, EventEmitter,
-    ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren
+    ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren, ViewRef
 } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
@@ -141,27 +141,15 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         // Set the column headers
         if (this.params) {
             this.params.forEach(column => {
-                column.label = this._wcs.findLabelContentFromConfig(this.element.elemLabels.get(column.id), column.code).text;
-                // Set field and header attributes. TurboTable expects these specific variables.
-                column['field'] = column.code;
-                column['header'] = column.label;
                 if(column.uiStyles) {
                     if (column.uiStyles.attributes.filter) {
                         this.hasFilters = true;
                     }
-                    if (column.uiStyles.attributes.hidden) {
-                        column['exportable'] = false;
-                    } else {
-                        this.columnsToShow ++;
-                        if (TableComponentConstants.allowedColumnStylesAlias.includes(column.uiStyles.attributes.alias)
-                                || column.type.nested === true) {
-                            column['exportable'] = false;
-                        } else {
-                            column['exportable'] = true;
-                        }
-                    }
                     if (column.uiStyles.attributes.rowExpander) {
                         this.rowExpanderKey = column.code;
+                    }
+                    if (!column.uiStyles.attributes.hidden) {
+                        this.columnsToShow ++;
                     }
                 }
             });
@@ -213,7 +201,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             this.summaryData = data;
         });
 
-        this.pageSvc.gridValueUpdate$.subscribe(event => {
+        this.pageSvc.gridValueUpdate$.subscribe(event => {            
             if (event.path == this.element.path) {
                 this.value = event.gridData.leafState;
                 
@@ -241,8 +229,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                     this.updatePageDetailsState();
                     this.dt.first = 0;
                 }
-
-                this.cd.markForCheck();
+                if(!(<ViewRef>this.cd).destroyed)
+                    this.cd.detectChanges();
                 this.resetMultiSelection();
             }
         });
@@ -570,6 +558,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     filterCallBack(e: any) {
         this.totalRecords = e.filteredValue.length;
         this.updatePageDetailsState();
+        this.selectedRows.length = 0
+        this.dt.toggleRowsWithCheckbox(e, true);
     }
 
     export() {

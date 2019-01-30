@@ -59,6 +59,8 @@ import com.antheminc.oss.nimbus.entity.user.ClientUserGroup;
 import com.antheminc.oss.nimbus.entity.user.GroupUser;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntityAccess;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleDomain;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleNestedDomain;
 
 
 /**
@@ -202,11 +204,71 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&projection.alias=vstaticCodeValue");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		
 		List<VStaticCodeValue> values = (List<VStaticCodeValue>) multiOp.getSingleResult();
 		
 		assertNotNull(values);
 		assertEquals(1, values.size());
 		assertEquals("/status", values.get(0).getParamCode());
+	}
+	
+	
+	@Test
+	public void test_dynamicLookUpWithProjection() {
+		SampleDomain entity1 = new SampleDomain();
+		SampleNestedDomain nestedEntity1 = new SampleNestedDomain();
+		entity1.setId(2L);
+		entity1.setAttr_String("searchString");
+		nestedEntity1.setNested_attr_String("nestedAttribute1");
+		entity1.setAttr_NestedEntity(nestedEntity1);
+		
+		SampleDomain entity2 = new SampleDomain();
+		SampleNestedDomain nestedEntity2 = new SampleNestedDomain();
+		entity2.setId(3L);
+		entity2.setAttr_String("searchString1");
+		nestedEntity2.setNested_attr_String("nestedAttribute2");
+		entity2.setAttr_NestedEntity(nestedEntity2);
+			
+		mongo.insert(entity1, "sample_domain");
+		mongo.insert(entity2, "sample_domain");
+		
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_domain/_search?fn=lookup&where=sample_domain.attr_String.eq('searchString')&projection.mapsTo=code:id,label:attr_NestedEntity.nested_attr_String");
+		
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
+		
+		List<ParamValue> values = (List<ParamValue>)ops.get(0).getValue();
+		
+		assertNotNull(values);
+		assertEquals(1, values.size());
+		assertEquals("nestedAttribute1", values.get(0).getLabel());
+		
+		CommandMessage cmdMsg1 = build(PLATFORM_ROOT+"/sample_domain/_search?fn=lookup&projection.mapsTo=code:id,label:attr_NestedEntity.nested_attr_String");
+		
+		MultiOutput multiOp1 = this.commandGateway.execute(cmdMsg1);
+		List<Output<?>> ops1  = multiOp1.getOutputs();
+		
+		assertNotNull(ops1);
+		
+		List<ParamValue> values1 = (List<ParamValue>)ops1.get(0).getValue();
+		
+		assertNotNull(values1);
+		assertEquals(2, values1.size());
+		
+		assertEquals("nestedAttribute1", values1.get(0).getLabel());
+		assertEquals("nestedAttribute2", values1.get(1).getLabel());
+	
+		
+		CommandMessage cmdMsg2 = build(PLATFORM_ROOT+"/sample_domain/_search?fn=lookup&projection.mapsTo=code:id,label:attr_NestedEntity.nested_attr_String2");
+		try {
+			MultiOutput multiOp2 = this.commandGateway.execute(cmdMsg2);
+			List<Output<?>> ops2  = multiOp2.getOutputs();
+		} catch(Exception ex) {
+			assertNotNull(ex);
+			assertEquals(ex.getCause().getMessage(),"EL1008E: Property or field 'nested_attr_String2' cannot be found on object of type 'com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleNestedDomain' - maybe not public or not valid?");
+		}
 	}
 	
 	@Test
@@ -264,7 +326,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		createQueues();
 		
 		String query = "{" + 
-				"    \"aggregate\" : \"clientusergroup\"," + 
+				"    aggregate : \"clientusergroup\"," + 
 				"    \"pipeline\" : [ " + 
 				"        {" + 
 				"			$match: {" + 

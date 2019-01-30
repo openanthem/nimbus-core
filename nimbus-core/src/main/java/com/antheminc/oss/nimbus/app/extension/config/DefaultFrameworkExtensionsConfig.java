@@ -41,7 +41,7 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ModalStateEventHand
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamValuesOnLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.RuleStateEventHandler;
-import com.antheminc.oss.nimbus.domain.model.state.extension.ScriptStateLoadNewHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ScriptEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.StaticCodeValueBasedCodeToLabelConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.StyleConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler;
@@ -148,8 +148,8 @@ public class DefaultFrameworkExtensionsConfig {
 	}
 	
 	@Bean
-	public ScriptStateLoadNewHandler extensionScriptStateLoadNewHandler(BeanResolverStrategy beanResolver) {
-		return new ScriptStateLoadNewHandler(beanResolver);
+	public ScriptEventHandler extensionScriptStateLoadNewHandler(BeanResolverStrategy beanResolver) {
+		return new ScriptEventHandler(beanResolver);
 	}
 	
 	@Bean

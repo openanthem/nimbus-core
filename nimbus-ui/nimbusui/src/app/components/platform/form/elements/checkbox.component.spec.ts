@@ -18,10 +18,19 @@ import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/sessio
 import { AppInitService } from '../../../../services/app.init.service';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
-import * as data from '../../../../payload.json';
 import { Param } from '../../../../shared/param-state';
+import { checkboxElement } from 'mockdata';
+import { By } from '@angular/platform-browser';
+import { ServiceConstants } from '../../../../services/service.constants';
+import { WindowRefService } from './../../../../services/window-ref.service';
 
 let param: Param;
+
+class MockLoggerService {
+  debug() { }
+  info() { }
+  error() { }
+}
 
 const declarations = [
   CheckBox,
@@ -37,14 +46,15 @@ const declarations = [
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   { provide: 'JSNLOG', useValue: JL },
   { provide: LocationStrategy, useClass: HashLocationStrategy },
+  {provide: LoggerService, useClass: MockLoggerService},
   Location,
   PageService,
   CustomHttpClient,
   LoaderService,
   ConfigService,
-  LoggerService,
   SessionStoreService,
-  AppInitService
+  AppInitService,
+  WindowRefService
  ];
  let fixture, hostComponent;
 describe('CheckBox', () => {
@@ -53,16 +63,49 @@ describe('CheckBox', () => {
     setup( declarations, imports, providers);
   });
 
-     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckBox);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = param;
+    hostComponent.element = checkboxElement as Param;
   });
 
   it('should create the CheckBox', async(() => {
     expect(hostComponent).toBeTruthy();
   }));
 
+  it('input should be created', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const inputEle = debugElement.query(By.css('input'));
+    expect(inputEle).toBeTruthy();
+  }));
+
+  it('change event on input should call emitValueChangedEvent()', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    spyOn(hostComponent, 'emitValueChangedEvent').and.callThrough();
+    const inputEle = debugElement.query(By.css('input')).nativeElement;
+    inputEle.click();
+    expect(hostComponent.emitValueChangedEvent).toHaveBeenCalled();
+  }));
+
+  it('nm-tooltip should be created if helpText is configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const tooltipEle = debugElement.query(By.css('nm-tooltip'));
+    expect(tooltipEle).toBeTruthy();
+  }));
+
+  it('nm-tooltip should not be created if helpText is not configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    hostComponent.element.labels = [];
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const tooltipEle = debugElement.query(By.css('nm-tooltip'));
+    expect(tooltipEle).toBeFalsy();
+  }));
+
 });
+

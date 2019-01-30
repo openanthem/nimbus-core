@@ -26,7 +26,6 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.extension.AccessConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.AccessConditional.Permission;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.access.ClientAccessEntity;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
@@ -42,7 +41,7 @@ import lombok.Getter;
  */
 @EnableLoggingInterceptor
 @Getter(AccessLevel.PROTECTED)
-public class AccessConditionalStateEventHandler extends AbstractConditionalStateEventHandler implements OnStateLoadHandler<AccessConditional> {
+public class AccessConditionalStateEventHandler extends EvalExprWithCrudActions<AccessConditional> {
 	
 	private final SessionProvider sessionProvider;
 	
@@ -52,10 +51,6 @@ public class AccessConditionalStateEventHandler extends AbstractConditionalState
 	}
 	
 	@Override
-	public void onStateLoad(AccessConditional configuredAnnotation, Param<?> param) {
-		handleInternal(param, configuredAnnotation);
-	}
-
 	protected void handleInternal(Param<?> onChangeParam, AccessConditional configuredAnnotation) {
 		
 		if(Permission.WRITE == configuredAnnotation.p())

@@ -1,4 +1,4 @@
-<div class="{{cssClass}}" id="{{code}}">
+<div *ngIf="visible" class="{{cssClass}}" id="{{code}}">
     <!-- Section Message -->
     <nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize"></nm-label>
      <ng-template ngFor let-msg [ngForOf]="element.message">
@@ -40,6 +40,9 @@
             <ng-template [ngIf]="element.alias == componentTypes.accordion.toString()">
                 <nm-accordion [position]="position+1" [element]="element" [nmPrint]="element"></nm-accordion>
             </ng-template>
+            <ng-template [ngIf]="element.alias == componentTypes.chart.toString()">
+                <nm-chart [element]="element"></nm-chart>
+            </ng-template>
             <!-- Grid Param -->
             <ng-template [ngIf]="element.alias == componentTypes.grid.toString()">
                 <nm-table
@@ -64,10 +67,8 @@
                 </div>
             </ng-template>
             <ng-template [ngIf]="element.alias == viewComponent.buttongroup.toString()">
-                <div class="">
-                    <nm-button-group [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass">
-                    </nm-button-group>
-                </div>
+                <nm-button-group [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass">
+                </nm-button-group>
             </ng-template>
             <!--textbox control without a form-->
             <ng-template [ngIf]="element.alias == componentTypes.textBox.toString()">

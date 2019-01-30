@@ -37,6 +37,9 @@ import { SessionStoreService } from './session.store';
 import { Location } from '@angular/common';
 import { ViewComponent } from '../shared/param-annotations.enum';
 import { GridData } from './../shared/param-state';
+import { Message } from './../shared/message';
+import { ComponentTypes } from './../shared/param-annotations.enum';
+import { DataGroup } from '../components/platform/charts/chartdata';
 
 /**
  * \@author Dinakar.Meda
@@ -64,8 +67,8 @@ export class PageService {
         gridValueUpdate = new Subject<Param>();
         gridValueUpdate$ = this.gridValueUpdate.asObservable();
 
-        errorMessageUpdate = new Subject<ExecuteException>();
-        errorMessageUpdate$ = this.errorMessageUpdate.asObservable();
+        messageEvent = new Subject<Message[]>();
+        messageEvent$ = this.messageEvent.asObservable();
 
         postResponseProcessing = new Subject<string>();
         postResponseProcessing$ = this.postResponseProcessing.asObservable();
@@ -98,8 +101,18 @@ export class PageService {
         }
 
         notifyErrorEvent(exec: ExecuteException) {
-                this.errorMessageUpdate.next(exec);
+                if (exec.message) {
+                        let messageList: Message[] = [];
+                        let msg = new Message();
+                        let messages = [];
+                        msg.context = ComponentTypes.toast.toString();
+                        messages.push({severity: 'error',  summary: 'Error Message',  detail: exec.message, life: 10000});
+                        msg.messageArray = messages;
+                        messageList.push(msg);
+                        this.messageEvent.next(messageList);
+                }
         }
+
 
         /** Build the base URL for Server calls */
         buildBaseURL() {
@@ -615,6 +628,9 @@ export class PageService {
                         this.logger.warn("Response cannot be processed for the path " + eventModel.value.path + " as there is no get/new done on the viewroot "+flowName);
                 } else {
                         let flowConfig: Model = viewRoot.model;
+                        if(eventModel.value.path == '/'+flowName && eventModel.value.message) {
+                                this.messageEvent.next(eventModel.value.message);
+                        }
                         if (flowConfig) {
                                 this.traverseConfig(flowConfig.params, eventModel);
                         }
@@ -788,7 +804,7 @@ export class PageService {
                                                 for (var p = 0; p < param.gridData.leafState.length; p++) {
                                                         if (param.gridData.leafState[p]['elemId'] == elemIndex) {
                                                                 let nestedElement = this.getNestedElementParam(param.gridData.leafState[p]['nestedElement'], nestedPath, eventModel.value.path);
-                                                                if (nestedElement) {
+                                                                if (nestedElement && nestedElement.gridData) {
                                                                         nestedElement['gridData'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
                                                                         this.gridValueUpdate.next(nestedElement);
                                                                 }
@@ -807,26 +823,8 @@ export class PageService {
                         } else {
                                 this.traverseParam(param, eventModel);
                         }
-                }
-                // else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === ViewComponent.treeGrid.toString()) {
-
-                //         if (param.path == eventModel.value.path) {
-                //                 let treeList = {"data": []};
-                                
-                //                 eventModel.value.type.model.params.forEach((param) => {
-                //                         if(param.leafState)
-                //                         treeList.data.push((new TreeGridDeserializer).deserialize(param.leafState));  
-
-                //                 });
-
-                //                 if(treeList.data.length != 0){
-                //                        param.leafState = treeList.data;
-                //                        this.eventUpdate.next(param);
-                //                 }
-                //         }
-                // }
-                else {
-                        this.traverseParam(param, eventModel);
+                } else {
+                        this.traverseParam(param, eventModel);       
                 }
         }
 
@@ -893,7 +891,9 @@ export class PageService {
         traverseParam(param: Param, eventModel: ModelEvent) {
                 /* Flow-Wrapper class also invokes methods that eventually call this behaviour. We need to make sure that the eventModel is deserialized by then */
                 let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
-                this.updateParam(param, payload);
+                if(param.path === payload.path) {
+                        this.updateParam(param, payload);
+                }
         }
 
         /*
@@ -928,10 +928,13 @@ export class PageService {
         }
         
         updateNestedParameters(sourceParam: Param,responseParam: Param) {
-                if(responseParam.type && responseParam.type.model) {
+                if(sourceParam.type && sourceParam.type.model && responseParam.type && responseParam.type.model) {
                         try {
                                 if(sourceParam.type.model.params) {
-                                        for (var p in responseParam.type.model.params) {
+                                        if(sourceParam.type.model.params.length <  responseParam.type.model.params.length) {
+                                                this.logger.warn('Detected new params for  '+ responseParam.path+ ' in the update when sourceParam does not have config');
+                                        }
+                                        for (var p in sourceParam.type.model.params) {
                                                 this.updateParam(sourceParam.type.model.params[p], responseParam.type.model.params[p]);
                                         }
                                 }

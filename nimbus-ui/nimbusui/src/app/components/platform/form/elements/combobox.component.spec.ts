@@ -21,10 +21,11 @@ import { AppInitService } from '../../../../services/app.init.service';
 import { InputLabel } from './input-label.component';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
-import * as data from '../../../../payload.json';
 import { Param } from '../../../../shared/param-state';
+import { comboBoxElement } from 'mockdata';
+import { ServiceConstants } from '../../../../services/service.constants';
+import { By } from '@angular/platform-browser';
 
-let param: Param;
 
 const declarations = [
   ComboBox,
@@ -59,16 +60,38 @@ describe('ComboBox', () => {
     setup( declarations, imports, providers);
   });
 
-     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
-
   beforeEach(() => {
     fixture = TestBed.createComponent(ComboBox);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = param;
+    hostComponent.element = comboBoxElement as Param;
   });
 
-  it('should create the ComboBox', async(() => {
-    expect(hostComponent).toBeTruthy();
-  }));
+    it('should create the ComboBox', async(() => {
+        expect(hostComponent).toBeTruthy();
+    }));
+
+    it('nm-input-label should be created if the label is configured', async(() => {
+        ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+        hostComponent.element.visible = true;
+        fixture.detectChanges();
+        const labelEle = document.getElementsByTagName('nm-input-label');
+        expect(labelEle.length > 0).toBeTruthy();
+    }));
+
+    it('p-dropdown should be created', async(() => {
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const pDropDownEle = debugElement.query(By.css('p-dropdown'));
+        expect(pDropDownEle).toBeTruthy();
+    }));
+
+    it('nm-input-label should not be created if the label is not configured', async(() => {
+        ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+        hostComponent.element.labels = [];
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const labelEle = debugElement.query(By.css('nm-input-label'));
+        expect(labelEle).toBeFalsy();
+    }));
 
 });

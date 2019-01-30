@@ -7,6 +7,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
+import { JL } from 'jsnlog';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 
 import { CardDetailsGrid } from './card-details-grid.component';
 import { PageService } from '../../../services/page.service';
@@ -30,7 +32,6 @@ import { Paragraph } from '../content/paragraph.component';
 import { ButtonGroup } from '../../platform/form/elements/button-group.component';
 import { DisplayValueDirective } from '../../../directives/display-value.directive';
 import { InputLabel } from '../../platform/form/elements/input-label.component';
-// import { Button } from '../../platform/form/elements/button.component';
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
 import { WebContentSvc } from '../../../services/content-management.service';
@@ -38,10 +39,22 @@ import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
 import * as data from '../../../payload.json';
 import { PrintDirective } from '../../../directives/print.directive';
-
-let param, pageService;
+import { By } from '@angular/platform-browser';
+import { ServiceConstants } from '../../../services/service.constants';
+import { Subject } from 'rxjs';
+import { LoggerService } from '../../../services/logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
+import { AppInitService } from '../../../services/app.init.service';
+import { PrintService } from '../../../services/print.service';
+import { cardDetailsGridElement, cardDetailsGridNewElement } from 'mockdata';
 
 class MockPageService {
+    eventUpdate$: Subject<any>;
+
+    constructor() {
+        this.eventUpdate$ = new Subject();
+    }
+
     processEvent() {
 
     }
@@ -98,17 +111,23 @@ const imports = [
     DropdownModule,
     HttpClientModule,
     HttpModule,
-    AngularSvgIconModule
+    AngularSvgIconModule,
+    StorageServiceModule
 ];
  const providers = [
     { provide: PageService, useClass: MockPageService },
+    { provide: 'JSNLOG', useValue: JL },
+    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
      CustomHttpClient,
      LoaderService,
      ConfigService,
-     WebContentSvc
+     WebContentSvc,
+     LoggerService,
+     AppInitService,
+     PrintService
      ];
 
-let fixture, hostComponent;
+let fixture, hostComponent, pageService;
 
 describe('CardDetailsGrid', () => {
 
@@ -116,13 +135,10 @@ describe('CardDetailsGrid', () => {
     setup( declarations, imports, providers);
   });
 
-  let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     
-  let param: Param = JSON.parse(payload);
-
   beforeEach(() => {
     fixture = TestBed.createComponent(CardDetailsGrid);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = param;
+    hostComponent.element = cardDetailsGridElement;
     pageService = TestBed.get(PageService);
   });
 
@@ -130,22 +146,77 @@ describe('CardDetailsGrid', () => {
     expect(hostComponent).toBeTruthy();
   }));
 
-  // it('ngonint() should call pageService.processEvent', () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.config.uiStyles.attributes.onLoad = true;
-  //     spyOn(pageService, 'processEvent').and.callThrough();
-  //     hostComponent.ngOnInit();
-  //     expect(pageService.processEvent).toHaveBeenCalled();
-  //   });
-  // });
+  it('Label should be created on providing the element.labels display the value provided',async(() => {
+      hostComponent.position = 1;
+      ServiceConstants.LOCALE_LANGUAGE = "en-US";
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('nm-label'));
+    expect(labelEle.name).toEqual('nm-label');
+    expect(labelEle.nativeElement.innerText.toString().trim()).toEqual('testing grid label-181');    
+  }));
 
-  // it('ngonint() should not call pageSvc.processEvent', () => {
-  //   fixture.whenStable().then(() => {
-  //     hostComponent.element.config.uiStyles.attributes.onLoad = false;
-  //     spyOn(pageService, 'processEvent').and.callThrough();
-  //     hostComponent.ngOnInit();
-  //     expect(pageService.processEvent).not.toHaveBeenCalled();
-  //   });
-  // });
+  it('nm-card-details should be created if element?.type?.model?.params[0].type?.model?.params[0].config?.uiStyles?.attributes?.alias === CardDetail',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const cardDetailsComponentEle = debugElement.query(By.css('nm-card-details'));    
+    expect(cardDetailsComponentEle.name).toEqual('nm-card-details');
+  }));
+
+  it('compare the values rendered in the view with param object provided',async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = "en-US";
+    hostComponent.position = 1;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const cardDetailsComponentEle = debugElement.query(By.css('nm-card-details'));
+    const labelEles = debugElement.queryAll(By.css('nm-label'));    
+    expect(cardDetailsComponentEle.name).toEqual('nm-card-details');
+    expect(labelEles[1].nativeElement.innerText.toString().trim()).toEqual('testing card details label 108-');    
+  }));
+
+  it('Updating the param object should add a row',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const allCardDetailsEles = debugElement.queryAll(By.css('nm-card-details'));
+    expect(allCardDetailsEles.length).toEqual(2);
+    hostComponent.element.type.model.params.push(cardDetailsGridNewElement);
+    fixture.detectChanges();
+    const newAllCardDetailsEles = debugElement.queryAll(By.css('nm-card-details'));
+    expect(newAllCardDetailsEles.length).toEqual(3);
+  }));
+
+  it('nm-card-details should not be created if element?.type?.model?.params[0].type?.model?.params[0].config?.uiStyles?.attributes?.alias !== CardDetail',async(() => {
+    hostComponent.element.type.model.params[0].type.model.params[0].config.uiStyles.attributes.alias = '';
+    hostComponent.element.type.model.params[1].type.model.params[0].config.uiStyles.attributes.alias = '';
+    hostComponent.element.type.model.params[2].type.model.params[0].config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const cardDetailsComponentEle = debugElement.query(By.css('nm-card-details'));
+    expect(cardDetailsComponentEle).toBeFalsy();
+  }));
+
+  it('Label should not be created on if element.labels is empty',async(() => {
+    hostComponent.position = 1;
+    ServiceConstants.LOCALE_LANGUAGE = "en-US";
+    hostComponent.element.labels = [];
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('nm-label'));
+    expect(labelEle).toBeFalsy();
+  }));
+
+  it('ngonint() should call pageService.processEvent', () => {
+      hostComponent.element.config.uiStyles.attributes.onLoad = true;
+      spyOn(pageService, 'processEvent').and.callThrough();
+      hostComponent.ngOnInit();
+      expect(pageService.processEvent).toHaveBeenCalled();
+  });
+
+  it('ngonint() should not call pageSvc.processEvent', () => {
+      hostComponent.element.config.uiStyles.attributes.onLoad = false;
+      spyOn(pageService, 'processEvent').and.callThrough();
+      hostComponent.ngOnInit();
+      expect(pageService.processEvent).not.toHaveBeenCalled();
+  });
 
 });
