@@ -3,7 +3,8 @@ import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, 
     DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule,
-    InputSwitchModule, TreeTableModule, EditorModule } from 'primeng/primeng';
+    InputSwitchModule, TreeTableModule, InputMaskModule, EditorModule } from 'primeng/primeng';
+    
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { TableModule } from 'primeng/table';
@@ -75,6 +76,8 @@ import { LoggerService } from '../../services/logger.service';
 import { By } from '@angular/platform-browser';
 import { formGroupNmElementInputParam, formGroupNmButtonParam, formGroupnmParagraphParam, formGroupParam, formGroupNmLinkParam, formGroupNmHeaderParam, formGroupNmPickListParam, formGroupNmFormGridFiller, formGroupNestedFrmGrpEle} from 'mockdata';
 import { TableHeader } from './grid/table-header.component';
+import { InputMaskComp } from './form/elements/input-mask.component';
+
 import { RichText } from './form/elements/rich-text.component';
 import { ChartModule } from 'primeng/chart';
 import { NmChart } from './charts/chart.component';
@@ -168,6 +171,7 @@ const declarations = [
   InputLegend,
   FormErrorMessage,
   PrintDirective,
+  InputMaskComp,
   NmChart,
   RichText
  ];
@@ -193,6 +197,7 @@ const declarations = [
      InputSwitchModule, 
      TreeTableModule,
      StorageServiceModule,
+     InputMaskModule,
      ChartModule,
      EditorModule
  ];

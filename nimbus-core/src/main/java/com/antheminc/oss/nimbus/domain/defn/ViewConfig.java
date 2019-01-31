@@ -920,9 +920,13 @@ public class ViewConfig {
 	 * <li>{@link FileUpload}</li> <li>{@link Grid}</li> <li>{@link Header}</li>
 	 * <li>{@link MultiSelect}</li> <li>{@link MultiSelectCard}</li>
 	 * <li>{@link Paragraph}</li> <li>{@link PickList}</li>
+	 * <li>{@link Radio}</li> <li>{@link Signature}</li>
+	 * <li>{@link TextArea}</li> <li>{@link TextBox}</li>
+	 * <li>{@link InputMask}</li> </ul>
 	 * <li>{@link Radio}</li>  <li>{@link RichText}</li> 
 	 * <li>{@link Signature}</li> <li>{@link TextArea}</li>
 	 * <li>{@link TextBox}</li> </ul>
+
 	 * 
 	 * <p><i>*Note: Nested class fields will <b>not</b> be rendered in the same
 	 * manner as fields declared directly under the Form decorated field. This
@@ -2802,6 +2806,54 @@ public class ViewConfig {
 
 		String type() default "text";
 
+	}
+	
+	
+	/**
+	 * <p>InputMask is a text input component.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>InputMask will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Form}</li>
+	 * 
+	 * <p>InputMask should decorate a field having a simple type.
+	 * 
+	 * @since 1.0
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface InputMask {
+		String alias() default "InputMask";
+		
+		boolean dataEntryField() default true;
+		
+		boolean postEventOnChange() default false;
+		
+		/**
+		 * <p> maskStyle can be used to define the restricted format user is expected to enter.
+		 * For example maskStyle="99-9999" would let user enter only 6 numerical values in the i/p box.
+		 */
+		String mask() default "";
+		
+		/**
+		 * <p> Please visit PrimeNG's website for details on the below parameter.
+		 */
+		
+		String slotChar() default "_";
+		
+		/**
+		 * <p> Please visit PrimeNG's website for details on the below parameter.
+		 */		
+		String charRegex() default "[A-Za-z]";
+		
+		
+		/**
+		 * <p> Please visit PrimeNG's website for details on the below parameter.
+		 */
+		String maskPlaceHolder() default "";		
+		
 	}
 
 	/**

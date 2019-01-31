@@ -8,7 +8,7 @@ import { JL } from 'jsnlog';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
   FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
+  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule } from 'primeng/primeng';
   import { TableModule } from 'primeng/table';
   import { KeyFilterModule } from 'primeng/keyfilter';
   import { ToastModule } from 'primeng/toast';
@@ -79,6 +79,8 @@ import { By } from '@angular/platform-browser';
 import { GridService } from '../../../services/grid.service';
 import { PrintService } from '../../../services/print.service';
 import { accordionElementWithForm, accordionElementWithNoForm } from 'mockdata';
+import { InputMaskComp } from './../form/elements/input-mask.component';
+
 import { RichText } from '../form/elements/rich-text.component';
 import { NmChart } from './../charts/chart.component';
 import { ChartModule } from 'primeng/chart';
@@ -188,6 +190,7 @@ const declarations = [
   InputLegend,
   FormErrorMessage,
   PrintDirective,
+  InputMaskComp,
   NmChart,
   RichText
 ];
@@ -221,6 +224,7 @@ const imports = [
   InputSwitchModule, 
   TreeTableModule,
   BrowserAnimationsModule,
+  InputMaskModule,
   EditorModule
 ];
 const providers = [
