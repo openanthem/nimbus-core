@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.ws;
 
-import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -31,10 +30,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.AbstractWSModelRepository;
-import com.antheminc.oss.nimbus.domain.model.state.repo.ExternalModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
@@ -54,14 +53,14 @@ import lombok.Setter;
 @ConfigurationProperties(prefix="ext.repository")
 @Getter @Setter
 @EnableLoggingInterceptor
-public class DefaultWSModelRepository extends AbstractWSModelRepository implements ExternalModelRepository {
+public class DefaultWSModelRepository extends AbstractWSModelRepository {
 
 	private Map<String, String> targetUrl;
 	
 	//private ExternalModelRepositoryClient externalRepositoryClient;
 	
-	public DefaultWSModelRepository(BeanResolverStrategy beanResolver) {
-		super(beanResolver);
+	public DefaultWSModelRepository(BeanResolverStrategy beanResolver, RestTemplate restTemplate) {
+		super(beanResolver, restTemplate);
 		//this.externalRepositoryClient = beanResolver.get(ExternalModelRepositoryClient.class);
 	}
 	
@@ -74,19 +73,13 @@ public class DefaultWSModelRepository extends AbstractWSModelRepository implemen
 	}
 
 	@Override
-	public String constructSearchUri(SearchCriteria<?> searchCriteria) {
-		return searchCriteria.getCmd().getAbsoluteUri();
-	}
-
-	@Override
-	public <ID extends Serializable, T> T handleGet(ID id, Class<T> referredClass, URI uri) {
-		ResponseEntity<T> responseEntity = getRestTemplate().exchange(new RequestEntity<T>(HttpMethod.GET, uri), referredClass);
+	public <T> T handleGet(Class<?> referredClass, URI uri) {
+		ResponseEntity<T> responseEntity = (ResponseEntity<T>)getRestTemplate().exchange(new RequestEntity<T>(HttpMethod.GET, uri), referredClass);
 		return Optional.ofNullable(responseEntity).map((response) -> response.getBody()).orElse(null);
 	}
 
 	@Override
-	public <T> Object handleSearch(Class<T> referredDomainClass, Supplier<SearchCriteria<?>> criteriaSupplier,
-			String alias,URI uri) {
+	public <T> Object handleSearch(Class<?> referredDomainClass, Supplier<SearchCriteria<?>> criteriaSupplier,URI uri) {
 		SearchCriteria<?> searchCriteria = criteriaSupplier.get();
 		Object response = execute(() -> new RequestEntity<Object>(searchCriteria instanceof ExampleSearchCriteria ? searchCriteria.getWhere(): null, HttpMethod.POST, uri), 
 					() -> new ParameterizedTypeReference<List<T>>() {
@@ -96,5 +89,21 @@ public class DefaultWSModelRepository extends AbstractWSModelRepository implemen
 					});
 		return response;
 	}
+
+	@Override
+	protected <T> T handleNew(Class<?> referredClass, URI uri) {
+		throw new UnsupportedOperationException("_new operation is not supported for Database.rep_ws repository");
+	}
+
+	@Override
+	protected <T> T handleUpdate(T state, URI uri) {
+		throw new UnsupportedOperationException("_update operation is not supported for Database.rep_ws repository");
+	}
+
+	@Override
+	protected <T> T handleDelete(URI uri) {
+		throw new UnsupportedOperationException("_delete operation is not supported for Database.rep_ws repository");
+	}
+
 
 }

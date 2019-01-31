@@ -32,10 +32,12 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.env.StandardEnvironment;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.config.builder.AnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.AnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.DefaultAnnotationConfigHandler;
@@ -65,12 +67,15 @@ public class DefaultAnnotationConfigHandlerTest {
 	@Size(min=3, max=5, message="Required number of selections not met")
 	private final String sizeBaz = null;
 	
+	private BeanResolverStrategy beanResolver;
+	
 	private AnnotationConfigHandler annotationConfigHandler;
 	
 	@Before
 	public void init() {
+		this.beanResolver = Mockito.mock(BeanResolverStrategy.class);
 		Map<Class<? extends Annotation>, AnnotationAttributeHandler> attributeHandlers = new HashMap<>();
-		attributeHandlers.put(Constraint.class, new ConstraintAnnotationAttributeHandler());
+		attributeHandlers.put(Constraint.class, new ConstraintAnnotationAttributeHandler(this.beanResolver));
 		
 		annotationConfigHandler =  new DefaultAnnotationConfigHandler(new DefaultAnnotationAttributeHandler(), attributeHandlers, new StandardEnvironment());
 	}

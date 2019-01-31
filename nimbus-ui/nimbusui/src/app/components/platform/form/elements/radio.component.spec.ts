@@ -20,8 +20,9 @@ import { AppInitService } from '../../../../services/app.init.service';
 import { InputLegend } from '../../../platform/form/elements/input-legend.component';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
-import * as data from '../../../../payload.json';
 import { Param } from '../../../../shared/param-state';
+import { radioElement } from 'mockdata';
+import { By } from '@angular/platform-browser';
 
 let param: Param;
 
@@ -58,16 +59,28 @@ describe('RadioButton', () => {
     setup( declarations, imports, providers);
   });
 
-     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
-
   beforeEach(() => {
     fixture = TestBed.createComponent(RadioButton);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = param;
+    hostComponent.element = radioElement as Param;
   });
 
-  it('should create the RadioButton', async(() => {
-    expect(hostComponent).toBeTruthy();
-  }));
+    it('should create the RadioButton', async(() => {
+        expect(hostComponent).toBeTruthy();
+    }));
+
+    it('nm-input-legend should be created', async(() => {
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const inputLegendEle = debugElement.query(By.css('nm-input-legend'));
+        expect(inputLegendEle).toBeTruthy();
+    }));
+
+    it('p-radioButton should be created', async(() => {
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const pRadioEle = debugElement.query(By.css('p-radioButton'));
+        expect(pRadioEle).toBeTruthy();
+    }));
 
 });

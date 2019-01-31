@@ -20,6 +20,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
@@ -30,6 +31,7 @@ import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
@@ -84,14 +86,14 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		return alias;
 	}
 	
-	protected <T> T instantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
-		/*
-		if(eCtx.getCommandMessage().hasPayload())
-			return converter.convert(mConfig.getReferredClass(), eCtx.getCommandMessage());
-		*/
-		Repo repo = mConfig.getRepo();
+	protected <T> T getOrInstantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
+		Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		ModelRepository mRepo = getRepositoryFactory().get(mConfig);
 		
-		return (repo!=null && repo.value()!=Repo.Database.rep_none) ? getRepositoryFactory().get(repo)._new(mConfig) : javaBeanHandler.instantiate(mConfig.getReferredClass());
+		return mRepo != null
+				? refId != null ? mRepo._get(eCtx.getCommandMessage().getCommand(), mConfig)
+						: mRepo._new(eCtx.getCommandMessage().getCommand(), mConfig)
+				: javaBeanHandler.instantiate(mConfig.getReferredClass());
 	}
 	
 	public interface RepoDBCallback<T> {

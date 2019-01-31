@@ -32,6 +32,7 @@ import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.web.client.RestTemplate;
 
+import com.antheminc.oss.nimbus.channel.web.RemoteModelClientHttpRequestInterceptor;
 import com.antheminc.oss.nimbus.channel.web.WebActionController;
 import com.antheminc.oss.nimbus.channel.web.WebCommandBuilder;
 import com.antheminc.oss.nimbus.channel.web.WebCommandDispatcher;
@@ -48,6 +49,7 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepositoryGate
 import com.antheminc.oss.nimbus.domain.model.state.repo.SpringSecurityAuditorAware;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ws.DefaultWSModelRepository;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ws.ParamStateAtomicRemotePersistenceEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ws.RemoteWSModelRepository;
 import com.antheminc.oss.nimbus.domain.rules.DefaultRulesEngineFactoryProducer;
 import com.antheminc.oss.nimbus.domain.rules.drools.DecisionTableConfigBuilder;
@@ -77,13 +79,27 @@ public class DefaultCoreConfiguration {
 	}
 
 	@Bean(name="default.rep_ws")
-	public DefaultWSModelRepository defaultWSModelRepository(BeanResolverStrategy beanResolver){
-		return new DefaultWSModelRepository(beanResolver);
+	public DefaultWSModelRepository defaultWSModelRepository(BeanResolverStrategy beanResolver, RestTemplateBuilder builder){
+		RestTemplate restTemplate = beanResolver.get(RestTemplate.class, "rep_ws.restTemplate");
+		return new DefaultWSModelRepository(beanResolver, restTemplate);
 	}
 	
 	@Bean(name="default.rep_remote_ws")
 	public RemoteWSModelRepository remoteWSModelRepository(BeanResolverStrategy beanResolver){
-		return new RemoteWSModelRepository(beanResolver);
+		RestTemplate restTemplate = beanResolver.get(RestTemplate.class, "rep_remote_ws.restTemplate");
+		return new RemoteWSModelRepository(beanResolver, restTemplate);
+	}
+	
+	@Bean(name="default.rep_ws.restTemplate")
+	public RestTemplate wsRestTemplate(RestTemplateBuilder builder) {
+		RestTemplate restTemplate = builder.build();
+		return restTemplate;
+	}
+	
+	@Bean(name="default.rep_remote_ws.restTemplate")
+	public RestTemplate remoteWSRestTemplate(RestTemplateBuilder builder) {
+		RestTemplate restTemplate = builder.additionalInterceptors(new RemoteModelClientHttpRequestInterceptor()).build();
+		return restTemplate;
 	}
 	
 	@Bean(name="default.paramStateAtomicPersistenceEventListener")
@@ -91,10 +107,11 @@ public class DefaultCoreConfiguration {
 		return new ParamStateAtomicPersistenceEventListener(repoFactory);
 	}
 	
-//	@Bean(name="default.paramStateBatchPersistenceEventListener")
-//	public ParamStateBulkPersistenceEventListener paramStateBatchPersistenceEventListener(ModelRepositoryFactory repoFactory){
-//		return new ParamStateBulkPersistenceEventListener(repoFactory);
-//	}
+	@Bean(name="default.paramStateAtomicRemotePersistenceEventListener")
+	public ParamStateAtomicRemotePersistenceEventListener paramStateAtomicRemotePersistenceEventListener(ModelRepositoryFactory repoFactory){
+		return new ParamStateAtomicRemotePersistenceEventListener(repoFactory);
+	}
+	
 	
 	@Bean(name="default.param.state.rep_local")
 	public DefaultParamStateRepositoryLocal defaultParamStateRepositoryLocal(JavaBeanHandler javaBeanHandler){

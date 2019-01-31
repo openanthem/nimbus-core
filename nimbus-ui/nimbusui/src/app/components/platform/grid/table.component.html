@@ -41,7 +41,7 @@
                 <th style="width: 2.25em" *ngIf="element?.config?.uiStyles?.attributes?.expandableRows"></th>
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
                     <th *ngIf="showColumn(col)" [pSortableColumn]="col" [pSortableColumnDisabled]="!col?.uiStyles?.attributes?.sortable" [ngClass]="getColumnStyle(col)">
-                        <span *ngIf="showHeader(col)">{{col.header}}</span>
+                        <span *ngIf="showHeader(col)"><nm-th [element]="element" [paramConfig]="col" ></nm-th></span>
                         <p-sortIcon [field]="col" *ngIf="col?.uiStyles?.attributes?.alias === viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.sortable !== false"></p-sortIcon>
                     </th>
                 </ng-template>

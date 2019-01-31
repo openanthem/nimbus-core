@@ -45,17 +45,12 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 
 	@Override
 	public ModelRepository get(Repo repo) {
-		return get(repo.value());
+		return repo !=null ? get(repo.value()): null;
 	}
 	
 	@Override
 	public ModelRepository get(Repo.Database db) {
 		return REPO_BEAN_LOOKUP.get(db.name());
-	}
-
-	@Override
-	public ModelPersistenceHandler getHandler(Repo repo) {
-		return getBeanResolver().get(ModelPersistenceHandler.class, repo.value().name()+"_handler");
 	}
 
 	@Override

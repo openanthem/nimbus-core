@@ -47,17 +47,16 @@ import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 @EnableLoggingInterceptor
 public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctionHandler<T, R> {
 
+	public static final String PROJECTIONS_SEPARATOR = ",";
+	public static final String KEY_VALUE_SEPARATOR = ":";
 	
 	@Override
 	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
 		ModelConfig<?> mConfig = getRootDomainConfig(executionContext);
 		
-		Class<?> criteriaClass = mConfig.getReferredClass();
-		String alias = findRepoAlias(mConfig);
-		
 		ModelRepository rep = getRepFactory().get(mConfig);
 		
-		return (R)rep._search(criteriaClass, alias, () -> this.createSearchCriteria(executionContext, mConfig, actionParameter));
+		return (R)rep._search(actionParameter, () -> this.createSearchCriteria(executionContext, mConfig, actionParameter));
 	}
 	
 	protected abstract SearchCriteria<?> createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> cmdParam);
@@ -79,23 +78,23 @@ public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctio
 		if(StringUtils.isNotBlank(pageSize) && StringUtils.isNotBlank(page)) {
 			if(sortBy != null && sortBy.length > 0) {
 				List<Order> sortByList = Stream.of(sortBy)
-					.map(s -> s.split(","))
+					.map(s -> s.split(PROJECTIONS_SEPARATOR))
 					.filter(s -> s.length == 2)
 					.map(s -> new Order(Direction.fromString(s[1]), s[0]))
 					.collect(Collectors.toList());
 				
-				Sort sort = new Sort(sortByList);
+				Sort sort = Sort.by(sortByList);
 				
-				return new PageRequest(Integer.valueOf(page), Integer.valueOf(pageSize), sort);
+				return PageRequest.of(Integer.valueOf(page), Integer.valueOf(pageSize), sort);
 			}
 			else{
-				return new PageRequest(Integer.valueOf(page), Integer.valueOf(pageSize));
+				return PageRequest.of(Integer.valueOf(page), Integer.valueOf(pageSize));
 			}
 		}
 		return null;
 	}
 	
-	protected ProjectCriteria buildProjectCritera(Command cmd) {
+	protected ProjectCriteria buildProjectCriteria(Command cmd) {
 		if(cmd.getRequestParams().get(Constants.SEARCH_REQ_PROJECT_ALIAS_MARKER.code) != null) {
 			ProjectCriteria projectCriteria = new ProjectCriteria();
 			projectCriteria.setAlias(cmd.getFirstParameterValue(Constants.SEARCH_REQ_PROJECT_ALIAS_MARKER.code));
@@ -105,13 +104,13 @@ public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctio
 		if(cmd.getRequestParams().get(Constants.SEARCH_REQ_PROJECT_MAPPING_MARKER.code) != null) {
 			ProjectCriteria projectCriteria = new ProjectCriteria();
 			String projectMapping = cmd.getFirstParameterValue(Constants.SEARCH_REQ_PROJECT_MAPPING_MARKER.code);
-			String[] keyValues = StringUtils.split(projectMapping,",");
+			String[] keyValues = StringUtils.split(projectMapping, PROJECTIONS_SEPARATOR);
 			
 			Stream.of(keyValues).forEach((kvString) -> {
 				if(MapUtils.isEmpty(projectCriteria.getMapsTo())){
 					projectCriteria.setMapsTo(new HashMap<String, String>());
 				}
-				String[] kv = StringUtils.split(kvString,":");
+				String[] kv = StringUtils.split(kvString, KEY_VALUE_SEPARATOR);
 				projectCriteria.getMapsTo().put(kv[0], kv[1]);
 			});
 			return projectCriteria;

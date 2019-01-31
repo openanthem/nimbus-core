@@ -17,9 +17,6 @@ package com.antheminc.oss.nimbus.domain.model.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 /**
  * @author Soham Chakravarti
  *

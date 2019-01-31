@@ -40,30 +40,30 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     selector: 'nm-frm-grp',
     providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc],
     template: `
-        <span [hidden]="!this.element.visible" [ngClass]="getCssClass()">
+        <span [hidden]="!element.visible" [ngClass]="getCssClass()">
             <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias == viewComponent.formElementGroup.toString()">
                 <fieldset>
                     <nm-input-legend [element]="element"></nm-input-legend>
                     <ng-template ngFor let-frmElem [ngForOf]="element.type.model.params">
-                        <nm-frm-grp [element]="frmElem" [form]="form" [elementCss]="elementCss" [position]="position"> 
+                        <nm-frm-grp [element]="frmElem" [hidden]="!frmElem.visible" [form]="form" [position]="position"> 
                         </nm-frm-grp>
                     </ng-template>
                 </fieldset>
             </ng-template>
 
             <ng-template [ngIf]="!element.type?.model?.params?.length || element.config?.type?.collection">
-                <nm-element [position]="position+1" id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
+                <nm-element [position]="position+1" id="{{id}}" [element]="element" [form]="form"></nm-element>
             </ng-template>
 
             <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias === viewComponent.picklist.toString()">
-               <nm-element [position]="position+1" id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
+               <nm-element [position]="position+1" id="{{id}}" [element]="element" [form]="form"></nm-element>
             </ng-template>
             
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.button.toString()">
                 <nm-button [form]="form" [element]="element"> </nm-button>
             </ng-template>
 
-            <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias ===  viewComponent.formGridFiller.toString()">           
+            <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias ===  viewComponent.formGridFiller.toString()">   
                 <nm-form-grid-filler></nm-form-grid-filler>
             </ng-template>
 
@@ -90,7 +90,6 @@ export class FrmGroupCmp extends BaseElement {
     
     @Input() elements: Param[] = [];
     @Input() form: FormGroup;
-    @Input() elementCss : String;
     @Input() parentElement: Param;
 
     viewComponent = ViewComponent;
@@ -109,7 +108,7 @@ export class FrmGroupCmp extends BaseElement {
             if (this.element.config.uiStyles.attributes.cssClass) {
                 return this.element.config.uiStyles.attributes.cssClass
             } else {
-                return this.elementCss;
+                return '';
             }
         }
         return '';

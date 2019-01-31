@@ -4,6 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
+import { By } from '@angular/platform-browser';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { CardDetailsFieldComponent } from './card-details-field.component';
 import { InPlaceEditorComponent } from '../form/elements/inplace-editor.component';
@@ -22,8 +26,16 @@ import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
 import * as data from '../../../payload.json';
 import { Param } from '../../../shared/param-state';
+import { ServiceConstants } from '../../../services/service.constants';
+import { PageService } from '../../../services/page.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
+import { LoaderService } from '../../../services/loader.service';
+import { ConfigService } from '../../../services/config.service';
+import { LoggerService } from '../../../services/logger.service';
+import { AppInitService } from '../../../services/app.init.service';
+import { cardDetailsFieldGroupElement, newCardDetailsFieldGroupElement } from 'mockdata';
+import { Paragraph } from '../content/paragraph.component';
 
-let param: Param;
 let fixture,hostComponent;
 
 const declarations = [
@@ -37,18 +49,30 @@ const declarations = [
   TooltipComponent,
   SelectItemPipe,
   DisplayValueDirective,
-  InputLabel
+  InputLabel,
+  Paragraph
 ];
 const imports = [
     FormsModule, 
     DropdownModule, 
     HttpClientModule, 
-    HttpModule
+    HttpModule,
+    StorageServiceModule
   ];
-const providers = [
-    CustomHttpClient,
-    WebContentSvc
-  ];
+  const providers = [
+      { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+      { provide: 'JSNLOG', useValue: JL },
+      { provide: LocationStrategy, useClass: HashLocationStrategy },
+      Location,
+      AppInitService,
+      SessionStoreService,
+      CustomHttpClient,
+      WebContentSvc,
+      PageService,
+      LoaderService,
+      ConfigService,
+      LoggerService
+    ];
 
 describe('CardDetailsFieldGroupComponent', () => {
   configureTestSuite(() => {
@@ -58,49 +82,56 @@ describe('CardDetailsFieldGroupComponent', () => {
   beforeEach(() => {
    fixture = TestBed.createComponent(CardDetailsFieldGroupComponent);
    hostComponent = fixture.debugElement.componentInstance;
-      let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
-   //let payload: Param = new Param(this.configService).deserialize((<any>data).payload, (<any>data).payload.path);
-   hostComponent.element = param;
+   hostComponent.element = cardDetailsFieldGroupElement as Param;;
   });
 
   it('should create the CardDetailsFieldGroupComponent',  async(() => {
     expect(hostComponent).toBeTruthy(); 
   }));
 
-  // it('getComponentClass() should return array [testClass, col-sm-12]',  async(() => {
-  //     const res = hostComponent.getComponentClass();
-  //     expect(res).toEqual(['testClass', 'col-sm-12']);
-  // }));
+  it('Label should be created on providing the element.labelconfig display the value provided',async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('nm-input-label'));
+    expect(labelEle.name).toEqual('nm-input-label');
+    expect(labelEle.nativeElement.innerText.toString().trim()).toEqual('Case ID');
+  }));
 
-  // it('getComponentClass() should return array [testClass, col-sm-6]',  async(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cols = '2';
-  //     expect(hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-6']);
-  // }));
+  it('Label should not be created on if element.labelconfig is empty',async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    hostComponent.element.type.model.params[0].labels = [];
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('nm-input-label'))
+    expect(labelEle.nativeElement.innerText.toString()).toEqual('');
+  }));
 
-  // it('getComponentClass() should return array [testClass, col-sm-4]',  async(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cols = '3';
-  //     expect(hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-4']);
-  // }));
+  it('nm-card-details-field should be created if element?.type?.model?.params[0].config?.uiStyles?.attributes?.alias === FieldValue',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const cardDetailsFieldEle = debugElement.query(By.css('nm-card-details-field'));
+    expect(cardDetailsFieldEle.name).toEqual('nm-card-details-field');
+  }));
 
-  // it('getComponentClass() should return array [testClass, col-sm-3]',  async(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cols = '4';
-  //     expect(hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-3']);
-  // }));
+  it('nm-card-details-field should not be created if element?.type?.model?.params[0].config?.uiStyles?.attributes?.alias !== FieldValue',async(() => {
+    hostComponent.element.type.model.params[0].config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const cardDetailsFieldEle = debugElement.query(By.css('nm-card-details-field'));
+    expect(cardDetailsFieldEle).toBeFalsy();
+  }));
 
-  // it('getComponentClass() should return array [testClass, col-sm-2]',  async(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cols = '6';
-  //     expect(hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-2']);
-  // }));
-
-  // it('getComponentClass() should return array [testClass, col-sm-3] when cols is empty',  async(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cols = '';
-  //     expect(hostComponent.getComponentClass()).toEqual(['testClass', 'col-sm-3']);
-  // }));
-
-  // it('getComponentClass() should return array [col-sm-3] when cols and cssClass is empty',  async(() => {
-  //     hostComponent.element.config.uiStyles.attributes.cols = '';
-  //     hostComponent.element.config.uiStyles.attributes.cssClass = '';
-  //     expect(hostComponent.getComponentClass()).toEqual(['col-sm-3']);
-  // }));
+  it('another nm-card-details-field should be added on updating the param',async(() => {
+    hostComponent.element.type.model.params[0].config.uiStyles.attributes.alias = 'FieldValue';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const allCardDetailsFieldEles = debugElement.queryAll(By.css('nm-card-details-field'));
+    expect(allCardDetailsFieldEles.length).toEqual(1);
+    hostComponent.element.type.model.params.push(newCardDetailsFieldGroupElement);
+    fixture.detectChanges();
+    const newAllCardDetailsFieldEles = debugElement.queryAll(By.css('nm-card-details-field'));
+    expect(newAllCardDetailsFieldEles.length).toEqual(2);
+  }));
 
 });

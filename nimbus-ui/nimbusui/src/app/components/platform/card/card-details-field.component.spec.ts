@@ -12,7 +12,6 @@ import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from 
 
 import { PageService } from './../../../services/page.service';
 import { CardDetailsFieldComponent } from './card-details-field.component';
-// import { InPlaceEditorComponent } from '../form/elements/inplace-editor.component';
 import { InputText } from '../form/elements/textbox.component';
 import { TextArea } from '../form/elements/textarea.component';
 import { ComboBox } from '../form/elements/combobox.component';
@@ -31,6 +30,7 @@ import { LoaderService } from './../../../services/loader.service';
 import { ConfigService } from './../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
 import { AppInitService } from '../../../services/app.init.service';
+import { cardDetailsFieldInputLabel, cardDetailsFieldInputLabelNoDate, cardDetailsFieldParam, cardDetailsFieldNmDisplayValueParam } from 'mockdata';
 
 @Component({
   template: '<div></div>',
@@ -88,7 +88,7 @@ describe('CardDetailsFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CardDetailsFieldComponent);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = param;
+    hostComponent.element = cardDetailsFieldParam;
   });
 
   it('should create the CardDetailsFieldComponent',  async(() => {
@@ -110,7 +110,7 @@ describe('CardDetailsFieldComponent', () => {
     expect(inplaceEditor).toBeFalsy();
   }));
 
-  it('inplaceEditor should not be created', async(() => {
+  it('inplaceEditor should not be created when imgSrc is available', async(() => {
     hostComponent.element.config.uiStyles.attributes.imgSrc = 't';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -118,8 +118,8 @@ describe('CardDetailsFieldComponent', () => {
     expect(inplaceEditorEle).toBeFalsy();
   }));
 
-  it('inplaceLabel should be created', async(() => {
-    const iLabel = inputLabel;
+  it('inputLabel should be created', async(() => {
+    const iLabel = cardDetailsFieldInputLabel;
     hostComponent.element = iLabel;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -127,8 +127,8 @@ describe('CardDetailsFieldComponent', () => {
     expect(inputLabelEle.name).toEqual('nm-input-label');
   }));
 
-  it('inputLabel should not be created', async(() => {
-    const iLabel = inputLabel;
+  it('inputLabel should not be created when element.config.uiStyles.attributes.showName', async(() => {
+    const iLabel = cardDetailsFieldInputLabel;
     hostComponent.element = iLabel;
     hostComponent.element.config.uiStyles.attributes.showName = false;
     fixture.detectChanges();
@@ -137,8 +137,8 @@ describe('CardDetailsFieldComponent', () => {
     expect(inputLabelEle).toBeFalsy();
   }));
 
-  it('inplaceLabel should be created', async(() => {
-    const iLabel = inputLabelNoDate;
+  it('inputLabel should be created with out date', async(() => {
+    const iLabel = cardDetailsFieldInputLabelNoDate;
     hostComponent.element = iLabel;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -146,8 +146,8 @@ describe('CardDetailsFieldComponent', () => {
     expect(inputLabelEle.name).toEqual('nm-input-label');
   }));
 
-  it('inputLabel should not be created', async(() => {
-    const iLabel = inputLabelNoDate;
+  it('inputLabel should not be created with out date', async(() => {
+    const iLabel = cardDetailsFieldInputLabelNoDate;
     hostComponent.element = iLabel;
     hostComponent.element.config.uiStyles.attributes.showName = false;
     fixture.detectChanges();
@@ -212,6 +212,7 @@ describe('CardDetailsFieldComponent', () => {
     hostComponent.value = '';
     expect(hostComponent.value).toEqual('tLabel');
   }));
+
   it('value property should be updated with element.leafstate based on code',  async(() => {
     hostComponent.element.leafState = 'test';
     const testValue = new Values();
@@ -238,6 +239,7 @@ describe('CardDetailsFieldComponent', () => {
     hostComponent.writeValue(undefined);
     expect(hostComponent.onChange).toHaveBeenCalled();
   }));
+  
   it('registerOnTouched() should update the onTouched property',  async(() => {
     const test = () => {
       return true;
@@ -246,82 +248,8 @@ describe('CardDetailsFieldComponent', () => {
     expect(hostComponent.onTouched).toEqual(test);
   }));
 
-  it('getComponentClass() should return array [testClass, col-sm-12, p-0, clearfix]',  async(() => {
-    fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.cols = '1';
-      hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
-      expect(hostComponent.getComponentClass()).toEqual([
-        'testClass',
-        'p-0',
-        'clearfix',
-        'col-sm-12'
-      ]);
-    });
-  }));
-
-  it('getComponentClass() should return array [testClass, col-sm-6, p-0, clearfix]',  async(() => {
-    fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.cols = '2';
-      hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
-      expect(hostComponent.getComponentClass()).toEqual([
-        'testClass',
-        'p-0',
-        'clearfix',
-        'col-sm-6'
-      ]);
-    });
-  }));
-
-  it('getComponentClass() should return array [testClass, col-sm-4, p-0, clearfix]',  async(() => {
-    fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.cols = '3';
-      hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
-      expect(hostComponent.getComponentClass()).toEqual([
-        'testClass',
-        'p-0',
-        'clearfix',
-        'col-sm-4'
-      ]);
-    });
-  }));
-
-  it('getComponentClass() should return array [testClass, col-sm-3, p-0, clearfix]',  async(() => {
-    fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.cols = '4';
-      hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
-      expect(hostComponent.getComponentClass()).toEqual([
-        'testClass',
-        'p-0',
-        'clearfix',
-        'col-sm-3'
-      ]);
-    });
-  }));
-
-  it('getComponentClass() should return array [testClass, col-sm-2, p-0, clearfix]',  async(() => {
-    fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.cols = '6';
-      hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
-      expect(hostComponent.getComponentClass()).toEqual([
-        'testClass',
-        'p-0',
-        'clearfix',
-        'col-sm-2'
-      ]);
-    });
-  }));
-
-  it('getComponentClass() should return array [testClass, col-sm-3, p-0, clearfix] when cols is empty',  async(() => {
-    fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.cols = '';
-      hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
-      expect(hostComponent.getComponentClass()).toEqual([
-        'testClass',
-        'p-0',
-        'clearfix',
-        'col-sm-3'
-      ]);
-    });
+  it('getComponentClass() should return array [mb-3]',  async(() => {
+    expect(hostComponent.getComponentClass()).toEqual(['mb-3']);
   }));
 
   it('value getter() should return _value property value',  async(() => {
@@ -338,352 +266,14 @@ describe('CardDetailsFieldComponent', () => {
     expect(hostComponent.value).toEqual('test');
   }));
 
+  it('nmDisplayValue should add leafstate and config.code as class', async(() => {
+    hostComponent.element = cardDetailsFieldNmDisplayValueParam;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const divNmDisplayValueDivEle = debugElement.query(By.css('.textWrapBreakWord'));    
+    expect(divNmDisplayValueDivEle.nativeElement.classList[1]).toEqual(hostComponent.element.leafState);
+    expect(divNmDisplayValueDivEle.nativeElement.classList[2]).toEqual(hostComponent.element.config.code);
+  }));
+
 });
 
-
-
-
-const inplaceEditor = {
-  "config": {
-      "configSvc": {
-          "flowConfigs": {
-              "ownerview": {
-                  "model": {
-                      "params": [
-                          {
-                              "enabled": true,
-                              "visible": true,
-                              "activeValidationGroups": [],
-                              "collectionParams": [],
-                              "configId": "22248",
-                              "path": "/ownerview/vpAddEditOwner",
-                              "type": {
-                                  "model": {
-                                      "params": []
-                                  }
-                              },
-                              "message": [],
-                              "values": [],
-                              "labels": [
-                                  {
-                                      "locale": "en-US",
-                                      "text": "Add Owner"
-                                  }
-                              ],
-                              "elemLabels": {}
-                          }
-                      ]
-                  },
-                  "layout": "home"
-              }
-          }
-      },
-      "active": false,
-      "required": false,
-      "id": "22284",
-      "code": "firstName",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": false,
-          "isHidden": false,
-          "name": "ViewConfig.FieldValue",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "inplaceEditType": "",
-              "cssClass": "",
-              "datePattern": "",
-              "alias": "FieldValue",
-              "applyValueStyles": false,
-              "placeholder": "",
-              "inplaceEdit": true,
-              "type": "Field",
-              "cols": "2",
-              "imgSrc": ""
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": false,
-          "name": "string"
-      }
-  },
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "21196",
-  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/firstName",
-  "type": {
-      "nested": false,
-      "name": "string",
-      "collection": false
-  },
-  "leafState": "test",
-  "previousLeafState": "test",
-  "message": [],
-  "values": [],
-  "labels": [
-      {
-          "locale": "en-US",
-          "text": "First Name"
-      }
-  ],
-  "elemLabels": {}
-};
-
-
-const inputLabel = {
-  "config": {
-      "configSvc": {
-          "flowConfigs": {
-              "ownerview": {
-                  "model": {
-                      "params": [
-                          {
-                              "enabled": true,
-                              "visible": true,
-                              "activeValidationGroups": [],
-                              "collectionParams": [],
-                              "configId": "23958",
-                              "path": "/ownerview/vpAddEditOwner",
-                              "type": {
-                                  "model": {
-                                      "params": []
-                                  }
-                              },
-                              "message": [],
-                              "values": [],
-                              "labels": [
-                                  {
-                                      "locale": "en-US",
-                                      "text": "Add Owner"
-                                  }
-                              ],
-                              "elemLabels": {}
-                          },
-                          {
-                              "enabled": true,
-                              "visible": true,
-                              "activeValidationGroups": [],
-                              "collectionParams": [],
-                              "configId": "23987",
-                              "path": "/ownerview/vpOwnerInfo",
-                              "type": {
-                                  "model": {
-                                      "params": []
-                                  }
-                              },
-                              "message": [],
-                              "values": [],
-                              "labels": [
-                                  {
-                                      "locale": "en-US",
-                                      "text": "Owner Info"
-                                  }
-                              ],
-                              "elemLabels": {}
-                          }
-                      ]
-                  },
-                  "layout": "home"
-              }
-          }
-      },
-      "active": false,
-      "required": false,
-      "id": "24003",
-      "code": "caseStatusDate",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": false,
-          "isHidden": false,
-          "name": "ViewConfig.FieldValue",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "inplaceEditType": "",
-              "cssClass": "",
-              "datePattern": "MM/dd/yyyy",
-              "alias": "FieldValue",
-              "applyValueStyles": false,
-              "placeholder": "",
-              "inplaceEdit": false,
-              "type": "Field",
-              "cols": "3",
-              "imgSrc": ""
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": false,
-          "name": "LocalDateTime"
-      }
-  },
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "24003",
-  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/caseStatusDate",
-  "type": {},
-  "leafState": "2018-09-04T20:47:18.000Z",
-  "message": [],
-  "values": [],
-  "labels": [
-      {
-          "locale": "en-US",
-          "text": "Case Status Date"
-      }
-  ],
-  "elemLabels": {}
-};
-
-
-const inputLabelNoDate = {
-  "config": {
-      "configSvc": {
-          "flowConfigs": {
-              "ownerview": {
-                  "model": {
-                      "params": [
-
-                      ]
-                  },
-                  "layout": "home"
-              }
-          }
-      },
-      "active": false,
-      "required": false,
-      "id": "462",
-      "code": "lastName",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": false,
-          "isHidden": false,
-          "name": "ViewConfig.FieldValue",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "inplaceEditType": "",
-              "cssClass": "",
-              "datePattern": "",
-              "alias": "FieldValue",
-              "applyValueStyles": false,
-              "placeholder": "",
-              "inplaceEdit": false,
-              "type": "Field",
-              "cols": "4",
-              "imgSrc": ""
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": false,
-          "name": "string"
-      }
-  },
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "462",
-  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/lastName",
-  "type": {
-      "nested": false,
-      "name": "string",
-      "collection": false
-  },
-  "leafState": "1",
-  "previousLeafState": "1",
-  "message": [],
-  "values": [],
-  "labels": [
-      {
-          "locale": "en-US",
-          "text": "Last Name"
-      }
-  ],
-  "elemLabels": {}
-};
-
-const param = {
-  "config": {
-      "active": false,
-      "required": false,
-      "id": "1329",
-      "code": "firstName",
-      "validations": null,
-      "uiNatures": [],
-      "uiStyles": {
-          "isLink": false,
-          "isHidden": false,
-          "name": "ViewConfig.FieldValue",
-          "attributes": {
-              "hidden": false,
-              "readOnly": false,
-              "submitButton": true,
-              "showName": true,
-              "pageSize": 25,
-              "browserBack": false,
-              "showAsLink": false,
-              "inplaceEditType": "",
-              "cssClass": "",
-              "datePattern": "",
-              "alias": "FieldValue",
-              "applyValueStyles": false,
-              "placeholder": "",
-              "inplaceEdit": true,
-              "type": "Field",
-              "cols": "2",
-              "imgSrc": ""
-          }
-      },
-      "type": {
-          "collection": false,
-          "nested": false,
-          "name": "string"
-      }
-  },
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "1329",
-  "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/firstName",
-  "type": {
-      "nested": false,
-      "name": "string",
-      "collection": false
-  },
-  "leafState": "test",
-  "previousLeafState": "test",
-  "message": [],
-  "values": [],
-  "labels": [
-      {
-          "locale": "en-US",
-          "text": "First Name"
-      }
-  ],
-  "elemLabels": {}
-};

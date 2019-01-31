@@ -27,9 +27,13 @@ import { Link } from '../../link.component';
 import { SvgComponent } from '../../svg/svg.component';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
-import * as data from '../../../../payload.json';
+import { actionDropDownRowData, actionDropDownElement, actionDropDownParams, ActionDropDownLinkElement, actionDropDownLinkParams, MockActionDropdownLink } from 'mockdata';
+import { ServiceConstants } from './../../../../services/service.constants';
+import { By } from '@angular/platform-browser';
+import { ComponentTypes } from './../../../../shared/param-annotations.enum';
+import { Subject } from 'rxjs';
 
-let pageservice, configservice, param;
+let pageservice, configservice;
 
 class MockLoggerService {
     debug() { }
@@ -68,12 +72,13 @@ describe('ActionLink', () => {
   configureTestSuite(() => {
     setup( declarations, imports, providers);
   });
-     let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
 
   beforeEach(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
     fixture = TestBed.createComponent(ActionLink);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = param;
+    hostComponent.element = MockActionDropdownLink;
+    hostComponent.param = MockActionDropdownLink.config;
     pageservice = TestBed.get(PageService);
     configservice = TestBed.get(ConfigService);
   });
@@ -100,6 +105,48 @@ describe('ActionLink', () => {
     expect(pageservice.processEvent).not.toHaveBeenCalled();
   }));
 
+  it('should have a label set', async(() => {
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.css('a.mockLink')).nativeElement.innerText).toBe('Edit');
+  }));
+
+  it('should render an external link that opens a new page to google', async(() => {
+    hostComponent.element.enabled = true;
+    hostComponent.element.config.uiStyles.attributes.value = ComponentTypes.external.toString();
+    hostComponent.element.config.uiStyles.attributes.target = '_blank';
+    hostComponent.element.config.uiStyles.attributes.rel = 'nofollow';
+    hostComponent.url = 'https://google.com/';
+    fixture.detectChanges();
+    let linkElement = fixture.debugElement.query(By.css('a.mockLink'));
+    expect(linkElement.nativeElement.target).toBe('_blank');
+    expect(linkElement.nativeElement.rel).toBe('nofollow');
+    expect(linkElement.nativeElement.href).toBe('https://google.com/');
+  }));
+
+  it('should render an disabled link that is nonfunctional', async(() => {
+    hostComponent.element.enabled = false;
+    hostComponent.element.config.uiStyles.attributes.value = ComponentTypes.external.toString();
+    hostComponent.element.config.uiStyles.attributes.rel = 'nofollow';
+    fixture.detectChanges();
+    let linkElement = fixture.debugElement.query(By.css('a.mockLink'));
+    expect(linkElement.nativeElement.rel).toBe('nofollow');
+    expect(linkElement.nativeElement.href).toBeFalsy();
+    expect(linkElement.nativeElement.classList.contains('disabled')).toBeTruthy();
+  }));
+
+  it('should show nm-action-link when a link param visible property is true', async(() => {
+    hostComponent.element.visible = true;
+    fixture.detectChanges();
+    expect(hostComponent.visible).toBeTruthy();
+    expect(fixture.debugElement.query(By.css('a.mockLink'))).toBeDefined();
+  }));
+
+  it('should hide nm-action-link when a link param visible property is false', async(() => {
+    hostComponent.element.visible = false;
+    fixture.detectChanges();
+    expect(hostComponent.visible).toBeFalsy();
+    expect(fixture.debugElement.query(By.css('a.mockLink'))).toBeNull();
+  }));
 });
 
 class MockElementRef {
@@ -107,6 +154,10 @@ class MockElementRef {
 }
 
 class MockPageService {
+    eventUpdate$: Subject<any>;
+    constructor() {
+        this.eventUpdate$ = new Subject();
+    }
     processEvent(a, b, c) {}
 }
 
@@ -140,15 +191,13 @@ const providers1 = [
 describe('ActionDropdown', () => {
   configureTestSuite(() => {
     setup( declarations1, imports1, providers1);
-  });
-
-       let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
-  
+  });  
    
   beforeEach(() => {
       fixture = TestBed.createComponent(ActionDropdown);
       hostComponent = fixture.debugElement.componentInstance;
-      hostComponent.element = param;
+      hostComponent.element = actionDropDownElement as Param;
+      hostComponent.params = actionDropDownParams as ParamConfig[];
       pageservice = TestBed.get(PageService);
     });
   
@@ -202,9 +251,94 @@ describe('ActionDropdown', () => {
     expect(hostComponent.enabled).toEqual(true);
   }));
 
-  it('enabled property should not be created', async(() => {
+  it('Button should be created if the element.visible is configured as true',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();    
+    expect(buttonEle.nativeElement.classList[0].toString()).toEqual(hostComponent.element.config.uiStyles.attributes.cssClass);
+  }));
+
+
+  it('OnClick of the button the toggleOpen() should be called',async(() => {
+    hostComponent.params = actionDropDownLinkParams as ParamConfig[];
+    hostComponent.element = actionDropDownElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    spyOn(hostComponent, 'toggleOpen').and.callThrough();
+    const buttonEle = debugElement.query(By.css('button'));    
+    buttonEle.nativeElement.click();
+    expect(hostComponent.toggleOpen).toHaveBeenCalled();    
+  }));
+
+  it('OnClick of the button the dropdownContent should be visible',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    buttonEle.nativeElement.click();
+    const divContentEle = debugElement.query(By.css('.dropdownContent'));
+    expect(divContentEle).toBeTruthy();
+  }));
+
+  it('Nm-image should be created if the imgSrc is configured',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const nmImageEle = debugElement.query(By.css('nm-image'));
+    expect(nmImageEle).toBeTruthy();
+  }));
+
+  it('Nm-image should not be created if the imgSrc is not configured',async(() => {
+      hostComponent.element.config.uiStyles.attributes.imgSrc = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const nmImageEle = debugElement.query(By.css('nm-image'));
+    expect(nmImageEle).toBeFalsy();
+  }));
+
+  it('If rowData is available then nm-action-link should be created',async(() => {
+      hostComponent.rowData = actionDropDownRowData;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;    
+    const actionLinkEle = debugElement.query(By.css('nm-action-link'));
+    expect(actionLinkEle).toBeTruthy();
+  }));
+
+  it('If rowData is not available then nm-action-link should not be created',async(() => {
+    hostComponent.element = ActionDropDownLinkElement as Param;
+    hostComponent.params = actionDropDownLinkParams as ParamConfig[];
+  fixture.detectChanges();
+  const debugElement = fixture.debugElement;    
+  const actionLinkEle = debugElement.query(By.css('nm-action-link'));
+  expect(actionLinkEle).toBeFalsy();
+  }));
+
+  it('If rowData is available then nm-link should not be created',async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;    
+    const linkEle = debugElement.query(By.css('nm-link'));
+    expect(linkEle).toBeFalsy();
+  }));
+
+  it('If rowData is not available then nm-link should be created',async(() => {
+    hostComponent.element = ActionDropDownLinkElement as Param;
+    hostComponent.params = actionDropDownLinkParams as ParamConfig[];
+  fixture.detectChanges();
+  const debugElement = fixture.debugElement;    
+  const linkEle = debugElement.query(By.css('nm-link'));
+  expect(linkEle).toBeTruthy();
+}));
+
+  it('Button should not be created if the element.visible is configured as false',async(() => {
+    hostComponent.element.visible = false;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeFalsy();
+  }));
+
+    it('enabled property should not be created', async(() => {
     hostComponent.element.enabled = false;
     expect(hostComponent.enabled).toBeFalsy();
   }));
-  
 });
+

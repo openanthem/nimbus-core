@@ -1,3 +1,4 @@
+import { EditorModule } from 'primeng/editor';
 import { AppRoutingModule } from './app.routing.module';
 import { TableModule } from 'primeng/table';
 import { MessagesModule } from 'primeng/messages';
@@ -70,7 +71,6 @@ import { TestCtx } from 'ng-bullet';
 
 export const allproviders =  [ PageService, ConfigService, WebContentSvc, HttpClient, AppInitService,
     CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
-   // { provide: APP_INITIALIZER, useFactory: init_app, deps: [AppInitService], multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService, Location,
     { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
@@ -114,7 +114,8 @@ export const allimports = [
         AngularSvgIconModule,
         ToastModule,
         InputSwitchModule,
-        RouterTestingModule
+        RouterTestingModule,
+        EditorModule
     ]
 
 

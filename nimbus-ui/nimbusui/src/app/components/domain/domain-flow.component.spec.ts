@@ -1,3 +1,8 @@
+import { NmChart } from './../platform/charts/chart.component';
+import { ChartModule } from 'primeng/chart';
+import { EditorModule } from 'primeng/editor';
+import { element } from 'protractor';
+import { Message } from './../../shared/message';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing'
@@ -34,10 +39,7 @@ import { LoggerService } from '../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 import { AppInitService } from '../../services/app.init.service'
 import { ActionTray } from '../platform/actiontray.component';
-// import { Button } from '../platform/form/elements/button.component';
 import { SvgComponent } from '../platform/svg/svg.component';
-// import { Accordion } from '../platform/content/accordion.component';
-// import { Modal } from '../platform/modal/modal.component';
 import { Image } from '../platform/image.component';
 import { CardDetailsGrid } from '../platform/card/card-details-grid.component';
 import { CardDetailsComponent } from '../platform/card/card-details.component';
@@ -68,7 +70,6 @@ import { DisplayValueDirective } from '../../directives/display-value.directive'
 import { FormGridFiller } from '../platform/form/form-grid-filler.component';
 import { Header } from '../platform/content/header.component';
 import { Signature } from '../platform/form/elements/signature.component';
-// import { DateControl } from '../platform/form/elements/date.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.component';
@@ -85,6 +86,9 @@ import { setup, TestContext } from '../../setup.spec';
 import { configureTestSuite } from 'ng-bullet';
 import { PrintDirective } from '../../directives/print.directive';
 import { PrintService } from '../../services/print.service';
+import {domainModalItems, domainActionTray, domainItems, domainAccordions, domainMockLayout} from 'mockdata';
+import { TableHeader } from '../platform/grid/table-header.component';
+import { RichText } from '../platform/form/elements/rich-text.component';
 
 let layoutservice, pageservice, router, route;
 
@@ -194,10 +198,12 @@ class MockLayoutService {
 class MockPageService {
   public config$: Subject<any>;
   public subdomainconfig$: Subject<any>;
-
+  public messageEvent$: Subject<Message[]>
+  
   constructor() {
     this.config$ = new Subject();
     this.subdomainconfig$ = new Subject();
+    this.messageEvent$ = new Subject();
   }
 
   logError(res) {
@@ -232,7 +238,7 @@ export class MockActivatedRoute implements ActivatedRoute {
     children: ActivatedRoute[];
     pathFromRoot: ActivatedRoute[];
     data = observableOf({
-            layout: 'test'
+            layout: domainMockLayout
       });
     paramMap: Observable<ParamMap>;
     queryParamMap: Observable<ParamMap>;
@@ -300,6 +306,7 @@ export class MockActivatedRoute implements ActivatedRoute {
     CardDetailsGrid,
     CardDetailsComponent,
     DataTable,
+    TableHeader,
     ButtonGroup,
     FrmGroupCmp,
     Label,
@@ -329,7 +336,6 @@ export class MockActivatedRoute implements ActivatedRoute {
     FormGridFiller,
     Header,
     Signature,
-    // DateControl,
     Calendar,
     RadioButton,
     CheckBoxGroup,
@@ -342,7 +348,9 @@ export class MockActivatedRoute implements ActivatedRoute {
     SelectItemPipe,
     InputLegend,
     FormErrorMessage,
-    PrintDirective
+    PrintDirective,
+    NmChart,
+    RichText
  ];
  const imports =  [
      RouterTestingModule,
@@ -373,7 +381,9 @@ export class MockActivatedRoute implements ActivatedRoute {
      FormsModule,
      ReactiveFormsModule,
      ToastModule,
-     BrowserAnimationsModule
+     BrowserAnimationsModule,
+     ChartModule,
+     EditorModule
  ];
  const providers = [
      {provide: LayoutService, useClass: MockLayoutService},
@@ -409,10 +419,19 @@ describe('DomainFlowCmp', () => {
     pageservice = TestBed.get(PageService);
     router = TestBed.get(Router);
     route = TestBed.get(ActivatedRoute);
-    hostComponent.accordions = accordions;
-    hostComponent.items = items;
-    hostComponent.actionTray = actionTray;
-    hostComponent.modalItems = modalItems;
+    hostComponent.items = domainItems;
+    const document = {
+        "getElementById": () => {
+            return {"classList": {"remove": () => {}, "add": () => {}}, "scrollTop": 11, "setAttribute": () => {}, "style": {"height": ''}};
+        },
+        "body": {
+            "classList": {
+                "remove": () => {},
+                "add": () => {}
+            }
+        }
+    };
+    spyOn(hostComponent, 'getDocument').and.returnValue(document);
   });
 
   it('should create the app', async(() => {
@@ -420,6 +439,14 @@ describe('DomainFlowCmp', () => {
   }));
 
   it('accordion, button, breadcrump, panelmenu, actiontray and modal should be created', async(() => {
+    hostComponent.actionTray = domainActionTray;
+    hostComponent.modalItems = domainModalItems;
+    hostComponent.accordions = domainAccordions;
+    fixture.detectChanges();
+    hostComponent.actionTray = domainActionTray;
+    hostComponent.modalItems = domainModalItems;
+    hostComponent.accordions = domainAccordions;
+    hostComponent.hasLayout = true;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const breadcrumb  = debugElement.query(By.css('nm-breadcrumb'));
@@ -431,7 +458,7 @@ describe('DomainFlowCmp', () => {
     expect(breadcrumb.name).toEqual('nm-breadcrumb');
     expect(button.name).toEqual('button');
     expect(panelMenu.name).toEqual('nm-panelMenu');
-    expect(actiontray.name).toEqual('nm-actiontray');
+    expect(actiontray.name).toEqual('nm-actiontray');    
     expect(accordionEle.name).toEqual('nm-accordion');
     expect(modal.name).toEqual('nm-modal');
   }));
@@ -517,7 +544,7 @@ describe('DomainFlowCmp', () => {
     pageservice = TestBed.get(PageService);
     router = TestBed.get(Router);
     route = TestBed.get(ActivatedRoute);
-    hostComponent.accordions = accordions;
+    hostComponent.accordions = domainAccordions;
   });
 
   it('ngOnInit should not call layoutservice.getLayout()',  async(() => {
@@ -534,141 +561,3 @@ describe('DomainFlowCmp', () => {
   }));
 
 });
-
-const accordions = [
-  {
-      "enabled": true,
-      "visible": false,
-      "activeValidationGroups": [],
-      "collectionParams": [],
-      "configId": "14455",
-      "path": "/home/vpHome/vmAddNote",
-      "type": {
-          "model": {
-              "params": [
-
-              ]
-          }
-      },
-      "message": [],
-      "values": [],
-      "labels": [],
-      "elemLabels": {}
-  }
-];
-
-
-
-const items = [
-  {
-      "label": "Home",
-      "path": "/home/vpHome/vsHomeLeftBar/home",
-      "page": "",
-      "icon": "tasksIcon",
-      "imgType": "FA",
-      "url": "petclinicdashboard/vpDashboard",
-      "type": "INTERNAL",
-      "target": "",
-      "rel": "",
-      "routerLink": "/h/petclinicdashboard/vpDashboard",
-      "code": "home",
-      "expanded": false
-  },
-  {
-      "label": "Veterinarians",
-      "path": "/home/vpHome/vsHomeLeftBar/vets",
-      "page": "",
-      "icon": "caseHistoryIcon",
-      "imgType": "FA",
-      "url": "veterinarianview/vpVeterenarians",
-      "type": "INTERNAL",
-      "target": "",
-      "rel": "",
-      "routerLink": "/h/veterinarianview/vpVeterenarians",
-      "code": "vets",
-      "expanded": false
-  },
-  {
-      "label": "Owners",
-      "path": "/home/vpHome/vsHomeLeftBar/owners",
-      "page": "",
-      "icon": "caseHistoryIcon",
-      "imgType": "FA",
-      "url": "ownerlandingview/vpOwners",
-      "type": "INTERNAL",
-      "target": "",
-      "rel": "",
-      "routerLink": "/h/ownerlandingview/vpOwners",
-      "code": "owners"
-  },
-  {
-      "label": "Pets",
-      "path": "/home/vpHome/vsHomeLeftBar/pets",
-      "page": "",
-      "icon": "caseHistoryIcon",
-      "imgType": "FA",
-      "url": "petview/vpAllPets",
-      "type": "INTERNAL",
-      "target": "",
-      "rel": "",
-      "routerLink": "/h/petview/vpAllPets",
-      "code": "pets",
-      "expanded": false
-  },
-  {
-      "label": "Notes",
-      "path": "/home/vpHome/vsHomeLeftBar/notes",
-      "page": "",
-      "icon": "notesIcon",
-      "imgType": "FA",
-      "url": "petclinicdashboard/vpNotes",
-      "type": "INTERNAL",
-      "target": "",
-      "rel": "",
-      "routerLink": "/h/petclinicdashboard/vpNotes",
-      "code": "notes",
-      "expanded": false
-  }
-];
-
-const actionTray = {
-  "enabled": true,
-  "visible": true,
-  "activeValidationGroups": [],
-  "collectionParams": [],
-  "configId": "14452",
-  "path": "/home/vpHome/vsActionTray",
-  "type": {
-      "model": {
-          "params": [
-          ]
-      }
-  },
-  "message": [],
-  "values": [],
-  "labels": [],
-  "elemLabels": {}
-};
-
-const modalItems = [
-  {
-      "enabled": true,
-      "visible": false,
-      "activeValidationGroups": [],
-      "collectionParams": [],
-      "configId": "14455",
-      "path": "/home/vpHome/vmAddNote",
-      "type": {
-          "model": {
-              "params": [
-              ]
-          }
-      },
-      "message": [],
-      "values": [],
-      "labels": [],
-      "elemLabels": {}
-  }
-];
-
-

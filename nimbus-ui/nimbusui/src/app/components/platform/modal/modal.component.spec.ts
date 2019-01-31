@@ -1,9 +1,8 @@
-import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule  } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule, EditorModule  } from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, FormControl } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -15,12 +14,9 @@ import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from 
 
 import { Modal } from './modal.component';
 import { TooltipComponent } from '../tooltip/tooltip.component';
-// import { Section } from '../section.component';
 import { ComboBox } from '../../platform/form/elements/combobox.component';
 import { InputText } from '../form/elements/textbox.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
-// import { Button } from '../form/elements/button.component';
-// import { InfiniteScrollGrid } from '../grid/grid.component';
 import { Menu } from '../menu.component';
 import { Link } from '../link.component';
 import { Form } from '../form.component';
@@ -47,7 +43,6 @@ import { CheckBox } from '../form/elements/checkbox.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
 import { RadioButton } from '../form/elements/radio.component';
 import { Calendar } from '../form/elements/calendar.component';
-// import { DateControl } from '../form/elements/date.component';
 import { Signature } from '../form/elements/signature.component';
 import { Header } from '../content/header.component';
 import { PageService } from '../../../services/page.service';
@@ -69,23 +64,15 @@ import { InputLegend } from '../../platform/form/elements/input-legend.component
 import { FormErrorMessage } from '../form-error-message.component';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
-import * as data from '../../../payload.json';
 import { PrintDirective } from '../../../directives/print.directive';
 import { Subject } from 'rxjs';
 import { WebContentSvc } from './../../../services/content-management.service';
-
-// @Directive({
-//     selector: '[nmPrint]',
-//   })
-//   export class PrintDirective {
-//     @Input() contentSelector: string;
-//     @Input() isPage: boolean;
-//     @Input() element: any;
-//     @Input() nmPrint: any;
-//     nativeElement: any;
-//     subscription: any;
-//   }
-
+import { fieldValueParam } from 'mockdata';
+import { RichText } from '../form/elements/rich-text.component';
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './../charts/chart.component';
+import { TableHeader } from './../grid/table-header.component';
+import { Param } from './../../../shared/param-state';
 @Component({
     template: '<div></div>',
     selector: 'nm-button'
@@ -140,7 +127,6 @@ const declarations = [
     InputText,
     ButtonGroup,
     Button,
-    // InfiniteScrollGrid,
     Menu,
     Link,
     Form,
@@ -167,10 +153,10 @@ const declarations = [
     CheckBoxGroup,
     RadioButton,
     Calendar,
-    // DateControl,
     Signature,
     Header,
     DataTable,
+    TableHeader,
     HeaderCheckBox,
     SvgComponent,
     Image,
@@ -183,7 +169,9 @@ const declarations = [
     FormGridFiller,
     InputLegend,
     FormErrorMessage,
-    PrintDirective
+    PrintDirective,
+    NmChart,
+    RichText
    ];
    const imports = [
        DialogModule,
@@ -207,7 +195,9 @@ const declarations = [
        AngularSvgIconModule,
        ToastModule,
        InputSwitchModule,
-       TreeTableModule
+       TreeTableModule,
+       ChartModule,
+       EditorModule
    ];
    const providers = [
     {provide: PageService, useClass: MockPageService},
@@ -222,15 +212,11 @@ describe('Modal', () => {
     configureTestSuite(() => {
         setup( declarations, imports, providers);
       });
-    
-       let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     let param: Param = JSON.parse(payload);
-    // const payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';
-    // param = JSON.parse(payload);
   
     beforeEach(() => {
         fixture = TestBed.createComponent(Modal);
         hostComponent = fixture.debugElement.componentInstance;
-        hostComponent.element = param;
+        hostComponent.element = fieldValueParam;
         pageservice = TestBed.get(PageService);
     });
   
@@ -244,7 +230,6 @@ describe('Modal', () => {
     }));
 
     it('width should be 500 for small size', async(() => {
-        console.log('here is the error...modal', hostComponent.element);
         // fixture.detectChanges();
         // fixture.whenStable().then(() => {
                 // hostComponent.element.config.uiStyles.attributes.width = 'small';

@@ -30,14 +30,7 @@ import { ParamUtils } from './../../shared/param-utils';
  * \@howToUse 
  * 
  */
-@Component({
-    selector: 'nm-base-label',
-    providers: [ PageService ],
-    template:`
-    `
-})
-
-export class BaseLabel {
+export abstract class BaseLabel {
 
     @Input() element: Param;
     protected labelConfig: LabelConfig;
@@ -45,20 +38,6 @@ export class BaseLabel {
     constructor(private _wcs: WebContentSvc, private _pageService: PageService) {
 
     }
-
-    ngOnInit() {
-        this.loadLabelConfig(this.element);
-
-        // Update the labels when an update for the param comes back from the server.
-        this._pageService.eventUpdate$.subscribe(event => {
-            if(event.path == this.element.path) {
-                if (event.labels && event.labels.length !== 0) {
-                    this.loadLabelConfig(event);
-                }
-            }
-        });
-    }
-
     /**	
      * Retrieve the label config from the provided param and set it into this instance's labelConfig.
      * @param param The param for which to load label content for.	
@@ -71,6 +50,9 @@ export class BaseLabel {
      * Get the tooltip help text for this element.
      */
     public get helpText(): string {
+        if (!this.labelConfig) {
+            this.loadLabelConfig(this.element);
+        }
         return ParamUtils.getHelpText(this.labelConfig);
     }
 
@@ -78,7 +60,10 @@ export class BaseLabel {
      * Get the label text for this element.
      */
     public get label(): string {
-        return ParamUtils.getLabelText(this.labelConfig);
+        if (!this.labelConfig) {
+            this.loadLabelConfig(this.element);
+        }
+                return ParamUtils.getLabelText(this.labelConfig);
     }
 
     /**

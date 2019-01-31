@@ -20,7 +20,11 @@ import { InputLabel } from './input-label.component';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
-import * as data from '../../../../payload.json';
+import { Param } from '../../../../shared/param-state';
+import { ServiceConstants } from '../../../../services/service.constants';
+import { By } from '@angular/platform-browser';
+import { WindowRefService } from '../../../../services/window-ref.service';
+import { labelElement } from 'mockdata';
 
 const declarations = [
   InputLabel,
@@ -46,7 +50,8 @@ const declarations = [
   LoggerService,
   SessionStoreService,
   AppInitService,
-  WebContentSvc
+  WebContentSvc,
+  WindowRefService
  ];
 
  let fixture, hostComponent;
@@ -60,10 +65,45 @@ describe('InputLabel', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(InputLabel);
     hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = labelElement as Param;
   });
 
   it('should create the InputLabel', async(() => {
     expect(hostComponent).toBeTruthy();
+  }));
+
+  it('label should be created if the label is configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('label'));
+    expect(labelEle).toBeTruthy();
+  }));
+
+  it('nm-tooltip should be created if helpText is configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const tooltipEle = debugElement.query(By.css('nm-tooltip'));
+    expect(tooltipEle).toBeTruthy();
+  }));
+
+  it('nm-tooltip should not be created if helpText is not configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    hostComponent.element.labels = [];
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const tooltipEle = debugElement.query(By.css('nm-tooltip'));
+    expect(tooltipEle).toBeFalsy();
+  }));
+
+  it('label should not be created if the label is not configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    hostComponent.element.labels = [];
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('label'));
+    expect(labelEle).toBeFalsy();
   }));
 
   it('getCssClass() should return required', async(() => {
@@ -72,3 +112,4 @@ describe('InputLabel', () => {
   }));
 
 });
+

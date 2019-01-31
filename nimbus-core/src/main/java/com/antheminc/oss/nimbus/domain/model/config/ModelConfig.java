@@ -28,6 +28,8 @@ public interface ModelConfig<T> extends EntityConfig<T> {
 	
 	public String getAlias();
 	
+	public String getRepoAlias();
+	
 	public String getDomainLifecycle();
 	
 	public Repo getRepo();

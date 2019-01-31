@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.ws;
 
-import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -25,86 +24,66 @@ import java.util.function.Supplier;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
+import org.springframework.web.client.RestTemplate;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput.GenericExecute;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput.GenericListExecute;
-import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.repo.AbstractWSModelRepository;
-import com.antheminc.oss.nimbus.domain.model.state.repo.ExternalModelRepository;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.DBSearch;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * @author Swetha Vemuri
+ * @author Rakesh Patel
+ *
+ * TODO:
+ * 	1. Rakesh/Swetha: Need to account for when the output contains ExecuteException where result would be null.
  *
  */
 @ConfigurationProperties(prefix="remote.repository")
 @Getter @Setter
-@EnableLoggingInterceptor
-public class RemoteWSModelRepository extends AbstractWSModelRepository implements ExternalModelRepository {
-	
-	@Autowired @Qualifier("searchByExample") 
-	private DBSearch searchByExample;
-	
-	@Autowired @Qualifier("searchByQuery") 
-	private DBSearch searchByQuery;
+@SuppressWarnings("unchecked")
+public class RemoteWSModelRepository extends AbstractWSModelRepository {
 	
 	private Map<String, String> serviceUrl;
 	
-	public RemoteWSModelRepository(BeanResolverStrategy beanResolver) {
-		super(beanResolver);	
+	public RemoteWSModelRepository(BeanResolverStrategy beanResolver, RestTemplate restTemplate) {
+		super(beanResolver, restTemplate);	
 	}
 	
 	@Override
-	public <ID extends Serializable, T> T _get(ID id, Class<T> referredClass, String alias, String url) {
-		StringBuilder uri = new StringBuilder();
-		uri.append(url)
-		.append(Constants.REQUEST_PARAMETER_MARKER.code)
-		.append(Constants.MARKER_URI_BEHAVIOR.code)
-		.append(Constants.PARAM_ASSIGNMENT_MARKER.code)
-		.append(Behavior.$state.name());
+	protected <T> T handleNew(Class<?> referredClass, URI _newUri) {
+		Object response = execute(() -> new RequestEntity<GenericExecute<T>>(HttpMethod.GET, _newUri), 
+				() -> createGenericRespEntity(referredClass));
 		
-		return super._get(id, referredClass, alias, uri.toString());
+		GenericExecute<T> output = (GenericExecute<T>) response;
+		
+		return output.extractSingleValue();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public <ID extends Serializable, T> T handleGet(ID id, Class<T> referredClass, URI uri) {
-		
-		Object response;
-		response = execute(() -> new RequestEntity<GenericExecute<T>>(HttpMethod.GET, uri), 
+	public <T> T handleGet(Class<?> referredClass, URI uri) {
+		Object response = execute(() -> new RequestEntity<GenericExecute<T>>(HttpMethod.GET, uri), 
 				() -> createGenericRespEntity(referredClass));
 		
 		GenericExecute<T> output = (GenericExecute<T>) response;
 		return output.extractSingleValue();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T> Object handleSearch(Class<T> referredDomainClass, Supplier<SearchCriteria<?>> criteriaSupplier,String alias, URI uri) {
+	public <T> Object handleSearch(Class<?> referredDomainClass, Supplier<SearchCriteria<?>> criteriaSupplier, URI uri) {
 		SearchCriteria<?> searchCriteria = criteriaSupplier.get();
 		
-		Object criteria;
-		if (searchCriteria instanceof ExampleSearchCriteria) {
-			criteria = searchCriteria.getWhere() != null ? (String) searchCriteria.getWhere() : "{}";
-		} else {
-			criteria = getSearchByQuery().search(referredDomainClass, alias, searchCriteria);
-		}
-				
+		Object criteria = searchCriteria.getWhere() != null ? (String) searchCriteria.getWhere() : "{}";
+		
 		RequestEntity<Object> request = (RequestEntity<Object>) RequestEntity
 			     .post(uri)
 			     .contentType(MediaType.APPLICATION_JSON)
@@ -126,6 +105,31 @@ public class RemoteWSModelRepository extends AbstractWSModelRepository implement
 	}
 	
 	@Override
+	protected <T> T handleUpdate(T state, URI _updateUri) {
+		RequestEntity<T> request = (RequestEntity<T>) RequestEntity
+			     .post(_updateUri)
+			     .contentType(MediaType.APPLICATION_JSON)
+			     .body(state);
+		
+		Object response = execute(() -> request, 
+				() -> createGenericRespEntity(Boolean.class));
+		
+		GenericExecute<T> output = (GenericExecute<T>) response;
+		return output.extractSingleValue();
+	}
+	
+	@Override
+	protected <T> T handleDelete(URI _deleteUri) {
+		Object response = execute(() -> new RequestEntity<GenericExecute<T>>(HttpMethod.GET, _deleteUri), 
+				() -> createGenericRespEntity(Boolean.class));
+		
+		GenericExecute<T> output = (GenericExecute<T>) response;
+		
+		return output.extractSingleValue();
+	}
+	
+	//TODO Rakesh/Swetha: this can be provided differently then per each alias - else for each remote domain alias we are sort of repeating the context url in yml file
+	@Override
 	public String getTargetUrl(String alias) {	
 		if(MapUtils.isEmpty(this.serviceUrl))
 			return null;
@@ -135,29 +139,6 @@ public class RemoteWSModelRepository extends AbstractWSModelRepository implement
 		return url.toString();			
 	}
 
-	@Override
-	public String constructSearchUri(SearchCriteria<?> searchCriteria) {
-		StringBuilder url = new StringBuilder();
-		url.append(searchCriteria.getCmd().getAbsoluteUri());
-		
-		if (!searchCriteria.getCmd().containsFunction()) {
-			return url.toString();
-		} else {
-			url.append(Constants.REQUEST_PARAMETER_MARKER.code)
-				.append(Constants.KEY_FUNCTION.code)
-				.append(Constants.PARAM_ASSIGNMENT_MARKER.code)
-				.append(searchCriteria.getCmd().getRequestParams().get(Constants.KEY_FUNCTION.code)[0]);
-			
-			searchCriteria.getCmd().getRequestParams().entrySet()
-				.stream()
-				.filter(map -> !Constants.KEY_FUNCTION.code.equalsIgnoreCase(map.getKey()))
-				.filter(map -> map.getValue() != null && map.getValue().length > 0)
-				.forEach(map -> url.append(Constants.REQUEST_PARAMETER_DELIMITER.code).append(map.getKey()).append(Constants.PARAM_ASSIGNMENT_MARKER.code).append(map.getValue()[0]));
-			
-			return url.toString();
-		}
-	}
-	
 	private <T> ParameterizedTypeReference<GenericListExecute<List<T>>> createGenericListRespEntity(Class<T> referredDomainClass) {
 		return new ParameterizedTypeReference<GenericListExecute<List<T>>>() {
 			public Type getType() {
@@ -173,4 +154,5 @@ public class RemoteWSModelRepository extends AbstractWSModelRepository implement
 			}
 		};
 	}
+	
 }

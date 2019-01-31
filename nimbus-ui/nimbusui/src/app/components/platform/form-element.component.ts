@@ -47,7 +47,6 @@ export class FormElement extends BaseElement {
 
     @Input() element: Param;
     @Input() form: FormGroup;
-    @Input() elementCss: string;
     elemMessages: Message[];
     id: String = 'form-control' + counter++;
     componentStyle: string;
@@ -117,27 +116,9 @@ export class FormElement extends BaseElement {
             this.element.config.uiStyles.attributes.cssClass && this.element.config.uiStyles.attributes.cssClass !== '') {
                 overrideClass = this.element.config.uiStyles.attributes.cssClass;
         }  
-        if (this.element.config.uiStyles && this.element.config.uiStyles.attributes && 
-            this.element.config.uiStyles.attributes.cols && this.element.config.uiStyles.attributes.cols !== '') {
-            // Convert cols to equivalent css styles
-            if (this.element.config.uiStyles.attributes.cols === '6') { // occupies 1 cols of 6
-                overrideClass += ' col-sm-2';
-            } else if (this.element.config.uiStyles.attributes.cols === '4') { // occupies 1 cols of 4
-                overrideClass += ' col-sm-3';
-            } else if (this.element.config.uiStyles.attributes.cols === '3') { // occupies 1 cols of 3
-                overrideClass += ' col-sm-4';
-            } else if (this.element.config.uiStyles.attributes.cols === '2') { // occupies 1 cols of 2
-                overrideClass += ' col-sm-6';
-            } else if (this.element.config.uiStyles.attributes.cols === '1') { // occupies 1 col of 1
-                overrideClass += ' col-sm-12';
-            } else {
-                overrideClass += ' col-sm-12';
-            }
-        } 
+        
         if (overrideClass != '') {
             componentClass.push(overrideClass);
-        } else {
-            componentClass.push(this.elementCss);
         }
 
         // Error Styles
@@ -167,13 +148,12 @@ export class FormElement extends BaseElement {
      */
     updateErrorMessages() {
         var control: AbstractControl = this.form.controls[this.element.config.code];
-        let constraintNames = ValidationUtils.getAllValidationNames();
         if (control.invalid) {
             let errs: ValidationErrors = control.errors;
             for (var key in errs) {
                 let constraintName = ConstraintMapping.getConstraintValue(key);
                     let constraint: Constraint = this.element.config.validation.constraints.find(v => v.name == constraintName);
-                    this.addErrorMessages(constraint.attribute.message ? constraint.attribute.message : ValidationUtils.getDefaultErrorMessage(key));
+                    this.addErrorMessages(constraint.attribute.message);
             }   
         }
     }

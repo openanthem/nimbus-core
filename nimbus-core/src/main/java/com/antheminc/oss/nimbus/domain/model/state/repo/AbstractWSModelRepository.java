@@ -16,7 +16,6 @@
 
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
-import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -34,34 +33,92 @@ import org.springframework.web.client.RestTemplate;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.cmd.Action;
+import com.antheminc.oss.nimbus.domain.cmd.Behavior;
+import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElement;
+import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
-import com.antheminc.oss.nimbus.support.JustLogit;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
-public abstract class AbstractWSModelRepository {
-	
-	private final BeanResolverStrategy beanResolver;
-	private final RestTemplate restTemplate;
-	private final static JustLogit logit = new JustLogit(AbstractWSModelRepository.class);
-	public AbstractWSModelRepository(BeanResolverStrategy resolver) {
-		this.beanResolver = resolver;
-		this.restTemplate = beanResolver.get(RestTemplate.class);
-	}
+/**
+ * @author Swetha Vemuri
+ * @author Rakesh Patel
+ *
+ */
+@Getter @Setter @RequiredArgsConstructor
+public abstract class AbstractWSModelRepository implements ExternalModelRepository {
 
-	abstract public String getTargetUrl(String alias);
+	private final BeanResolverStrategy beanResolver;
 	
-	abstract public String constructSearchUri(SearchCriteria<?> searchCriteria);
+	private final RestTemplate restTemplate;
 	
-	abstract public <ID extends Serializable, T> T handleGet(ID id, Class<T> referredClass, URI url);
+	abstract protected String getTargetUrl(String alias);
 	
-	abstract public <T> Object handleSearch(Class<T> referredDomainClass, Supplier<SearchCriteria<?>> criteriaSupplier, String alias, URI uri);
+	abstract protected <T> T handleNew(Class<?> referredClass, URI uri);
+	
+	abstract protected <T> T handleGet(Class<?> referredClass, URI uri);
+	
+	abstract protected <T> Object handleSearch(Class<?> referredDomainClass, Supplier<SearchCriteria<?>> criteriaSupplier, URI uri);
+	
+	abstract protected <T> T handleUpdate(T state, URI uri);
+	
+	abstract protected <T> T handleDelete(URI uri);
+	
+	@Override
+	public <T> T _new(Command cmd, ModelConfig<T> mConfig) {
+		final String url = cmd.toRemoteUri(CommandElement.Type.ParamName, Action._new, Behavior.$execute);
+		
+		URI _newUri = createUriForAlias(mConfig.getAlias(), url);
+		
+		return handleNew(mConfig.getReferredClass(), _newUri);
+	}
+	
+	@Override
+	public <T> T _get(Command cmd, ModelConfig<T> mConfig) {
+		final String url = cmd.toRemoteUri(CommandElement.Type.ParamName, Action._get, Behavior.$execute);
+		
+		URI _getUri = createUriForAlias(mConfig.getAlias(), url);
+		
+		return handleGet(mConfig.getReferredClass(),_getUri);
+	}
+	
+	@Override
+	public <T> Object _search(Param<?> param, Supplier<SearchCriteria<?>> criteriaSupplier) {
+		SearchCriteria<?> searchCriteria = criteriaSupplier.get();
+		String searchUri = searchCriteria.getCmd().getAbsoluteUri();
+		URI uri = createUriForAlias(param.getRootDomain().getConfig().getAlias(), searchUri);
+		if(uri == null)
+			return null;
+		
+		return handleSearch(param.getRootDomain().getConfig().getReferredClass(), criteriaSupplier, uri);
+	}
+	
+	@Override
+	public <T> T _update(Param<?> param, T state) {
+		final String url = param.getRootExecution().getRootCommand().toRemoteUri(CommandElement.Type.ParamName, Action._update, Behavior.$execute);
+		
+		URI _updateUri = createUriForAlias(param.getRootDomain().getConfig().getAlias(), url);
+		
+		return handleUpdate(state, _updateUri);
+	}
+	
+	@Override
+	public <T> T _delete(Param<?> param) {
+		final String url = param.getRootExecution().getRootCommand().toRemoteUri(CommandElement.Type.ParamName, Action._delete, Behavior.$execute);
+		
+		URI _deleteUri = createUriForAlias(param.getRootDomain().getConfig().getAlias(), url);
+	
+		return handleDelete(_deleteUri);
+	}
 	
 	protected URI createUriForAlias(String alias, String url) {
 		String targetUrl = getTargetUrl(alias);
-		if(targetUrl == null)
+		if(StringUtils.isBlank(targetUrl))
 			return null;
 		
 		String urlToConstruct = StringUtils.startsWith(url, "/") ? url : "/".concat(url);
@@ -74,28 +131,6 @@ public abstract class AbstractWSModelRepository {
 		}
 	}
 	
-	public <ID extends Serializable, T> T _get(ID id, Class<T> referredClass, String alias, String url) {
-		URI uri = createUriForAlias(alias, url);
-		if(uri == null)
-			return null;
-
-		try {
-			return handleGet(id, referredClass, uri);
-		} catch(Exception e) {
-			throw new FrameworkRuntimeException("Exception occured while making a remote ws call to ["+uri+"] ", e);
-		}
-	}
-	
-	public <T> Object _search(Class<T> referredDomainClass, String alias, Supplier<SearchCriteria<?>> criteriaSupplier) {
-		SearchCriteria<?> searchCriteria = criteriaSupplier.get();
-		String searchUri = constructSearchUri(searchCriteria);
-		URI uri = createUriForAlias(alias, searchUri);
-		if(uri == null)
-			return null;
-		
-		return handleSearch(referredDomainClass, criteriaSupplier, alias, uri);
-	}
-	
 	protected Object execute(Supplier<RequestEntity<?>> reqEntitySupplier, Supplier<ParameterizedTypeReference<?>> responseTypeSupplier) {
 		 try {
 			ResponseEntity<?> responseEntity = getRestTemplate().exchange(reqEntitySupplier.get(), responseTypeSupplier.get());
@@ -105,7 +140,7 @@ public abstract class AbstractWSModelRepository {
 		}
 	}
 	
-	public class CustomParameterizedTypeImpl implements ParameterizedType {
+	protected class CustomParameterizedTypeImpl implements ParameterizedType {
 	    private ParameterizedType delegate;
 	    private Type[] actualTypeArguments;
 
