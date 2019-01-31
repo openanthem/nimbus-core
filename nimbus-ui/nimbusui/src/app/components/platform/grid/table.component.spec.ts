@@ -265,11 +265,8 @@ const imports = [
    TreeTableModule,
    StorageServiceModule,
    BrowserAnimationsModule,
-<<<<<<< HEAD
-   InputMaskModule
-=======
+   InputMaskModule,
    EditorModule
->>>>>>> 79c69c0be5ccd8e9fd82d90ad417b4aedd33add9
 ];
 const providers = [
    {provide: PageService, useClass: MockPageService},
