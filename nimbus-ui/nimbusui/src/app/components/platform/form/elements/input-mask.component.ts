@@ -21,6 +21,8 @@ import { Component, ViewChild, ChangeDetectorRef, forwardRef, Input } from '@ang
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
+import { InputMask } from 'primeng/primeng';
+
 
 /**
  * \@author Vivek.Kamineni
@@ -32,7 +34,7 @@ import { ControlSubscribers } from '../../../../services/control-subscribers.ser
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 	provide: NG_VALUE_ACCESSOR,
-	useExisting: forwardRef(() => InputMask),
+	useExisting: forwardRef(() => InputMaskComp),
 	multi: true
 };
 
@@ -40,7 +42,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 	selector: 'nm-mask',
 	providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
 	template: `
-	<div>
+	<div >
 		<nm-input-label *ngIf="!isLabelEmpty && (hidden != true)"
 		[element]="element" 
 		[for]="element.config?.code" 
@@ -51,6 +53,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 	<p-inputMask #inputMask 
 		[disabled]="disabled" 
 		[(ngModel)]="value" 
+		(onBlur)="checkAndSetModelValue($event)"
+		(onComplete)="emitValueChangedEvent(this,$event)"
 		mask="{{element?.config?.uiStyles?.attributes?.mask}}"
 		slotChar="{{element?.config?.uiStyles?.attributes?.slotChar}}" 
 		placeholder="{{element?.config?.uiStyles?.attributes?.maskPlaceHolder}}"
@@ -61,62 +65,36 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 })
 
 
-export class InputMask extends BaseControl<String> implements ControlValueAccessor {
+export class InputMaskComp extends BaseControl<String>  {
 
 	@ViewChild(NgModel) model: NgModel;
-	@ViewChild('inputMask') inputMask: any;
-
-	@Input() form: FormGroup;
-	@Input('value') _value;
+	@ViewChild('inputMask') inputMask: InputMask;
 
 	constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef) {
 		super(controlService, wcs, cd);
 	}
 
 	ngOnInit() {
-		super.ngOnInit();
-		this.form.get(this.element.config.code).valueChanges.subscribe(
-			(data) => {
+		 super.ngOnInit();
+		 this.inputMask.updateModel = function(e){
 
-				if (this.form.get(this.element.config.code).validator) {
-					if (this.inputMask.isCompleted()) {
-						this.form.get(this.element.config.code).setErrors(null);
+			let updatedValue = this.unmask ? this.getUnmaskedValue() : e.target.value;
+			/* Test to see if there is atleast one alphanumeric character in the i/p field */
+			if(!((/[a-z]/i.test(updatedValue)) || (/[0-9]/).test(updatedValue))){
+				this.value = updatedValue;
+				this.onModelChange(null);
+			}
+			else if(updatedValue !== null || updatedValue !== undefined) {
+				this.value = updatedValue;				 
+				this.onModelChange(updatedValue);			    
+			}
+		 }
 
-					}
-					else {
-						this.form.get(this.element.config.code).setErrors({ 'required': true });
-					}
-				}
-			});
 	}
 
-// These will be needed if validations are done through PrimeNG's (onInput) event (available in version 7).
-// For now these are commented as it might affect coverage reports. 
-
-	// public onChange: any = (_) => { /*Empty*/ }
-	// public onTouched: any = () => { /*Empty*/ }
-
-	// get value() {
-	// 	return this._value;
-	// }
-
-	// set value(val) {
-	// 	this._value = val;
-	// 	this.onChange(val);
-	// 	this.onTouched();
-	// }
-
-	// writeValue(value) {
-	// 	if (value) {
-	// 	}
-	// }
-
-	// registerOnChange(fn) {
-	// 	this.onChange = fn;
-	// }
-
-	// registerOnTouched(fn) {
-	// 	this.onTouched = fn;
-	// }
-
+	checkAndSetModelValue(e){
+		if(!this.inputMask.isCompleted()){
+			this.inputMask.onModelChange("");
+		}		
+	}
 }

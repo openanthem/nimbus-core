@@ -8,7 +8,7 @@ import { HttpModule } from '@angular/http';
 import { Router, ActivatedRoute, Route, ActivatedRouteSnapshot, UrlSegment, Params, Data, ParamMap, PRIMARY_OUTLET } from '@angular/router';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
   FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
+  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule } from 'primeng/primeng';
 import { of as observableOf,  Observable } from 'rxjs';
 import { Subject } from 'rxjs';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
@@ -85,6 +85,8 @@ import { PrintDirective } from '../../directives/print.directive';
 import { PrintService } from '../../services/print.service';
 import {domainModalItems, domainActionTray, domainItems, domainAccordions, domainMockLayout} from 'mockdata';
 import { TableHeader } from '../platform/grid/table-header.component';
+import { InputMaskComp } from './../platform/form/elements/input-mask.component';
+
 
 let layoutservice, pageservice, router, route;
 
@@ -344,7 +346,8 @@ export class MockActivatedRoute implements ActivatedRoute {
     SelectItemPipe,
     InputLegend,
     FormErrorMessage,
-    PrintDirective
+    PrintDirective,
+    InputMaskComp
  ];
  const imports =  [
      RouterTestingModule,
@@ -375,7 +378,8 @@ export class MockActivatedRoute implements ActivatedRoute {
      FormsModule,
      ReactiveFormsModule,
      ToastModule,
-     BrowserAnimationsModule
+     BrowserAnimationsModule,
+     InputMaskModule
  ];
  const providers = [
      {provide: LayoutService, useClass: MockLayoutService},

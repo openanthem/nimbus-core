@@ -2704,6 +2704,8 @@ public class ViewConfig {
 		
 		boolean dataEntryField() default true;
 		
+		boolean postEventOnChange() default false;
+		
 		/**
 		 * <p> maskStyle can be used to define the restricted format user is expected to enter.
 		 * For example maskStyle="99-9999" would let user enter only 6 numerical values in the i/p box.

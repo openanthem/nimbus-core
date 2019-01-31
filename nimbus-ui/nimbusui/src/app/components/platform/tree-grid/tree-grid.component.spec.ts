@@ -3,7 +3,7 @@ import { Param } from './../../../shared/param-state';
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
@@ -77,6 +77,7 @@ import { OrderablePickList } from '../form/elements/picklist.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
 import { fieldValueParam } from 'mockdata';
 import { TableHeader } from '../grid/table-header.component';
+import { InputMaskComp } from './../form/elements/input-mask.component';
 
 let pageService;
 
@@ -171,7 +172,8 @@ class MockPageService {
     FileUploadComponent,
     OrderablePickList,
     CheckBoxGroup,
-    DateTimeFormatPipe
+    DateTimeFormatPipe,
+    InputMaskComp
  ];
 const imports = [
      DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
@@ -185,7 +187,8 @@ const imports = [
      ReactiveFormsModule, 
      ToastModule,
      TableModule,
-     KeyFilterModule
+     KeyFilterModule,
+     InputMaskModule
  ];
 const providers = [
      { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },

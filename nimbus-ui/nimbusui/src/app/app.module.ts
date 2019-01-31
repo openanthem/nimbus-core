@@ -71,7 +71,7 @@ import { ComboBox } from './components/platform/form/elements/combobox.component
 import { RadioButton } from './components/platform/form/elements/radio.component';
 import { Signature } from './components/platform/form/elements/signature.component';
 import { InputText } from './components/platform/form/elements/textbox.component';
-import { InputMask } from './components/platform/form/elements/input-mask.component';
+import { InputMaskComp } from './components/platform/form/elements/input-mask.component';
 import { CheckBoxGroup } from './components/platform/form/elements/checkbox-group.component';
 import { MultiselectCard } from './components/platform/form/elements/multi-select-card.component';
 import { ActionDropdown, ActionLink } from './components/platform/form/elements/action-dropdown.component';
@@ -150,6 +150,7 @@ import { SubDomainFlowCmp } from './components/domain/subdomain-flow.component';
 import { PageResolver } from './components/platform/content/page-resolver.service';
 import {DateTimeFormatPipe} from './pipes/date.pipe';
 import { DisplayValueDirective } from './directives/display-value.directive';
+
 import { NmPanelMenu, NmPanelMenuSub } from './components/platform/panelmenu.component';
 import { MenuRouteLink } from './directives/routes/route-link.component';
 import { MenuRouterLinkActive } from './directives/routes/route-active.component';
@@ -210,7 +211,7 @@ export function init_app(appinitservice: AppInitService) {
         InputSwitchModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
-        Tile, Section, Header, Form, FormElement, InputText, InputMask, ComboBox, RadioButton, Signature, CheckBoxGroup,
+        Tile, Section, Header, Form, FormElement, InputText, InputMaskComp, ComboBox, RadioButton, Signature, CheckBoxGroup,
         InPlaceEditorComponent, Paragraph, Value, BaseElement, FormGridFiller, 
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldGroupComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         Accordion, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
