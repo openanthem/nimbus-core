@@ -24,7 +24,9 @@ import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/sessio
 import { AppInitService } from '../../../../services/app.init.service';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
-import { fieldValueParam } from 'mockdata';
+import { inputSwitchElement } from 'mockdata';
+import { By } from '@angular/platform-browser';
+import { ServiceConstants } from '../../../../services/service.constants';
 
 let pageService;
 
@@ -75,12 +77,37 @@ describe('InputSwitch', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(InputSwitch);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = fieldValueParam;
+    hostComponent.element = inputSwitchElement as Param;
     pageService = TestBed.get(PageService);
   });
 
   it('should create the InputSwitch', async(() => {
     expect(hostComponent).toBeTruthy();
+  }));
+
+  it('nm-input-label should be created if the label is configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('nm-input-label'));
+    expect(labelEle).toBeTruthy();
+  }));
+
+  it('nm-input-label should not be created if the label is not configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    hostComponent.element.labels = [];
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('nm-input-label'));
+    expect(labelEle).toBeFalsy();
+  }));
+
+  it('p-inputSwitch should be created', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const pinputSwitchEle = debugElement.query(By.css('p-inputSwitch'));
+    expect(pinputSwitchEle).toBeTruthy();
   }));
 
   it('orientation should be left', () => {
@@ -105,3 +132,4 @@ describe('InputSwitch', () => {
   });
 
 });
+

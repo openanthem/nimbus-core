@@ -39,6 +39,7 @@ import { ViewComponent } from '../shared/param-annotations.enum';
 import { GridData } from './../shared/param-state';
 import { Message } from './../shared/message';
 import { ComponentTypes } from './../shared/param-annotations.enum';
+import { DataGroup } from '../components/platform/charts/chartdata';
 
 /**
  * \@author Dinakar.Meda
@@ -822,26 +823,8 @@ export class PageService {
                         } else {
                                 this.traverseParam(param, eventModel);
                         }
-                }
-                // else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === ViewComponent.treeGrid.toString()) {
-
-                //         if (param.path == eventModel.value.path) {
-                //                 let treeList = {"data": []};
-                                
-                //                 eventModel.value.type.model.params.forEach((param) => {
-                //                         if(param.leafState)
-                //                         treeList.data.push((new TreeGridDeserializer).deserialize(param.leafState));  
-
-                //                 });
-
-                //                 if(treeList.data.length != 0){
-                //                        param.leafState = treeList.data;
-                //                        this.eventUpdate.next(param);
-                //                 }
-                //         }
-                // }
-                else {
-                        this.traverseParam(param, eventModel);
+                } else {
+                        this.traverseParam(param, eventModel);       
                 }
         }
 
@@ -908,7 +891,9 @@ export class PageService {
         traverseParam(param: Param, eventModel: ModelEvent) {
                 /* Flow-Wrapper class also invokes methods that eventually call this behaviour. We need to make sure that the eventModel is deserialized by then */
                 let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
-                this.updateParam(param, payload);
+                if(param.path === payload.path) {
+                        this.updateParam(param, payload);
+                }
         }
 
         /*

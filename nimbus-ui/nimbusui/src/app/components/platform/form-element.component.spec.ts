@@ -1,9 +1,12 @@
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './charts/chart.component';
+import { RichText } from './form/elements/rich-text.component';
 import { TableHeader } from './grid/table-header.component';
 'use strict';
 import { FormsModule, ReactiveFormsModule, AbstractControlDirective, Validators, ValidatorFn, FormGroup, FormControl, NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
 import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, 
     DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule,
-    InputSwitchModule, TreeTableModule } from 'primeng/primeng';
+    InputSwitchModule, TreeTableModule, EditorModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -83,7 +86,7 @@ import { FileService } from '../../services/file.service';
 import { GridService } from '../../services/grid.service';
 import { PrintService } from '../../services/print.service';
 import { GridUtils } from '../../shared/grid-utils';
-import { formInput, formPicklist, formTreeGrid, formTable, formInputSwitch, formUpload, formCheckBoxGrp, formRadio, formCalendar, formSignature, formTextArea, formComboBox, formCheckBox, formMultiSelectCard, formMultiSelect } from 'mockdata'
+import { formInput, formPicklist, formTreeGrid, formTable, formInputSwitch, formUpload, formCheckBoxGrp, formRadio, formCalendar, formSignature, formTextArea, formComboBox, formCheckBox, formMultiSelectCard, formMultiSelect, formRichText } from 'mockdata'
 
 let param: Param;
 let fixture: ComponentFixture<any>, hostComponent;
@@ -190,7 +193,9 @@ const declarations = [
     CardDetailsFieldGroupComponent,
     InputLegend,
     FormErrorMessage,
-    PrintDirective
+    PrintDirective,
+    NmChart,
+    RichText
    ];
   const imports = [
     FormsModule, 
@@ -215,7 +220,9 @@ const declarations = [
     StorageServiceModule,
     HttpModule,
     BrowserAnimationsModule,
-    RouterTestingModule
+    RouterTestingModule,
+    ChartModule,
+    EditorModule
   ];
   const providers = [
     { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
@@ -273,7 +280,8 @@ describe('FormElement', () => {
         medications1: new FormControl(),
         calls: new FormControl(),
         treegrid: new FormControl(),
-        selected: new FormControl()
+        selected: new FormControl(),
+        richTextbox: new FormControl()
      });
       hostComponent.element = formMultiSelect as Param;
   });
@@ -683,4 +691,16 @@ describe('FormElement', () => {
     expect(hostComponent.isPristine).toBeTruthy();
   }));
 
+  it('nm-input-rich-text should not be rendered if the RichText element is not configured', async(() => {
+    hostComponent.element = formRichText;
+    hostComponent.element.config.uiStyles.attributes.alias = '';
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.css('nm-input-rich-text'))).toBeNull();
+  }));
+
+  // it('nm-input-rich-text should be rendered if the RichText element is configured', async(() => {
+  //   hostComponent.element = formRichText;
+  //   fixture.detectChanges();
+  //   expect(fixture.debugElement.query(By.css('nm-input-rich-text'))).toBeTruthy();
+  // }));
 });

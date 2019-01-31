@@ -1,4 +1,3 @@
-import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
@@ -79,6 +78,11 @@ import { fieldValueParam } from 'mockdata';
 import { TableHeader } from '../grid/table-header.component';
 import { InputMaskComp } from './../form/elements/input-mask.component';
 
+import { RichText } from '../form/elements/rich-text.component';
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './../charts/chart.component';
+import { EditorModule } from 'primeng/editor';
+import { Param } from './../../../shared/param-state';
 let pageService;
 
 @Component({
@@ -173,7 +177,9 @@ class MockPageService {
     OrderablePickList,
     CheckBoxGroup,
     DateTimeFormatPipe,
-    InputMaskComp
+    InputMaskComp,
+    NmChart,
+    RichText
  ];
 const imports = [
      DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
@@ -188,7 +194,9 @@ const imports = [
      ToastModule,
      TableModule,
      KeyFilterModule,
-     InputMaskModule
+     InputMaskModule,
+     ChartModule,
+     EditorModule
  ];
 const providers = [
      { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },

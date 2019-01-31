@@ -2,7 +2,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule, InputMaskModule  } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule, InputMaskModule, EditorModule  } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, FormControl } from '@angular/forms';
@@ -95,6 +95,7 @@ import { tableParams, tableElement, tableGridValueUpdate } from 'mockdata';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { TableHeader } from './table-header.component';
 import { InputMaskComp } from './../form/elements/input-mask.component';
+import { RichText } from '../form/elements/rich-text.component';
 
 let configService, pageService, elementRef, objectUtils, domHandler, tableService, cd, param, webContentSvc;
 
@@ -236,7 +237,8 @@ const declarations = [
   InputLegend,
   FormErrorMessage,
   PrintDirective,
-  InputMaskComp
+  InputMaskComp,
+  RichText
 ];
 const imports = [
    DialogModule,
@@ -263,7 +265,11 @@ const imports = [
    TreeTableModule,
    StorageServiceModule,
    BrowserAnimationsModule,
+<<<<<<< HEAD
    InputMaskModule
+=======
+   EditorModule
+>>>>>>> 79c69c0be5ccd8e9fd82d90ad417b4aedd33add9
 ];
 const providers = [
    {provide: PageService, useClass: MockPageService},

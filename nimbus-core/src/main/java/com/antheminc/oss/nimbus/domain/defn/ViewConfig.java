@@ -21,6 +21,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Past;
+
 import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
@@ -868,7 +871,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface FilterButton {
 		String alias() default "FilterButton";
-
+		
 		String b() default "$execute";
 
 		/**
@@ -920,6 +923,10 @@ public class ViewConfig {
 	 * <li>{@link Radio}</li> <li>{@link Signature}</li>
 	 * <li>{@link TextArea}</li> <li>{@link TextBox}</li>
 	 * <li>{@link InputMask}</li> </ul>
+	 * <li>{@link Radio}</li>  <li>{@link RichText}</li> 
+	 * <li>{@link Signature}</li> <li>{@link TextArea}</li>
+	 * <li>{@link TextBox}</li> </ul>
+
 	 * 
 	 * <p><i>*Note: Nested class fields will <b>not</b> be rendered in the same
 	 * manner as fields declared directly under the Form decorated field. This
@@ -2361,6 +2368,124 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>RichText is a rich text editor.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>RichText will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Form}</li> </ul>
+	 * 
+	 * <p>RichText should decorate a field having a simple type.
+	 * 
+	 * @since 1.2
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface RichText {
+
+		public enum ToolbarFeature {
+			ALIGN, BACKGROUND, BLOCKQUOTE, BOLD, CLEAN, CODE, CODE_BLOCK, COLOR, DIRECTION, FONT, HEADER, IMAGE, INDENT, ITALIC, LINK, LIST, SCRIPT, SIZE, STRIKE, UNDERLINE, VIDEO;
+		}
+
+		String alias() default "RichText";
+
+		/**
+		 * <p>Drives the size of the component by how many columns it occupies
+		 * on the UI.
+		 */
+		String cols() default "";
+
+		String controlId() default "";
+
+		/**
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
+		 */
+		String cssClass() default "";
+
+		/**
+		 * <p>Whether or not this field should be considered a user-input field.
+		 */
+		boolean dataEntryField() default true;
+
+		/**
+		 * <p>Whitelist of formats to display, see <a
+		 * href="http://quilljs.com/docs/formats/">here</a> for available
+		 * options.
+		 */
+		String formats() default "";
+
+		/**
+		 * <p>Placeholder text to show when editor is empty.
+		 */
+		String placeholder() default "";
+
+		/**
+		 * <p>When {@code true} and the value of this component is changed on
+		 * the client, the updated value will be sent to the server.
+		 */
+		boolean postEventOnChange() default false;
+
+		/**
+		 * <p>Marks if this rich text box should be used in readonly mode. Using this mode will
+		 * simply display a readonly text field with the rich text formatting preserved.
+		 */
+		boolean readOnly() default false;
+		
+		/**
+		 * <p>The features to include when rendering the toolbar.<p>Features
+		 * will be rendered in the order they are configured.
+		 */
+		ToolbarFeature[] toolbarFeatures() default { ToolbarFeature.HEADER, ToolbarFeature.FONT, ToolbarFeature.BOLD,
+				ToolbarFeature.ITALIC, ToolbarFeature.UNDERLINE, ToolbarFeature.STRIKE, ToolbarFeature.COLOR,
+				ToolbarFeature.BACKGROUND, ToolbarFeature.SCRIPT, ToolbarFeature.LIST, ToolbarFeature.INDENT,
+				ToolbarFeature.ALIGN, ToolbarFeature.LINK, ToolbarFeature.CLEAN };
+	}
+	
+	/**
+	 * <p>Fonts is a {@link ViewParamBehavior} that can be used to apply fonts
+	 * to the decorated component.</p>
+	 * 
+	 * @since 1.2
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD, ElementType.TYPE })
+	@ViewParamBehavior
+	public static @interface Fonts {
+		String[] value() default { "Serif", "Monospace" };
+	}
+	
+	/**
+	 * <p>Headings is a {@link ViewParamBehavior} that can be used to apply
+	 * headings to the decorated component.</p>
+	 * 
+	 * @since 1.2
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewParamBehavior
+	public static @interface Headings {
+		KeyValuePair[] value() default { @KeyValuePair(key = "Heading", value = "1"),
+				@KeyValuePair(key = "Subheading", value = "2") };
+	}
+
+	/**
+	 * <p>KeyValuePair is a simple container annotation that stores key/value
+	 * pair information.</p>
+	 * 
+	 * @since 1.2
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	public static @interface KeyValuePair {
+		String key();
+
+		String value();
+	}
+	
+	/**
 	 * <p>Section is a container component that groups a collection of contents.
 	 * 
 	 * <p><b>Expected Field Structure</b>
@@ -2375,7 +2500,7 @@ public class ViewConfig {
 	 * <li>{@link ButtonGroup}</li> <li>{@link CardDetail}</li>
 	 * <li>{@link CardDetailsGrid}</li> <li>{@link ComboBox}</li>
 	 * <li>{@link Form}</li> <li>{@link Grid}</li> <li>{@link Link}</li>
-	 * <li>{@link Menu}</li> <li>{@link Paragraph}</li>
+	 * <li>{@link Menu}</li> <li>{@link Paragraph}</li><li>{@link Chart}</li>
 	 * <li>{@link StaticText}</li> <li>{@link TextBox}</li> </ul>
 	 * 
 	 * @since 1.0
@@ -2868,5 +2993,54 @@ public class ViewConfig {
 	@Inherited
 	public @interface ViewStyle {
 
+	}
+	
+	/**
+	 * <p>Chart is readonly component with some interaction(hide/show charts when the corresponding legend is clicked.
+	 * 
+	 * <p><b>The projection object for the chart is List<DataGroup></b>
+	 * 
+	 * <p>Chart will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Section}</li>
+	 * 
+	 * @since 1.2
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface Chart {
+		public enum Type {
+			BAR, LINE, PIE, DOUGHNUT
+		}
+
+		String alias() default "Chart";
+
+		/**
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
+		 */
+		String cssClass() default "";
+		
+		/**
+		 * <p>Provides the title to x-axis, if the graph is cartesian </p>
+		 */
+		String xAxisLabel() default "";
+		
+		/**
+		 * <p>Provides the title to y-axis, if the graph is cartesian </p>
+		 */
+		String yAxisLabel() default "";
+		
+		/**
+		 * <p>Specify the type of graph</p>
+		 */
+		Type value() default Type.BAR;
+		
+		/**
+		 * <p>Specify the increments on the y-axis. Default is number algorithm based on different y axes values</p>
+		 */
+		String stepSize() default "";
+											
 	}
 }

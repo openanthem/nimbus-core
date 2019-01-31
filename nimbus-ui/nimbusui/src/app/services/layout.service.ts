@@ -309,10 +309,6 @@ export class LayoutService {
         }
     }
 
-    getDefinitions() {
-        return this.httpClient.get(ServiceConstants.IMAGE_URL + '/svg-definitions.component.html', {responseType: 'text'});
-    }
-    
     private getActionTrayItems(layoutConfig: Model): Param {
 
         const actionTrayParam: Param = layoutConfig.params.find( param => ( param.config.uiStyles != null && 

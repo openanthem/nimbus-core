@@ -1,3 +1,6 @@
+import { NmChart } from './../platform/charts/chart.component';
+import { ChartModule } from 'primeng/chart';
+import { EditorModule } from 'primeng/editor';
 import { element } from 'protractor';
 import { Message } from './../../shared/message';
 'use strict';
@@ -87,6 +90,7 @@ import {domainModalItems, domainActionTray, domainItems, domainAccordions, domai
 import { TableHeader } from '../platform/grid/table-header.component';
 import { InputMaskComp } from './../platform/form/elements/input-mask.component';
 
+import { RichText } from '../platform/form/elements/rich-text.component';
 
 let layoutservice, pageservice, router, route;
 
@@ -347,7 +351,9 @@ export class MockActivatedRoute implements ActivatedRoute {
     InputLegend,
     FormErrorMessage,
     PrintDirective,
-    InputMaskComp
+    InputMaskComp,
+    NmChart,
+    RichText
  ];
  const imports =  [
      RouterTestingModule,
@@ -379,7 +385,9 @@ export class MockActivatedRoute implements ActivatedRoute {
      ReactiveFormsModule,
      ToastModule,
      BrowserAnimationsModule,
-     InputMaskModule
+     InputMaskModule,
+     ChartModule,
+     EditorModule
  ];
  const providers = [
      {provide: LayoutService, useClass: MockLayoutService},

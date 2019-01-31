@@ -1293,3 +1293,72 @@ export const formInput:any = {
     "labels": [],
     "elemLabels": {}
   };
+
+export const formRichText = {
+    "config": {
+        "id": "503",
+        "code": "richTextbox",
+        "uiStyles": {
+            "name": "ViewConfig.RichText",
+            "attributes": {
+                "toolbarFeatures": [
+                    "HEADER",
+                    "FONT",
+                    "BOLD",
+                    "ITALIC",
+                    "UNDERLINE",
+                    "STRIKE",
+                    "COLOR",
+                    "BACKGROUND",
+                    "SCRIPT",
+                    "SIZE",
+                    "BLOCKQUOTE",
+                    "CODE_BLOCK",
+                    "LIST",
+                    "INDENT",
+                    "DIRECTION",
+                    "ALIGN",
+                    "LINK",
+                    "IMAGE",
+                    "VIDEO",
+                    "CLEAN"
+                ],
+                "formats": "",
+                "cssClass": "",
+                "dataEntryField": true,
+                "alias": "RichText",
+                "placeholder": "",
+                "controlId": "",
+                "postEventOnChange": true,
+                "cols": ""
+            }
+        },
+        "validations": null,
+        "uiNatures": null,
+        "type": {
+            "nested": false,
+            "name": "string",
+            "collection": false
+        }
+    },
+    "enabled": true,
+    "visible": true,
+    "activeValidationGroups": [],
+    "collectionParams": [],
+    "configId": "503",
+    "path": "/ownerview/vpAddEditOwner/vtAddEditOwner/vsAddEditOwner/vfAddEditOwner/richTextbox",
+    "type": {
+        "nested": false,
+        "name": "string",
+        "collection": false
+    },
+    "message": [],
+    "values": [],
+    "labels": [
+        {
+        "locale": "en-US",
+        "text": "Sample @RichText Component (w/ postEventOnChange = true)"
+        }
+    ],
+    "elemLabels": {}
+};

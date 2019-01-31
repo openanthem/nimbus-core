@@ -21,7 +21,8 @@ import { InputLegend } from '../../../platform/form/elements/input-legend.compon
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
 import { Param } from '../../../../shared/param-state';
-import { fieldValueParam } from 'mockdata';
+import { radioElement } from 'mockdata';
+import { By } from '@angular/platform-browser';
 
 let param: Param;
 
@@ -61,11 +62,25 @@ describe('RadioButton', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(RadioButton);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = fieldValueParam;
+    hostComponent.element = radioElement as Param;
   });
 
-  it('should create the RadioButton', async(() => {
-    expect(hostComponent).toBeTruthy();
-  }));
+    it('should create the RadioButton', async(() => {
+        expect(hostComponent).toBeTruthy();
+    }));
+
+    it('nm-input-legend should be created', async(() => {
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const inputLegendEle = debugElement.query(By.css('nm-input-legend'));
+        expect(inputLegendEle).toBeTruthy();
+    }));
+
+    it('p-radioButton should be created', async(() => {
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const pRadioEle = debugElement.query(By.css('p-radioButton'));
+        expect(pRadioEle).toBeTruthy();
+    }));
 
 });
