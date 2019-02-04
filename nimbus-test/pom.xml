@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.antheminc.oss</groupId>
 		<artifactId>nimbus-parent</artifactId>
-		<version>1.2.0.BUILD-SNAPSHOT</version>
+		<version>1.3.0.BUILD-SNAPSHOT</version>
 	</parent>
   	
   	<artifactId>nimbus-test</artifactId>

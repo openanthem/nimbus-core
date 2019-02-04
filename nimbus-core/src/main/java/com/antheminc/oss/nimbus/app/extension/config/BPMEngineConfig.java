@@ -28,10 +28,11 @@ import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
+import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.AbstractProcessEngineAutoConfiguration;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -116,10 +117,10 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	public SpringProcessEngineConfiguration springProcessEngineConfiguration(
 			@Qualifier("processDataSource") DataSource processDataSource,
 			PlatformTransactionManager jpaTransactionManager, SpringAsyncExecutor springAsyncExecutor,
-			BeanResolverStrategy beanResolver) throws Exception {
+			BeanResolverStrategy beanResolver, UserGroupManager userGroupManager) throws Exception {
 		
 		SpringProcessEngineConfiguration engineConfiguration = this
-				.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor);
+				.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor,userGroupManager);
 
 		if (deploymentName.isPresent()) {
 			engineConfiguration.setDeploymentName(deploymentName.get());

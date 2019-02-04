@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.convert.CustomConversions;
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
@@ -38,11 +38,11 @@ import com.antheminc.oss.nimbus.support.mongo.MongoConvertersBuilder;
  *
  */
 @Configuration
-@EnableMongoAuditing
+@EnableMongoAuditing(dateTimeProviderRef="default.zdt.provider")
 public class DefaultMongoConfig {
 
 	@Bean
-	public CustomConversions defaultMongoCustomConversions() {
+	public MongoCustomConversions defaultMongoCustomConversions() {
 		return new MongoConvertersBuilder().addDefaults().build();
 	}
 	

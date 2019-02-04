@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,6 +30,7 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
@@ -60,9 +62,11 @@ public class DefaultActionExecutorConfigTest extends AbstractFrameworkIngeration
 	}
 
 	@Test
+	@WithMockUser(username="user", password="pwd")
 	public void t00_json() throws Exception {
 		 
 		mvc.perform(post(createRequest(VIEW_PARAM_ROOT, Action._config).getRequestURI())
+				.with(csrf())
 					.content("{}")
 					.contentType(APPLICATION_JSON_UTF8))
 	               	.andExpect(status().isOk())
