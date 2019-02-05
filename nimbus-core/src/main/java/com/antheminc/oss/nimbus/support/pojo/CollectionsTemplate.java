@@ -181,8 +181,7 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 	
 	
 	/**
-	 * Sorts the input list with provided comparator. reverse ordering will be applied based on reverse supplier
-	 * <p> this method updates the input list containing sorted elements 
+	 * Sorts the input list with provided comparator. This method updates the input list with sorted elements 
 	 * 
 	 * @param src
 	 * @param comparator
@@ -193,8 +192,7 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 	}
 	
 	/**
-	 * Sorts the input list with provided comparator. reverse ordering will be applied based on reverse supplier
-	 * <p> this method updates the input list containing sorted elements 
+	 * Sorts the input list with provided comparator in reverse. This method updates the input list containing sorted elements 
 	 * 
 	 * @param src
 	 * @param comparator
@@ -206,8 +204,7 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 	
 	
 	/**
-	 * Sorts the input list with provided comparator. reverse ordering will be applied based on reverse supplier
-	 * <p> this method returns the new list containing sorted elements, input list remains unchanged
+	 * Sorts the input list with provided comparator. This method returns the new list containing sorted elements, input list remains unchanged
 	 * 
 	 * @param src
 	 * @param comparator
@@ -220,8 +217,7 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 	}
 	
 	/**
-	 * Sorts the input list with provided comparator. reverse ordering will be applied based on reverse supplier
-	 * <p> this method returns the new list containing sorted elements, input list remains unchanged
+	 * Sorts the input list with provided comparator in reverse. This method returns the new list containing sorted elements, input list remains unchanged
 	 * 
 	 * @param src
 	 * @param comparator
