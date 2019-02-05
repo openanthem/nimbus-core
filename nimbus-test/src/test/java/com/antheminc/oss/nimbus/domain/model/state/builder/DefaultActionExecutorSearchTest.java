@@ -602,6 +602,22 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
+		
+		
+	}
+	
+	@Test
+	public void t21_testSearchByQueryAggregation() {
+		cleanInsertSampleCoreAccess(new String[] {"1","2","3","4","5","6"});
+		
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=query&where={aggregate:\"sample_core_access\",pipeline:[{$match:{\"attr_String\":{$eq:\"1\"}}}]}");
+		
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		assertNotNull(ops);
+		List<SampleCoreEntityAccess> response = (List<SampleCoreEntityAccess>)ops.get(0).getValue();
+		assertNotNull(response);
+		assertEquals("1", response.get(0).getAttr_String());		
 	}
 
 	private void getFirstPage() {
