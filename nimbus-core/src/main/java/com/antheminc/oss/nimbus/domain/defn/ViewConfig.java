@@ -2385,7 +2385,14 @@ public class ViewConfig {
 	public @interface RichText {
 
 		public enum ToolbarFeature {
-			ALIGN, BACKGROUND, BLOCKQUOTE, BOLD, CLEAN, CODE, CODE_BLOCK, COLOR, DIRECTION, FONT, HEADER, IMAGE, INDENT, ITALIC, LINK, LIST, SCRIPT, SIZE, STRIKE, UNDERLINE, VIDEO;
+			ALIGN, BACKGROUND, BLOCKQUOTE, BOLD, CLEAN, CODE, CODE_BLOCK, COLOR, DIRECTION, FONT, HEADER, IMAGE, INDENT,
+			/**
+			 * <p>Adds a combobox to the toolbar. Selected values from the
+			 * combobox will be inserted into the editor's last known cursor
+			 * position (at the start if untouched).</p><p>Values can be
+			 * supplied by decorating the field with {@link Values}.</p>
+			 */
+			VALUES_COMBOBOX, ITALIC, LINK, LIST, SCRIPT, SIZE, STRIKE, UNDERLINE, VIDEO;
 		}
 
 		String alias() default "RichText";

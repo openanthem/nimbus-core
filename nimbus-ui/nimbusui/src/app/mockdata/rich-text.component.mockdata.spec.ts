@@ -27,7 +27,8 @@ export const MockRichText = {
                     "LINK",
                     "IMAGE",
                     "VIDEO",
-                    "CLEAN"
+                    "CLEAN",
+                    "VALUES_COMBOBOX"
                 ],
                 "formats": "",
                 "cssClass": "nm-sample-style-class",
@@ -53,6 +54,15 @@ export const MockRichText = {
         "locale": "en-US",
         "text": "Sample @RichText Component (w/ postEventOnChange = true)"
       }
+    ],
+    "values" : [
+        {
+            "label": "Value 1",
+            "code": "#{VALUE_1}"
+        }, {
+            "label": "Value 2",
+            "code": "#{VALUE_2}"
+        }
     ],
     "enabled": true,
     "visible": true,
