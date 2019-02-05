@@ -99,6 +99,7 @@ public enum Constants {
 	SEARCH_REQ_PROJECT_MAPPING_MARKER("projection.mapsTo"),
 	
 	SEARCH_REQ_AGGREGATE_MARKER("aggregate"),
+	SEARCH_REQ_AGGREGATE_PIPELINE("pipeline"),
 	SEARCH_REQ_AGGREGATE_COUNT("count"),
 	
 	SEARCH_REQ_FETCH_MARKER("fetch"),
