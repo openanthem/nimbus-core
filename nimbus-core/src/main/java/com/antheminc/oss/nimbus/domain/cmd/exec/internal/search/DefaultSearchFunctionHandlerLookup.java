@@ -48,9 +48,9 @@ import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
 @EnableLoggingInterceptor
 public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunctionHandler<T, R> {
 
-	protected static final String propertyDelimiter = ".";
-	protected static final String toReplace = "//"+propertyDelimiter;
-	protected static final String replaceWith = "//?"+propertyDelimiter;
+	protected static final String PROPERTY_DELIMITER = ".";
+	protected static final String TO_REPLACE = "//"+PROPERTY_DELIMITER;
+	protected static final String REPLACE_WITH = "//?"+PROPERTY_DELIMITER;
 	
 	private ExpressionEvaluator expressionEvaluator;
 	
@@ -119,8 +119,8 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		if(list.size() > 2)
 			throw new InvalidConfigException("ParamValues lookup failed due to more than 2 fields provided in projection to create the param values for command: "+cmd);
 		
-		String cd = list.get(0).replaceAll(toReplace, replaceWith);
-		String lb = list.get(1).replaceAll(toReplace, replaceWith);
+		String cd = list.get(0).replaceAll(TO_REPLACE, REPLACE_WITH);
+		String lb = list.get(1).replaceAll(TO_REPLACE, REPLACE_WITH);
 		try {
 			List<ParamValue> paramValues = new ArrayList<>();
 			for(Object model: searchResult) {
@@ -146,13 +146,13 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		if(StringUtils.isBlank(orderBy) || StringUtils.startsWith(orderBy, findRepoAlias(mConfig)+"."))
 			return (R) paramValues;
 		
-		int index = StringUtils.lastIndexOf(orderBy, propertyDelimiter);
+		int index = StringUtils.lastIndexOf(orderBy, PROPERTY_DELIMITER);
 		
 		if(index == -1)
 			throw new IllegalStateException("Invalid orderby clause for StaticCodeValue search for a command "+cmd+" . It must follow the pattern \"property.direction\" e.g. code.asc() or name.firstName.desc()");
 		
-		String property = StringUtils.substringBeforeLast(orderBy, propertyDelimiter);
-		String direction = StringUtils.substringAfterLast(orderBy, propertyDelimiter);
+		String property = StringUtils.substringBeforeLast(orderBy, PROPERTY_DELIMITER);
+		String direction = StringUtils.substringAfterLast(orderBy, PROPERTY_DELIMITER);
 		
 		try {
 			if(StringUtils.equalsAnyIgnoreCase(direction, Constants.SEARCH_REQ_ORDERBY_DESC_MARKER.code))

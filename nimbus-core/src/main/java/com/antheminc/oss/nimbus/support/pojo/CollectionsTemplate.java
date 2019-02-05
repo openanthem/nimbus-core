@@ -17,6 +17,7 @@ package com.antheminc.oss.nimbus.support.pojo;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -188,7 +189,7 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 	 * @param reverse
 	 */
 	public static <E> void sortSelf(final List<E> src, final Comparator<E> comparator) {
-		 src.sort(comparator);
+		Optional.ofNullable(src).ifPresent(list -> list.sort(comparator));
 	}
 	
 	/**
@@ -199,7 +200,7 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 	 * @param reverse
 	 */
 	public static <E> void sortSelfReverse(final List<E> src, final Comparator<E> comparator) {
-		 src.sort(comparator.reversed());
+		 Optional.ofNullable(src).ifPresent(list -> list.sort(comparator.reversed()));
 	}
 	
 	
@@ -211,9 +212,11 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 	 * @param reverse
 	 */
 	public static <E> List<E> sortReturnNew(final List<E> src, final Comparator<E> comparator) {
-		return src.stream()
-			.sorted(comparator)
-			.collect(Collectors.toList());
+		return Optional.ofNullable(src)
+				.orElseGet(Collections::emptyList)
+				.stream()
+				.sorted(comparator)
+				.collect(Collectors.toList());
 	}
 	
 	/**
