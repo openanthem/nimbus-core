@@ -56,6 +56,7 @@ import lombok.RequiredArgsConstructor;
 public class MongoSearchByQuery extends MongoDBSearch {
 
 	private static final ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
+	private static final String orderByAliasSuffix = ".";
 	
 	private static final String AGGREGATION_QUERY_REGEX = ".*\"?'?aggregate\"?'?\\s*:.*";
 	private static final Pattern AGGREGATION_QUERY_REGEX_PATTERN = Pattern.compile(AGGREGATION_QUERY_REGEX, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
@@ -93,7 +94,7 @@ public class MongoSearchByQuery extends MongoDBSearch {
 
 		public QueryBuilder buildOrderBy(String criteria, Class<?> referredClass, String alias ) {
 			
-			if(StringUtils.isBlank(criteria)) {
+			if(StringUtils.isBlank(criteria) || !StringUtils.startsWith(criteria, alias+orderByAliasSuffix)) {
 				return this;
 			}
 			

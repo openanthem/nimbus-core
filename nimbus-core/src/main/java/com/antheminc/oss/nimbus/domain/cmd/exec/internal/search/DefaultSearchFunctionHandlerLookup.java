@@ -16,16 +16,15 @@
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal.search;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
@@ -35,9 +34,11 @@ import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.LookupSearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ProjectCriteria;
 import com.antheminc.oss.nimbus.entity.StaticCodeValue;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
+import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
 
 /**
  * @author Rakesh Patel
@@ -47,8 +48,10 @@ import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 @EnableLoggingInterceptor
 public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunctionHandler<T, R> {
 
-	protected static final String toReplace = "//.";
-	protected static final String replaceWith = "//?.";
+	protected static final String propertyDelimiter = ".";
+	protected static final String toReplace = "//"+propertyDelimiter;
+	protected static final String replaceWith = "//?"+propertyDelimiter;
+	
 	private ExpressionEvaluator expressionEvaluator;
 	
 	public DefaultSearchFunctionHandlerLookup(BeanResolverStrategy beanResolver) {
@@ -67,10 +70,9 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 				
 		Command cmd = executionContext.getCommandMessage().getCommand();
 		if(StringUtils.equalsIgnoreCase(cmd.getElementSafely(Type.DomainAlias).getAlias(), "staticCodeValue")) {
-			return getStaticParamValues((List<StaticCodeValue>)searchResult, cmd);
+			return getStaticParamValues((List<StaticCodeValue>)searchResult, mConfig, cmd);
 		}
-		LookupSearchCriteria lookupSearchCriteria = createSearchCriteria(executionContext, mConfig, actionParameter);
-		return getDynamicParamValues(lookupSearchCriteria, mConfig.getReferredClass(), searchResult);
+		return getDynamicParamValues(mConfig, searchResult, cmd);
 	}
 
 	
@@ -94,21 +96,28 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		return lookupSearchCriteria;
 	}
 	
-	private R getStaticParamValues(List<StaticCodeValue> searchResult, Command cmd) {	
+	private R getStaticParamValues(List<StaticCodeValue> searchResult, ModelConfig<?> mConfig, Command cmd) {	
 		if(CollectionUtils.isEmpty(searchResult))
 			return null;
 		
 		if(CollectionUtils.size(searchResult) > 1)
-			throw new IllegalStateException("StaticCodeValue search for a command "+cmd+" returned more than one records for paramCode");
+			throw new FrameworkRuntimeException("StaticCodeValue search for a command "+cmd+" returned more than one records, it must return only one record for the paramCode provided in the where clause");
 		
-		return (R) searchResult.get(0).getParamValues();
+		List<ParamValue> paramValues = searchResult.get(0).getParamValues();
+		
+		return sortIfApplicable(paramValues, mConfig, cmd);
+				
 	}
-	
-	private R getDynamicParamValues(LookupSearchCriteria lookupSearchCriteria, Class<?> criteriaClass, List<?> searchResult) {
-		List<String> list = new ArrayList<String>(lookupSearchCriteria.getProjectCriteria().getMapsTo().values());
+
+	private R getDynamicParamValues(ModelConfig<?> mConfig, List<?> searchResult, Command cmd) {
+		ProjectCriteria projectCriteria = buildProjectCriteria(cmd);
+		if(projectCriteria == null)
+			throw new InvalidConfigException("DynamicParamValues lookup needs projection.mapTo to create the param values for command: "+cmd+". found none.");
+		
+		List<String> list = new ArrayList<String>(projectCriteria.getMapsTo().values());
 
 		if(list.size() > 2)
-		throw new IllegalStateException("ParamValues lookup failed due to more than 2 fields provided to create the param values. the criteria class is "+criteriaClass);
+			throw new InvalidConfigException("ParamValues lookup failed due to more than 2 fields provided in projection to create the param values for command: "+cmd);
 		
 		String cd = list.get(0).replaceAll(toReplace, replaceWith);
 		String lb = list.get(1).replaceAll(toReplace, replaceWith);
@@ -121,11 +130,41 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 					paramValues.add(new ParamValue(code.toString(), label.toString()));
 				}
 			}
-			return (R)paramValues;
+			return sortIfApplicable(paramValues, mConfig, cmd);
 		}
 		catch(Exception ex) {
-			throw new FrameworkRuntimeException("Failed to parse property - code: "+list.get(0)+" and label: "+list.get(1), ex);
+			throw new FrameworkRuntimeException("Failed to parse property - code: "+list.get(0)+" and label: "+list.get(1)+" for command: "+cmd, ex);
 		}
+	}
+	
+	/**
+	 * In memory sorting of the param values
+	 */
+	private R sortIfApplicable(List<ParamValue> paramValues, ModelConfig<?> mConfig, Command cmd) {
+		String orderBy = cmd.getFirstParameterValue(Constants.SEARCH_REQ_ORDERBY_MARKER.code);
+		
+		if(StringUtils.isBlank(orderBy) || StringUtils.startsWith(orderBy, findRepoAlias(mConfig)+"."))
+			return (R) paramValues;
+		
+		int index = StringUtils.lastIndexOf(orderBy, propertyDelimiter);
+		
+		if(index == -1)
+			throw new IllegalStateException("Invalid orderby clause for StaticCodeValue search for a command "+cmd+" . It must follow the pattern \"property.direction\" e.g. code.asc() or name.firstName.desc()");
+		
+		String property = StringUtils.substringBeforeLast(orderBy, propertyDelimiter);
+		String direction = StringUtils.substringAfterLast(orderBy, propertyDelimiter);
+		
+		try {
+			if(StringUtils.equalsAnyIgnoreCase(direction, Constants.SEARCH_REQ_ORDERBY_DESC_MARKER.code))
+				CollectionsTemplate.sortSelfReverse(paramValues, Comparator.comparing(pv -> expressionEvaluator.getValue(property, pv, String.class)));
+			else
+				CollectionsTemplate.sortSelf(paramValues, Comparator.comparing(pv -> expressionEvaluator.getValue(property, pv, String.class)));
+		}
+		catch(Exception e) {
+			throw new FrameworkRuntimeException("Could not sort the param values with provided orderBy clause: "+orderBy+" , in command: "+cmd, e);
+		}
+		
+		return (R) paramValues;
 	}
 	
 }

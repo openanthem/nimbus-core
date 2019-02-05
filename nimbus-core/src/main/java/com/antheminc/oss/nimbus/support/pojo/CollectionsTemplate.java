@@ -17,11 +17,13 @@ package com.antheminc.oss.nimbus.support.pojo;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.springframework.util.CollectionUtils;
 
@@ -175,6 +177,58 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 		
 		boolean r = col.contains(other);
 		return r;
+	}
+	
+	
+	/**
+	 * Sorts the input list with provided comparator. reverse ordering will be applied based on reverse supplier
+	 * <p> this method updates the input list containing sorted elements 
+	 * 
+	 * @param src
+	 * @param comparator
+	 * @param reverse
+	 */
+	public static <E> void sortSelf(final List<E> src, final Comparator<E> comparator) {
+		 src.sort(comparator);
+	}
+	
+	/**
+	 * Sorts the input list with provided comparator. reverse ordering will be applied based on reverse supplier
+	 * <p> this method updates the input list containing sorted elements 
+	 * 
+	 * @param src
+	 * @param comparator
+	 * @param reverse
+	 */
+	public static <E> void sortSelfReverse(final List<E> src, final Comparator<E> comparator) {
+		 src.sort(comparator.reversed());
+	}
+	
+	
+	/**
+	 * Sorts the input list with provided comparator. reverse ordering will be applied based on reverse supplier
+	 * <p> this method returns the new list containing sorted elements, input list remains unchanged
+	 * 
+	 * @param src
+	 * @param comparator
+	 * @param reverse
+	 */
+	public static <E> List<E> sortReturnNew(final List<E> src, final Comparator<E> comparator) {
+		return src.stream()
+			.sorted(comparator)
+			.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Sorts the input list with provided comparator. reverse ordering will be applied based on reverse supplier
+	 * <p> this method returns the new list containing sorted elements, input list remains unchanged
+	 * 
+	 * @param src
+	 * @param comparator
+	 * @param reverse
+	 */
+	public static <E> List<E> sortReverseReturnNew(final List<E> src, final Comparator<E> comparator) {
+		return sortReturnNew(src, comparator.reversed());
 	}
 	
 }
