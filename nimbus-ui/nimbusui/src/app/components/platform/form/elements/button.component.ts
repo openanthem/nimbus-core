@@ -47,7 +47,7 @@ import { PrintConfig } from './../../../../shared/print-event';
     template: `
         <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc">
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.primary.toString() && element?.visible == true">
-                <button class="btn btn-primary"  eventpropagation (clickEvnt)="onSubmit()" [path]="element.path" type="{{element.config?.uiStyles?.attributes?.type}}" [disabled]="!form.valid">{{label}}</button>
+                <button class="btn btn-primary"  eventpropagation [form]= "form" (clickEvnt)="onSubmit()" [path]="element.path" type="{{element.config?.uiStyles?.attributes?.type}}" [disabled]="!form.valid">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.secondary.toString() && element?.visible == true">
                 <button class="btn btn-secondary" [disabled]="disabled" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
