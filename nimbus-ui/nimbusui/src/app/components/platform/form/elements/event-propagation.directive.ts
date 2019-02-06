@@ -1,3 +1,4 @@
+
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -22,7 +23,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { debounceTime } from 'rxjs/operators';
 import { PageService } from './../../../../services/page.service';
 import { LoggerService } from './../../../../services/logger.service';
-
+import { FormGroup } from '@angular/forms';
+import 'rxjs/add/operator/filter';
 /**
  * \@author Sandeep.Mantha
  * 
@@ -33,6 +35,7 @@ import { LoggerService } from './../../../../services/logger.service';
   export class EventPropagationDirective implements OnInit, OnDestroy{
 
     @Input() path:string;
+    @Input() form:FormGroup;
     private clicksubject = new Subject();
     private subscription: Subscription;
     private postProcessing: Subscription;
@@ -51,12 +54,18 @@ import { LoggerService } from './../../../../services/logger.service';
         err => { this.logger.error('Failed to emit click event' + JSON.stringify(err))}
       );
 
-      this.postProcessing = this.pageService.postResponseProcessing$.subscribe(
-        event => {
-                    if(event === this.path) {
+      this.postProcessing = this.pageService.postResponseProcessing$
+      .filter(p=> (p === this.path))
+      .subscribe(event => {
+                  if(this.form) {
+                    if(this.form.valid) {
                       this.srcElement.removeAttribute('disabled');
                     }
-                 },
+                  }
+                  else {
+                    this.srcElement.removeAttribute('disabled');
+                  }
+                },
         err => { this.logger.error('Failed on processing eventpropagation for path ' + event + ' with '+ JSON.stringify(err));}
       )
     }

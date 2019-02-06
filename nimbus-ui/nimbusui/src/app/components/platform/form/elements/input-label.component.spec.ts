@@ -72,6 +72,14 @@ describe('InputLabel', () => {
     expect(hostComponent).toBeTruthy();
   }));
 
+  it('nm-tooltip should be created if helpText is configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const tooltipEle = debugElement.query(By.css('nm-tooltip'));
+    expect(tooltipEle).toBeTruthy();
+  }));
+
   it('label should be created if the label is configured', async(() => {
     ServiceConstants.LOCALE_LANGUAGE = 'en-US';
     fixture.detectChanges();
@@ -80,12 +88,17 @@ describe('InputLabel', () => {
     expect(labelEle).toBeTruthy();
   }));
 
-  it('nm-tooltip should be created if helpText is configured', async(() => {
+  it('label should be updated if they is a change in element.labels', async(() => {
     ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    hostComponent.element.labels[0].helpText = '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const tooltipEle = debugElement.query(By.css('nm-tooltip'));
-    expect(tooltipEle).toBeTruthy();
+    const labelEle = debugElement.query(By.css('label'));
+    expect(labelEle.nativeElement.innerText.toString()).toEqual('First Name---127...');
+    hostComponent.element.labels[0].text = 'last name';
+    fixture.detectChanges();
+    const updatedLabelEle = debugElement.query(By.css('label'));
+    expect(updatedLabelEle.nativeElement.innerText).toEqual('last name');
   }));
 
   it('nm-tooltip should not be created if helpText is not configured', async(() => {
