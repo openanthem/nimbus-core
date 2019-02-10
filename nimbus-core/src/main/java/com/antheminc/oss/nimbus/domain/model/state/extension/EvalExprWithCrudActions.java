@@ -24,8 +24,6 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
-import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
-import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -35,8 +33,7 @@ import lombok.Getter;
  *
  */
 @Getter(AccessLevel.PROTECTED)
-public abstract class EvalExprWithCrudActions<A extends Annotation> extends AbstractConditionalStateEventHandler 
-	implements OnStateLoadHandler<A>, OnStateChangeHandler<A> {
+public abstract class EvalExprWithCrudActions<A extends Annotation> extends AbstractConditionalStateEventHandler<A> {
 	
 	public EvalExprWithCrudActions(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
@@ -45,6 +42,11 @@ public abstract class EvalExprWithCrudActions<A extends Annotation> extends Abst
 	@Override
 	public void onStateLoad(A configuredAnnotation, Param<?> param) {
 		handleInternal(param, configuredAnnotation, StateEventType.ON_LOAD);
+	}
+	
+	@Override
+	public void onStateLoadNew(A configuredAnnotation, Param<?> param) {
+		handleInternal(param, configuredAnnotation);
 	}
 	
 	@Override

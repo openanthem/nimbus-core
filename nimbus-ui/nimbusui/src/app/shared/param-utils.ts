@@ -16,12 +16,11 @@
  */
 'use strict';
 
-import { ConfigService } from './../services/config.service';
-import { SortAs } from '../components/platform/grid/sortas.interface';
-import { PageService } from '../services/page.service';
-import { GridService } from '../services/grid.service';
 import { ServiceConstants } from '../services/service.constants';
 import { Param } from './param-state';
+import { LabelConfig } from './param-config';
+import { UiNature } from './param-config';
+
 /**
  * \@author Tony.Lopez
  * \@whatItDoes 
@@ -270,4 +269,120 @@ export class ParamUtils {
     
         return true;
     }
+
+    static getHelpText(labelConfig: LabelConfig) {
+        if (!labelConfig) {
+            return undefined;
+        }
+        return labelConfig.helpText;
+    }
+
+    static getLabelText(labelConfig: LabelConfig) {
+        if (!labelConfig) {
+            return undefined;
+        }
+        return labelConfig.text;
+    }
+
+    /**
+     * Retrieve a UiNature by name from uiNatures. If not uiNatures is undefined or the uiNature 
+     * by name is not found, undefined is returned.
+     * @param param The param to inspect
+     * @param name The name of the uiNature on this param to find
+     */
+    static getUiNature(param: Param, name: string): UiNature {
+        let uiNatures = ParamUtils.getUiNatures(param);
+        return !uiNatures ? undefined : uiNatures.find(uiNature => uiNature.name === name);
+    }
+    
+    /**
+     * Get the UiNature[] if it exists and is non-empty on this instance
+     * @param param The param to inspect
+     */
+    static getUiNatures(param: Param): UiNature[] {
+        if (param.config && param.config.uiNatures && param.config.uiNatures.length > 0) {
+            return param.config.uiNatures;
+        } else {
+            return undefined;
+        }
+    }
+
+    static getDomainIdFromPath(path: string): string {
+        if (!path) {
+            return undefined;
+        }
+        return path.split('/')[1];
+    }
+
+    static getPageIdFromPath(path: string): string {
+        if (!path) {
+            return undefined;
+        }
+        return path.split('/')[2];
+    }
+
+    static getDomainPageFromPath(path: string): string {
+        let domain = ParamUtils.getDomainIdFromPath(path);
+        if (!domain) {
+            return undefined;
+        }
+        let page = ParamUtils.getPageIdFromPath(path);
+        if (!page) {
+            return undefined;
+        }
+        return `/${domain}/${page}`;
+    }
+
+    /**
+     * <p>This method resolves a relative path based on the current param's path.</p>
+     * <p> If paramPath is /currentDomain/page/section/grid , then various examples of relative path that can be resolved are :
+     * '../postButton' =>  /currentDomain/page/section/postButton
+     * '<!#this!>/../postButton' => /currentDomain/page/section/postButton
+     * '/p/anotherdomain/page/section' => null (This will throw an error as cross domain requests need to be used using @Config)
+     * '/currentdomain/page/section/tile' => /currentdomain/page/section/tile
+     * '../../tile2/section2/postButton' => /currentdomain/page/tile2/section2/postButton
+     * .d/page/tile/section
+     * @param paramPath
+     * @param pathToResolve 
+     */
+    public static resolveParamUri(paramPath: string, pathToResolve: string): string {
+        if (pathToResolve === undefined || pathToResolve === null || pathToResolve.length === 0) {
+           return null;
+       }
+        if (pathToResolve.startsWith(`${ServiceConstants.PLATFORM_SEPARATOR}/`)) {
+           console.error('Cannot use cross domain uri here. Consider using @Config on a param for cross domain requests');
+           return null;
+       }
+        const key_parts = pathToResolve.split(ServiceConstants.PATH_SEPARATOR);
+       if (key_parts.length === 0) {
+           return pathToResolve;
+       }
+       // If absolute uri is given - exit immediately with the pathToResolve.
+       if (pathToResolve.indexOf(ServiceConstants.PATH_SEPARATOR) === 0) {
+           return pathToResolve;
+       }
+        const currTopParamPathSegment = key_parts[0];
+       const currentTopNestedParamPath = this.resolvePathConstants(paramPath, currTopParamPathSegment);
+        if (key_parts.length === 1) {
+           return currentTopNestedParamPath;
+       }
+       return this.resolveParamUri(currentTopNestedParamPath, key_parts.slice(1).join(ServiceConstants.PATH_SEPARATOR));
+   }
+    public static resolvePathConstants(currentPath: string, resolvePathSegment: string): string {
+        const currentPath_parts = currentPath.split(ServiceConstants.PATH_SEPARATOR);
+       // If resolvePathSegment is '..', then strip the last param of current path
+       // Ex: currentPath = /currentdomain/page/section/grid, resolvePathSegment = '..' -> return '/currentdomain/page/section'
+       if (resolvePathSegment === ServiceConstants.SEPARATOR_URI_PARENT) {
+           return currentPath_parts.slice(0 , currentPath_parts.length - 1).join(ServiceConstants.PATH_SEPARATOR);
+        } else if (resolvePathSegment === ServiceConstants.MARKER_COMMAND_PARAM_CURRENT_SELF) {
+       // Ex: currentPath = /currentdomain/page/section/grid, resolvePathSegment = '<!#this!>' -> return '/currentdomain/page/section/grid'
+           return currentPath;
+        } else if (resolvePathSegment === ServiceConstants.SEPARATOR_URI_ROOT_DOMAIN) {
+       // Ex: currentPath = /currentdomain/page/section/grid, resolvePathSegment = '.d' -> return '/currentdomain'
+           return currentPath_parts.slice(0, 2).join(ServiceConstants.PATH_SEPARATOR);
+        } else {
+   // Ex: currentPath = /currentdomain/page/section/grid, resolvePathSegment = 'button' -> return '/currentdomain/page/section/grid/button'
+           return currentPath.concat(ServiceConstants.PATH_SEPARATOR).concat(resolvePathSegment);
+       }
+   }
 }

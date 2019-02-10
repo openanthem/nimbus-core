@@ -15,9 +15,9 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
-import java.io.Serializable;
 import java.util.List;
 
+import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
@@ -27,28 +27,22 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
  */
 public interface ExternalModelRepository extends ModelRepository {
 
-	default public <T> T _new(ModelConfig<T> mConfig){
+	default public <T> T _new(Command cmd, ModelConfig<T> mConfig) {
 		throw new UnsupportedOperationException("_new operation is not supported for Database.rep_ws repository");
 	}
 	
-	default public <T> T _new(ModelConfig<T> mConfig, T newState){
+	default public <T> T _new(Command cmd, ModelConfig<T> mConfig, T newState) {
 		throw new UnsupportedOperationException("_new operation is not supported for Database.rep_ws repository");
 	}
 	
-	default public <ID extends Serializable, T> T _save(String alias, T state) {
+	default public <T> T _save(String alias, T state) {
 		return state;
 	}
 	
-	default public <ID extends Serializable, T> T _get(ID id, Class<T> referredClass, String alias){
-		throw new UnsupportedOperationException("_new operation is not supported for Database.rep_ws repository");
-	}
-	
-	//Action._update: partial update
-	default public <ID extends Serializable,T> T _update(String alias, ID id, String path, T state){
+	default public <T> T _update(Param<?> param, T state){
 		throw new UnsupportedOperationException("_update operation is not supported for Database.rep_ws repository");
 	}
 	
-	//Action._replace: complete update
 	default public void _replace(Param<?> param){
 		throw new UnsupportedOperationException("_replace operation is not supported for Database.rep_ws repository");
 	}
@@ -61,8 +55,7 @@ public interface ExternalModelRepository extends ModelRepository {
 		throw new UnsupportedOperationException("_replace operation is not supported for Database.rep_ws repository");
 	}
 	
-	//Action._delete
-	default public <ID extends Serializable, T> T _delete(ID id, Class<T> referredClass, String alias){
+	default public <T> T _delete(Param<?> param){
 		throw new UnsupportedOperationException("_delete operation is not supported for Database.rep_ws repository");
 	}
 	

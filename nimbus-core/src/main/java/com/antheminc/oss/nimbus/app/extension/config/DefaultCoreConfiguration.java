@@ -18,10 +18,13 @@ package com.antheminc.oss.nimbus.app.extension.config;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -29,21 +32,28 @@ import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.web.client.RestTemplate;
 
+import com.antheminc.oss.nimbus.channel.web.RemoteModelClientHttpRequestInterceptor;
 import com.antheminc.oss.nimbus.channel.web.WebActionController;
 import com.antheminc.oss.nimbus.channel.web.WebCommandBuilder;
 import com.antheminc.oss.nimbus.channel.web.WebCommandDispatcher;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.ClassPropertyConverter;
+import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryDetached;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryLocal;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepositoryGateway;
 import com.antheminc.oss.nimbus.domain.model.state.repo.SpringSecurityAuditorAware;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ws.DefaultWSModelRepository;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ws.ParamStateAtomicRemotePersistenceEventListener;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ws.RemoteWSModelRepository;
 import com.antheminc.oss.nimbus.domain.rules.DefaultRulesEngineFactoryProducer;
+import com.antheminc.oss.nimbus.domain.rules.drools.DecisionTableConfigBuilder;
+import com.antheminc.oss.nimbus.domain.rules.drools.DrlConfigBuilder;
 import com.antheminc.oss.nimbus.domain.rules.drools.DroolsRulesEngineFactory;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerReflection;
@@ -54,16 +64,42 @@ import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerReflection;
  */
 @Configuration
 @ComponentScan(basePackageClasses = WebActionController.class)
+@EnableCaching
 public class DefaultCoreConfiguration {
 	
 	@Bean
 	public DefaultModelRepositoryFactory defaultModelRepositoryFactory(BeanResolverStrategy beanResolver){
-		return new DefaultModelRepositoryFactory(beanResolver);
+		/*Add ModelRepository implementation beans to a lookup map*/
+		Map<String, ModelRepository> repoBeanLookup = new HashMap<>();
+		repoBeanLookup.put(Repo.Remote.rep_remote_ws.name(), beanResolver.get(ModelRepository.class, Repo.Remote.rep_remote_ws.name()));
+		repoBeanLookup.put(Repo.Database.rep_mongodb.name(), beanResolver.get(ModelRepository.class, Repo.Database.rep_mongodb.name()));
+		repoBeanLookup.put(Repo.Database.rep_ws.name(), beanResolver.get(ModelRepository.class, Repo.Database.rep_ws.name()));
+
+		return new DefaultModelRepositoryFactory(beanResolver, repoBeanLookup);
 	}
 
 	@Bean(name="default.rep_ws")
-	public DefaultWSModelRepository defaultWSModelRepository(BeanResolverStrategy beanResolver){
-		return new DefaultWSModelRepository(beanResolver);
+	public DefaultWSModelRepository defaultWSModelRepository(BeanResolverStrategy beanResolver, RestTemplateBuilder builder){
+		RestTemplate restTemplate = beanResolver.get(RestTemplate.class, "rep_ws.restTemplate");
+		return new DefaultWSModelRepository(beanResolver, restTemplate);
+	}
+	
+	@Bean(name="default.rep_remote_ws")
+	public RemoteWSModelRepository remoteWSModelRepository(BeanResolverStrategy beanResolver){
+		RestTemplate restTemplate = beanResolver.get(RestTemplate.class, "rep_remote_ws.restTemplate");
+		return new RemoteWSModelRepository(beanResolver, restTemplate);
+	}
+	
+	@Bean(name="default.rep_ws.restTemplate")
+	public RestTemplate wsRestTemplate(RestTemplateBuilder builder) {
+		RestTemplate restTemplate = builder.build();
+		return restTemplate;
+	}
+	
+	@Bean(name="default.rep_remote_ws.restTemplate")
+	public RestTemplate remoteWSRestTemplate(RestTemplateBuilder builder) {
+		RestTemplate restTemplate = builder.additionalInterceptors(new RemoteModelClientHttpRequestInterceptor()).build();
+		return restTemplate;
 	}
 	
 	@Bean(name="default.paramStateAtomicPersistenceEventListener")
@@ -71,10 +107,11 @@ public class DefaultCoreConfiguration {
 		return new ParamStateAtomicPersistenceEventListener(repoFactory);
 	}
 	
-//	@Bean(name="default.paramStateBatchPersistenceEventListener")
-//	public ParamStateBulkPersistenceEventListener paramStateBatchPersistenceEventListener(ModelRepositoryFactory repoFactory){
-//		return new ParamStateBulkPersistenceEventListener(repoFactory);
-//	}
+	@Bean(name="default.paramStateAtomicRemotePersistenceEventListener")
+	public ParamStateAtomicRemotePersistenceEventListener paramStateAtomicRemotePersistenceEventListener(ModelRepositoryFactory repoFactory){
+		return new ParamStateAtomicRemotePersistenceEventListener(repoFactory);
+	}
+	
 	
 	@Bean(name="default.param.state.rep_local")
 	public DefaultParamStateRepositoryLocal defaultParamStateRepositoryLocal(JavaBeanHandler javaBeanHandler){
@@ -95,8 +132,18 @@ public class DefaultCoreConfiguration {
 	
 	//rules drools
 	@Bean(name="rules.factory.drools")
-	public DroolsRulesEngineFactory droolsRulesEngineFactory(){
-		return new DroolsRulesEngineFactory();
+	public DroolsRulesEngineFactory droolsRulesEngineFactory(BeanResolverStrategy beanResolver){
+		return new DroolsRulesEngineFactory(beanResolver);
+	}
+	
+	@Bean(name="rules.factory.drools.drl")
+	public DrlConfigBuilder drlConfigBuilder(){
+		return new DrlConfigBuilder();
+	}
+	
+	@Bean(name="rules.factory.drools.dtable")
+	public DecisionTableConfigBuilder dtableConfigBuilder(){
+		return new DecisionTableConfigBuilder();
 	}
 	
 	@Bean(name="default.rules.factory.producer")

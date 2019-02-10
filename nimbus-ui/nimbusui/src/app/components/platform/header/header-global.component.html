@@ -1,7 +1,7 @@
 <div class="header" *ngIf="topMenuItems || branding">
         <a class="sr-only" aria-hidden="true" href="">Skip Navigation</a>
-    <a [routerLink]="[homeRoute]">
-        <img src="{{imagesPath}}{{branding.logo.config.uiStyles.attributes.imgSrc}}" class=" logo" alt="{{this.label}}" />
+    <a *ngIf="headerImageURL" [routerLink]="[homeRoute]">
+        <img src="{{headerImageURL}}" class=" logo" alt="{{this.label}}" />
     </a>
     <div class="p-0 float-right clearfix">
         <nav class=" nav navbar navbar-expand-sm headerMenu float-right clearfix" role="navigation">

@@ -29,9 +29,9 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.springframework.util.ClassUtils;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
@@ -123,13 +123,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		}
 	};
 	
+	@JsonIgnore
+	private RemnantState<StyleState> styleState = this.new RemnantState<>(null);
+	
 	@Override
 	public boolean hasContextStateChanged() {
-		if(visibleState.hasChanged() || enabledState.hasChanged() || messageState.hasChanged()  
-				|| activeValidationGroupsState.hasChanged() || labelState.hasChanged())
-			return true;
-		
-		return false;
+		return visibleState.hasChanged() || enabledState.hasChanged() || messageState.hasChanged() || 
+				activeValidationGroupsState.hasChanged() || labelState.hasChanged() || 
+				styleState.hasChanged();
 	}
 	
 	
@@ -1015,5 +1016,27 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 					.append(", state=").append(getState())
 					.append(")")
 					.toString();
+	}
+
+	@Override
+	public StyleState getStyle() {
+		return this.styleState.getCurrState();
+	}
+
+	@Override
+	public void setStyle(StyleState styleState) {
+		this.styleState.setState(styleState);
+	}
+
+	@Override
+	public boolean isEmpty() {
+		T leafState = this.getLeafState();
+		if (leafState == null) {
+			return true;
+		}
+		if (String.class == this.getType().getConfig().getReferredClass()) {
+			return ((String) leafState).isEmpty();
+		}
+		return false;
 	}
 }

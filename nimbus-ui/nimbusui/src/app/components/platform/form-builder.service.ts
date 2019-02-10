@@ -49,8 +49,7 @@ export class FormElementsService {
   buildFormGroup(elements: Param[]): {} {
     let group: any = {};
     elements.forEach(element => {
-      if(element.config!= null && ((element.config.uiStyles != null && element.config.uiStyles.attributes!= null && element.config.uiStyles.attributes.alias !== 'Button'
-          && element.config.uiStyles.attributes.alias !== 'ButtonGroup') || element.config.uiStyles==null)){
+      if(element.config!= null && ((element.config.uiStyles != null && element.config.uiStyles.attributes!= null && element.config.uiStyles.attributes.dataEntryField) || element.config.uiStyles==null)){
         var checks: ValidatorFn[] = [];
         checks = ValidationUtils.buildStaticValidations(element);
         //if the form element's state is a collection we do not create a form group for it
@@ -109,8 +108,8 @@ export class FormElementsService {
     var leafState;
     if (ParamUtils.isKnownDateType(param.config.type.name)) {
       leafState = param.leafState || null;
-    } else if(param.alias === 'Grid' && param.gridList && param.gridList.length > 0) {
-        leafState = param.gridList;
+    } else if(param.alias === 'Grid' && param.gridData.leafState && param.gridData.leafState.length > 0) {
+        leafState = param.gridData.leafState;
     } else {
       leafState = param.leafState || '';
     }

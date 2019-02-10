@@ -78,4 +78,12 @@ public class ExecuteOutput<T> implements Serializable{
 		} 
 		private List<HolderValue<T>> outputs;		
 	}
+	
+	@Getter @Setter @SuppressWarnings("serial") @ToString(callSuper=true) 
+	public static class GenericListExecute<T> extends ExecuteOutput<Map<Integer, ExecuteOutput.BehaviorExecute<CmdExecuteOutput<List<T>>>>> {
+		
+		public List<T> extractSingleValue() {
+			return getResult().get(0).getResult().getOutputs().get(0).getValue();
+		}
+	}
 }

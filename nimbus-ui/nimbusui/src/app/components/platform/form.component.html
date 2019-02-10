@@ -1,22 +1,24 @@
 <form id="{{formId}}" [formGroup]="form" novalidate>
-    <nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize"></nm-label>
-
+    <ng-template [ngIf] = "element?.visible">
+        <nm-counter-message *ngIf="element.config?.uiStyles?.attributes?.showMessages" [element]="element" [form]="form"></nm-counter-message>
+        <nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize"></nm-label>
+    </ng-template>
     <!-- Render form elements -->
     <ng-template [ngIf] = "formModel.length > 0">
         <ng-template ngFor let-frmElem [ngForOf]="formModel">
             <ng-template [ngIf]="frmElem.elementType == formElementType.ACCORDION.toString()">
-                <nm-accordion [element]="frmElem.param" [elementCss]="elementCss" [form]="form" [position]="position + 1">
+                <nm-accordion [element]="frmElem.param" [hidden]="!frmElem.param.visible" [elementCss]="elementCss" [form]="form" [position]="position + 1" [nmPrint]="frmElem.param">
                 </nm-accordion>
             </ng-template>
             <ng-template [ngIf]="frmElem.elementType == formElementType.GRID.toString()">
                 <!-- Future Implementation -->
             </ng-template>
             <ng-template [ngIf]="frmElem.elementType == formElementType.ELEMENTGROUP.toString()">
-                <nm-frm-grp [element]="frmElem.param" [form]="form" [elementCss]="elementCss" [position]="position + 1"> 
+                <nm-frm-grp [element]="frmElem.param" [hidden]="!frmElem.param.visible" [ngClass]="getElementClass(elementCss, frmElem.param)" [form]="form" [position]="position + 1"> 
                 </nm-frm-grp>
             </ng-template>
             <ng-template [ngIf]="frmElem.elementType == formElementType.ELEMENT.toString()">
-                <nm-frm-grp [element]="frmElem.param" [form]="form" [elementCss]="elementCss" [position]="position"> 
+                <nm-frm-grp [element]="frmElem.param" [hidden]="!frmElem.param.visible" [ngClass]="getElementClass(elementCss, frmElem.param)" [form]="form" [position]="position"> 
                 </nm-frm-grp>
             </ng-template>
         </ng-template>

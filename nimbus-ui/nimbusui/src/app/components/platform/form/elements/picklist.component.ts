@@ -58,7 +58,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         <div style="padding:2px;"> 
         <fieldset [disabled]="!parent?.enabled">
             <p-pickList #picklist 
-                [source]="parent.values" 
+                [source]="sourcelist" 
                 filterBy="label"
                 [sourceHeader] = "parent?.config?.uiStyles?.attributes.sourceHeader" 
                 [targetHeader]="parent?.config?.uiStyles?.attributes.targetHeader" 
@@ -86,6 +86,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 
 export class OrderablePickList extends BaseElement implements OnInit, ControlValueAccessor {
     @Input() parent: Param;
+    sourcelist: any[]; 
     @Input() selectedvalues : Values[];
     @Input() form: FormGroup;
     @Input('value') _value ;
@@ -110,14 +111,20 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
     ngOnInit() {
         this.loadLabelConfigFromConfigs(this.parent.labels, this.parent.config.code);
         this.requiredCss = ValidationUtils.applyelementStyle(this.parent);
+        this.sourcelist = [];
+        if (this.parent.values) {
+            this.parent.values.forEach(value => {
+                this.sourcelist.push(value);
+            });
+        }
+        
         // First check if the picklist has any values that are selected onload
-        if(this.element.leafState != null) {
+        if (this.element.leafState != null && this.element.leafState.length > 0) {
             this.targetList = this.element.leafState;
         } else {
             this.targetList = [];
         }
         this.refreshSourceList();
-
         if (this.form != null) {
             const parentCtrl = this.form.controls[this.parent.config.code];
             const frmCtrl = this.form.controls[this.element.config.code];
@@ -175,7 +182,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         });
     }
 
-    emitValueChangedEvent() {
+    emitValueChangedEvent() {        
         if (this.form == null || (this.form.controls[this.element.config.code]!= null 
             && this.form.controls[this.element.config.code].valid)) {
             this.controlValueChanged.emit(this.element);
@@ -297,15 +304,25 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
      */
     private refreshSourceList() {
         // make sure targetlist and leafstate are in sync
-        if(this.element.leafState) {
+        if (this.element.leafState !== undefined &&
+            this.element.leafState !== null && this.element.leafState.length > 0) {
+
             this.targetList = this.element.leafState;
+        } else {
+            this.targetList = [];
         }
-        if (this.targetList) {
-            for (var targetItem of this.targetList) {
-                this.parent.values = this.parent.values.filter(value => 
-                    value.code !== targetItem
+
+        if (this.targetList && this.targetList.length > 0) {
+            if (this.parent.values != null && this.parent.values.length > 0) {
+                this.sourcelist = this.parent.values.filter(value => 
+                    this.targetList.indexOf(value.code) < 0
                 );
             }
+        } else {
+            this.sourcelist = [];
+            this.parent.values.forEach(value => {
+                this.sourcelist.push(value);
+            });
         }
     }
 

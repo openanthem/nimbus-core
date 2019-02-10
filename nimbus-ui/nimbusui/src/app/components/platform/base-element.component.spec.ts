@@ -6,110 +6,116 @@ import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Param } from '../../shared/param-state';
 import { ConfigService } from '../../services/config.service';
+import { setup, TestContext } from '../../setup.spec';
+import { configureTestSuite } from 'ng-bullet';
+import { fieldValueParam } from 'mockdata';
 
-let fixture, app, configService;
+let configService, param;
+
+const declarations = [BaseElement];
+const imports = [
+   HttpModule,
+   HttpClientTestingModule
+];
+const providers = [   ConfigService];
+let fixture, hostComponent;
 
 describe('BaseElement', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-          BaseElement
-       ],
-       imports: [
-           HttpModule,
-           HttpClientTestingModule
-       ],
-       providers: [
-           ConfigService
-       ]
-    }).compileComponents();
+
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(BaseElement);
-    app = fixture.debugElement.componentInstance;
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = fieldValueParam;
     configService = TestBed.get(ConfigService);
+  });
+
+  it('should create the BaseElement',  async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
-    it('should create the app', async(() => {
-      expect(app).toBeTruthy();
-    }));
+  it('nestedParams should update from element.type.model.params',  async(() => {
+    const params: any = 'test';
+    hostComponent.element.type.model.params = params;
+    expect(hostComponent.nestedParams).toEqual(params);
+  }));
 
-    it('nestedParams should update from element.type.model.params', async(() => {
-      app.element = { type: { model: { params: 'test' } } };
-      expect(app.nestedParams).toEqual('test');
-    }));
+  it('nestedParams should return undefined',  async(() => {
+    hostComponent.element.type.model = null;
+    expect(hostComponent.nestedParams).toEqual(undefined);
+  }));
 
-    it('nestedParams should return undefined', async(() => {
-      app.element = { type: { model: null } };
-      expect(app.nestedParams).toEqual(undefined);
-    }));
+  it('imgSrc should update from element.config.uiStyles.attributes.imgSrc',  async(() => {
+    hostComponent.element.config.uiStyles.attributes.imgSrc = 'src1';
+    expect(hostComponent.imgSrc).toEqual('src1');
+  }));
 
-    it('imgSrc should update from element.config.uiStyles.attributes.imgSrc', async(() => {
-      app.element = { config: { uiStyles: { attributes: { imgSrc: 'src1' } } } };
-      expect(app.imgSrc).toEqual('src1');
-    }));
+  it('code should update from element.config.code',  async(() => {
+    expect(hostComponent.code).toEqual('firstName');
+  }));
 
-    it('code should update from element.config.code', async(() => {
-      app.element = { config: { code: 'code1' } };
-      expect(app.code).toEqual('code1');
-    }));
+  it('visible should update from element.visible',  async(() => {
+    hostComponent.element.visible = true;
+    expect(hostComponent.visible).toBeTruthy();
+  }));
 
-    it('visible should update from element.visible', async(() => {
-      app.element = { visible: 'visible1' };
-      expect(app.visible).toEqual('visible1');
-    }));
+  it('enabled should update from element.enabled',  async(() => {
+    hostComponent.element.enabled = true;
+    expect(hostComponent.enabled).toBeTruthy();
+  }));
 
-    it('enabled should update from element.enabled', async(() => {
-      app.element = { enabled: 'enabled1' };
-      expect(app.enabled).toEqual('enabled1');
-    }));
+  it('_visible should update from visible property',  async(() => {
+    hostComponent.visible = true;
+    expect((hostComponent as any)._visible).toEqual(true);    
+  }));
 
-    it('_visible should update from visible property', async(() => {
-      app.visible = true;
-      expect(app._visible).toEqual(true);
-    }));
+  it('_enabled should update from enabled property',  async(() => {
+    hostComponent.enabled = true;
+    expect((hostComponent as any)._enabled).toEqual(true);    
+  }));
 
-    it('_enabled should update from enabled property', async(() => {
-      app.enabled = true;
-      expect(app._enabled).toEqual(true);
-    }));
+  it('cssClass should update from element.config.uiStyles.attributes.cssClass',  async(() => {
+    hostComponent.element.config.uiStyles.attributes.cssClass = 'testClass';
+    expect(hostComponent.cssClass).toEqual('testClass');
+  }));
 
-    it('cssClass should update from element.config.uiStyles.attributes.cssClass', async(() => {
-      app.element = { config: { uiStyles: { attributes: { cssClass: 'testClass' } } } };
-      expect(app.cssClass).toEqual('testClass');
-    }));
+  it('type should update from element.config.uiStyles.attributes.type',  async(() => {
+    hostComponent.element.config.uiStyles.attributes.type = 'testType';
+    expect(hostComponent.type).toEqual('testType');  
+  }));
 
-    it('type should update from element.config.uiStyles.attributes.type', async(() => {
-      app.element = { config: { uiStyles: { attributes: { type: 'testType' } } } };
-      expect(app.type).toEqual('testType');
-    }));
+  it('elementStyle should update based on element.config.validation.constraints[0].name',  async(() => {
+    const constraints: any = [{ name: 'NotNull' }];
+    hostComponent.element.config.validation.constraints = constraints;
+    expect(hostComponent.elementStyle).toEqual('required');
+  }));
 
-    it('elementStyle should update based on element.config.validation.constraints[0].name', async(() => {
-      app.element = { config: { validation: { constraints: [{ name: 'NotNull' }] } } };
-      expect(app.elementStyle).toEqual('required');
-    }));
+  it('elementStyle should be empty string based on element.config.validation.constraints[0].name',  async(() => {
+    const constraints: any = [{ name: 'test' }];
+    hostComponent.element.config.validation.constraints = constraints;
+    expect(hostComponent.elementStyle).toEqual('');
+  }));
 
-    it('elementStyle should be empty string based on element.config.validation.constraints[0].name', async(() => {
-      app.element = { config: { validation: { constraints: [{ name: 'test' }] } } };
-      expect(app.elementStyle).toEqual('');
-    }));
+  it('elementStyle should be empty string if element.config.validation.constraints[0].name is not avialable',  async(() => {
+      hostComponent.element.config.validation = null;
+      expect(hostComponent.elementStyle).toEqual('');
+  }));
 
-    it('elementStyle should be empty string if element.config.validation.constraints[0].name is not avialable', async(() => {
-      app.element = { config: { validation: null } };
-      expect(app.elementStyle).toEqual('');
-    }));
+  it('hostComponent.isDate() should return true',  async(() => {
+    expect(hostComponent.isDate('Date')).toBeTruthy();
+  }));
 
-    it('app.isDate() should return true', async(() => {
-      expect(app.isDate('Date')).toBeTruthy();
-    }));
+  it('placeholder should update from element.config.uiStyles.attributes.placeholder',  async(() => {
+    hostComponent.element.config.uiStyles.attributes.placeholder = 'test';
+    expect(hostComponent.placeholder).toEqual('test');
+  }));
 
-    it('placeholder should update from element.config.uiStyles.attributes.placeholder', async(() => {
-      app.element = { config: { uiStyles: { attributes: { placeholder: 'test' } } } };
-      expect(app.placeholder).toEqual('test');
-    }));
-
-    it('placeholder should be undefined if element.config.uiStyles.attributes is null', async(() => {
-      app.element = { config: { uiStyles: { attributes: null } } };
-      expect(app.placeholder).toEqual(undefined);
-    }));
-
+  it('placeholder should be undefined if element.config.uiStyles.attributes is null',  async(() => {
+    hostComponent.element.config.uiStyles.attributes = null;
+    expect(hostComponent.placeholder).toEqual(undefined);
+  }));
 
 });

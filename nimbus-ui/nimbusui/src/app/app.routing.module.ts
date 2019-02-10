@@ -17,10 +17,7 @@
 'use strict';
 import { SubDomainFlowCmp } from './components/domain/subdomain-flow.component';
 import { DomainFlowCmp } from './components/domain/domain-flow.component';
-import { StyleGuideCmp } from './styleguide/style-guide.component';
 import { HomeLayoutCmp } from './components/home/home-layout.component';
-import { LoginLayoutCmp } from './components/login/login-layout.component';
-import { LoginCmp } from './components/login/login.component';
 import { LandingPage } from './components/login/auth-landingpage';
 import { LayoutResolver } from './components/domain/layout-resolver.service';
 import { PageResolver } from './components/platform/content/page-resolver.service';
@@ -28,7 +25,6 @@ import { PageNotfoundComponent } from './components/platform/content/page-notfou
 import { PageContent } from './components/platform/content/page-content.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ServiceConstants } from './services/service.constants';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -42,36 +38,37 @@ const APPROUTES: Routes = [
    
     // routes redesign - URL pattern: h/:domain/:pageId
     {
-        path: 'h', component: HomeLayoutCmp, data: {'layout': 'home'},
+        path: 'h',
+        component: HomeLayoutCmp,
+        data: { layout : 'home'},
         children: [
-                   {
-                       path: ':domain', component: DomainFlowCmp,
-                       resolve: { layout: LayoutResolver },
-                       children: [
-                                     {
-                                         path: ':pageId', component: PageContent,
-                                         resolve: { page: PageResolver }
-                                     },
-                                     {
-                                        path: ':subdomain', component: SubDomainFlowCmp,
-                                        children: [
-                                                        { path: ':pageId', component: PageContent, resolve: { page: PageResolver }},
-                                                        { path: 'pnf', component: PageNotfoundComponent },
-                                                        { path: '', component: PageNotfoundComponent }
-                                        ]
-                                    },
-                                     { path: 'pnf', component: PageNotfoundComponent },
-                                     { path: '', component: PageNotfoundComponent }
-                       ]
-                   },
-                   { path: 'pnf', component: PageNotfoundComponent },
-                   { path: '', redirectTo: 'f', pathMatch: 'full' },
-                   { path: '**', component: PageNotfoundComponent }
+            {
+                path: ':domain', component: DomainFlowCmp,
+                resolve: { layout: LayoutResolver },
+                children: [
+                    {
+                        path: ':pageId', component: PageContent,
+                        resolve: { page: PageResolver }
+                    },
+                    {
+                        path: ':subdomain', component: SubDomainFlowCmp,
+                        children: [
+                            { path: ':pageId', component: PageContent, resolve: { page: PageResolver }},
+                            { path: 'pnf', component: PageNotfoundComponent },
+                            { path: '', component: PageNotfoundComponent }
+                        ]
+                    },
+                    { path: 'pnf', component: PageNotfoundComponent },
+                    { path: '', component: PageNotfoundComponent }
+                ]
+            },
+            { path: 'pnf', component: PageNotfoundComponent },
+            { path: '', redirectTo: 'f', pathMatch: 'full' },
+            { path: '**', component: PageNotfoundComponent }
         ]
     },
     { path: ':auth', component: LandingPage },
     { path: '', component: PageNotfoundComponent }
-
 ];
 
 @NgModule({

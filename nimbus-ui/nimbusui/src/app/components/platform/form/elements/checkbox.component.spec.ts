@@ -16,40 +16,96 @@ import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+import { Param } from '../../../../shared/param-state';
+import { checkboxElement } from 'mockdata';
+import { By } from '@angular/platform-browser';
+import { ServiceConstants } from '../../../../services/service.constants';
+import { WindowRefService } from './../../../../services/window-ref.service';
 
+let param: Param;
+
+class MockLoggerService {
+  debug() { }
+  info() { }
+  error() { }
+}
+
+const declarations = [
+  CheckBox,
+  TooltipComponent
+ ];
+ const imports = [
+  FormsModule,
+  HttpClientModule,
+  HttpModule,
+  StorageServiceModule
+ ];
+ const providers = [
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: LocationStrategy, useClass: HashLocationStrategy },
+  {provide: LoggerService, useClass: MockLoggerService},
+  Location,
+  PageService,
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  SessionStoreService,
+  AppInitService,
+  WindowRefService
+ ];
+ let fixture, hostComponent;
 describe('CheckBox', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        CheckBox,
-        TooltipComponent
-       ],
-       imports: [
-        FormsModule,
-        HttpClientModule,
-        HttpModule,
-        StorageServiceModule
-       ],
-       providers:[
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        Location,
-        PageService,
-        CustomHttpClient,
-        LoaderService,
-        ConfigService,
-        LoggerService,
-        SessionStoreService,
-        AppInitService
-       ]
-    }).compileComponents();
+
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(CheckBox);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = checkboxElement as Param;
+  });
+
+  it('should create the CheckBox', async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(CheckBox);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
+  it('input should be created', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const inputEle = debugElement.query(By.css('input'));
+    expect(inputEle).toBeTruthy();
+  }));
+
+  it('change event on input should call emitValueChangedEvent()', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    spyOn(hostComponent, 'emitValueChangedEvent').and.callThrough();
+    const inputEle = debugElement.query(By.css('input')).nativeElement;
+    inputEle.click();
+    expect(hostComponent.emitValueChangedEvent).toHaveBeenCalled();
+  }));
+
+  it('nm-tooltip should be created if helpText is configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const tooltipEle = debugElement.query(By.css('nm-tooltip'));
+    expect(tooltipEle).toBeTruthy();
+  }));
+
+  it('nm-tooltip should not be created if helpText is not configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    hostComponent.element.labels = [];
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const tooltipEle = debugElement.query(By.css('nm-tooltip'));
+    expect(tooltipEle).toBeFalsy();
   }));
 
 });
+

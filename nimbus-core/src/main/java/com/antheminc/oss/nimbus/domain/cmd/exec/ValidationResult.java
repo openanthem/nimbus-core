@@ -38,8 +38,8 @@ public class ValidationResult {
 	private List<ValidationError> errors;
 	
 	@JsonIgnore
-	public final transient CollectionsTemplate<List<ValidationError>, ValidationError> template = new CollectionsTemplate<>(
-			() -> getErrors(), (e) -> setErrors(e), () -> new ArrayList<>());
+	public final CollectionsTemplate<List<ValidationError>, ValidationError> template = new CollectionsTemplate<>(
+			this::getErrors, this::setErrors, ArrayList::new);
 	
 	
 	public ValidationResult(){ }
@@ -62,7 +62,9 @@ public class ValidationResult {
 	 * @param violations
 	 */
 	private <T> void add(Set<ConstraintViolation<T>> violations) {
-		if(CollectionUtils.isEmpty(violations)) return;
+		if(CollectionUtils.isEmpty(violations)) {
+			return;
+		}
 		
 		for(ConstraintViolation<T> c : violations) {
 			ValidationError.Model e = new ValidationError.Model();

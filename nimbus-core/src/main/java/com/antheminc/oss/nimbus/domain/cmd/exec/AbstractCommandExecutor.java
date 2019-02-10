@@ -19,22 +19,19 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
-import com.antheminc.oss.nimbus.domain.cmd.CommandElementLinked;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
-import com.antheminc.oss.nimbus.domain.model.config.EntityConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
@@ -81,19 +78,6 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 	protected ModelConfig<?> getRootDomainConfig(ExecutionContext eCtx) {
 		return getDomainConfigBuilder().getRootDomainOrThrowEx(eCtx.getCommandMessage().getCommand().getRootDomainAlias());
 	}
-
-	protected EntityConfig<?> findConfigByCommand(ExecutionContext eCtx) {
-		Command cmd = eCtx.getCommandMessage().getCommand();
-		
-		ModelConfig<?> domainConfig = getRootDomainConfig(eCtx);
-		if(cmd.isRootDomainOnly()) 
-			return domainConfig;
-		
-		String path = cmd.buildAlias(cmd.getElementSafely(Type.DomainAlias).next());
-		
-		ParamConfig<?> nestedParamConfig = domainConfig.findParamByPath(path);
-		return nestedParamConfig;
-	}
 	
 	protected String resolveEntityAliasByRepo(ModelConfig<?> mConfig) {
 		String alias = mConfig.getRepo() != null && StringUtils.isNotBlank(mConfig.getRepo().alias()) 
@@ -102,14 +86,14 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		return alias;
 	}
 	
-	protected <T> T instantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
-		/*
-		if(eCtx.getCommandMessage().hasPayload())
-			return converter.convert(mConfig.getReferredClass(), eCtx.getCommandMessage());
-		*/
-		Repo repo = mConfig.getRepo();
+	protected <T> T getOrInstantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
+		Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		ModelRepository mRepo = getRepositoryFactory().get(mConfig);
 		
-		return (repo!=null && repo.value()!=Repo.Database.rep_none) ? getRepositoryFactory().get(repo)._new(mConfig) : javaBeanHandler.instantiate(mConfig.getReferredClass());
+		return mRepo != null
+				? refId != null ? mRepo._get(eCtx.getCommandMessage().getCommand(), mConfig)
+						: mRepo._new(eCtx.getCommandMessage().getCommand(), mConfig)
+				: javaBeanHandler.instantiate(mConfig.getReferredClass());
 	}
 	
 	public interface RepoDBCallback<T> {
@@ -154,20 +138,6 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 				.map(StringUtils::trimToNull)
 				.map(Long::valueOf)
 				.orElse(null);
-	}
-	
-	protected ModelConfig<?> getRootConfigByRepoDatabase(ModelConfig<?> rootDomainConfig) {
-		return determineByRepoDatabase(rootDomainConfig, new RepoDBCallback<ModelConfig<?>>() {
-			@Override
-			public ModelConfig<?> whenRootDomainHasRepo() {
-				return rootDomainConfig;
-			}
-			
-			@Override
-			public ModelConfig<?> whenMappedRootDomainHasRepo(ModelConfig<?> mapsToConfig) {
-				return mapsToConfig;
-			}
-		});
 	}
 
 	protected Object getRefId(ModelConfig<?> parentModelConfig, ParamConfig<?> pConfig, Object entity) {

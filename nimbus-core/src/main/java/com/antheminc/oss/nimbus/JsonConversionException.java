@@ -25,18 +25,6 @@ public class JsonConversionException extends FrameworkRuntimeException {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public JsonConversionException() {
-		super();
-	}
-	
-    public JsonConversionException(String message) {
-		super(message);
-	}
-	
-    public JsonConversionException(Throwable cause) {
-		super(cause);
-	}
 	
     public JsonConversionException(String message, Throwable cause) {
 		super(message, cause);

@@ -16,48 +16,55 @@ import { LoaderService } from '../../../services/loader.service';
 import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
 import { AppInitService } from '../../../services/app.init.service';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
+import { Param } from '../../../shared/param-state';
+import { fieldValueParam } from 'mockdata';
 
-let fixture, app;
+const declarations = [
+  Label,
+  TooltipComponent
+];
+const imports = [
+   HttpClientModule,
+    HttpModule,
+    StorageServiceModule
+];
+const providers = [
+{ provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+{ provide: 'JSNLOG', useValue: JL },
+{ provide: LocationStrategy, useClass: HashLocationStrategy },
+WebContentSvc,
+PageService,
+CustomHttpClient,
+SessionStoreService,
+LoaderService,
+ConfigService,
+LoggerService,
+AppInitService,
+Location
+];
+let fixture, hostComponent;
+describe('Label', () => {
 
-describe('Header', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-          Label,
-          TooltipComponent
-       ],
-       imports: [
-           HttpClientModule,
-            HttpModule,
-            StorageServiceModule
-       ],
-       providers: [
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        WebContentSvc,
-        PageService,
-        CustomHttpClient,
-        SessionStoreService,
-        LoaderService,
-        ConfigService,
-        LoggerService,
-        AppInitService,
-        Location
-       ]
-    }).compileComponents();
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(Label);
-    app = fixture.debugElement.componentInstance;
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = fieldValueParam;
+  });
+
+  it('should create the Label', async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
-  it('should create the app', async(() => {
-    expect(app).toBeTruthy();
-  }));
-
-  it('app.cssClass should return labelClass', async(() => {
-      app.labelClass = 'test';
-      app.getCssClass = () => { return 'a' }
-    expect(app.cssClass).toEqual('test');
+  it('app.cssClass should return labelClass',async(() => {
+    hostComponent.labelClass = 'test';
+    hostComponent.getCssClass = () => { return 'a' }
+    expect(hostComponent.cssClass).toEqual('test')
   }));
 
 });

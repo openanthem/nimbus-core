@@ -69,19 +69,6 @@ export interface TopBarConfig {
     accordions: Param[];
 }
 
-//TODO: Determine the strategy for global nav
-
-export interface GlobalNavConfig {
-    organization: Param;
-    menus: MenuItem[][];
-}
-
-export interface GlobalNavConfig {
-       organization: Param;
-       menuItems: Map<string, Param[]>;
-       menuLinks: Param[];
-}
-
 export interface FooterConfig {
     disclaimer: Param;
     links: Param[];
@@ -89,10 +76,10 @@ export interface FooterConfig {
 }
 
 export interface Layout {
+    fixLayout: boolean;
     topBar: TopBarConfig;
-    leftNavBar: MenuItem[];
+    menu: MenuItem[];
     footer: FooterConfig;
-    subBar: GlobalNavConfig;
     actiontray: Param;
     modalList: Param[];
 }

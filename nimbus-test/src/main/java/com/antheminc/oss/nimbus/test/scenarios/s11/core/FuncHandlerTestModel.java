@@ -15,11 +15,26 @@ import lombok.Setter;
 @Repo(Database.rep_mongodb)
 @Getter @Setter
 public class FuncHandlerTestModel extends IdLong{
+	
 	private static final long serialVersionUID = 1L;
+	
 	@ConfigConditional(config= {
 			@Config(url="/parameter2/_replace?rawPayload=\"Value\"")
 	})
 	private String parameter1;
+	
+	// below config demonstrate the scneario where 1st json param returns null value which would not be saved in DB at all (
+	//		fixed where a string version of null - "null" was getting saved for attr: parameter)
+	//
+	@ConfigConditional(config = {
+			@Config (url="/p/sample_functestB/_new?fn=_initEntity&target=/parameter&json=  \"<!/../parameter3!>\"  &target=/parameter2&json=\"TestABC\"")
+	})
 	private String parameter2;
 	
+	private String parameter3;
+	
 }
+
+
+
+

@@ -16,7 +16,7 @@
  */
 'use strict';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { LayoutService } from '../../services/layout.service';
 import { PageService } from '../../services/page.service';
 import { Layout, LinkConfig } from '../../model/menu-meta.interface';
@@ -24,6 +24,8 @@ import { Page } from '../../shared/app-config.interface';
 import { Param } from '../../shared/param-state';
 import { LoggerService } from '../../services/logger.service';
 import { MenuItem } from '../../shared/menuitem';
+import { Message } from './../../shared/message';
+import { ViewRoot } from './../../shared/app-config.interface';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -38,6 +40,7 @@ import { MenuItem } from '../../shared/menuitem';
 
 export class DomainFlowCmp {
     public hasLayout: boolean = true;
+    public fixLayout: boolean = false;
     public infoClass: string = '';
     public leftMenuItems: LinkConfig[];
     public topMenuItems: Param[];
@@ -45,6 +48,7 @@ export class DomainFlowCmp {
     public actionTray: Param;
     public modalItems: Param[];
     public _showActionTray: boolean;
+    public messages: Message[];
     items: MenuItem[];
     routeParams: any;
 
@@ -54,17 +58,19 @@ export class DomainFlowCmp {
         this.layoutSvc.layout$.subscribe(
             data => {
                 let layout: Layout = data;
+                this.fixLayout = layout['fixLayout'];
                 this.accordions = layout.topBar.accordions;
-                this.items = layout.leftNavBar;
+                this.items = layout.menu;
                 this.topMenuItems = layout.topBar.headerMenus;
                 this.actionTray = layout.actiontray;
                 this.modalItems = layout.modalList;
                
                 this._logger.debug('domain flow component received layout from layout$ subject');
                 if(this.hasLayout && this.accordions != null && this.accordions !== undefined) {
-                    document.getElementById('main-content').classList.add('withInfoBar');
+                    this.getDocument().getElementById('main-content').classList.add('withInfoBar');
                 }
 
+                this.setLayoutScroll();
             }
         );
 
@@ -95,21 +101,83 @@ export class DomainFlowCmp {
             }
         });
 
+
+        this._pageSvc.messageEvent$.subscribe(messages => {
+            this.messages = messages;
+            setTimeout(() => {
+                this.messages = null;
+            }, 50);
+        });
+
+    }
+
+    getDocument() {
+        return document;
+    }
+
+    /** Set the layout to fixed or scrollable based on the config param - fixLayout */
+    setLayoutScroll() {
+        if (this.fixLayout) {
+            this.getDocument().body.classList.remove("browserScroll");
+            this.getDocument().body.classList.add("browserFixed");
+            this.resetInfoCardScrollHeight();
+        } else {
+            this.getDocument().body.classList.remove("browserFixed");
+            this.getDocument().body.classList.add("browserScroll");
+            this.getDocument().getElementById('page-content').style.height = 'auto';
+        }
+    }
+
+    /** Calculate the scroll height everytime the view changes */
+    resetInfoCardScrollHeight() {
+        if (this.fixLayout) {
+            var target = this.getDocument().getElementById('page-content');
+            var h = target.getBoundingClientRect().top;
+            h = window.innerHeight - h - 50; // 50 is padding below viewport
+            target.style.height = h + 'px';    
+        }
     }
 
     ngOnInit() {
         this._logger.debug('DomainFlowCmp-i ');
-        this._route.data.subscribe((data: { layout: string }) => {
-            let layout: string = data.layout;
-            if (layout) {
+        this._route.data.subscribe((data: { layout: ViewRoot }) => {
+            let viewRoot: ViewRoot = data.layout;
+            if (viewRoot && viewRoot.layout) {
                 this.hasLayout = true;
-                this.infoClass = 'info-card';
-                this.layoutSvc.getLayout(layout);
+                this.infoClass = 'info-card page-content';
+                this.layoutSvc.getLayout(viewRoot.layout);
             } else {
-                this.infoClass = '';
+                this.infoClass = 'page-content';
                 this.hasLayout = false;
-                document.getElementById('main-content').classList.remove('withInfoBar');
+                this.fixLayout = false;
+                this.setLayoutScroll();
+                this.getDocument().getElementById('main-content').classList.remove('withInfoBar');
             }
         });
+    }
+
+    /** 
+     * Recalculate the scroll height everytime the view changes. 
+     * This can happen when elements are hidden/visible based on rules.
+     */
+    ngAfterViewChecked() {
+        this.resetInfoCardScrollHeight();
+    }
+
+    /** 
+     * Recalculate the scroll height everytime the window is resized.
+     */
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        this.resetInfoCardScrollHeight();
+    }
+
+    @HostListener("scroll", ['$event'])
+    onPageContentScroll(event) {
+        if (this.getDocument().getElementById('page-content').scrollTop >= 10) {
+            this.getDocument().getElementById('scroll-div-to-top').setAttribute("style", "opacity:1; bottom:50px;")
+        } else if (this.getDocument().getElementById('page-content').scrollTop < 10) {
+            this.getDocument().getElementById('scroll-div-to-top').setAttribute("style", "opacity:0; bottom:-50px;")
+        }
     }
 }

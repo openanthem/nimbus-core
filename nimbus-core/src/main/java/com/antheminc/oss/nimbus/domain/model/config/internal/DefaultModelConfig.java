@@ -55,6 +55,8 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 	
 	@JsonIgnore private Repo repo;
 	
+	@JsonIgnore private boolean remote;
+	
 	private List<ParamConfig<?>> paramConfigs;
 	
 	@JsonIgnore private transient ParamConfig<?> idParamConfig;
@@ -99,6 +101,10 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 		}
 		
 		return p.findParamByPath(ArrayUtils.remove(pathArr, 0));
+	}
+	
+	public String getRepoAlias() {
+		return getRepo() != null && StringUtils.isNotBlank(getRepo().alias()) ? getRepo().alias() : getAlias();
 	}
 	
 }

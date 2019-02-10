@@ -25,7 +25,6 @@ import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -40,18 +39,19 @@ import com.antheminc.oss.nimbus.app.extension.config.ActivitiProcessDefinitionCa
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.bpm.ProcessEngineContext;
+import com.antheminc.oss.nimbus.domain.bpm.ProcessRepository;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
-import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
+import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
+import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ProcessResponse;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
-import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
@@ -83,6 +83,7 @@ public class ActivitiBPMGateway implements BPMGateway {
 	private DomainConfigBuilder domainConfigBuilder;
 	private CommandExecutorGateway commandGateway;
 	private CommandPathVariableResolver pathVariableResolver;
+	private ProcessRepository processRepo;
 	
 	public ActivitiBPMGateway (BeanResolverStrategy beanResolver,Boolean supportStatefulProcesses) {
 		this.expressionEvaluator = beanResolver.find(ExpressionEvaluator.class);
@@ -94,12 +95,17 @@ public class ActivitiBPMGateway implements BPMGateway {
 		this.domainConfigBuilder = beanResolver.find(DomainConfigBuilder.class);	
 		this.commandGateway = beanResolver.find(CommandExecutorGateway.class);
 		this.pathVariableResolver = beanResolver.find(CommandPathVariableResolver.class);
+		this.processRepo = beanResolver.get(ProcessRepository.class);
 	}
 	
 	@Override
 	public ActivitiProcessFlow startBusinessProcess(Param<?> param, String processId) {
 		if(!getSupportStatefulProcesses())
 			return null;
+		
+		if(param.getRootDomain().getConfig().isRemote())
+			return null;
+		
 		ProcessResponse processResponse = startStatlessBusinessProcess(param, processId);
 		ActivitiProcessFlow processFlow = new ActivitiProcessFlow();
 		processFlow.setProcessExecutionId(processResponse.getExecutionId());
@@ -130,6 +136,9 @@ public class ActivitiBPMGateway implements BPMGateway {
 	
 	@Override
 	public Object continueBusinessProcessExecution(Param<?> param, String processExecutionId) {
+		if(param.getRootDomain().getConfig().isRemote())
+			return null;
+		
 		ActivitiProcessFlow processFlow = (ActivitiProcessFlow)((ExecutionEntity<?,?>)param.getRootExecution().getState()).getFlow();
 		List<String> activeTasks = processFlow.getActiveTasks();
 		ProcessEngineContext context = new ProcessEngineContext(param);
@@ -174,16 +183,20 @@ public class ActivitiBPMGateway implements BPMGateway {
 
 	private void updateProcessState(Param<?> param, String processExecutionId) {
 		ActivitiProcessFlow processFlow = (ActivitiProcessFlow)((ExecutionEntity<?,?>)param.getRootExecution().getState()).getFlow();
+		
 		List<String> activeTasks = new ArrayList<String>();
 		List<Task> activeTasksFromDB = getTaskService().createTaskQuery().processInstanceId(processExecutionId).list();
 		activeTasksFromDB.iterator().forEachRemaining( t -> activeTasks.add(t.getTaskDefinitionKey()));
-		ModelConfig<?> modelConfig = domainConfigBuilder.getModel(ProcessFlow.class);
-		Repo repo = modelConfig.getRepo();
-		String processStateAlias = StringUtils.isBlank(repo.alias()) ? modelConfig.getAlias() : repo.alias();
-		String entityProcessAlias = param.getRootDomain().getConfig().getAlias() + "_" + processStateAlias;
-		Long entityRefId = param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
-		repositoryFactory.get(repo)._update(entityProcessAlias, entityRefId, "/activeTasks", activeTasks);
 		processFlow.setActiveTasks(activeTasks);
+		
+		ModelConfig<?> modelConfig = domainConfigBuilder.getModel(ProcessFlow.class);
+		
+		String processStateAlias = modelConfig.getRepoAlias();
+		String entityProcessAlias = param.getRootDomain().getConfig().getRepoAlias() + "_" + processStateAlias;
+		
+		Long entityRefId = param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
+		
+		getProcessRepo()._update(entityProcessAlias, entityRefId, "/activeTasks", activeTasks);
 	}	
 	
 	private boolean canComplete(Param<?> param, UserTask userTask) {

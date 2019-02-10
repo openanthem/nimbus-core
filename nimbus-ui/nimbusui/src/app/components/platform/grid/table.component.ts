@@ -18,30 +18,28 @@
 
 import {
     Component, Input, Output, forwardRef, ViewChild, EventEmitter,
-    ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren
+    ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren, ViewRef
 } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
-import { OverlayPanel, Paginator } from 'primeng/primeng';
+import { OverlayPanel } from 'primeng/primeng';
 import { Table } from 'primeng/table';
 import * as moment from 'moment';
-import { fromEvent as observableFromEvent,  Subscription ,  Observable } from 'rxjs';
-import { first, filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { ParamUtils } from './../../../shared/param-utils';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
-import { BaseElement } from './../base-element.component';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { ParamConfig } from '../../../shared/param-config';
 import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { ServiceConstants } from './../../../services/service.constants';
 import { SortAs, GridColumnDataType } from './sortas.interface';
-import { ActionDropdown } from './../form/elements/action-dropdown.component';
-import { Param } from '../../../shared/param-state';
+import { Param, StyleState } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
 import { TableComponentConstants } from './table.component.constants';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
+import { BaseTableElement } from './../base-table-element.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -65,7 +63,7 @@ var counter = 0;
     encapsulation: ViewEncapsulation.None,
     templateUrl: './table.component.html'
 })
-export class DataTable extends BaseElement implements ControlValueAccessor {
+export class DataTable extends BaseTableElement implements ControlValueAccessor {
 
     @Output() onScrollEvent: EventEmitter<any> = new EventEmitter();
     @Input() params: ParamConfig[];
@@ -97,6 +95,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     defaultPattern: RegExp = /^[ A-Za-z0-9_@./#&+-,()!%_{};:?.<>-]*$/;
     numPattern: RegExp = /[\d\-\.]/;
     id: String = 'grid-control' + counter++;
+    gridRowConfig: any[];
 
     get value() {
         return this._value;
@@ -127,12 +126,12 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
     constructor(
         private pageSvc: PageService,
-        private _wcs: WebContentSvc,
+        protected _wcs: WebContentSvc,
         private gridService: GridService,
         private dtFormat: DateTimeFormatPipe,
-        private cd: ChangeDetectorRef) {
+        protected cd: ChangeDetectorRef) {
 
-        super(_wcs);
+        super(_wcs, cd);
     }
 
     ngOnInit() {
@@ -142,27 +141,15 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         // Set the column headers
         if (this.params) {
             this.params.forEach(column => {
-                column.label = this._wcs.findLabelContentFromConfig(this.element.elemLabels.get(column.id), column.code).text;
-                // Set field and header attributes. TurboTable expects these specific variables.
-                column['field'] = column.code;
-                column['header'] = column.label;
                 if(column.uiStyles) {
                     if (column.uiStyles.attributes.filter) {
                         this.hasFilters = true;
                     }
-                    if (column.uiStyles.attributes.hidden) {
-                        column['exportable'] = false;
-                    } else {
-                        this.columnsToShow ++;
-                        if (TableComponentConstants.allowedColumnStylesAlias.includes(column.uiStyles.attributes.alias)
-                                || column.type.nested === true) {
-                            column['exportable'] = false;
-                        } else {
-                            column['exportable'] = true;
-                        }
-                    }
                     if (column.uiStyles.attributes.rowExpander) {
                         this.rowExpanderKey = column.code;
+                    }
+                    if (!column.uiStyles.attributes.hidden) {
+                        this.columnsToShow ++;
                     }
                 }
             });
@@ -172,8 +159,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             this.columnsToShow ++;
         }
 
-        if (this.element.gridList != null && this.element.gridList.length > 0) {
-            this.value = this.element.gridList;
+        if (this.element.gridData.leafState != null && this.element.gridData.leafState.length > 0) {
+            this.value = this.element.gridData.leafState;
             this.totalRecords = this.value.length;
             this.updatePageDetailsState();
         }
@@ -214,14 +201,14 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             this.summaryData = data;
         });
 
-        this.pageSvc.gridValueUpdate$.subscribe(event => {
+        this.pageSvc.gridValueUpdate$.subscribe(event => {            
             if (event.path == this.element.path) {
-                this.value = event.gridList;
+                this.value = event.gridData.leafState;
                 
                 // iterate over currently expanded rows and refresh the data
                 Object.keys(this.dt.expandedRowKeys).forEach(key => {
                     this.value.find((lineItem, index) => {
-                        if (lineItem[this.element.config.uiStyles.attributes.dataKey] == key) {
+                        if (lineItem[this.element.elemId] == key) {
                             this._putNestedElement(event.collectionParams, index, lineItem);
                             return true;
                         }
@@ -242,8 +229,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                     this.updatePageDetailsState();
                     this.dt.first = 0;
                 }
-
-                this.cd.markForCheck();
+                if(!(<ViewRef>this.cd).destroyed)
+                    this.cd.detectChanges();
                 this.resetMultiSelection();
             }
         });
@@ -342,17 +329,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             return 'dropdown';
         } else if (col.uiStyles && col.uiStyles.attributes.alias === 'Button') {
             return 'imageColumn';
-        }
-    }
-
-    isClickedOnDropDown(dropDownArray: Array<ActionDropdown>, target: any) {
-
-        for (var i = 0; i < dropDownArray.length; i++) {
-            if (dropDownArray[i].elementRef.nativeElement.contains(target))
-                return true;
-        }
-        return false;
-
+        } else {
+            if (col.uiStyles && col.uiStyles.attributes.cssClass && col.uiStyles.attributes.cssClass !== "") {
+                return col.uiStyles.attributes.cssClass;
+            } 
+        } 
     }
 
     isActive(index) {
@@ -396,12 +377,27 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     postGridData(obj) {
         let item: GenericDomain = new GenericDomain();
         let elemIds = [];
-        this.selectedRows.forEach(element => {
-            elemIds.push(element.elemId);
-        });
-
+        if (this.selectedRows && this.selectedRows.length > 0) {
+            this.selectedRows.forEach(element => {
+                elemIds.push(element.elemId);
+            });
+        }
         item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath, elemIds);
-        this.pageSvc.processEvent(this.element.config.uiStyles.attributes.postButtonUrl, null, item, 'POST');
+
+        // postButtonUrl is deprecated in @Grid Config from 1.1.11
+        // TODO - remove this when the annotation attribute is removed completely in ViewConfig.
+        if (this.element.config.uiStyles.attributes.postButtonUrl) {
+            console.warn('Use of postButtonUrl attribute in @Grid is deprecated. Consider using postButtonUri');
+            this.pageSvc.processEvent(this.element.config.uiStyles.attributes.postButtonUrl, null, item, 'POST');
+            return;
+        }
+        const postButtonUri = this.element.config.uiStyles.attributes.postButtonUri;
+        if (postButtonUri) {
+            const resolvedPostButtonUri = ParamUtils.resolveParamUri(this.element.path, postButtonUri);
+            // resolve the postbutton url relative to the current element path.
+            // Ex: (../, <!#this#!> , ./ , /p, .d, absolute path with current domain)
+            this.pageSvc.processEvent(resolvedPostButtonUri, null, item, 'POST');
+        }
     }
 
     onRowSelect(event) {
@@ -562,43 +558,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     filterCallBack(e: any) {
         this.totalRecords = e.filteredValue.length;
         this.updatePageDetailsState();
-    }
-
-    toggleOpen(e: any) {
-
-        let selectedDropDownIsOpen = e.isOpen;
-        let selectedDropDownState = e.state;
-
-        if (this.dropDowns)
-            this.dropDowns.toArray().forEach((item) => {
-                if (!item.selectedItem) {
-                    item.isOpen = false;
-                    item.state = 'closedPanel';
-                }
-            });
-
-        e.isOpen = !selectedDropDownIsOpen;
-
-        if (selectedDropDownState == 'openPanel') {
-            e.state = 'closedPanel';
-            if (!this.mouseEventSubscription.closed)
-                this.mouseEventSubscription.unsubscribe();
-        }
-        else {
-            e.state = 'openPanel';
-            if (this.dropDowns && (this.mouseEventSubscription == undefined || this.mouseEventSubscription.closed))
-                this.mouseEventSubscription =
-                    observableFromEvent(document, 'click').pipe(filter((event: any) =>
-                        !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)),first()).subscribe(() => {
-                            this.dropDowns.toArray().forEach((item) => {
-                                item.isOpen = false;
-                                item.state = 'closedPanel';
-                            });
-                            this.cd.detectChanges();
-                        });
-        }
-        e.selectedItem = false;
-        this.cd.detectChanges();
+        this.selectedRows.length = 0
+        this.dt.toggleRowsWithCheckbox(e, true);
     }
 
     export() {
@@ -692,6 +653,15 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         } else {
             return this.defaultPattern;
         }
+    }
+
+    getCellStyle(rowIndex, code): string {
+        let elemStateMap = this.element.gridData.stateMap[rowIndex];
+        if (!elemStateMap) {
+            return '';
+        }
+        let style: StyleState = elemStateMap[code].style;
+        return style ? style.cssClass : '';
     }
 
     /**

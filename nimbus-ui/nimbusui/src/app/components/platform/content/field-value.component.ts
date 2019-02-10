@@ -32,7 +32,11 @@ import { BaseElement } from '../base-element.component';
     providers: [WebContentSvc],
     template: `
     <div [hidden]="!element?.visible" >
-        <label>{{label}}</label>
+        <!-- <label>{{label}}</label> -->
+        <nm-input-label *ngIf="!isLabelEmpty"
+                [element]="element" 
+                [required]="false">
+        </nm-input-label>
         <p style="margin-bottom:0rem;">{{element.leafState}}</p>
     </div>
    `

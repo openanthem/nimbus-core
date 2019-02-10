@@ -26,10 +26,9 @@ import { AppBranding, Layout, LinkConfig, FooterConfig } from '../../model/menu-
 import { ExecuteOutput, ModelEvent } from '../../shared/app-config.interface';
 import { Param } from '../../shared/param-state';
 import { AuthenticationService } from '../../services/authentication.service';
-import { STOMPService } from '../../services/stomp.service';
+// import { STOMPService } from '../../services/stomp.service';
 import { PageService } from '../../services/page.service';
 import { ServiceConstants } from '../../services/service.constants';
-import { FooterGlobal } from '../platform/footer/footer-global.component'
 import { MenuItem } from 'primeng/primeng';
 import { LoggerService } from '../../services/logger.service';
 import { WebContentSvc } from '../../services/content-management.service';
@@ -42,9 +41,8 @@ import { LabelConfig } from './../../shared/param-config';
  * 
  */
 @Component({
-    templateUrl: './home-layout.component.html',
-    providers: [ STOMPService ],
-    
+    templateUrl: './home-layout.component.html'
+    // providers: [ STOMPService ],
 })
 
 export class HomeLayoutCmp {
@@ -53,7 +51,6 @@ export class HomeLayoutCmp {
     public branding: AppBranding;
     public footer: FooterConfig;
     public userName: any;
-    public navMenuBar: boolean = false;
     items: MenuItem[];
     
 
@@ -63,14 +60,12 @@ export class HomeLayoutCmp {
     // Stream of messages
     public messages: Observable<Message>;
     public organization: Param;
-    public menuItems: Map<string, Param[]>;
-    public menuLinks: Param[] = [];
     private _activeTheme = '';
 
     constructor(
         private _authenticationService: AuthenticationService,
         private layoutSvc: LayoutService,
-        private _stompService: STOMPService,
+        // private _stompService: STOMPService,
         private _pageSvc: PageService,
         private _route: ActivatedRoute,
         private _router: Router,
@@ -107,31 +102,31 @@ export class HomeLayoutCmp {
     }
 
     /** Initialize the WebSocket */
-    initWebSocket() {
-        this._stompService.configure();
-        this._stompService.try_connect().then(this.on_connect).catch((err) => {
-            const errObj = {
-                message: 'error in intializing the webSocket',
-                error: err
-            };
-            this._logger.error(JSON.stringify(errObj));
-          });
-    }
+    // initWebSocket() {
+    //     this._stompService.configure();
+    //     this._stompService.try_connect().then(this.on_connect).catch((err) => {
+    //         const errObj = {
+    //             message: 'error in intializing the webSocket',
+    //             error: err
+    //         };
+    //         this._logger.error(JSON.stringify(errObj));
+    //       });
+    // }
 
     /** Cleanup on Destroy of Component */
-    ngOnDestroy() {
-        this._stompService.disconnect();
-    }
+    // ngOnDestroy() {
+    //     this._stompService.disconnect();
+    // }
 
     /** Callback on_connect to queue */
-    public on_connect = () => {
+    // public on_connect = () => {
 
-        // Store local reference to Observable
-        // for use with template ( | async )
-        this.messages = this._stompService.messages;
-        // Subscribe a function to be run on_next message
-        this.messages.subscribe(this.on_next);
-    }
+    //     // Store local reference to Observable
+    //     // for use with template ( | async )
+    //     this.messages = this._stompService.messages;
+    //     // Subscribe a function to be run on_next message
+    //     this.messages.subscribe(this.on_next);
+    // }
 
     /** Consume a message from the _stompService */
     public on_next = (message: Message) => {
@@ -173,15 +168,7 @@ export class HomeLayoutCmp {
                         }
                         this.topMenuItems = layout.topBar.headerMenus;
                     }
-                    if(layout.subBar && (layout.subBar.menuItems || layout.subBar.menuLinks || layout.subBar.organization)) {
-                        this.navMenuBar = true;
-                        this.organization = layout.subBar.organization;
-                        this.menuItems = layout.subBar.menuItems;
-                        this.menuLinks = layout.subBar.menuLinks;
-                    } else {
-                        this.navMenuBar = false;
-                    }
-                    this.items = layout.leftNavBar;
+                    this.items = layout.menu;
                     this.footer = layout.footer;
                 }
                 //this._router.navigate([this.body['defaultFlow']], { relativeTo: this._route });

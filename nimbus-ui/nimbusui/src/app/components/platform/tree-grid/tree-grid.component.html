@@ -5,7 +5,7 @@
     </p-header>
 </div>
 
-<p-treeTable [value]="treeData" [paginator]="true" paginatorPosition="both" [rows]="10">
+<p-treeTable #tt [value]="treeData" [paginator]="true" paginatorPosition="both" [rows]="10">
 
     <ng-template pTemplate="header">
         <tr>
@@ -36,8 +36,16 @@
                     <td *ngIf="isRenderableComponent(col)" [ngClass]="gridUtils.getColumnStyle(col)">
 
                         <nm-button *ngIf="viewComponent.button.toString() === col.uiStyles.attributes.alias"
-                            [element]="getViewParam(col, rowNode)">
+                            [element] = "getViewParam(col, rowNode)">
                         </nm-button>
+
+                        <nm-action-dropdown #dropDown *ngIf="viewComponent.linkMenu.toString() === col.uiStyles.attributes.alias"
+                            [element]="getViewParam(col, rowNode)"
+                            [params]="col?.type?.model?.paramConfigs" 
+                            [rowData]="rowData" 
+                            [elementPath]="getRowPath(col, rowNode)" 
+                            (dropDownClick)="toggleOpen($event)">
+                        </nm-action-dropdown>
                     </td>
                 </ng-template>
             </ng-template>

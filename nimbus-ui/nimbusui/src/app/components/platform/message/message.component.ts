@@ -34,7 +34,13 @@ import { ComponentTypes } from '../../../shared/param-annotations.enum';
     selector: 'nm-message',
     template: `
         <p-toast position="top-right"></p-toast>
-        <p-messages *ngIf="messageContext === componentTypes.inline.toString()" [(value)]="messageArray" [closable]="false" [styleClass]="styleClass"></p-messages>
+        <p-messages *ngIf="messageContext === componentTypes.inline.toString()" 
+            [(value)]="messageArray" 
+            [closable]="false" 
+            [styleClass]="styleClass"
+            [showTransitionOptions]="'0ms'" 
+            [hideTransitionOptions]="'0ms'">
+        </p-messages>
     `
 })
 
