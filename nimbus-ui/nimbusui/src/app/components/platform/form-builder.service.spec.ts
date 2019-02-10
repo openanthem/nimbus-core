@@ -131,7 +131,7 @@ describe('FormElementsService', () => {
     }));
 
     it('_getTypeSafeLeafState() should return param.gridList', async(() => {
-      const param = { alias: 'Grid', leafState: 'lState', gridList: [1], config: { type: { name: 'name1' } } };
+      const param = { alias: 'Grid', leafState: 'lState', gridList: [1], config: { type: { name: 'name1' } }, gridData: {leafState: [1]} };
       spyOn(ParamUtils, 'isKnownDateType').and.returnValue(false);
       const res = service._getTypeSafeLeafState(param);
       expect(res).toEqual([1]);

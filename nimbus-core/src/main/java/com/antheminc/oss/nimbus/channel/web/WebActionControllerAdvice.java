@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandTransactionInterceptor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteError;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput;
@@ -65,6 +66,8 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	
 	private JustLogit logit = new JustLogit(this.getClass());
 	
+	private static final String RESPONSE_INTERCEPTOR_BEAN_PREFIX = "httpresponsebodyinterceptor.";
+	
 	@Value("${application.error.metricLoggingEnabled:true}")
 	private boolean metricLoggingEnabled;
 	
@@ -74,13 +77,16 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	@Value("${application.error.genericMsg:#{null}}")
 	private String genericMsg;
 	
-	@Autowired CommandTransactionInterceptor interceptor;
+	@Autowired CommandTransactionInterceptor defaultInterceptor;
+	
+	@Autowired BeanResolverStrategy beanResolver;
 	
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
 		return true;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, 
 			Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
@@ -88,7 +94,20 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 		logit.debug(()->"Processed response from "+WebActionController.class+": "
 					+ "\n"+ body);
 		
-		MultiExecuteOutput multiOutput = interceptor.handleResponse(body);
+		MultiExecuteOutput multiOutput = defaultInterceptor.handleResponse(body);
+		
+		String responseBodyHeader = request.getHeaders().getFirst(Constants.HTTP_RESPONSEBODY_INTERCEPTOR_HEADER.code);
+		
+		if(StringUtils.isBlank(responseBodyHeader))
+			return multiOutput;
+		
+		ResponseInterceptor<MultiExecuteOutput> interceptor = beanResolver.find(ResponseInterceptor.class, RESPONSE_INTERCEPTOR_BEAN_PREFIX+responseBodyHeader);
+		
+		if(interceptor == null)
+			return multiOutput;
+		
+		interceptor.intercept(multiOutput);
+		
 		return multiOutput;
 	}
 	
@@ -116,7 +135,7 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 		execError.setMessage(message);
 		logError(execError, pEx);
 		resp.setExecuteException(execError);
-		return interceptor.handleResponse(resp);		
+		return defaultInterceptor.handleResponse(resp);		
 	}
 
 	private void logError(ExecuteError execError, Throwable pEx) {
@@ -150,7 +169,7 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 		resp.setValidationResult(new ValidationResult());
 		resp.getValidationResult().setErrors(errors);	
 		
-		return interceptor.handleResponse(resp);
+		return defaultInterceptor.handleResponse(resp);
 	}
 	
 	private String constructMessage(ExecuteError err) {
@@ -174,5 +193,6 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 		
 		return execError;
 	}
+	
 	
 }

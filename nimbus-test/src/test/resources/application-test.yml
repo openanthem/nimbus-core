@@ -42,12 +42,18 @@ stomp:
 
 domain:
   model:
+    domainSet:
+      remote: 
+        remote_repo, remote_repo2, vr_remote_repo2 
     basePackages:
       - com.antheminc.oss.nimbus.entity
       - com.antheminc.oss.nimbus.**.core
       - com.antheminc.oss.nimbus.**.view
       - com.antheminc.oss.nimbus.domain.bpm
       - com.antheminc.oss.nimbus.domain.rules
+    basePackagesToExclude:
+      - com.antheminc.oss.nimbus.test.exclude.core.*
+      
     typeClassMappings:
       java.time.LocalDate : 
         date
@@ -125,7 +131,17 @@ ext:
   repository:
     targetUrl: 
       ext_client: http://localhost:9095
-      
+
+remote:
+  repository:
+    serviceUrl:
+      remote_repo: http://remote-repo/contextpath
+      remote_repo2: http://remote_repo/contextpath
+      vr_remote_repo2: http://remote_repo/contextpath
+      remote_repo_withcontext: http://remote-repo/contextpath
+      cliententity: http://cliententity
+      client: http://client
+
 test:
   url:
     code: test-environment

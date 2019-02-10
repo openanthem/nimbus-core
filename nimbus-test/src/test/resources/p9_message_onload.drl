@@ -1,0 +1,24 @@
+//created on: Jan 10, 2019
+package com.antheminc.oss.nimbus.test
+
+import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultModelState;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.Message;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.Message.Context;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.Message.Type;
+
+import java.util.HashSet;
+import java.util.Set;
+
+rule "Set Message on p9_message on new"
+
+    when
+        $param: DefaultParamState()
+    then
+    	String text = "Test Message on load";
+        Message msg = new Message(text, text, Type.INFO, Context.TOAST,null);
+        Set<Message> msgs = new HashSet<Message>();
+        msgs.add(msg);
+        $param.setMessages(msgs);
+end

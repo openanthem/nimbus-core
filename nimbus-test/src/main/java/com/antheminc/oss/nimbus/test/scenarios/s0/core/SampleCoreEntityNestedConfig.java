@@ -18,15 +18,17 @@ package com.antheminc.oss.nimbus.test.scenarios.s0.core;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
+import com.antheminc.oss.nimbus.domain.defn.Executions.Configs;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
+import com.antheminc.oss.nimbus.domain.defn.extension.ConfigConditional;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * This class tests for accessConditional(s) for the user with roles {intake, clinician} and resolvedAuthorities = 'member_management'
+ * 
  * @author Rakesh Patel
  *
  */
@@ -51,5 +53,14 @@ public class SampleCoreEntityNestedConfig extends IdLong {
 	
 	@Config(url="/testParam3/_update?rawPayload=\"<!../testParam!><!../testParam2!>\"")
 	private String paramConfigWithNestedPath2;
+	
+	@ConfigConditional(
+		when="true", config = {
+			@Config(url="<!#this!>/../testParam/_update?rawPayload=\"testParam\""),
+			@Config(url="<!#this!>/_process?fn=_setByRule&rule=demoassociatedparams&associatedParam=<!#this!>/../testParam/_get")
+		}
+	)
+	private String paramWithSetByRuleConfig;
+	
 }
 

@@ -14,21 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+'use strict';
 
-
-import { Component, Input } from '@angular/core';
-import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, Input, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
-import { BaseElement } from './../base-element.component';
+import { BaseTableElement } from './../base-table-element.component';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { ParamConfig } from '../../../shared/param-config';
 import { PageService } from '../../../services/page.service';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { Param, TreeGridDeserializer } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
-import { ViewComponent} from '../../../shared/param-annotations.enum';
-import { GridUtils } from '../../../shared/grid-utils';
-
+import { ViewComponent } from '../../../shared/param-annotations.enum';
+import { GridUtils } from './../../../shared/grid-utils';
+import { ChangeDetectorRef } from '@angular/core';
+import { TreeTable } from 'primeng/primeng';
 
 
 /**
@@ -41,7 +42,7 @@ import { GridUtils } from '../../../shared/grid-utils';
     providers: [WebContentSvc],
     templateUrl: './tree-grid.component.html'
 })
-export class TreeGrid extends BaseElement implements ControlValueAccessor {
+export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
 
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
@@ -49,19 +50,19 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
     viewComponent = ViewComponent;
     treeData: any;
 
+    @ViewChild('tt') tt: TreeTable;
+
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
 
     private collectionAlias: string;
 
     public static readonly RENDERABLE_COMPONENT_ALIASES = [
-        ViewComponent.button.toString()
+        ViewComponent.button.toString(),
+        ViewComponent.linkMenu.toString()
     ]
 
-    public writeValue(obj: any): void {
-        if (obj !== undefined) {
-        }
-    }
+    public writeValue(obj: any): void { }
 
     public registerOnChange(fn: any): void {
         this.onChange = fn;
@@ -71,40 +72,46 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
         this.onTouched = fn;
     }
 
-    constructor(private _wcs: WebContentSvc, private pageSvc: PageService, private gridUtils: GridUtils) {
-        super(_wcs);
+    constructor(
+        protected _wcs: WebContentSvc,
+        private pageSvc: PageService,
+        private gridUtils: GridUtils,
+        protected cd: ChangeDetectorRef) {
+        super(_wcs, cd);
     }
 
     ngOnInit() {
         super.ngOnInit();
-
         this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), HttpMethod.GET.value, undefined);
         this.pageSvc.gridValueUpdate$.subscribe((treeList: Param) => {
-            if(this.element.path === treeList.path){
-                this.treeData = this.getTreeStructure(treeList.gridList);
+            if (this.element.path === treeList.path) {
+                this.tt.first = 0;
+                this.treeData = this.getTreeStructure(treeList.gridData.leafState);
+                
             }
         });
 
         // For convenience        
         this.collectionAlias = this.element.config.type.elementConfig.type.model.paramConfigs.find((config) =>
-                config.uiStyles.attributes.alias === this.viewComponent.treeGridChild.toString()).code;
-                
+            config.uiStyles.attributes.alias === this.viewComponent.treeGridChild.toString()).code;
+
         if (this.params) {
             this.params.forEach(column => {
                 column.label = this._wcs.findLabelContentFromConfig(this.element.elemLabels.get(column.id), column.code).text;
                 column['field'] = column.code;
-                column['header'] = column.label;                  
+                column['header'] = column.label;
             });
 
             this.firstColumn = this.params.find((param) => param.uiStyles && param.uiStyles.attributes.hidden === false);
         }
-        
+
+
     }
 
     getTreeStructure(gridList: any[]) {
         let data: any[] = [];
-        gridList.forEach(row => {                               
-            data.push(new TreeGridDeserializer().deserialize(row));        
+        gridList.forEach(row => {
+            data.push(new TreeGridDeserializer().deserialize(row));
         });
 
         return data;
@@ -143,7 +150,7 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
     }
 
     getViewParam(col: ParamConfig, rowNode: any): Param {
-        let nestedCollectionPath = `${this.element.path}/${this.buildNestedCollectionPath(rowNode)}/${col.code}`;
+        let nestedCollectionPath = this.getRowPath(col, rowNode);
         return this.element.collectionParams.find(p => p.path === nestedCollectionPath);
     }
 
@@ -155,11 +162,18 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
         if (!rowNode.activeChild) {
             return param.config.type.elementConfig.type.model.paramConfigs;
         }
-        
-        // Find the first collection param, who's code (or variable name) matches the parent model's code.
+
+        // Find the first collection param, who is annotated with @TreeGridChild.
         // Continue this manner recursively until the last child is found.
-        let nestedCollectionParam: Param = collectionParams.find(p => this.viewComponent.treeGridChild.toString() === p.config.uiStyles.attributes.alias);
-        return this.getNestedCollectionParamConfigs(collectionParams, nestedCollectionParam, rowNode.activeChild);
+        let treegridChild: Param = collectionParams.find(p => this.viewComponent.treeGridChild.toString() === p.config.uiStyles.attributes.alias);
+        if (!treegridChild) {
+            return param.config.type.elementConfig.type.model.paramConfigs;
+        }
+        return this.getNestedCollectionParamConfigs(collectionParams, treegridChild, rowNode.activeChild);
+    }
+
+    getRowPath(col: ParamConfig, rowNode: any) {
+        return `${this.element.path}/${this.buildNestedCollectionPath(rowNode)}/${col.code}`;
     }
 
 }

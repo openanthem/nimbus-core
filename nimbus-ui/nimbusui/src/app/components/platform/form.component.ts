@@ -143,20 +143,8 @@ export class Form extends BaseElement implements OnInit, OnChanges {
     ngOnInit() {
         super.ngOnInit();
         this.logger.debug('Form-i ' + this.element.path);
-        if(this.element.config.uiStyles.attributes.cssClass === 'sixColumn') {
-            this.elementCss = 'col-lg-2 col-md-4 col-sm-12';
-        } else if(this.element.config.uiStyles.attributes.cssClass === 'fourColumn') {
-            this.elementCss = 'col-lg-3 col-md-6 col-sm-12';
-        } else if(this.element.config.uiStyles.attributes.cssClass === 'threeColumn') {
-            this.elementCss = 'col-lg-4 col-md-6 col-sm-12';
-        } else if(this.element.config.uiStyles.attributes.cssClass === 'twoColumn') {
-            this.elementCss = 'col-sm-12 col-md-6';        
-        } else if(this.element.config.uiStyles.attributes.cssClass === 'oneColumn') {
-            this.elementCss = 'col-sm-12';        
-        } else if(this.element.config.uiStyles.attributes.cssClass === 'inline') {
+        if(this.element.config.uiStyles.attributes.cssClass === 'inline') {
             this.elementCss = 'd-block d-md-inline-block mr-3';
-        } else if(this.element.config.uiStyles.attributes.cssClass === 'questionGroup') {
-            this.elementCss = ' questionGroup';
         } else {
             this.elementCss = this.element.config.uiStyles.attributes.cssClass;
         }
@@ -210,5 +198,21 @@ export class Form extends BaseElement implements OnInit, OnChanges {
     partialUpdate(obj:any) {
         this.form.patchValue(obj);
         //this.form.patchValue({firstName: 'Partial'});
+    }
+    
+    getElementClass(parentCss: String, child: Param) {
+        if (child.config.uiStyles) {
+            if (child.config.uiStyles.attributes && child.config.uiStyles.attributes.cssClass && child.config.uiStyles.attributes.cssClass != '') {
+                return child.config.uiStyles.attributes.cssClass;
+            } else {
+                if (parentCss) {
+                    return parentCss;
+                } else {
+                    return '';
+                }
+            }
+        } else {
+            return '';
+        }
     }
 }

@@ -99,9 +99,12 @@ export class Link extends BaseElement {
     @Input() root: Param;
     @Input() inClass: string;
     @Input() renderAsLink: boolean;
+    @Input() rowData?: any;
     private linkClass: string = 'basicView';
     private imagesPath: string;
+    private url: string;
     componentTypes = ComponentTypes;
+
 
     constructor(private _wcs: WebContentSvc, private pageSvc: PageService) {
         super(_wcs);
@@ -113,26 +116,53 @@ export class Link extends BaseElement {
         if (this.inClass) {
             this.linkClass = this.inClass;
         }
+        if (this.element.config &&
+            this.element.config.uiStyles.attributes && this.element.config.uiStyles.attributes.url) {
+            if (this.rowData) {
+                this.url = this.element.config.uiStyles.attributes.url;
+                let urlParams: string[] = this.getAllURLParams(this.element.config.uiStyles.attributes.url);
+                if (urlParams && urlParams.length > 0) {
+                    if (urlParams != null) {
+                        for (let urlParam of urlParams) {
+                            let p = urlParam.substring(1, urlParam.length - 1);
+                            if (this.rowData[p]) {
+                                this.url = this.url.replace(new RegExp(urlParam, 'g'), this.rowData[p]);
+                            }
+                        }
+                    }
+                }
+            } else if (this.element.leafState) {
+                this.url = this.resolveUrl();
+            }
+        }
+        this.pageSvc.eventUpdate$.subscribe(event => {
+            if (event.path == this.element.path && event.leafState && !this.rowData) {
+                this.url = this.resolveUrl();
+            }
+        });
+    }
+
+    resolveUrl() {
+        let resolvedUrl = this.element.config.uiStyles.attributes.url
+        return resolvedUrl.replace(new RegExp("{" + this.element.config.code + "}.*", "g"), this.element.leafState);
+    }
+
+    getAllURLParams(url: string): string[] {
+        var pattern = /{([\s\S]*?)}/g;
+        return url.match(pattern);
     }
 
     processOnClick(uri: string, httpMethod: string, behaviour: string) {
         let item: GenericDomain = new GenericDomain();
-        if(this.root) {
+        if (this.root) {
             this.root.type.model.params.forEach(ele => {
-                if(ele.path === this.element.path.slice(0,this.element.path.lastIndexOf('/'))+'/id') {
+                if (ele.path === this.element.path.slice(0, this.element.path.lastIndexOf('/')) + '/id') {
                     item.addAttribute('id', ele.leafState);
                 }
             });
         }
-        
-        this.pageSvc.processEvent(uri, behaviour, item, httpMethod);
-    }
 
-    /**
-     * The URL attribute for this Param.
-     */
-    get url(): string {
-        return this.element.config.uiStyles.attributes.url;
+        this.pageSvc.processEvent(uri, behaviour, item, httpMethod);
     }
 
     /**
@@ -140,7 +170,7 @@ export class Link extends BaseElement {
      */
     get value(): string {
         const value = this.element.config.uiStyles.attributes.value;
-        if ( value ) {
+        if (value) {
             return value;
         } else {
             return 'INLINE';

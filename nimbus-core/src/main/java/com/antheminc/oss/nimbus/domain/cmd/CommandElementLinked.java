@@ -54,19 +54,6 @@ public class CommandElementLinked extends CommandElement implements Serializable
 		setNext(nextCloned);
 	}
 	
-	public CommandElementLinked cloneUpto(Type type, StringBuilder absoluteUri) {
-		if(getType().equals(type))
-			return null;
-		CommandElementLinked cloned = new CommandElementLinked(getSeqNum(), getType(), getAlias(), getRefId());
-		absoluteUri.append(getUri());
-		CommandElementLinked nextCloned = Optional.ofNullable(getNext()).map(n -> n.cloneUpto(type, absoluteUri)).orElse(null);
-		
-		if(nextCloned != null)
-			cloned.setNext(nextCloned);
-		
-		return cloned;
-	}
-	
 	public CommandElementLinked next() {
 		return next;
 	}

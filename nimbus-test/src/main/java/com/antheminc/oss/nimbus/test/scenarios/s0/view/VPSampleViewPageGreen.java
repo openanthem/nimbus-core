@@ -20,6 +20,8 @@ import java.util.List;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
+import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ComboBox;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Form;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
@@ -103,6 +105,14 @@ public class VPSampleViewPageGreen {
 		
 		@Path("/nc_form")
 		private SampleForm view_nc_form;
+		
+		@ComboBox
+		@Values(url = "a/b/p/sampletask/_search?fn=lookup&projection.mapsTo=code:id,label:taskName")
+		private List<String> unsortedDynamicValues;
+		
+		@ComboBox
+		@Values(url = "a/b/p/sampletask/_search?fn=lookup&orderby=sampletask.taskName.asc()&projection.mapsTo=code:id,label:taskName")
+		private List<String> sortedDynamicValues;
 	}
 	
 	@MapsTo.Type(SampleCoreEntity.class)

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.antheminc.oss</groupId>
 		<artifactId>nimbus-parent</artifactId>
-		<version>1.2.0.BUILD-SNAPSHOT</version>
+		<version>2.0.0.BUILD-SNAPSHOT</version>
 	</parent>
 	
 	<name>nimbus-ui</name>
@@ -106,31 +106,30 @@
 			</activation>
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>com.kelveden</groupId>
-						<artifactId>maven-karma-plugin</artifactId>
-						<version>${maven.karma.plugin.version}</version>
-						<executions>
-							<execution>
-								<phase>test</phase>
-								<goals>
-									<goal>start</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<karmaExecutable>${basedir}/node_modules/.bin/karma</karmaExecutable>        
-							<configFile>${basedir}/karma.conf.js</configFile>
-							<reportsDirectory>${project.build.directory}/karma-reports</reportsDirectory>
-							<browsers>${testconfig.ui.browsers}</browsers>
-							<autoWatch>false</autoWatch>
-							<singleRun>true</singleRun>
-							<colors>true</colors>
-							<skipKarma>false</skipKarma>
-							<skipTests>false</skipTests>
-							<karmaFailureIgnore>false</karmaFailureIgnore>
-						</configuration>
-					</plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>${exec-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                                    <goals>
+                                        <goal>exec</goal>
+                                    </goals>
+                            </execution>
+                        </executions>
+                          <configuration>
+                            <executable>${project.basedir}/nimbusui/node_modules/.bin/ng</executable>
+                            <workingDirectory>${project.basedir}/nimbusui</workingDirectory>
+                            <arguments>
+                                <argument>test </argument>
+                                <argument>--watch=false </argument>
+                                <argument>--code-coverage</argument>
+                                <argument>--browsers</argument>
+                                <argument>${testconfig.ui.browsers}</argument>
+                            </arguments>
+                          </configuration>
+                    </plugin>
 				</plugins>
 			</build>
 		</profile>

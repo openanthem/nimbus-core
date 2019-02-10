@@ -1,9 +1,10 @@
+import { Param } from './../../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule  } from 'primeng/primeng';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { JL } from 'jsnlog';
@@ -22,8 +23,13 @@ import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/sessio
 import { AppInitService } from '../../../../services/app.init.service';
 import { ValidationUtils } from '../../validators/ValidationUtils';
 import { InputLabel } from './input-label.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+import { By } from '@angular/platform-browser';
+import { ServiceConstants } from '../../../../services/service.constants';
+import { multiSelectListBoxElement } from 'mockdata';
 
-let fixture, app, pageService;
+let pageService;
 
 class MockPageService {
     eventUpdate$: Subject<any>;
@@ -45,147 +51,215 @@ class MockPageService {
     postOnChange(a, b, c) {  }
 }
 
+const declarations = [
+  MultiSelectListBox,
+  TooltipComponent,
+  InputLabel
+];
+const imports = [
+   ListboxModule,
+   FormsModule, 
+   ReactiveFormsModule,
+   HttpModule,
+   HttpClientModule,
+   StorageServiceModule
+];
+const providers = [
+   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+   { provide: 'JSNLOG', useValue: JL },
+   { provide: PageService, useClass: MockPageService },
+   CustomHttpClient,
+   LoaderService,
+   ConfigService,
+   LoggerService,
+   AppInitService,
+   SessionStoreService
+];
+
+let fixture, hostComponent;
 describe('MultiSelectListBox', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-          MultiSelectListBox,
-          TooltipComponent,
-          InputLabel
-       ],
-       imports: [
-           ListboxModule,
-           FormsModule, 
-           ReactiveFormsModule,
-           HttpModule,
-           HttpClientModule,
-           StorageServiceModule
-       ],
-       providers: [
-           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-           { provide: 'JSNLOG', useValue: JL },
-           { provide: PageService, useClass: MockPageService },
-           CustomHttpClient,
-           LoaderService,
-           ConfigService,
-           LoggerService,
-           AppInitService,
-           SessionStoreService
-       ]
-    }).compileComponents();
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(MultiSelectListBox);
-    app = fixture.debugElement.componentInstance;
+    hostComponent = fixture.debugElement.componentInstance;
+    const fg = new FormGroup({});
+    const checks: ValidatorFn[] = [];
+    checks.push(Validators.required);
+    fg.addControl(multiSelectListBoxElement.config.code, new FormControl(multiSelectListBoxElement.leafState, checks));
+    hostComponent.form = fg;
+    hostComponent.element = multiSelectListBoxElement;
     pageService = TestBed.get(PageService);
+  });
+
+  it('should create the MultiSelectListBox', async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
-    it('should create the app', async(() => {
-      expect(app).toBeTruthy();
-    }));
+  it('nm-input-label should be created if the label is configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('nm-input-label'));
+    expect(labelEle).toBeTruthy();
+  }));
 
-    it('serState() should update the formInp.element.leafState and call cd.markForCheck()', async(() => {
-      const formInp = { element: { leafState: '' } };
-      spyOn(app.cd, 'markForCheck').and.returnValue('');
-      app.setState('t', formInp);
-      expect(formInp.element.leafState).toEqual('t');
-      expect(app.cd.markForCheck).toHaveBeenCalled();
-    }));
+  it('p-listbox should be created', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    hostComponent.element.labels = [];
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const pListBoxEle = debugElement.query(By.css('p-listbox'));
+    expect(pListBoxEle).toBeTruthy();
+  }));
 
-    it('emitValueChangedEvent() should call controlValueChanged.emit with formcontrol.element', async(() => {
-      app.controlValueChanged = { emit: () => {} };
-      const formControl = { element: 't' };
-      spyOn(app.controlValueChanged, 'emit').and.callThrough();
-      app.emitValueChangedEvent(formControl, '');
-      expect(app.controlValueChanged.emit).toHaveBeenCalled();
-      expect(app.controlValueChanged.emit).toHaveBeenCalledWith('t');
-    }));
+  it('serState() should update the formInp.element.leafState and call cd.markForCheck()', async(() => {
+    const formInp = { element: { leafState: '' } };
+    const spy = spyOn((hostComponent as any).cd, 'markForCheck').and.returnValue('');
+    hostComponent.setState('t', formInp);
+    expect(formInp.element.leafState).toEqual('t');
+    expect(spy).toHaveBeenCalled();
+  }));
 
-    it('ngOnInit() should call the setState()', async(() => {
-      app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a' }, activeValidationGroups: [''], leafState: 'b', path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf('') } } };
+  it('emitValueChangedEvent() should call controlValueChanged.emit with formcontrol.element', async(() => {
+    const controlValue: any = { emit: () => { } };
+    hostComponent.controlValueChanged = controlValue;
+    const formControl = { element: 't' };
+    spyOn(hostComponent.controlValueChanged, 'emit').and.callThrough();
+    hostComponent.emitValueChangedEvent(formControl, '');
+    expect(hostComponent.controlValueChanged.emit).toHaveBeenCalled();
+    expect(hostComponent.controlValueChanged.emit).toHaveBeenCalledWith('t');
+  }));
+
+  it('ngOnInit() should call the setState()', () => {
+    fixture.whenStable().then(() => {
+      const values: any = [{ label: 'l', code: 'c' }];
+      hostComponent.element.values = values;
+      hostComponent.element.activeValidationGroups = [''];
+      hostComponent.element.leafState = 'b';
+      hostComponent.element.path = '/t';
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
-      spyOn(app, 'setState').and.callThrough();
-      app.ngOnInit();
-      expect(app.setState).toHaveBeenCalled();
-    }));
+      spyOn(hostComponent, 'setState').and.callThrough();
+      hostComponent.ngOnInit();
+      hostComponent.form.get('firstName').setValue('newValue');
+      expect(hostComponent.setState).toHaveBeenCalled();
+    });
+  });
 
-    it('ngOnInit() should call the setState and update the targetList', async(() => {
-      app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a' }, activeValidationGroups: [], leafState: null, path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf('') } } };
+  it('ngOnInit() should call the setState and update the targetList', () => {
+    fixture.whenStable().then(() => {
+      const values: any = [{ label: 'l', code: 'c' }];
+      hostComponent.element.values = values;
+      hostComponent.element.activeValidationGroups = [];
+      hostComponent.element.leafState = null;
+      hostComponent.element.path = '/t';
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
-      spyOn(app, 'setState').and.callThrough();
-      app.ngOnInit();
-      expect(app.setState).toHaveBeenCalled();
-      expect(app.targetList).toEqual([]);
-    }));
+      spyOn(hostComponent, 'setState').and.callThrough();
+      hostComponent.ngOnInit();
+      hostComponent.form.get('firstName').setValue('newValue');
+      expect(hostComponent.setState).toHaveBeenCalled();
+      expect((hostComponent as any).targetList).toEqual([]);
+    });
+  });
 
-    it('ngOnInit() should call the form.controls.a.setValue()', async(() => {
-      app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a' }, activeValidationGroups: [''], leafState: 'b', path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf('') } } };
+  it('ngOnInit() should call the form.controls.firstName.setValue()', () => {
+    fixture.whenStable().then(() => {
+      const values: any = [{ label: 'l', code: 'c' }];
+      hostComponent.element.values = values;
+      hostComponent.element.activeValidationGroups = [''];
+      hostComponent.element.leafState = 'b';
+      hostComponent.element.path = '/t';
       const eve = { config: { code: 'a' }, path: '/test', leafState: '' };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
-      spyOn(app.form.controls.a, 'setValue').and.callThrough();
-      app.ngOnInit();
+      spyOn(hostComponent.form.controls.firstName, 'setValue').and.callThrough();
+      hostComponent.ngOnInit();
       pageService.logError(eve);
-      expect(app.form.controls.a.setValue).toHaveBeenCalled();
-    }));
+      expect(hostComponent.form.controls.firstName.setValue).toHaveBeenCalled();
+    });
+  });
 
-    it('ngOnInit() should call the form.controls.a.reset()', async(() => {
-      app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a' }, activeValidationGroups: [''], leafState: 'b', path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf('') } } };
-      const eve = { config: { code: 'a' }, path: '/test', leafState: null };
+  it('ngOnInit() should call the form.controls.firstName.reset()', () => {
+    fixture.whenStable().then(() => {
+      const values: any = [{ label: 'l', code: 'c' }];
+      hostComponent.element.values = values;
+      hostComponent.element.activeValidationGroups = [''];
+      hostComponent.element.leafState = 'b';
+      hostComponent.element.path = '/t';
+      const eve = { config: { code: 'firstName' }, path: '/test', leafState: null };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
-      spyOn(app.form.controls.a, 'reset').and.callThrough();
-      app.ngOnInit();
+      spyOn(hostComponent.form.controls.firstName, 'reset').and.callThrough();
+      hostComponent.ngOnInit();
       pageService.logError(eve);
-      expect(app.form.controls.a.reset).toHaveBeenCalled();
-    }));
+      expect(hostComponent.form.controls.firstName.reset).toHaveBeenCalled();
+    });
+  });
 
-    it('ngOnInit() should call the ValidationUtils.rebindValidations()', async(() => {
-      app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a' }, activeValidationGroups: [''], leafState: 'b', path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf(''), setValidators: () => {} } } };
-      const eve = { activeValidationGroups: [1], config: { code: 'a' }, path: '/t', leafState: '' };
-      spyOn(ValidationUtils, 'rebindValidations').and.returnValue('test');
-      spyOn(ValidationUtils, 'assessControlValidation').and.returnValue('');
-      spyOn(app.form.controls.a, 'setValue').and.callThrough();
-      app.ngOnInit();
-      pageService.notifyErrorEvent(eve);
-      expect(ValidationUtils.rebindValidations).toHaveBeenCalled();
-    }));
+  it('ngOnInit() should call the ValidationUtils.rebindValidations()', async(() => {
+    const values: any = [{ label: 'l', code: 'c' }];
+    hostComponent.element.values = values;
+    hostComponent.element.activeValidationGroups = [''];
+    hostComponent.element.leafState = 'b';
+    hostComponent.element.path = '/t';
+    const eve = { activeValidationGroups: [1], config: { code: 'a' }, path: '/t', leafState: '' };
+    spyOn(ValidationUtils, 'rebindValidations').and.returnValue('test');
+    spyOn(ValidationUtils, 'assessControlValidation').and.returnValue('');
+    hostComponent.ngOnInit();
+    pageService.notifyErrorEvent(eve);
+    expect(ValidationUtils.rebindValidations).toHaveBeenCalled();
+  }));
 
-    it('ngOnInit() should call the form.controls.a.setValidators', async(() => {
-      app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a' }, activeValidationGroups: [''], leafState: 'b', path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf(''), setValidators: () => {} } } };
-      const eve = { activeValidationGroups: null, config: { code: 'a' }, path: '/t', leafState: '' };
+  it('ngOnInit() should call the form.controls.firstName.setValidators', () => {
+    fixture.whenStable().then(() => {
+      const values: any = [{ label: 'l', code: 'c' }];
+      hostComponent.element.values = values;
+      hostComponent.element.activeValidationGroups = [''];
+      hostComponent.element.leafState = 'b';
+      hostComponent.element.path = '/t';
+      const eve = { activeValidationGroups: null, config: { code: 'firstName' }, path: '/t', leafState: '' };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('test');
       spyOn(ValidationUtils, 'assessControlValidation').and.returnValue('');
       spyOn(ValidationUtils, 'buildStaticValidations').and.returnValue('');
       spyOn(ValidationUtils, 'applyelementStyle').and.returnValue('');
-      spyOn(app.form.controls.a, 'setValidators').and.callThrough();
-      app.ngOnInit();
+      spyOn(hostComponent.form.controls.firstName, 'setValidators').and.callThrough();
+      hostComponent.ngOnInit();
       pageService.notifyErrorEvent(eve);
-      expect(app.form.controls.a.setValidators).toHaveBeenCalled();
-    }));
+      expect(hostComponent.form.controls.firstName.setValidators).toHaveBeenCalled();
+    });
+  });
 
-    it('ngOnInit() should call the pageService.postOnChange()', async(() => {
-      app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a' }, activeValidationGroups: [''], leafState: 'b', path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf('') } } };
-      const eve = { leafState: 's', path: '/t', config: { uiStyles: { attributes: { postEventOnChange: true } } } };
-      spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
-      spyOn(pageService, 'postOnChange').and.callThrough();
-      app.ngOnInit();
-      app.controlValueChanged.emit(eve);
-      expect(pageService.postOnChange).toHaveBeenCalled();
-    }));
+  it('ngOnInit() should call the pageService.postOnChange()', async(() => {
+    const values: any = [{ label: 'l', code: 'c' }];
+    hostComponent.element.values = values;
+    hostComponent.element.activeValidationGroups = [''];
+    hostComponent.element.leafState = 'b';
+    hostComponent.element.path = '/t';
+    const eve = { leafState: 's', path: '/t', config: { uiStyles: { attributes: { postEventOnChange: true } } } };
+    spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
+    spyOn(pageService, 'postOnChange').and.callThrough();
+    hostComponent.ngOnInit();
+    hostComponent.controlValueChanged.emit(eve);
+    expect(pageService.postOnChange).toHaveBeenCalled();
+  }));
 
-    it('ngOnInit() should call the pageService.processEvent()', async(() => {
-      app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a', uiStyles: { attributes: { postButtonUrl: '' } } }, activeValidationGroups: [''], leafState: 'b', path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf('') } } };
+  it('ngOnInit() should call the pageService.processEvent()', () => {
+    fixture.whenStable().then(() => {
+      const values: any = [{ label: 'l', code: 'c' }];
+      hostComponent.element.values = values;
+      hostComponent.element.activeValidationGroups = [''];
+      hostComponent.element.leafState = 'b';
+      hostComponent.element.path = '/t';
+      hostComponent.element.config.uiStyles.attributes.postButtonUrl = '';
       const eve = { leafState: 's', path: '/t', config: { uiStyles: { attributes: { postEventOnChange: false, postButtonUrl: true } } } };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
       spyOn(pageService, 'processEvent').and.callThrough();
-      app.ngOnInit();
-      app.controlValueChanged.emit(eve);
+      hostComponent.ngOnInit();
+      hostComponent.controlValueChanged.emit(eve);
       expect(pageService.processEvent).toHaveBeenCalled();
-    }));
+    });
+  });
 
 });
+

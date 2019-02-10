@@ -5,6 +5,12 @@ import { HttpModule } from '@angular/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { Paragraph } from './paragraph.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../setup.spec';
+import { Param } from '../../../shared/param-state';
+import { fieldValueParam } from 'mockdata';
+
+let param: Param;
 
 class MockDomSanitizer {
     bypassSecurityTrustHtml(a:any) {
@@ -12,32 +18,36 @@ class MockDomSanitizer {
     }
 }
 
-describe('Paragraph', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        Paragraph
-       ],
-       imports: [
-        HttpClientModule,
-        HttpModule
-       ],
-       providers: [
-           { provide: DomSanitizer, useClass: MockDomSanitizer }
-       ]
-    }).compileComponents();
-  }));
+const declarations = [
+  Paragraph
+ ];
+ const imports = [
+  HttpClientModule,
+  HttpModule
+ ];
+ const providers = [
+     { provide: DomSanitizer, useClass: MockDomSanitizer }
+ ];
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(Paragraph);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
+ let fixture, hostComponent;
+describe('Paragraph', () => {
+
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(Paragraph);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = fieldValueParam;
+  });
+
+  it('should create the Paragraph', async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
   it('get htmlContent() should get content DomSanitizer.bypassSecurityTrustHtml()', async(() => {
-    const fixture = TestBed.createComponent(Paragraph);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.htmlContent).toEqual('test');
+    expect(hostComponent.htmlContent).toEqual('test');
   }));
 
 });

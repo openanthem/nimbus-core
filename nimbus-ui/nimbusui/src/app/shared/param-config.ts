@@ -112,7 +112,7 @@ export class UiStyle implements Serializable<UiStyle,string> {
 }
 
 export class UiAttribute implements Serializable<UiAttribute,string> {
-    value: string;
+    value: any;
     url: string;
     asynchronous: boolean;
     controlType: string;
@@ -164,12 +164,12 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     postEventOnChange: boolean;
     draggable: boolean;
     rowSelection: boolean;
-    dataKey: string;
     showHeader: boolean;
     pagination: boolean;
     pageSize: number = 25; //server side has a default but defaulting here so that coverter can cast to number
     postButton: boolean;
     postButtonUrl: string;
+    postButtonUri: string;
     postButtonTargetPath: string;
     postButtonAlias : string;
     postButtonLabel: string;
@@ -200,8 +200,8 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     acceptLabel: string;
     rowExpander: boolean;
     readonlyInput: boolean;
-	monthNavigator: boolean;
-	yearNavigator: boolean;
+	  monthNavigator: boolean;
+	  yearNavigator: boolean;
     yearRange: string;
     metaData: any;
     captureType: string;
@@ -215,10 +215,26 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     showTargetControls: boolean;
     scriptName: string;
     orientation: string;
-    
+    showMessages: boolean;
+    stylesheet: string;
+    delay: number;
+    useDelay: boolean;
+    closeAfterPrint: boolean;
+    printPath: string;
+    autoPrint: boolean;
+    dataEntryField: boolean;
+    fixLayout: boolean;
+    headerCheckboxToggleAllPages: boolean;
+    xAxisLabel: string;
+    yAxisLabel: string;
+    stepSize: string;
+    inlineStyle: string;
+    formats: string;
+    toolbarFeatures: string[];
+
     deserialize( inJson ) {
         let obj = this;
-        obj = Converter.convert(inJson,obj);
+        obj = Converter.convert(inJson, obj, { includeArrays: true });
         if(inJson['metaData'] || inJson['metaData'] === ""){
             obj['metaData'] = inJson['metaData'] !== "" ? inJson['metaData'].split(",") : [];
         }

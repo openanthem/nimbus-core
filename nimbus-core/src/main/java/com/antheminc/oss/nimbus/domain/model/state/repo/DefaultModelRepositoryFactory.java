@@ -15,9 +15,11 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
+import java.util.Map;
+
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -34,24 +36,29 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 
 	private final BeanResolverStrategy beanResolver;
 	
-	public DefaultModelRepositoryFactory(BeanResolverStrategy beanResolver) {
+	private final Map<String, ModelRepository> REPO_BEAN_LOOKUP;
+		
+	public DefaultModelRepositoryFactory(BeanResolverStrategy beanResolver, Map<String, ModelRepository> repoBeanLookup) {
 		this.beanResolver = beanResolver;
+		this.REPO_BEAN_LOOKUP = repoBeanLookup;
 	}
-	
-	
+
 	@Override
 	public ModelRepository get(Repo repo) {
-		return get(repo.value());
+		return repo !=null ? get(repo.value()): null;
 	}
 	
 	@Override
 	public ModelRepository get(Repo.Database db) {
-		return getBeanResolver().get(ModelRepository.class, db.name());
+		return REPO_BEAN_LOOKUP.get(db.name());
 	}
 
 	@Override
-	public ModelPersistenceHandler getHandler(Repo repo) {
-		return getBeanResolver().get(ModelPersistenceHandler.class, repo.value().name()+"_handler");
+	public ModelRepository get(ModelConfig<?> mConfig) {
+		if(mConfig.isRemote()) {
+			return REPO_BEAN_LOOKUP.get(mConfig.getRepo().remote().name());
+		} 			
+		return get(mConfig.getRepo());
 	}
 	
 }

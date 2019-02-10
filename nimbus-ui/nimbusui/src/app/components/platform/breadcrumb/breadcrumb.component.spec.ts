@@ -159,7 +159,7 @@
 // }
 
 // describe('BreadcrumbComponent', () => {
-//   beforeEach(async(() => {
+//   beforeEach(() => {
 //     TestBed.configureTestingModule({
 //       declarations: [
 //         BreadcrumbComponent
@@ -208,7 +208,7 @@
 // });
 
 // describe('BreadcrumbComponent', () => {
-//     beforeEach(async(() => {
+//     beforeEach(() => {
 //       TestBed.configureTestingModule({
 //         declarations: [
 //           BreadcrumbComponent
@@ -246,7 +246,7 @@
 //   });
 
 //   describe('BreadcrumbComponent', () => {
-//     beforeEach(async(() => {
+//     beforeEach(() => {
 //       TestBed.configureTestingModule({
 //         declarations: [
 //           BreadcrumbComponent

@@ -5,7 +5,7 @@
 
 	<groupId>com.antheminc.oss</groupId>
 	<artifactId>nimbus-starter</artifactId>
-    <version>1.2.0.BUILD-SNAPSHOT</version>
+    <version>2.0.0.BUILD-SNAPSHOT</version>
 	<url>http://www.oss.antheminc.com/</url>
 	<developers>
 		<developer>
@@ -57,7 +57,7 @@
 	<description>framework starter project</description>
 
 	<properties>
-		<nimbus.version>1.2.0.BUILD-SNAPSHOT</nimbus.version>
+		<nimbus.version>2.0.0.BUILD-SNAPSHOT</nimbus.version>
 	</properties>
 
 	<dependencies>	

@@ -1,19 +1,22 @@
 <nm-breadcrumb></nm-breadcrumb>
-<span *ngIf="hasLayout">
+<ng-template ngFor let-msg [ngForOf]="messages">
+	<nm-message messageContext="{{msg?.context}}" [messageArray]="msg?.messageArray" [life]="msg?.life"  *ngIf="msg"></nm-message>
+</ng-template>
+<ng-template [ngIf]="hasLayout">
 	<div class="info-bar clearfix">
 	    <div [class]="p.config?.uiStyles?.attributes?.cssClass" *ngFor="let p of accordions, let index=index">
-	            <nm-accordion [element]="p"></nm-accordion>
+	            <nm-accordion [element]="p" [nmPrint]="p"></nm-accordion>
 	    </div>
 	</div>
 	
 	<nav class="section-nav nav navbar navbar-expand-sm" role="navigation">
-		<button aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler collapsed"
-		data-target="#navbarToggler" data-toggle="collapse" type="button"> 
-		<span class="navbar-toggler-icon"></span> 
-	</button>
-	<div aria-expanded="false" class="navbar-collapse nav-block collapse" id="navbarToggler">
-		<nm-panelMenu [model]="items"  [multiple]="false"></nm-panelMenu>
-	</div>
+        <button aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler collapsed"
+            data-target="#navbarToggler" data-toggle="collapse" type="button"> 
+            <span class="navbar-toggler-icon"></span> 
+        </button>
+        <div aria-expanded="false" class="navbar-collapse nav-block collapse" id="navbarToggler">
+			<nm-panelMenu [model]="items" [multiple]="false"></nm-panelMenu>
+		</div>
 	</nav>
 
 	<nm-actiontray *ngIf = "(actionTray !== undefined) && actionTray?.visible" [element]="actionTray"></nm-actiontray> 
@@ -22,9 +25,7 @@
 		<nm-modal [element]="modal"></nm-modal>
 	</ng-template>	
 
-	
-
-</span>
-<div class="{{infoClass}}">
+</ng-template>
+<div id="page-content" class="{{infoClass}}" (scroll)="onPageContentScroll($event)">
     <router-outlet></router-outlet>
 </div><!--  END Domain-content  -->

@@ -15,6 +15,10 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
+import static com.antheminc.oss.nimbus.domain.defn.Constants.SEARCH_REQ_PROJECT_ALIAS_MARKER;
+import static com.antheminc.oss.nimbus.domain.defn.Constants.SEARCH_REQ_PROJECT_MAPPING_MARKER;
+import static com.antheminc.oss.nimbus.domain.defn.Constants.SEARCH_REQ_WHERE_MARKER;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -38,12 +42,12 @@ import lombok.Setter;
 public abstract class SearchCriteria<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private T where;
-	private T orderby;
-	private String aggregateCriteria;
-	private ProjectCriteria projectCriteria;
-	private String fetch;
-	private Pageable pageRequest;
+	protected T where;
+	protected T orderby;
+	protected String aggregateCriteria;
+	protected ProjectCriteria projectCriteria;
+	protected String fetch;
+	protected Pageable pageRequest;
 	
 	private Command cmd;
 	
@@ -99,7 +103,7 @@ public abstract class SearchCriteria<T> implements Serializable {
 
 		@Override
 		public void validate(ExecutionContext executionContext) {
-			String[] whereClause = executionContext.getCommandMessage().getCommand().getRequestParams().get("where");
+			String[] whereClause = executionContext.getCommandMessage().getCommand().getRequestParams().get(SEARCH_REQ_WHERE_MARKER.code);
 			if(ArrayUtils.isNotEmpty(whereClause)) {
 				throw new FrameworkRuntimeException("ExampleSearchCriteria does not support the where request parameter in command: "+executionContext.getCommandMessage());
 			}
@@ -120,8 +124,8 @@ public abstract class SearchCriteria<T> implements Serializable {
 				throw new FrameworkRuntimeException("LookupSearchCriteria does not support the raw payload in command: "+executionContext.getCommandMessage());
 			}
 			
-			String[] projectionAlias = executionContext.getCommandMessage().getCommand().getRequestParams().get("projection.alias");
-			String[] projectionMapping = executionContext.getCommandMessage().getCommand().getRequestParams().get("projection.mapsTo");
+			String[] projectionAlias = executionContext.getCommandMessage().getCommand().getRequestParams().get(SEARCH_REQ_PROJECT_ALIAS_MARKER.code);
+			String[] projectionMapping = executionContext.getCommandMessage().getCommand().getRequestParams().get(SEARCH_REQ_PROJECT_MAPPING_MARKER.code);
 			
 			if(ArrayUtils.isNotEmpty(projectionAlias) && ArrayUtils.isNotEmpty(projectionMapping)){
 				throw new FrameworkRuntimeException("LookupSearchCriteria does not support both projection.alias and projection.mapsTo in command: "+executionContext.getCommandMessage());

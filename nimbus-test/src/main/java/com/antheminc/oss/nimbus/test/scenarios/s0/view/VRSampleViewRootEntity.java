@@ -57,4 +57,9 @@ public class VRSampleViewRootEntity {
 	
 	@Path
 	private List<SampleCoreNestedEntity> attr_list_1_NestedEntity;
+	
+	@Path
+	private List<String> attr_list_2_simple;
+	
+	private SampleParamStateHolders paramStateHolders;
 }

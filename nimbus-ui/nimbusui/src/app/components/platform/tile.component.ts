@@ -53,11 +53,6 @@ export class Tile extends BaseElement {
     // Optional tileType = 'subcard' is used for indicating it is a sub-tile. This drives the style of nested tile.
     @Input() tileType?: string;
 
-    // width of tile
-    public styleWd: string = 'col-12';
-
-    // height of tile
-    public styleHt: string = 'height-lg';
     viewComponent = ViewComponent;
     componentTypes = ComponentTypes;
 
@@ -70,26 +65,10 @@ export class Tile extends BaseElement {
         super.ngOnInit();
         // Determine the Tile size based on "size" attribute.
         this._logger.debug('tile component: here is the tile size ' + this.element.config.uiStyles.attributes.size);
-        if (this.element.config.uiStyles.attributes.size === 'XSmall') {
-            this.styleWd = 'card-holder col-lg-3 col-md-6 XsmallCard';
-            this.styleHt = 'height-md';
-        } else if (this.element.config.uiStyles.attributes.size === 'Small') {
-            this.styleWd = 'col-lg-4 col-md-6 smallCard';
-            this.styleHt = 'height-md';
-        } else if (this.element.config.uiStyles.attributes.size === 'Medium') {
-            this.styleWd = 'card-holder col-md-6 mediumCard';
-            this.styleHt = 'height-md';
-        } else if (this.element.config.uiStyles.attributes.size === 'Large') {
-            this.styleWd = 'card-holder col-12 ';
-            this.styleHt = 'card-block ';
-        } else {
-            this.styleWd = '';
-            this.styleHt = '';
-        }
+
         // SubTile (nested tile) style override
         if (this.tileType === 'subcard') {
             this._logger.debug('tile component: the tiletype is subcard');
-            this.styleWd = this.styleWd + ' subcard';
         }
         // Check for initialization
         if (this.element.config && this.element.config.initializeComponent()) {
@@ -98,4 +77,3 @@ export class Tile extends BaseElement {
         this.updatePosition();
     }
 }
-

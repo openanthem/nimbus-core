@@ -75,7 +75,10 @@ export class ServiceConstants {
     public static get WS_PORT() : string { return '8080'; }
     public static get WEB_CONTENT_PORT() : string { return '3004'; }
     public static get STATIC_CONTENT_PORT() : string { return '4000'; }
-    public static get PLATFORM_SEPARATOR() : string { return '/p' ;}
+    public static get PLATFORM_SEPARATOR() : string { return '/p'; }
+    public static get SEPARATOR_URI_PARENT(): string { return '..'; }
+    public static get SEPARATOR_URI_ROOT_DOMAIN(): string { return '.d'; }
+    public static get MARKER_COMMAND_PARAM_CURRENT_SELF(): string { return '<!#this!>'; }
     
     public static get SESSIONKEY(): string  {
         { return 'sessionId';}
@@ -106,16 +109,4 @@ export class ServiceConstants {
     //     obj['defaultAjaxUrl'] = 'htpp://localhost:8000/log';
     //     return obj;
     // }
-
-    // TODO Move this to server-side configuration.
-    public static get ERROR_MESSAGE_DEFAULTS(): any {
-        return {
-            required: 'Field is required.',
-            pattern: 'Field does not match the required pattern.',
-            minMaxSelection: 'Field does not meet min/max requirement.',
-            isNumber: 'Value must be a number.',
-            isPast: 'Value must be today or before today\'s date.',
-            isFuture: 'Value must be today or after today\'s date.'
-        };
-    }
 }
