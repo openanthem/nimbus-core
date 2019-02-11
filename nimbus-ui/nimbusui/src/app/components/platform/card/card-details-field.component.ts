@@ -61,7 +61,7 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
 
     getComponentClass() {
         let componentClass: string[] = [];
-        componentClass.push('');
+        componentClass.push(this.cssClass);
         return componentClass;
     }
 
