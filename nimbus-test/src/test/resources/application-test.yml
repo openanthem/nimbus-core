@@ -139,4 +139,6 @@ test:
   key2: key2
 search:
   threshold:
-    1     
+    1
+  #lookup:
+    #inMemorySortLimit: 200   
