@@ -134,6 +134,8 @@ export class Link extends BaseElement {
             } else if (this.element.leafState) {
                 this.url = this.resolveUrl();
             }
+            else
+            this.url = this.element.config.uiStyles.attributes.url;
         }
         this.pageSvc.eventUpdate$.subscribe(event => {
             if (event.path == this.element.path && event.leafState && !this.rowData) {
@@ -205,4 +207,3 @@ export class Link extends BaseElement {
         return this.element.config.uiStyles.attributes.rel;
     }
 }
-
