@@ -157,8 +157,10 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		try {
 			if(StringUtils.equalsAnyIgnoreCase(direction, Constants.SEARCH_REQ_ORDERBY_DESC_MARKER.code))
 				CollectionsTemplate.sortSelfReverse(paramValues, Comparator.comparing(pv -> expressionEvaluator.getValue(property, pv, String.class)));
-			else
+			else if(StringUtils.equalsAnyIgnoreCase(direction, Constants.SEARCH_REQ_ORDERBY_ASC_MARKER.code))
 				CollectionsTemplate.sortSelf(paramValues, Comparator.comparing(pv -> expressionEvaluator.getValue(property, pv, String.class)));
+			else
+				throw new FrameworkRuntimeException("Valid sort direction(s) are "+Constants.SEARCH_REQ_ORDERBY_DESC_MARKER.code+" OR "+Constants.SEARCH_REQ_ORDERBY_ASC_MARKER.code+" but found: "+direction+" , in command: "+cmd); 
 		}
 		catch(Exception e) {
 			throw new FrameworkRuntimeException("Could not sort the param values with provided orderBy clause: "+orderBy+" , in command: "+cmd, e);
