@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.annotation.Cacheable;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
@@ -58,8 +59,11 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 	
 	private ExpressionEvaluator expressionEvaluator;
 	
-	@Value(value="${search.lookup.inMemorySortLimit:500}")
-	private int inMemorySortLimit;
+	@Value(value="${search.lookup.inMemory.sortThreshold:500}")
+	private int inMemorySortThreshold;
+	
+	@Value(value="${search.lookup.inMemory.exceptionIfOverSortThreshold:false}")
+	private boolean exceptionIfOverSortThreshold;
 	
 	public DefaultSearchFunctionHandlerLookup(BeanResolverStrategy beanResolver) {
 		this.expressionEvaluator = beanResolver.find(ExpressionEvaluator.class);
@@ -158,11 +162,16 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		if(index == -1)
 			throw new IllegalStateException("Invalid orderby clause for StaticCodeValue search for a command "+cmd+" . It must follow the pattern \"property.direction\" e.g. code.asc() or name.firstName.desc()");
 		
-		if(inMemorySortLimit <= 0 || paramValues.size() > inMemorySortLimit) {
-			logit.error(() ->"Size of paramValues "+paramValues.size()+" is greater than Configured limit for in memory sort: "+inMemorySortLimit+", so returning the list without sorting. "
-					+ "Please configure the limit per requirement keeping in mind that above the threshold limit, you may encounter memory leak. ");
-			
-			return (R) paramValues;
+		if(inMemorySortThreshold <= 0 || paramValues.size() > inMemorySortThreshold) {
+			if(exceptionIfOverSortThreshold) {
+				throw new FrameworkRuntimeException("Size of paramValues "+paramValues.size()+" is greater than configured limit for in memory sort: "+inMemorySortThreshold+", for command: "+cmd+". "
+						+ "Please configure the limit as needed keeping in mind that above the threshold limit, you may encounter memory leak.");
+			}
+			else {
+				logit.error(() -> "Size of paramValues "+paramValues.size()+" is greater than configured limit for in memory sort: "+inMemorySortThreshold+", for command: "+cmd+" so returning the list without sorting. "
+						+ "Please configure the limit as needed keeping in mind that above the threshold limit, you may encounter memory leak." );
+				return (R) paramValues;
+			}
 		}
 		
 		String property = StringUtils.substringBeforeLast(orderBy, PROPERTY_DELIMITER);
@@ -182,5 +191,6 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		
 		return (R) paramValues;
 	}
+	
 	
 }

@@ -140,5 +140,7 @@ test:
 search:
   threshold:
     1
-  #lookup:
-    #inMemorySortLimit: 200   
+  lookup:
+    inMemory:
+      sortThreshold: 100
+      exceptionIfOverSortThreshold: true   
