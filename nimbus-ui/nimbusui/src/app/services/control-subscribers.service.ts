@@ -87,6 +87,7 @@ export class ControlSubscribers {
     public stateUpdateSubscriber(control:BaseControl<any>) {
         this.onEventUpdateSubscriber(control, (event, frmCtrl) => {
             if(event.leafState!=null) {
+                this.previousLeafState = event.leafState;
                 frmCtrl.setValue(event.leafState);
             } else {
                 frmCtrl.reset();
@@ -116,7 +117,7 @@ export class ControlSubscribers {
         });
     }
 
-    public resetPreviousLeafState(val: any){
+    public resetPreviousLeafState(val: any) {
         this.previousLeafState = val;
     }
 
