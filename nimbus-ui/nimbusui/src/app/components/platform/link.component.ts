@@ -131,9 +131,10 @@ export class Link extends BaseElement {
                         }
                     }
                 }
-            } else if (this.element.leafState) {
+            } else {
                 this.url = this.resolveUrl();
             }
+
         }
         this.pageSvc.eventUpdate$.subscribe(event => {
             if (event.path == this.element.path && event.leafState && !this.rowData) {
@@ -143,8 +144,14 @@ export class Link extends BaseElement {
     }
 
     resolveUrl() {
-        let resolvedUrl = this.element.config.uiStyles.attributes.url
-        return resolvedUrl.replace(new RegExp("{" + this.element.config.code + "}.*", "g"), this.element.leafState);
+        let resolvedUrl = this.element.config.uiStyles.attributes.url;
+
+        if (this.element.leafState) {
+            return resolvedUrl.replace(new RegExp("{" + this.element.config.code + "}.*", "g"), this.element.leafState);
+        }
+        else {
+            return resolvedUrl;
+        }
     }
 
     getAllURLParams(url: string): string[] {
@@ -205,4 +212,3 @@ export class Link extends BaseElement {
         return this.element.config.uiStyles.attributes.rel;
     }
 }
-
