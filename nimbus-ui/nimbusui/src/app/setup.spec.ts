@@ -1,3 +1,4 @@
+import { EditorModule } from 'primeng/editor';
 import { AppRoutingModule } from './app.routing.module';
 import { TableModule } from 'primeng/table';
 import { MessagesModule } from 'primeng/messages';
@@ -113,7 +114,8 @@ export const allimports = [
         AngularSvgIconModule,
         ToastModule,
         InputSwitchModule,
-        RouterTestingModule
+        RouterTestingModule,
+        EditorModule
     ]
 
 

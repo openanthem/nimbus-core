@@ -46,7 +46,7 @@ public class SampleChartDataSetTest  extends AbstractFrameworkIntegrationTests {
 		// if the aggregation query is used to get the data group, the param type must be List<DataGroup> just like @Grid param
 		
 		String request = "/samplechart/_search?fn=query&where={\n" + 
-				"    aggregate: \"samplechart\",\n" + 
+				"    aggregate : \"samplechart\",\n" + 
 				"    pipeline: [\n" + 
 				"	    {\n" + 
 				"			$match: {\n" + 

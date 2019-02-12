@@ -2,6 +2,8 @@
 <div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.dataEntryField" [hidden]="!element?.visible" [ngClass]="getComponentClass()">
    
     <nm-input id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.text.toString()" [element]="element" [form]="form"></nm-input>
+    <nm-input-mask id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias==componentTypes.mask.toString()" [element]="element" [form]="form"></nm-input-mask>
+    <nm-input-rich-text id="{{id}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.richText.toString()" [element]="element" [form]="form"></nm-input-rich-text>
     <nm-signature id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.signature.toString()" [element]="element" [form]="form"></nm-signature>
     <nm-input-textarea id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.textarea.toString()" [element]="element" [form]="form"></nm-input-textarea>
     <nm-input-calendar  id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.calendar.toString()" [element]="element" [form]="form"></nm-input-calendar>

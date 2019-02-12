@@ -69,6 +69,8 @@ class MockConfigService {
     }
   };
   setLayoutToAppConfig(a, b) {}
+  setViewConfigToParamConfigMap(a,b) {}
+
 }
 
 class MockLoaderService {

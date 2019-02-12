@@ -1,5 +1,3 @@
-import { TableHeader } from './grid/table-header.component';
-import { By } from '@angular/platform-browser';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -21,7 +19,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, FormControl } from '@angular/forms';
 import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, 
     DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, 
-    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
+    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule, InputMaskModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { HttpModule } from '@angular/http';
@@ -93,7 +91,14 @@ import { Param } from './../../shared/param-state';
 import { FormErrorMessage } from './form-error-message.component';
 import { PrintDirective } from '../../directives/print.directive';
 import { formErrorMessageParam } from 'mockdata';
+import { InputMaskComp } from './form/elements/input-mask.component';
 
+import { RichText } from './form/elements/rich-text.component';
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './charts/chart.component';
+import { EditorModule } from 'primeng/editor';
+import { TableHeader } from './grid/table-header.component';
+import { By } from '@angular/platform-browser';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -173,7 +178,10 @@ const declarations = [ Form,
     Label,
     CardDetailsFieldGroupComponent,
     InputLegend ,
-    PrintDirective
+    PrintDirective,
+    InputMaskComp,
+    NmChart,
+    RichText
 ];
 const imports = [   FormsModule, ReactiveFormsModule,
     GrowlModule,
@@ -197,7 +205,11 @@ const imports = [   FormsModule, ReactiveFormsModule,
     AngularSvgIconModule,
     ToastModule,
     InputSwitchModule, 
-    TreeTableModule ];
+    TreeTableModule,
+    InputMaskModule,
+    ChartModule,
+    EditorModule
+ ];
 const providers = [];
 
 let fixture, hostComponent;

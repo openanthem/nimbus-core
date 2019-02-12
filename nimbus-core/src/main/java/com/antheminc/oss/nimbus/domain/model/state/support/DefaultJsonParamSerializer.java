@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Chart;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TreeGrid;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
@@ -180,7 +181,9 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 			if(colParam.getConfig().getUiStyles()==null)
 				return false;
 			
-			return ((colParam.getConfig().getUiStyles().getAnnotation().annotationType()==Grid.class) || (colParam.getConfig().getUiStyles().getAnnotation().annotationType() == TreeGrid.class));
+			return ((colParam.getConfig().getUiStyles().getAnnotation().annotationType()==Grid.class) || (colParam.getConfig().getUiStyles().getAnnotation().annotationType()==Chart.class)
+					|| (colParam.getConfig().getUiStyles().getAnnotation().annotationType() == TreeGrid.class));
+			
 		}
 		
 		private void writeSyntheticState(Param<?> p) throws IOException {

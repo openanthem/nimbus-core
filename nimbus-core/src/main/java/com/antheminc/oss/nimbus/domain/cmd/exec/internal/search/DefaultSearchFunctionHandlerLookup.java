@@ -15,16 +15,18 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal.search;
 
-import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
@@ -35,6 +37,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.LookupSearchCriteria;
 import com.antheminc.oss.nimbus.entity.StaticCodeValue;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 
 /**
  * @author Rakesh Patel
@@ -44,6 +47,14 @@ import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 @EnableLoggingInterceptor
 public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunctionHandler<T, R> {
 
+	protected static final String toReplace = "//.";
+	protected static final String replaceWith = "//?.";
+	private ExpressionEvaluator expressionEvaluator;
+	
+	public DefaultSearchFunctionHandlerLookup(BeanResolverStrategy beanResolver) {
+		this.expressionEvaluator = beanResolver.find(ExpressionEvaluator.class);
+	}
+	
 	@Override
 	@Cacheable(value="staticcodevalues", 
 		key = "#executionContext.getCommandMessage().getCommand().getFirstParameterValue(\"where\")", 
@@ -95,22 +106,25 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 	
 	private R getDynamicParamValues(LookupSearchCriteria lookupSearchCriteria, Class<?> criteriaClass, List<?> searchResult) {
 		List<String> list = new ArrayList<String>(lookupSearchCriteria.getProjectCriteria().getMapsTo().values());
-		
+
 		if(list.size() > 2)
-			throw new IllegalStateException("ParamValues lookup failed due to more than 2 fields provided to create the param values. the criteria class is "+criteriaClass);
+		throw new IllegalStateException("ParamValues lookup failed due to more than 2 fields provided to create the param values. the criteria class is "+criteriaClass);
 		
-		PropertyDescriptor codePd = BeanUtils.getPropertyDescriptor(criteriaClass, list.get(0));
-		PropertyDescriptor labelPd = BeanUtils.getPropertyDescriptor(criteriaClass, list.get(1));
-		
+		String cd = list.get(0).replaceAll(toReplace, replaceWith);
+		String lb = list.get(1).replaceAll(toReplace, replaceWith);
 		try {
 			List<ParamValue> paramValues = new ArrayList<>();
 			for(Object model: searchResult) {
-				paramValues.add(new ParamValue(codePd.getReadMethod().invoke(model).toString(), (String)labelPd.getReadMethod().invoke(model)));
+				Object code = this.expressionEvaluator.getValue(cd, model);
+				Object label = this.expressionEvaluator.getValue(lb, model);
+				if(code!= null && label !=null) {
+					paramValues.add(new ParamValue(code.toString(), label.toString()));
+				}
 			}
 			return (R)paramValues;
 		}
 		catch(Exception ex) {
-			throw new FrameworkRuntimeException("Failed to execute read on property: "+codePd+" and "+labelPd, ex);
+			throw new FrameworkRuntimeException("Failed to parse property - code: "+list.get(0)+" and label: "+list.get(1), ex);
 		}
 	}
 	

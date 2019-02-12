@@ -58,8 +58,8 @@ export abstract class BaseLabel {
      * Get the label text for this element.
      */
     public get label(): string {
-            this.loadLabelConfig(this.element);
-            return ParamUtils.getLabelText(this.labelConfig);
+        this.loadLabelConfig(this.element);
+        return ParamUtils.getLabelText(this.labelConfig);
     }
 
     /**

@@ -284,6 +284,7 @@ export class LayoutService {
         item.type = element.config.uiStyles.attributes.type;
         item.target = element.config.uiStyles.attributes.target;
         item.rel = element.config.uiStyles.attributes.rel;
+        item.visible = element.visible;
         return item;
     }
 
@@ -309,10 +310,6 @@ export class LayoutService {
         }
     }
 
-    getDefinitions() {
-        return this.httpClient.get(ServiceConstants.IMAGE_URL + '/svg-definitions.component.html', {responseType: 'text'});
-    }
-    
     private getActionTrayItems(layoutConfig: Model): Param {
 
         const actionTrayParam: Param = layoutConfig.params.find( param => ( param.config.uiStyles != null && 

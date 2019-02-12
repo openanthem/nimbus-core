@@ -112,8 +112,8 @@ public class DefaultProcessConfig {
 	}	
 	
 	@Bean(name="default._search$execute?fn=lookup")
-	public FunctionHandler<?, ?> lookupFunctionHandler(){
-		return new DefaultSearchFunctionHandlerLookup<>();
+	public FunctionHandler<?, ?> lookupFunctionHandler(BeanResolverStrategy beanResolver){
+		return new DefaultSearchFunctionHandlerLookup<>(beanResolver);
 	}
 	
 	@Bean(name="default._search$execute?fn=example")
