@@ -86,6 +86,8 @@ import { NmChart } from './../charts/chart.component';
 import { ChartModule } from 'primeng/chart';
 import { EditorModule } from 'primeng/editor';
 import { TableHeader } from './../grid/table-header.component';
+import { NmMessageService } from './../../../services/toastmessage.service';
+
 let pageService, webContentSvc, configService;
 
 class MockWebContentSvc {
@@ -244,6 +246,7 @@ const providers = [
   Location,
   GridService,
   PrintService,
+  NmMessageService,
   ChangeDetectorRef
 ];
 let fixture, hostComponent, changeDetectorRef;
@@ -510,7 +513,7 @@ describe('Accordion', () => {
   }));
 
   it('closeAll should clear the index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService, changeDetectorRef);
+    hostComponent.accordion = new Accordion(webContentSvc, pageService);
     hostComponent.accordion['tabs'] = true;
     hostComponent.index = [1, 2, 3];
     hostComponent.closeAll();
@@ -518,7 +521,7 @@ describe('Accordion', () => {
   }));
 
   it('closeAll should not clear the index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService, changeDetectorRef);
+    hostComponent.accordion = new Accordion(webContentSvc, pageService);
     hostComponent.accordion['tabs'] = false;
     hostComponent.index = [1, 2, 3];
     hostComponent.closeAll();
@@ -526,7 +529,7 @@ describe('Accordion', () => {
   }));
 
   it('openAll() should update index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService, changeDetectorRef);
+    hostComponent.accordion = new Accordion(webContentSvc, pageService);
     hostComponent.accordion['tabs'] = [1, 2, 3];
     hostComponent.index = [];
     hostComponent.openAll();
@@ -534,7 +537,7 @@ describe('Accordion', () => {
   }));
 
   it('openAll() should not update index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService, changeDetectorRef);
+    hostComponent.accordion = new Accordion(webContentSvc, pageService);
     hostComponent.index = [];
     hostComponent.openAll();
     expect(hostComponent.index.length).toEqual(0);

@@ -68,6 +68,7 @@ import { BrowserModule } from '@angular/platform-browser/';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing'
 import { TestCtx } from 'ng-bullet';
+import { NmMessageService } from './services/toastmessage.service';
 
 export const allproviders =  [ PageService, ConfigService, WebContentSvc, HttpClient, AppInitService,
     CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
@@ -79,7 +80,7 @@ export const allproviders =  [ PageService, ConfigService, WebContentSvc, HttpCl
     { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE},
     SessionStoreService, ControlSubscribers, 
     AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 
-    RouteService, MessageService, GridUtils, DateTimeFormatPipe]
+    RouteService, MessageService, GridUtils, DateTimeFormatPipe, NmMessageService]
 
 export const allimports = [
         BrowserModule,

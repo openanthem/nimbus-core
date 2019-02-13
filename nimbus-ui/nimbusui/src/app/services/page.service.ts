@@ -1,3 +1,4 @@
+
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -40,7 +41,7 @@ import { GridData } from './../shared/param-state';
 import { Message } from './../shared/message';
 import { ComponentTypes } from './../shared/param-annotations.enum';
 import { DataGroup } from '../components/platform/charts/chartdata';
-
+import { NmMessageService } from './toastmessage.service';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -67,9 +68,6 @@ export class PageService {
         gridValueUpdate = new Subject<Param>();
         gridValueUpdate$ = this.gridValueUpdate.asObservable();
 
-        messageEvent = new Subject<Message[]>();
-        messageEvent$ = this.messageEvent.asObservable();
-
         postResponseProcessing = new Subject<string>();
         postResponseProcessing$ = this.postResponseProcessing.asObservable();
 
@@ -77,7 +75,7 @@ export class PageService {
 
         private _entityId: number = 0;
         constructor(private http: CustomHttpClient, private loaderService: LoaderService, private configService: ConfigService, 
-                    private logger: LoggerService, private sessionStore: SessionStoreService, private location: Location) {
+                    private logger: LoggerService, private sessionStore: SessionStoreService, private location: Location, private toastService: NmMessageService) {
                 // initialize
                 this.flowRootDomainId = {};
                 // Create Observable Stream to output our data     
@@ -98,58 +96,6 @@ export class PageService {
 
         logError(err) {
                 this.logger.error('ERROR: Failure making server call : ' + JSON.stringify(err));
-        }
-
-        notifyErrorEvent(exec: ExecuteException) {
-                if (exec.message) {
-                        let messageList: Message[] = [];
-                        let msg = new Message();
-                        let messages = [];
-                        msg.context = ComponentTypes.toast.toString();
-                        messages.push({severity: 'error',  summary: 'Error Message',  detail: exec.message, life: 10000});
-                        msg.messageArray = messages;
-                        messageList.push(msg);
-                        this.messageEvent.next(messageList);
-                }
-        }
-
-
-        /** Build the base URL for Server calls */
-        buildBaseURL() {
-                let baseURL = ServiceConstants.PLATFORM_BASE_URL;
-                let client;
-                if (this.routeParams != null) {
-                        client = this.routeParams.client;
-                        /** If client is passed then use client code, else 'platform' */
-                        if (client == null) {
-                                baseURL = ServiceConstants.PLATFORM_BASE_URL;
-                        } else {
-                                baseURL = ServiceConstants.CLIENT_BASE_URL;
-                                /** client code is required for a client base url.*/
-                                if (this.routeParams.client == null) {
-                                        this.logError('Missing client information for a CLIENT_BASE_URL.');
-                                }
-                                baseURL += this.routeParams.client;
-                        }
-                        /** App name for the flow - required */
-                        if (this.routeParams != null && this.routeParams.app == null) {
-                                this.logError('Missing app name.');
-                        } else {
-                                baseURL += '/' + this.routeParams.app + '/p';
-                        }
-                        /** Domain for the operation - required */
-                        if (this.routeParams != null && this.routeParams.domain == null) {
-                                this.logError('Missing domain entity name.');
-                        }
-                }
-                return baseURL;
-        }
-
-        /** Build the page flow base URL for Server calls */
-        buildFlowBaseURL() {
-                let baseURL = this.buildBaseURL();
-                baseURL += this.routeParams.domain;
-                return baseURL;
         }
 
         /** Get the layout config name for flow */
@@ -210,12 +156,7 @@ export class PageService {
                 if (flowName.indexOf('/') > 0) {
                         flowName = flowName.substring(0, flowName.indexOf('/'));
                 }
-                let url = '';
-                if (useFlowUrl === '') {
-                        url = this.buildFlowBaseURL();
-                } else {
-                        url = useFlowUrl;
-                }
+                let url = useFlowUrl;
                 url = url + '/_nav?a=' + direction + '&b=$execute';
                 this.executeHttp(url, HttpMethod.GET.value, null);
         }
@@ -368,7 +309,7 @@ export class PageService {
          * @param outputs
          * @param rootParam - optional parameter. It is the Param of the attribute from where http call is initiated
          */
-        traverseOutput(outputs: Result[], rootParam?: Param) {
+        traverseOutput(outputs: Result[], rootParam?: Param) {                
                 /** Check for Nav Output. Execute Nav after processing all other outputs. */
                 var navToDefault = true;
                 let navOutput: Result = undefined;
@@ -629,7 +570,7 @@ export class PageService {
                 } else {
                         let flowConfig: Model = viewRoot.model;
                         if(eventModel.value.path == '/'+flowName && eventModel.value.message) {
-                                this.messageEvent.next(eventModel.value.message);
+                                this.toastService.emitMessageEvent(eventModel.value.message);
                         }
                         if (flowConfig) {
                                 this.traverseConfig(flowConfig.params, eventModel);

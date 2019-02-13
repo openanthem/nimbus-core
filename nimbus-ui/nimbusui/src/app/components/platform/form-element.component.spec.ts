@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../services/toastmessage.service';
 import { ChartModule } from 'primeng/chart';
 import { NmChart } from './charts/chart.component';
 import { RichText } from './form/elements/rich-text.component';
@@ -243,6 +244,7 @@ const declarations = [
     PrintService,
     GridUtils,
     DateTimeFormatPipe,
+    NmMessageService,
     { 
         provide: NG_VALUE_ACCESSOR,
         multi: true,

@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../../../services/toastmessage.service';
 import { Param } from './../../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
@@ -88,6 +89,7 @@ const providers = [
    LoggerService,
    AppInitService,
    SessionStoreService,
+   NmMessageService,
    PrintService
 ];
 let fixture, hostComponent;

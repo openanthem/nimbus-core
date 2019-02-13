@@ -82,6 +82,8 @@ import { Tab } from './content/tab.component';
 import { RichText } from './form/elements/rich-text.component';
 import { ChartModule } from 'primeng/chart';
 import { NmChart } from './charts/chart.component';
+import { NmMessageService } from './../../services/toastmessage.service';
+
 let param: Param;
 
 class MockWebContentSvc {
@@ -214,6 +216,7 @@ const declarations = [
      PageService,
      CustomHttpClient,
      LoaderService,
+     NmMessageService,
      ConfigService
  ];
 

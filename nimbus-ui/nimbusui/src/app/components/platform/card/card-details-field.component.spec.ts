@@ -31,6 +31,7 @@ import { ConfigService } from './../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
 import { AppInitService } from '../../../services/app.init.service';
 import { cardDetailsFieldInputLabel, cardDetailsFieldInputLabelNoDate, cardDetailsFieldParam, cardDetailsFieldNmDisplayValueParam } from 'mockdata';
+import { NmMessageService } from './../../../services/toastmessage.service';
 
 @Component({
   template: '<div></div>',
@@ -72,6 +73,7 @@ const providers = [
   SessionStoreService, 
   CustomHttpClient, 
   PageService,
+  NmMessageService,
   LoaderService, 
   ConfigService, 
   LoggerService,
@@ -248,8 +250,8 @@ describe('CardDetailsFieldComponent', () => {
     expect(hostComponent.onTouched).toEqual(test);
   }));
 
-  it('getComponentClass() should return array [mb-3]',  async(() => {
-    expect(hostComponent.getComponentClass()).toEqual(['mb-3']);
+  it('getComponentClass() should return array [cssClass]',  async(() => {
+    expect(hostComponent.getComponentClass()).toEqual([hostComponent.element.config.uiStyles.attributes.cssClass]);
   }));
 
   it('value getter() should return _value property value',  async(() => {

@@ -89,6 +89,8 @@ import { ChartModule } from 'primeng/chart';
 import { RichText } from './../form/elements/rich-text.component';
 import { TableHeader } from './../grid/table-header.component';
 import { Param } from './../../../shared/param-state';
+import { NmMessageService } from './../../../services/toastmessage.service';
+
 let logger, pageService, param, printService;
 
 export class MockActivatedRoute implements ActivatedRoute {
@@ -280,6 +282,7 @@ const declarations = [
   {provide: PageService, useClass: MockPageService},
   {provide: PrintService, useClass: MockPrintService},
   AppInitService,
+  NmMessageService,
   SessionStoreService,
   CustomHttpClient,
   LoaderService,
