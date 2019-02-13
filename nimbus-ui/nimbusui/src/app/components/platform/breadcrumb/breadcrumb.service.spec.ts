@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../../services/toastmessage.service';
 import { TestBed, inject, async } from '@angular/core/testing';
 import { HttpClient, HttpRequest } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
@@ -24,6 +25,7 @@ describe('BreadcrumbService', () => {
           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
           { provide: 'JSNLOG', useValue: JL },
           { provide: LocationStrategy, useClass: HashLocationStrategy },
+          NmMessageService,
           Location,
           BreadcrumbService,
           PageService,

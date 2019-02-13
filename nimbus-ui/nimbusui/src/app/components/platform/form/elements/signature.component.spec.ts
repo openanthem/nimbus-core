@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../../../services/toastmessage.service';
 import { Param } from './../../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
@@ -55,6 +56,7 @@ const declarations = [
   { provide: LocationStrategy, useClass: HashLocationStrategy },
   { provide: ControlSubscribers, useClass: MockControlSubscribers},
   { provide: LoggerService, useClass: MockLoggerService},
+  NmMessageService,
   Location,
   SessionStoreService,
   PageService,

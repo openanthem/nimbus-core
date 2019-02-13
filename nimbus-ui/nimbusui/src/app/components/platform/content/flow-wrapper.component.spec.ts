@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../../services/toastmessage.service';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -89,6 +90,7 @@ const providers = [
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   { provide: 'JSNLOG', useValue: JL },
   CustomHttpClient,
+  NmMessageService,
   LoaderService,
   LoggerService,
   AppInitService

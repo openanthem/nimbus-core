@@ -19,6 +19,7 @@ import { setup, TestContext } from '../../../../setup.spec';
 import { Param, Type, Model } from '../../../../shared/param-state';
 import { ParamConfig, UiStyle, UiAttribute } from '../../../../shared/param-config';
 import { fieldValueParam } from 'mockdata';
+import { NmMessageService } from './../../../../services/toastmessage.service';
 
 let pageService, configService;
 
@@ -39,6 +40,7 @@ const providers = [
     ConfigService,
     LoggerService,
     SessionStoreService,
+    NmMessageService,
     AppInitService
 ];
 let fixture, hostComponent;

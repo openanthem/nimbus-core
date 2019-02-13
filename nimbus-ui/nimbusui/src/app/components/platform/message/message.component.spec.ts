@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../../services/toastmessage.service';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { ToastModule } from 'primeng/toast';
@@ -27,7 +28,7 @@ const imports = [
    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule
 ];
 const providers = [
-MessageService
+MessageService, NmMessageService
 ];
 let fixture, hostComponent;
 describe('MessageComponent', () => {

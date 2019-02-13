@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../services/toastmessage.service';
 import { TestBed, inject, async } from '@angular/core/testing';
 import { HttpClient, HttpRequest } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
@@ -98,6 +99,7 @@ describe('LayoutResolver', () => {
         CustomHttpClient,
         LoaderService,
         BreadcrumbService,
+        NmMessageService,
         SessionStoreService,
         AppInitService
       ]

@@ -1,3 +1,4 @@
+
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -26,6 +27,7 @@ import { LoggerService } from '../../services/logger.service';
 import { MenuItem } from '../../shared/menuitem';
 import { Message } from './../../shared/message';
 import { ViewRoot } from './../../shared/app-config.interface';
+import { NmMessageService } from './../../services/toastmessage.service';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -53,7 +55,7 @@ export class DomainFlowCmp {
     routeParams: any;
 
     constructor(private _pageSvc: PageService, private layoutSvc: LayoutService,
-            private _route: ActivatedRoute, private _router: Router, private _logger: LoggerService) {
+            private _route: ActivatedRoute, private _router: Router, private _logger: LoggerService, private _messageservice: NmMessageService) {
 
         this.layoutSvc.layout$.subscribe(
             data => {
@@ -100,15 +102,6 @@ export class DomainFlowCmp {
                 this._router.navigate([toPage], { relativeTo: this._route });
             }
         });
-
-
-        this._pageSvc.messageEvent$.subscribe(messages => {
-            this.messages = messages;
-            setTimeout(() => {
-                this.messages = null;
-            }, 50);
-        });
-
     }
 
     getDocument() {

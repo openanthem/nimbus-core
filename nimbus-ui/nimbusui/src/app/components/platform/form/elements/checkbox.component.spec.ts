@@ -23,6 +23,7 @@ import { checkboxElement } from 'mockdata';
 import { By } from '@angular/platform-browser';
 import { ServiceConstants } from '../../../../services/service.constants';
 import { WindowRefService } from './../../../../services/window-ref.service';
+import { NmMessageService } from './../../../../services/toastmessage.service';
 
 let param: Param;
 
@@ -54,6 +55,7 @@ const declarations = [
   ConfigService,
   SessionStoreService,
   AppInitService,
+  NmMessageService,
   WindowRefService
  ];
  let fixture, hostComponent;

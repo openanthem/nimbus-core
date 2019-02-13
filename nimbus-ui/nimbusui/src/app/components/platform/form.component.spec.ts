@@ -1,5 +1,3 @@
-import { NmChart } from './charts/chart.component';
-import { TableHeader } from './grid/table-header.component';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms';
@@ -88,6 +86,9 @@ import { GridService } from '../../services/grid.service';
 import { formElement, formModel, textboxnotnullmodel, textboxnotnullelement } from 'mockdata';
 import { InputMaskComp } from './form/elements/input-mask.component';
 import { RichText } from './form/elements/rich-text.component';
+import { NmMessageService } from './../../services/toastmessage.service';
+import { NmChart } from './charts/chart.component';
+import { TableHeader } from './grid/table-header.component';
 
 class MockLoggerService {
   debug() { }
@@ -239,6 +240,7 @@ Location,
  AppInitService,
  PrintService,
  GridService,
+ NmMessageService,
  SessionStoreService
 ];
 
