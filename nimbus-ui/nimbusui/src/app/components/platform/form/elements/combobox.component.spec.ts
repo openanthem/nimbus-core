@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../../../services/toastmessage.service';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { DropdownModule } from 'primeng/primeng';
@@ -51,6 +52,7 @@ const declarations = [
   ConfigService,
   LoggerService,
   SessionStoreService,
+  NmMessageService,
   AppInitService
  ];
  let fixture, hostComponent;

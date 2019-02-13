@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../../services/toastmessage.service';
 'use strict';
 import { PageService } from './../../../services/page.service';
 import { TestBed, async } from '@angular/core/testing';
@@ -56,6 +57,7 @@ const providers = [
    { provide: WebContentSvc, useClass: MockWebContentSvc },
    { provide: 'JSNLOG', useValue: JL },
    LoggerService,
+   NmMessageService,
    AppInitService
 ];
 

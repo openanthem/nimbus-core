@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../../services/toastmessage.service';
  'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
@@ -286,6 +287,7 @@ const providers = [
    ChangeDetectorRef,
    WindowRefService,
    AppInitService,
+   NmMessageService,
    PrintService
 ];
 let fixture, hostComponent;

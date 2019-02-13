@@ -111,6 +111,7 @@ import { Label } from './components/platform/content/label.component';
 import { InputLabel } from './components/platform/form/elements/input-label.component';
 import { BaseTableElement } from './components/platform/base-table-element.component';
 import { TableHeader } from './components/platform/grid/table-header.component';
+import { ToastMessageComponent } from './components/platform/message/toastmessage.component';
 
 // Services
 import { WebContentSvc } from './services/content-management.service';
@@ -153,7 +154,6 @@ import { SubDomainFlowCmp } from './components/domain/subdomain-flow.component';
 import { PageResolver } from './components/platform/content/page-resolver.service';
 import {DateTimeFormatPipe} from './pipes/date.pipe';
 import { DisplayValueDirective } from './directives/display-value.directive';
-
 import { NmPanelMenu, NmPanelMenuSub } from './components/platform/panelmenu.component';
 import { MenuRouteLink } from './directives/routes/route-link.component';
 import { MenuRouterLinkActive } from './directives/routes/route-active.component';
@@ -162,6 +162,7 @@ import { InputLegend } from './components/platform/form/elements/input-legend.co
 import { FormErrorMessage } from './components/platform/form-error-message.component';
 import { EventPropagationDirective } from './components/platform/form/elements/event-propagation.directive';
 import { NmChart } from './components/platform/charts/chart.component';
+import { NmMessageService } from './services/toastmessage.service';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -230,7 +231,7 @@ export function init_app(appinitservice: AppInitService) {
         HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, LoaderComponent, MessageComponent,
-        HeaderCheckBox, SvgComponent, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, NmChart,
+        HeaderCheckBox, SvgComponent, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, NmChart, ToastMessageComponent,
         MenuRouteLink, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage, BaseTableElement, EventPropagationDirective, TableHeader
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
@@ -244,7 +245,7 @@ export function init_app(appinitservice: AppInitService) {
          { provide: ErrorHandler, useClass: CustomErrorHandler },
          { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
          SessionStoreService,
-         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 
+         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, NmMessageService,
          RouteService, MessageService, GridUtils, DateTimeFormatPipe, PrintService],
     bootstrap: [ AppComponent ]
 })

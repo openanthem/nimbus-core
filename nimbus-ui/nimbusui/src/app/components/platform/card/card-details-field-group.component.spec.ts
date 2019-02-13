@@ -35,6 +35,7 @@ import { LoggerService } from '../../../services/logger.service';
 import { AppInitService } from '../../../services/app.init.service';
 import { cardDetailsFieldGroupElement, newCardDetailsFieldGroupElement } from 'mockdata';
 import { Paragraph } from '../content/paragraph.component';
+import { NmMessageService } from './../../../services/toastmessage.service';
 
 let fixture,hostComponent;
 
@@ -67,6 +68,7 @@ const imports = [
       AppInitService,
       SessionStoreService,
       CustomHttpClient,
+      NmMessageService,
       WebContentSvc,
       PageService,
       LoaderService,

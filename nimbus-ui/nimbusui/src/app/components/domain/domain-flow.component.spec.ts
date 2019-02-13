@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../services/toastmessage.service';
 import { NmChart } from './../platform/charts/chart.component';
 import { ChartModule } from 'primeng/chart';
 import { EditorModule } from 'primeng/editor';
@@ -398,6 +399,7 @@ export class MockActivatedRoute implements ActivatedRoute {
      { provide: 'JSNLOG', useValue: JL },
      {provide: LoggerService, useClass: MockLoggerService},
      CustomHttpClient,
+     NmMessageService,
      WebContentSvc,
      LoaderService,
      ConfigService,
@@ -529,6 +531,7 @@ const secondProviders = [
     WebContentSvc,
     LoaderService,
     ConfigService,
+    NmMessageService,
     BreadcrumbService,
     SessionStoreService,
     AppInitService

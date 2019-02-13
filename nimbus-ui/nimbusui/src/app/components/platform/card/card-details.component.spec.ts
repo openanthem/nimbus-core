@@ -1,4 +1,3 @@
-import { Param } from './../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -39,6 +38,7 @@ import { ServiceConstants } from '../../../services/service.constants';
 import { Subject } from 'rxjs';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
 import { cardDetailsBodyElement, cardDetailsHeaderElement } from 'mockdata';
+import { NmMessageService } from './../../../services/toastmessage.service';import { Param } from './../../../shared/param-state';
 
 class MockPageService {
     public eventUpdate$: Subject<any>;
@@ -116,6 +116,7 @@ const providers = [
   { provide: PageService, useClass: MockPageService },
   CustomHttpClient,
   LoaderService,
+  NmMessageService,
   ConfigService
 ];
 

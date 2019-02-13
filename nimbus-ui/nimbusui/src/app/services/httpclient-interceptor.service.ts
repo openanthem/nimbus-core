@@ -25,6 +25,7 @@ import { PageService } from './page.service';
 import { ConfigService } from './config.service';
 import { SessionStoreService } from './session.store';
 import { RedirectHandle } from '../shared/app-redirecthandle.interface';
+import { NmMessageService } from './toastmessage.service';
 /**
  * \@author Swetha.Vemuri
  * \@whatItDoes
@@ -35,7 +36,7 @@ import { RedirectHandle } from '../shared/app-redirecthandle.interface';
  */
 @Injectable()
 export class CustomHttpClientInterceptor implements HttpInterceptor {
-    constructor(private pageSvc: PageService, private configSvc: ConfigService, private sessionStore: SessionStoreService) {}
+    constructor(private msgSvc: NmMessageService, private configSvc: ConfigService, private sessionStore: SessionStoreService) {}
     /**
      * Http interceptor to handle custom implementation of request & error handling.
      * On a failure of http response, the error handler event is emitted based on the
@@ -64,7 +65,7 @@ export class CustomHttpClientInterceptor implements HttpInterceptor {
             const exception = new ExecuteException();
             exception.message = null;
             exception.code = null;
-            this.pageSvc.notifyErrorEvent(exception);
+            this.msgSvc.notifyErrorEvent(exception);
           }, (err: any) => {
                 if (err instanceof HttpErrorResponse) {
                     /*  Currently, the server side websecurityconfig redirects to /login when session in expired.
@@ -78,7 +79,7 @@ export class CustomHttpClientInterceptor implements HttpInterceptor {
                     const execResp  = new ExecuteResponse(this.configSvc).deserialize(err.error);
                     if (execResp != null && execResp.result != null && execResp.result[0] != null) {
                         const exception: ExecuteException = execResp.result[0].executeException;
-                        this.pageSvc.notifyErrorEvent(exception);
+                        this.msgSvc.notifyErrorEvent(exception);
                     }
                 }
         }));

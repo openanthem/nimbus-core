@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../services/toastmessage.service';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import * as Stomp from 'stompjs';
@@ -51,6 +52,8 @@ import { Image } from '../platform/image.component';
 import { setup, TestContext } from '../../setup.spec';
 import { configureTestSuite } from 'ng-bullet';
 import { Homelayout } from 'mockdata'
+import { ToastMessageComponent } from '../platform/message/toastmessage.component';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   template: '<div></div>',
@@ -187,6 +190,7 @@ const declarations= [
     Image,
     ActionLink,
     NmPanelMenu,
+    ToastMessageComponent,
     NmPanelMenuSub
   ];
   const providers = [
@@ -202,6 +206,7 @@ const declarations= [
     LoaderService,
     ConfigService,
     BreadcrumbService,
+    NmMessageService,
     SessionStoreService,
     AppInitService
   ];
@@ -212,7 +217,8 @@ const declarations= [
     HttpClientModule,
     HttpModule,
     StorageServiceModule,
-    AngularSvgIconModule
+    AngularSvgIconModule,
+    ToastModule
   ];
 
 let fixture, hostComponent;

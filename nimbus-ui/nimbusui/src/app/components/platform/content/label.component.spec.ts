@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../../services/toastmessage.service';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
@@ -37,6 +38,7 @@ const providers = [
 WebContentSvc,
 PageService,
 CustomHttpClient,
+NmMessageService,
 SessionStoreService,
 LoaderService,
 ConfigService,

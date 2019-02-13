@@ -1,4 +1,3 @@
-import { Param } from './../../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { CalendarModule } from 'primeng/primeng';
@@ -24,6 +23,8 @@ import { setup, TestContext } from '../../../../setup.spec';
 import { calendarElement } from 'mockdata';
 import { By } from '@angular/platform-browser';
 import { ServiceConstants } from '../../../../services/service.constants';
+import { NmMessageService } from './../../../../services/toastmessage.service';
+import { Param } from './../../../../shared/param-state';
 
 const declarations = [
   Calendar,
@@ -44,6 +45,7 @@ const declarations = [
   Location,
   PageService,
   CustomHttpClient,
+  NmMessageService,
   LoaderService,
   ConfigService,
   LoggerService,

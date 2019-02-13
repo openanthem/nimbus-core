@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../../../services/toastmessage.service';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, FormGroup, FormControl } from '@angular/forms';
@@ -50,6 +51,7 @@ const providers = [
   ConfigService,
   KeyFilterModule,
   LoggerService,
+  NmMessageService,
   AppInitService
  ];
 

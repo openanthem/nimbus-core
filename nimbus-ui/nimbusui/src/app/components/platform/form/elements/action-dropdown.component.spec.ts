@@ -1,3 +1,4 @@
+import { NmMessageService } from './../../../../services/toastmessage.service';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
@@ -64,6 +65,7 @@ const declarations = [
   LoaderService,
   ConfigService,
   SessionStoreService,
+  NmMessageService,
   AppInitService
  ];
  let fixture, hostComponent;

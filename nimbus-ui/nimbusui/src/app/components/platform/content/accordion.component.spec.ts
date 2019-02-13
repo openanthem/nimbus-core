@@ -86,6 +86,8 @@ import { NmChart } from './../charts/chart.component';
 import { ChartModule } from 'primeng/chart';
 import { EditorModule } from 'primeng/editor';
 import { TableHeader } from './../grid/table-header.component';
+import { NmMessageService } from './../../../services/toastmessage.service';
+
 let pageService, webContentSvc, configService;
 
 class MockWebContentSvc {
@@ -242,6 +244,7 @@ const providers = [
   Location,
   GridService,
   PrintService,
+  NmMessageService,
   ChangeDetectorRef
 ];
 let fixture, hostComponent, changeDetectorRef;
