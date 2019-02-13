@@ -508,7 +508,7 @@ describe('Accordion', () => {
   }));
 
   it('closeAll should clear the index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService, changeDetectorRef);
+    hostComponent.accordion = new Accordion(webContentSvc, pageService);
     hostComponent.accordion['tabs'] = true;
     hostComponent.index = [1, 2, 3];
     hostComponent.closeAll();
@@ -516,7 +516,7 @@ describe('Accordion', () => {
   }));
 
   it('closeAll should not clear the index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService, changeDetectorRef);
+    hostComponent.accordion = new Accordion(webContentSvc, pageService);
     hostComponent.accordion['tabs'] = false;
     hostComponent.index = [1, 2, 3];
     hostComponent.closeAll();
@@ -524,7 +524,7 @@ describe('Accordion', () => {
   }));
 
   it('openAll() should update index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService, changeDetectorRef);
+    hostComponent.accordion = new Accordion(webContentSvc, pageService);
     hostComponent.accordion['tabs'] = [1, 2, 3];
     hostComponent.index = [];
     hostComponent.openAll();
@@ -532,7 +532,7 @@ describe('Accordion', () => {
   }));
 
   it('openAll() should not update index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService, changeDetectorRef);
+    hostComponent.accordion = new Accordion(webContentSvc, pageService);
     hostComponent.index = [];
     hostComponent.openAll();
     expect(hostComponent.index.length).toEqual(0);
