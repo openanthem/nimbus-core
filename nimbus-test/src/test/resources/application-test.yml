@@ -139,4 +139,8 @@ test:
   key2: key2
 search:
   threshold:
-    1     
+    1
+  lookup:
+    inMemory:
+      sortThreshold: 100
+      exceptionIfOverSortThreshold: true   

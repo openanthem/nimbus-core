@@ -5,7 +5,8 @@ import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms';
 import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, 
     DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, 
-    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule, EditorModule, ChartModule } from 'primeng/primeng';
+    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule, InputMaskModule, EditorModule, ChartModule } from 'primeng/primeng';
+
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { HttpModule } from '@angular/http';
@@ -85,6 +86,7 @@ import { ServiceConstants } from '../../services/service.constants';
 import { PrintService } from '../../services/print.service';
 import { GridService } from '../../services/grid.service';
 import { formElement, formModel, textboxnotnullmodel, textboxnotnullelement } from 'mockdata';
+import { InputMaskComp } from './form/elements/input-mask.component';
 import { RichText } from './form/elements/rich-text.component';
 
 class MockLoggerService {
@@ -189,6 +191,7 @@ const declarations = [
   InputLegend,
   FormErrorMessage,
   PrintDirective,
+  InputMaskComp,
   NmChart,
   RichText
 ];
@@ -218,6 +221,7 @@ const imports = [
    InputSwitchModule, 
    TreeTableModule,
    BrowserAnimationsModule,
+   InputMaskModule,
    ChartModule,
    EditorModule
 ];

@@ -98,45 +98,6 @@ export class PageService {
                 this.logger.error('ERROR: Failure making server call : ' + JSON.stringify(err));
         }
 
-
-        /** Build the base URL for Server calls */
-        buildBaseURL() {
-                let baseURL = ServiceConstants.PLATFORM_BASE_URL;
-                let client;
-                if (this.routeParams != null) {
-                        client = this.routeParams.client;
-                        /** If client is passed then use client code, else 'platform' */
-                        if (client == null) {
-                                baseURL = ServiceConstants.PLATFORM_BASE_URL;
-                        } else {
-                                baseURL = ServiceConstants.CLIENT_BASE_URL;
-                                /** client code is required for a client base url.*/
-                                if (this.routeParams.client == null) {
-                                        this.logError('Missing client information for a CLIENT_BASE_URL.');
-                                }
-                                baseURL += this.routeParams.client;
-                        }
-                        /** App name for the flow - required */
-                        if (this.routeParams != null && this.routeParams.app == null) {
-                                this.logError('Missing app name.');
-                        } else {
-                                baseURL += '/' + this.routeParams.app + '/p';
-                        }
-                        /** Domain for the operation - required */
-                        if (this.routeParams != null && this.routeParams.domain == null) {
-                                this.logError('Missing domain entity name.');
-                        }
-                }
-                return baseURL;
-        }
-
-        /** Build the page flow base URL for Server calls */
-        buildFlowBaseURL() {
-                let baseURL = this.buildBaseURL();
-                baseURL += this.routeParams.domain;
-                return baseURL;
-        }
-
         /** Get the layout config name for flow */
         getFlowLayoutConfig(flowName: string, routeToDefaultPage: boolean): Promise<string> {
                 let layoutName: string = undefined;
@@ -195,12 +156,7 @@ export class PageService {
                 if (flowName.indexOf('/') > 0) {
                         flowName = flowName.substring(0, flowName.indexOf('/'));
                 }
-                let url = '';
-                if (useFlowUrl === '') {
-                        url = this.buildFlowBaseURL();
-                } else {
-                        url = useFlowUrl;
-                }
+                let url = useFlowUrl;
                 url = url + '/_nav?a=' + direction + '&b=$execute';
                 this.executeHttp(url, HttpMethod.GET.value, null);
         }
@@ -353,7 +309,7 @@ export class PageService {
          * @param outputs
          * @param rootParam - optional parameter. It is the Param of the attribute from where http call is initiated
          */
-        traverseOutput(outputs: Result[], rootParam?: Param) {
+        traverseOutput(outputs: Result[], rootParam?: Param) {                
                 /** Check for Nav Output. Execute Nav after processing all other outputs. */
                 var navToDefault = true;
                 let navOutput: Result = undefined;

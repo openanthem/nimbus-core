@@ -3,7 +3,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, 
     DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, 
-    RadioButtonModule, CalendarModule, TreeTableModule, InputSwitchModule, EditorModule } from 'primeng/primeng';
+    RadioButtonModule, CalendarModule, TreeTableModule, InputSwitchModule, InputMaskModule, EditorModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -75,6 +75,8 @@ import { FormErrorMessage } from './form-error-message.component';
 import { PrintDirective } from '../../directives/print.directive';
 import { fieldValueParam } from 'mockdata';
 import { TableHeader } from './grid/table-header.component';
+import { InputMaskComp } from './form/elements/input-mask.component';
+
 import { RichText } from './form/elements/rich-text.component';
 import { NmChart } from './charts/chart.component';
 import { ChartModule } from 'primeng/chart';
@@ -166,6 +168,7 @@ const declarations = [
     InputLegend,
     FormErrorMessage,
     PrintDirective,
+    InputMaskComp,
     NmChart,
     RichText
    ];
@@ -193,6 +196,7 @@ const imports = [
     ToastModule,
     TreeTableModule, 
     InputSwitchModule,
+    InputMaskModule,
     ChartModule,
     EditorModule
    ];

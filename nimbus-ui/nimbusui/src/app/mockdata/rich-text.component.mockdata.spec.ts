@@ -27,16 +27,18 @@ export const MockRichText = {
                     "LINK",
                     "IMAGE",
                     "VIDEO",
-                    "CLEAN"
+                    "CLEAN",
+                    "VALUES_COMBOBOX"
                 ],
                 "formats": "",
-                "cssClass": "",
+                "cssClass": "nm-sample-style-class",
                 "dataEntryField": true,
                 "alias": "RichText",
-                "placeholder": "",
+                "placeholder": "Please enter a value",
                 "controlId": "",
                 "postEventOnChange": true,
-                "cols": ""
+                "readOnly": false,
+                "cols": "",
             }
         },
         "validations": null,
@@ -53,5 +55,16 @@ export const MockRichText = {
         "text": "Sample @RichText Component (w/ postEventOnChange = true)"
       }
     ],
-    "leafState": ""
+    "values" : [
+        {
+            "label": "Value 1",
+            "code": "#{VALUE_1}"
+        }, {
+            "label": "Value 2",
+            "code": "#{VALUE_2}"
+        }
+    ],
+    "enabled": true,
+    "visible": true,
+    "leafState": "<p>Hello <strong>World</strong>!</p>"
   };

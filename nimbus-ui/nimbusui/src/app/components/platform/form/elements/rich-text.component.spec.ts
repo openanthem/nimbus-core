@@ -25,12 +25,16 @@ import { StorageServiceModule } from 'angular-webstorage-service';
 import { configureTestSuite } from 'ng-bullet';
 import { setup } from '../../../../setup.spec';
 import { RichText } from './rich-text.component';
-import { EditorModule } from 'primeng/editor';
+import { EditorModule, Editor } from 'primeng/editor';
 import { By } from '@angular/platform-browser';
 import { MockRichText } from './../../../../mockdata/rich-text.component.mockdata.spec';
+import { ViewConfig } from './../../../../shared/param-annotations.enum';
+import { UiNature } from './../../../../shared/param-config';
+import { SelectItemPipe } from './../../../../pipes/select-item.pipe';
+import { Dropdown } from 'primeng/primeng';
 
 /**
- * \@author Sandeep.Mantha
+ * \@author Tony Lopez
  * \@whatItDoes 
  * 
  * \@howToUse 
@@ -38,7 +42,7 @@ import { MockRichText } from './../../../../mockdata/rich-text.component.mockdat
  */
 
 let fixture, hostComponent, controlService;
-const declarations = [ RichText, TooltipComponent, InputLabel ];
+const declarations = [ RichText, TooltipComponent, InputLabel, SelectItemPipe, Dropdown ];
 const imports =  [ FormsModule, HttpClientTestingModule, HttpModule, StorageServiceModule, EditorModule ];
 
 describe('RichText', () => {
@@ -53,11 +57,11 @@ describe('RichText', () => {
         hostComponent.element = MockRichText;
     });
   
-    it('should create the RichText component', async() =>{
+    it('should create the component', async() =>{
         expect(hostComponent).toBeTruthy();
     });
 
-    it('should render the toolbar features when configured as a toolbarFeature', async(() => {
+    it('should render all of the toolbar features', async(() => {
         fixture.detectChanges();
         expect(fixture.debugElement.query(By.css('.ui-editor-toolbar .ql-align'))).toBeTruthy();
         expect(fixture.debugElement.query(By.css('.ui-editor-toolbar .ql-background'))).toBeTruthy();
@@ -83,6 +87,188 @@ describe('RichText', () => {
         expect(fixture.debugElement.query(By.css('.ui-editor-toolbar .ql-strike'))).toBeTruthy();
         expect(fixture.debugElement.query(By.css('.ui-editor-toolbar .ql-underline'))).toBeTruthy();
         expect(fixture.debugElement.query(By.css('.ui-editor-toolbar .ql-video'))).toBeTruthy();
+        expect(fixture.debugElement.query(By.css('.ui-editor-toolbar .ql-values-combobox'))).toBeTruthy();
+    }));
+
+    it('should render the default fonts', async(() => {
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('select.ql-font option[selected]')).nativeElement.text).toBe('Sans Serif');
+        expect(fixture.debugElement.query(By.css('select.ql-font option:nth-child(1)')).nativeElement.text).toBe('Sans Serif');
+        expect(fixture.debugElement.query(By.css('select.ql-font option:nth-child(2)')).nativeElement.text).toBe('Serif');
+        expect(fixture.debugElement.query(By.css('select.ql-font option:nth-child(3)')).nativeElement.text).toBe('Monospace');
+    }));
+
+    it('should render custom fonts', async(() => {
+        hostComponent.element.config.uiNatures = [] as UiNature[];
+        hostComponent.element.config.uiNatures.push({
+            name: ViewConfig.fonts.toString(),
+            attributes: { value: [ 'Arial' ] }
+        });
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('select.ql-font option[selected]')).nativeElement.text).toBe('Sans Serif');
+        expect(fixture.debugElement.query(By.css('select.ql-font option:nth-child(1)')).nativeElement.text).toBe('Sans Serif');
+        expect(fixture.debugElement.query(By.css('select.ql-font option:nth-child(2)')).nativeElement.text).toBe('Arial');
+    }));
+
+    it('should render the default headings', async(() => {
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('select.ql-header option[selected]')).nativeElement.text).toBe('Normal');
+        expect(fixture.debugElement.query(By.css('select.ql-header option:nth-child(1)')).nativeElement.text).toBe('Normal');
+        expect(fixture.debugElement.query(By.css('select.ql-header option:nth-child(2)')).nativeElement.text).toBe('Heading');
+        expect(fixture.debugElement.query(By.css('select.ql-header option:nth-child(2)')).nativeElement.value).toBe('1');
+        expect(fixture.debugElement.query(By.css('select.ql-header option:nth-child(3)')).nativeElement.text).toBe('Subheading');
+        expect(fixture.debugElement.query(By.css('select.ql-header option:nth-child(3)')).nativeElement.value).toBe('2');
+    }));
+
+    it('should render custom headings', async(() => {
+        hostComponent.element.config.uiNatures = [] as UiNature[];
+        hostComponent.element.config.uiNatures.push({
+            name: ViewConfig.headings.toString(),
+            attributes: { value: [ { key: 'Huge', value: '1' } ] }
+        });
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('select.ql-header option[selected]')).nativeElement.text).toBe('Normal');
+        expect(fixture.debugElement.query(By.css('select.ql-header option:nth-child(1)')).nativeElement.text).toBe('Normal');
+        expect(fixture.debugElement.query(By.css('select.ql-header option:nth-child(2)')).nativeElement.text).toBe('Huge');
+        expect(fixture.debugElement.query(By.css('select.ql-header option:nth-child(2)')).nativeElement.value).toBe('1');
+    }));
+
+    it('should not render duplicate configs from natures', async(() => {
+        hostComponent.element.config.uiNatures = [] as UiNature[];
+        hostComponent.element.config.uiNatures.push({
+            name: ViewConfig.fonts.toString(),
+            attributes: { value: [ 'Arial', 'Arial' ] }
+        });
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('select.ql-font option[selected]')).nativeElement.text).toBe('Sans Serif');
+        expect(fixture.debugElement.query(By.css('select.ql-font option:nth-child(1)')).nativeElement.text).toBe('Sans Serif');
+        expect(fixture.debugElement.query(By.css('select.ql-font option:nth-child(2)')).nativeElement.text).toBe('Arial');
+        expect(fixture.debugElement.query(By.css('select.ql-font option:nth-child(3)'))).toBeFalsy;
+    }));
+
+    it('should render the id', async(() => {
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('p-editor')).properties.id).toBe('richTextbox');
+    }));
+
+    it('should render the placeholder', async(() => {
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('p-editor')).componentInstance.placeholder).toBe('Please enter a value');
+    }));
+
+    it('should render the existing state', async(() => {
+        let expected = MockRichText.leafState;
+        fixture.detectChanges();
+        fixture.whenStable().then(() => {
+            expect(fixture.debugElement.query(By.css('p-editor')).componentInstance.value).toBe(expected);
+        });
+    }));
+
+    it('should provide options to p-dropdown', async(() => {
+        fixture.detectChanges();
+        fixture.whenStable().then(() => {
+            let dropdown: Dropdown = fixture.debugElement.query(By.css('p-editor .ql-values-combobox')).componentInstance;
+            expect(dropdown.options.length).toBe(2);
+            expect(dropdown.options[0]).toBeTruthy();
+            expect(dropdown.options[0].label).toBe('Value 1');
+            expect(dropdown.options[0].value).toBe('#{VALUE_1}');
+            expect(dropdown.options[1]).toBeTruthy();
+            expect(dropdown.options[1].label).toBe('Value 2');
+            expect(dropdown.options[1].value).toBe('#{VALUE_2}');
+        });
+    }));
+
+    it('should insert the selected value into editor at index 0 when not empty and pristine', async(() => {
+        fixture.detectChanges();
+        spyOn(hostComponent, 'onValuesDropdownSelection').and.callThrough();
+        spyOn(hostComponent.valuesDropdown, 'clear').and.callThrough();
+        fixture.whenStable().then(() => {
+            const valuesCombobox = fixture.debugElement.query(By.css('p-editor .ql-values-combobox')).nativeElement;
+            let $event = new Event('onChange');
+            $event['value'] = '#{VALUE_1}';
+            valuesCombobox.dispatchEvent($event);
+            expect(hostComponent.onValuesDropdownSelection).toHaveBeenCalled();
+            expect(hostComponent.valuesDropdown.clear).toHaveBeenCalled();
+            expect(hostComponent.value).toBe('<p>#{VALUE_1}Hello <strong>World</strong>!</p>');
+        });
+    }));
+
+    it('should insert the selected value into editor at index 0 when state is empty', async(() => {
+        hostComponent.element.leafState = undefined;
+        fixture.detectChanges();
+        spyOn(hostComponent, 'onValuesDropdownSelection').and.callThrough();
+        spyOn(hostComponent.valuesDropdown, 'clear').and.callThrough();
+        fixture.whenStable().then(() => {
+            const valuesCombobox = fixture.debugElement.query(By.css('p-editor .ql-values-combobox')).nativeElement;
+            let $event = new Event('onChange');
+            $event['value'] = '#{VALUE_1}';
+            valuesCombobox.dispatchEvent($event);
+            expect(hostComponent.onValuesDropdownSelection).toHaveBeenCalled();
+            expect(hostComponent.valuesDropdown.clear).toHaveBeenCalled();
+            expect(hostComponent.value).toBe('<p>#{VALUE_1}</p>');
+        });
+    }));
+
+    it('should insert the selected value in the editors last known cursor position', async(() => {
+        hostComponent.element.leafState = '<p>Hello!</p>';
+        fixture.detectChanges();
+        spyOn(hostComponent, 'onValuesDropdownSelection').and.callThrough();
+        spyOn(hostComponent.valuesDropdown, 'clear').and.callThrough();
+        fixture.whenStable().then(() => {
+            const valuesCombobox = fixture.debugElement.query(By.css('p-editor .ql-values-combobox')).nativeElement;
+            hostComponent.quill.setSelection(5, 0, 'user');
+            let $event = new Event('onChange');
+            $event['value'] = ' Bob';
+            valuesCombobox.dispatchEvent($event);
+            expect(hostComponent.onValuesDropdownSelection).toHaveBeenCalled();
+            expect(hostComponent.valuesDropdown.clear).toHaveBeenCalled();
+            expect(hostComponent.value).toBe('<p>Hello Bob!</p>');
+        });
+    }));
+
+    it('should replace the highlighted text in the editor with the selected value', async(() => {
+        hostComponent.element.leafState = '<p>Hello World!</p>';
+        fixture.detectChanges();
+        spyOn(hostComponent, 'onValuesDropdownSelection').and.callThrough();
+        spyOn(hostComponent.valuesDropdown, 'clear').and.callThrough();
+        fixture.whenStable().then(() => {
+            const valuesCombobox = fixture.debugElement.query(By.css('p-editor .ql-values-combobox')).nativeElement;
+            hostComponent.quill.setSelection(6, 5, 'user');
+            let $event = new Event('onChange');
+            $event['value'] = '#{NAME}';
+            valuesCombobox.dispatchEvent($event);
+            expect(hostComponent.onValuesDropdownSelection).toHaveBeenCalled();
+            expect(hostComponent.valuesDropdown.clear).toHaveBeenCalled();
+            expect(hostComponent.value).toBe('<p>Hello #{NAME}!</p>');
+        });
+    }));
+
+    it('should emit the value on focus out', async(() => {      
+        spyOn(hostComponent, 'emitValueChangedEvent');
+        fixture.whenStable().then(() => {
+            const richText = fixture.debugElement.query(By.css('p-editor.form-control')).nativeElement;
+            richText.dispatchEvent(new Event('focusout'));
+            expect(hostComponent.emitValueChangedEvent).toHaveBeenCalled();
+        });
+    }));
+
+    it('should passthrough the styleClass to PrimeNG', async(() => {
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('p-editor')).componentInstance.styleClass).toBe('nm-sample-style-class');
+    }));
+
+    it('should passthrough the formats to PrimeNG', async(() => {
+        let expected = [ 'bold', 'underline', 'italic' ];
+        hostComponent.element.config.uiStyles.attributes.formats = expected;
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('p-editor')).componentInstance.formats).toBe(expected);
+    }));
+
+    it('should render the richtext as readonly', async(() => {
+        hostComponent.element.config.uiStyles.attributes.readOnly = true;
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('p-editor')).componentInstance.readonly).toBeTruthy();
+        expect(fixture.debugElement.query(By.css('p-editor')).attributes.readonly).toBeTruthy();
     }));
 
     it('should not render the toolbar features when not configured as a toolbarFeature', async(() => {
@@ -112,5 +298,6 @@ describe('RichText', () => {
         expect(fixture.debugElement.query(By.css('.ui-editor-toolbar .ql-strike'))).toBeNull();
         expect(fixture.debugElement.query(By.css('.ui-editor-toolbar .ql-underline'))).toBeNull();
         expect(fixture.debugElement.query(By.css('.ui-editor-toolbar .ql-video'))).toBeNull();
+        expect(fixture.debugElement.query(By.css('.ui-editor-toolbar .ql-values-combobox'))).toBeNull();
     }));
 });

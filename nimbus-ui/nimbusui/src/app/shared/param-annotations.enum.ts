@@ -73,6 +73,7 @@ export class ComponentTypes extends Enum<string> {
   public static readonly header = new Enum('Header');
   public static readonly formGridFiller = new Enum('FormGridFiller');
   public static readonly text = new Enum('text');
+  public static readonly mask = new Enum('InputMask');
   public static readonly signature = new Enum('signature');
   public static readonly textarea = new Enum('textarea');
   public static readonly date = new Enum('date');
@@ -102,6 +103,7 @@ export class ComponentTypes extends Enum<string> {
   public static readonly plain = new Enum('PLAIN');
   public static readonly destructive = new Enum('DESTRUCTIVE');
   public static readonly validation = new Enum('VALIDATION');
+  public static readonly reset = new Enum('reset');
   public static readonly print = new Enum('PRINT');
   public static readonly toast = new Enum('TOAST');
   public static readonly inputSwitch = new Enum('InputSwitch');
