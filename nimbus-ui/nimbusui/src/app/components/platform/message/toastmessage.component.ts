@@ -47,10 +47,7 @@ export class ToastMessageComponent {
             this.messageService.clear();
             messages.forEach(msg => {
                 this.ngZone.run(() => {
-                    setTimeout(() => {
                         this.messageService.addAll(msg.messageArray);
-                        this.cdr.detectChanges();
-                    });
                 });
             });
            
