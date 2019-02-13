@@ -1,7 +1,4 @@
 <nm-breadcrumb></nm-breadcrumb>
-<ng-template ngFor let-msg [ngForOf]="messages">
-	<nm-message messageContext="{{msg?.context}}" [messageArray]="msg?.messageArray" [life]="msg?.life"  *ngIf="msg"></nm-message>
-</ng-template>
 <ng-template [ngIf]="hasLayout">
 	<div class="info-bar clearfix">
 	    <div [class]="p.config?.uiStyles?.attributes?.cssClass" *ngFor="let p of accordions, let index=index">

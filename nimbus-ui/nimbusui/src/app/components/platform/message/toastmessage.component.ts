@@ -16,12 +16,13 @@
  */
 'use strict';
 
-import { Component, Input, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, NgZone, ChangeDetectorRef } from '@angular/core';
+import { MessageService } from 'primeng/api';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
 import { NmMessageService } from './../../../services/toastmessage.service';
 /**
  *  
- * \@author Vivek.Kamineni
+ * \@author Sandeep Mantha
  * \@whatItDoes 
  *      This component can be used when we would display a user message after a certain action.
  *      messageType can be of type SUCESS or DANGER.  Based on the type, a specific CSS class would be applied.
@@ -30,31 +31,43 @@ import { NmMessageService } from './../../../services/toastmessage.service';
  * 
  */
 @Component({
-    selector: 'nm-message',
+    selector: 'nm-toast-message',
     template: `
-        <p-messages *ngIf="messageContext === componentTypes.inline.toString()" 
-            [(value)]="messageArray" 
-            [closable]="false" 
-            [styleClass]="styleClass"
-            [showTransitionOptions]="'0ms'" 
-            [hideTransitionOptions]="'0ms'">
-        </p-messages>
-    `
+        <p-toast position="top-right"></p-toast>
+    `,
+    providers: [MessageService]
 })
 
-export class MessageComponent {
+export class ToastMessageComponent {
     @Input() messageContext: String;
     @Input() messageArray: any[];
     @Input() life: number;
     @Input() styleClass: String;
     componentTypes = ComponentTypes;
 
-    constructor(private cdr: ChangeDetectorRef, private msgSvc: NmMessageService) {}
+    constructor(private messageService: MessageService, private cdr: ChangeDetectorRef, private ngZone: NgZone, private _messageservice: NmMessageService) {}
 
     ngOnInit() {
-        if (this.messageContext === this.componentTypes.toast.toString() && this.messageArray && this.messageArray.length > 0) {
-            this.msgSvc.createMessage(this.messageContext, this.messageArray, this.life)
-        }
+
+        this._messageservice.messageEvent$.subscribe(messages => {
+            this.messageService.clear();
+            messages.forEach(msg => {
+                this.ngZone.run(() => {
+                    setTimeout(() => {
+                        this.messageService.addAll(msg.messageArray);
+                        this.cdr.detectChanges();
+                    });
+                });
+            });
+           
+
+        });
+        // this.ngZone.run(() => {
+        //     setTimeout(() => {
+        //         this.messageService.addAll(this.messageArray);
+        //         this.cdr.detectChanges();
+        //     });
+        // });
     }
 
 }

@@ -1,3 +1,4 @@
+
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -40,7 +41,7 @@ import { GridData } from './../shared/param-state';
 import { Message } from './../shared/message';
 import { ComponentTypes } from './../shared/param-annotations.enum';
 import { DataGroup } from '../components/platform/charts/chartdata';
-
+import { NmMessageService } from './toastmessage.service';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -67,9 +68,6 @@ export class PageService {
         gridValueUpdate = new Subject<Param>();
         gridValueUpdate$ = this.gridValueUpdate.asObservable();
 
-        messageEvent = new Subject<Message[]>();
-        messageEvent$ = this.messageEvent.asObservable();
-
         postResponseProcessing = new Subject<string>();
         postResponseProcessing$ = this.postResponseProcessing.asObservable();
 
@@ -77,7 +75,7 @@ export class PageService {
 
         private _entityId: number = 0;
         constructor(private http: CustomHttpClient, private loaderService: LoaderService, private configService: ConfigService, 
-                    private logger: LoggerService, private sessionStore: SessionStoreService, private location: Location) {
+                    private logger: LoggerService, private sessionStore: SessionStoreService, private location: Location, private toastService: NmMessageService) {
                 // initialize
                 this.flowRootDomainId = {};
                 // Create Observable Stream to output our data     
@@ -98,19 +96,6 @@ export class PageService {
 
         logError(err) {
                 this.logger.error('ERROR: Failure making server call : ' + JSON.stringify(err));
-        }
-
-        notifyErrorEvent(exec: ExecuteException) {
-                if (exec.message) {
-                        let messageList: Message[] = [];
-                        let msg = new Message();
-                        let messages = [];
-                        msg.context = ComponentTypes.toast.toString();
-                        messages.push({severity: 'error',  summary: 'Error Message',  detail: exec.message, life: 10000});
-                        msg.messageArray = messages;
-                        messageList.push(msg);
-                        this.messageEvent.next(messageList);
-                }
         }
 
 
@@ -629,7 +614,7 @@ export class PageService {
                 } else {
                         let flowConfig: Model = viewRoot.model;
                         if(eventModel.value.path == '/'+flowName && eventModel.value.message) {
-                                this.messageEvent.next(eventModel.value.message);
+                                this.toastService.emitMessageEvent(eventModel.value.message);
                         }
                         if (flowConfig) {
                                 this.traverseConfig(flowConfig.params, eventModel);
