@@ -2,7 +2,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, EditorModule} from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule} from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing'
 import { HttpClientModule } from '@angular/common/http';
@@ -84,6 +84,7 @@ import { fieldValueParam } from 'mockdata';
 import { InputMaskComp } from './../form/elements/input-mask.component';
 
 import { NmChart } from './../charts/chart.component';
+import { Tab } from './tab.component';
 import { ChartModule } from 'primeng/chart';
 import { RichText } from './../form/elements/rich-text.component';
 import { TableHeader } from './../grid/table-header.component';
@@ -237,6 +238,7 @@ const declarations = [
   FormErrorMessage,
   PrintDirective,
   InputMaskComp,
+  Tab,
   NmChart,
   RichText
  ];
@@ -265,6 +267,7 @@ const declarations = [
   InputSwitchModule,
   TreeTableModule,
   InputMaskModule,
+  TabViewModule,
   ChartModule,
   EditorModule
  ];

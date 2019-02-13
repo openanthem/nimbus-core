@@ -11,7 +11,7 @@ import { HttpModule } from '@angular/http';
 import { Router, ActivatedRoute, Route, ActivatedRouteSnapshot, UrlSegment, Params, Data, ParamMap, PRIMARY_OUTLET } from '@angular/router';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
   FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule } from 'primeng/primeng';
+  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule } from 'primeng/primeng';
 import { of as observableOf,  Observable } from 'rxjs';
 import { Subject } from 'rxjs';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
@@ -89,6 +89,7 @@ import { PrintService } from '../../services/print.service';
 import {domainModalItems, domainActionTray, domainItems, domainAccordions, domainMockLayout} from 'mockdata';
 import { TableHeader } from '../platform/grid/table-header.component';
 import { InputMaskComp } from './../platform/form/elements/input-mask.component';
+import { Tab } from './../platform/content/tab.component';
 
 import { RichText } from '../platform/form/elements/rich-text.component';
 
@@ -352,6 +353,7 @@ export class MockActivatedRoute implements ActivatedRoute {
     FormErrorMessage,
     PrintDirective,
     InputMaskComp,
+    Tab,
     NmChart,
     RichText
  ];
@@ -386,6 +388,7 @@ export class MockActivatedRoute implements ActivatedRoute {
      ToastModule,
      BrowserAnimationsModule,
      InputMaskModule,
+     TabViewModule,
      ChartModule,
      EditorModule
  ];

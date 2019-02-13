@@ -5,7 +5,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms';
 import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, 
     DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, 
-    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule, InputMaskModule, EditorModule, ChartModule } from 'primeng/primeng';
+    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule, ChartModule } from 'primeng/primeng';
 
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
@@ -88,6 +88,7 @@ import { GridService } from '../../services/grid.service';
 import { formElement, formModel, textboxnotnullmodel, textboxnotnullelement } from 'mockdata';
 import { InputMaskComp } from './form/elements/input-mask.component';
 import { RichText } from './form/elements/rich-text.component';
+import { Tab } from './content/tab.component';
 
 class MockLoggerService {
   debug() { }
@@ -192,6 +193,7 @@ const declarations = [
   FormErrorMessage,
   PrintDirective,
   InputMaskComp,
+  Tab,
   NmChart,
   RichText
 ];
@@ -222,6 +224,7 @@ const imports = [
    TreeTableModule,
    BrowserAnimationsModule,
    InputMaskModule,
+   TabViewModule,
    ChartModule,
    EditorModule
 ];
