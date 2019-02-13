@@ -39,7 +39,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 };
 
 @Component({
-	selector: 'nm-mask',
+	selector: 'nm-input-mask',
 	providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
 	template: `
 	<div >
@@ -76,6 +76,8 @@ export class InputMaskComp extends BaseControl<String>  {
 
 	ngOnInit() {
 		 super.ngOnInit();
+
+		 /* Overriding primeNg's updateModel method in order to reset the default value. */
 		 this.inputMask.updateModel = function(e){
 
 			let updatedValue = this.unmask ? this.getUnmaskedValue() : e.target.value;

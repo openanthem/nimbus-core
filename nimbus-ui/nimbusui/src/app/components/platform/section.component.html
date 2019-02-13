@@ -1,4 +1,4 @@
-<div *ngIf="visible" class="{{cssClass}}" id="{{code}}">
+<div *ngIf="visible" id="{{code}}">
     <!-- Section Message -->
     <nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize"></nm-label>
      <ng-template ngFor let-msg [ngForOf]="element.message">
