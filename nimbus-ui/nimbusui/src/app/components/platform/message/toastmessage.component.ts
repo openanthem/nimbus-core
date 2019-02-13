@@ -24,9 +24,7 @@ import { NmMessageService } from './../../../services/toastmessage.service';
  *  
  * \@author Sandeep Mantha
  * \@whatItDoes 
- *      This component can be used when we would display a user message after a certain action.
- *      messageType can be of type SUCESS or DANGER.  Based on the type, a specific CSS class would be applied.
- *      messageText is the message we want to display to the user.
+ *      This component can be used when we would display a toast message that is transient in nature
  * \@howToUse 
  * 
  */
@@ -38,11 +36,7 @@ import { NmMessageService } from './../../../services/toastmessage.service';
     providers: [MessageService]
 })
 
-export class ToastMessageComponent {
-    @Input() messageContext: String;
-    @Input() messageArray: any[];
-    @Input() life: number;
-    @Input() styleClass: String;
+export class ToastMessageComponent { 
     componentTypes = ComponentTypes;
 
     constructor(private messageService: MessageService, private cdr: ChangeDetectorRef, private ngZone: NgZone, private _messageservice: NmMessageService) {}
@@ -62,12 +56,6 @@ export class ToastMessageComponent {
            
 
         });
-        // this.ngZone.run(() => {
-        //     setTimeout(() => {
-        //         this.messageService.addAll(this.messageArray);
-        //         this.cdr.detectChanges();
-        //     });
-        // });
     }
 
 }
