@@ -398,11 +398,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web-services</artifactId>
 		</dependency>
-		<dependency>
-		    <groupId>org.activiti</groupId>
-		    <artifactId>activiti-spring-boot-starter</artifactId>
-		</dependency>
-    		<dependency>
+         <dependency>
+             <groupId>org.activiti</groupId>
+             <artifactId>activiti-spring-boot-starter</artifactId>
+             <version>${activiti-spring-boot.version}</version>
+         </dependency>
+    	<dependency>
     			<groupId>org.apache.commons</groupId>
     			<artifactId>commons-dbcp2</artifactId>
 		</dependency>
@@ -484,7 +485,7 @@
 		<dependency>
 			<groupId>org.owasp.esapi</groupId>
     		<artifactId>esapi</artifactId>
-		</dependency>		
+		</dependency>	
 	</dependencies>
 
     <distributionManagement>
@@ -704,7 +705,7 @@
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>${nexus-staging-maven-plugin}</version>
+                    <version>${nexus-staging-maven-plugin.version}</version>
                     <executions>
                         <execution>
                             <id>default-deploy</id>

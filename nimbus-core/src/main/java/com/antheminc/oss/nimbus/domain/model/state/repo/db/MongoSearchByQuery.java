@@ -24,6 +24,7 @@ import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
@@ -57,6 +58,7 @@ import lombok.Setter;
 public class MongoSearchByQuery extends MongoDBSearch {
 
 	private static final ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
+	private static final String orderByAliasSuffix = ".";
 	
 	private static final String AGGREGATION_QUERY_REGEX = ".*\"?'?aggregate\"?'?\\s*:.*";
 	private static final Pattern AGGREGATION_QUERY_REGEX_PATTERN = Pattern.compile(AGGREGATION_QUERY_REGEX, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
@@ -94,7 +96,7 @@ public class MongoSearchByQuery extends MongoDBSearch {
 
 		public QueryBuilder buildOrderBy(String criteria, Class<?> referredClass, String alias ) {
 			
-			if(StringUtils.isBlank(criteria)) {
+			if(StringUtils.isBlank(criteria) || !StringUtils.startsWith(criteria, alias+orderByAliasSuffix)) {
 				return this;
 			}
 			
@@ -185,11 +187,12 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	private  <T> Object searchByAggregation(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
 		List<?> output = new ArrayList();
 		String cr = (String)criteria.getWhere();
-		
-		Document commndResult = getMongoOps().executeCommand(cr);
-				
-		if (commndResult != null && commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code) instanceof List) {
-			List<Document> result = (List<Document>)commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code);
+		Document query = Document.parse(cr);
+		List<Document> pipeline = (List<Document>)query.get(Constants.SEARCH_REQ_AGGREGATE_PIPELINE.code);
+		String aggregateCollection = query.getString(Constants.SEARCH_REQ_AGGREGATE_MARKER.code);
+		List<Document> result = new ArrayList<Document>();
+		getMongoOps().getCollection(aggregateCollection).aggregate(pipeline).iterator().forEachRemaining(a -> result.add(a));
+		if(CollectionUtils.isNotEmpty(result)) {
 			GenericType gt = getMongoOps().getConverter().read(GenericType.class, new org.bson.Document(GenericType.CONTENT_KEY, result));
 			output.addAll(gt.getContent());
 		}

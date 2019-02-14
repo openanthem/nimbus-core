@@ -17,9 +17,8 @@
 'use strict';
 
 import { Component, Input, SimpleChanges, ChangeDetectorRef } from '@angular/core';
-import { MessageService } from 'primeng/api';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
-
+import { NmMessageService } from './../../../services/toastmessage.service';
 /**
  *  
  * \@author Vivek.Kamineni
@@ -33,7 +32,6 @@ import { ComponentTypes } from '../../../shared/param-annotations.enum';
 @Component({
     selector: 'nm-message',
     template: `
-        <p-toast position="top-right"></p-toast>
         <p-messages *ngIf="messageContext === componentTypes.inline.toString()" 
             [(value)]="messageArray" 
             [closable]="false" 
@@ -51,22 +49,11 @@ export class MessageComponent {
     @Input() styleClass: String;
     componentTypes = ComponentTypes;
 
-    constructor(private messageService: MessageService, private cdr: ChangeDetectorRef) {
-
-    }
+    constructor(private cdr: ChangeDetectorRef, private msgSvc: NmMessageService) {}
 
     ngOnInit() {
-        this.updateMessageObject();
-    }
-
-    // ChangeDetectionRef.detectChanges() will check the view and updates the missing elements
-     // as toast component is not getting update in the view
-     updateMessageObject() {
         if (this.messageContext === this.componentTypes.toast.toString() && this.messageArray && this.messageArray.length > 0) {
-                this.messageService.addAll(this.messageArray);
-                setTimeout(() => {
-                    this.cdr.detectChanges();
-                });
+            this.msgSvc.createMessage(this.messageContext, this.messageArray, this.life)
         }
     }
 

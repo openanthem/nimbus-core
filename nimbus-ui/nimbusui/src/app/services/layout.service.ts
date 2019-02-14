@@ -284,6 +284,7 @@ export class LayoutService {
         item.type = element.config.uiStyles.attributes.type;
         item.target = element.config.uiStyles.attributes.target;
         item.rel = element.config.uiStyles.attributes.rel;
+        item.visible = element.visible;
         return item;
     }
 

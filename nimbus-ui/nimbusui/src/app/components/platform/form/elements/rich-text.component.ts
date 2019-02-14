@@ -25,6 +25,8 @@ import { ParamUtils } from './../../../../shared/param-utils';
 import { StringUtils } from './../../../../shared/string-utils';
 import { KeyValuePair } from './../../../../model/key-value-pair.model';
 import { ViewConfig } from './../../../../shared/param-annotations.enum';
+import { Editor } from 'primeng/editor';
+import { Dropdown } from 'primeng/primeng';
 
 declare var Quill: any;
 
@@ -59,7 +61,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             [disabled]="!element?.enabled"
             [readonly]="!element?.enabled || element?.config?.uiStyles?.attributes?.readOnly"
             [attr.readonly]="element?.config?.uiStyles?.attributes?.readOnly ? true : null"
-            [style]="element?.config?.uiStyles?.attributes?.inlineStyle"
             [styleClass]="element?.config?.uiStyles?.attributes?.cssClass"
             [formats]="element?.config?.uiStyles?.attributes?.formats"
             >
@@ -161,6 +162,18 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                     <ng-template [ngIf]="toolbarFeature === 'CLEAN'">
                         <button class="ql-clean" title="Remove Styles"></button>
                     </ng-template>
+
+                    <ng-template [ngIf]="toolbarFeature === 'VALUES_COMBOBOX'">
+                        <p-dropdown 
+                            class="ql-values-combobox" 
+                            title="Selected values will be inserted into the editor's last known cursor position."
+                            (onChange)="onValuesDropdownSelection($event)"
+                            [options]="element.values | selectItemPipe" 
+                            [disabled]="!element?.enabled"
+                            [autoWidth]="false"
+                            [placeholder]="'Please Select...'">
+                            </p-dropdown>
+                    </ng-template>
                     
                 </ng-template>
             </p-header>
@@ -172,6 +185,12 @@ export class RichText extends BaseControl<String> {
 
     @ViewChild(NgModel) model: NgModel;
     
+    @ViewChild(Editor) editor: Editor;
+
+    @ViewChild(Dropdown) valuesDropdown: Dropdown;
+
+    quill: any;
+
     public fonts: KeyValuePair[] = [
         { key: "Serif", value: "serif" },
         { key: "Monospace", value: "monospace" }
@@ -187,7 +206,7 @@ export class RichText extends BaseControl<String> {
     }
 
     ngOnInit() {
-
+        super.ngOnInit();
         if (this.element.config.uiStyles.attributes.readOnly) {
             return;
         }
@@ -208,6 +227,11 @@ export class RichText extends BaseControl<String> {
         if (headingConfig) {
             this.headings = headingConfig;
         }
+    }
+
+    ngAfterViewInit() {
+        super.ngAfterViewInit();
+        this.quill = this.editor.getQuill();
     }
 
     private buildConfigFromNature(uiNatureName: string): KeyValuePair[] {
@@ -233,5 +257,20 @@ export class RichText extends BaseControl<String> {
             }
         }
         return config;
+    }
+
+    onValuesDropdownSelection($event: any) {
+        if ($event && $event.value) {
+            let range = this.quill.getSelection(true);
+            if (range) {
+                if (range.length === 0) {
+                    this.quill.insertText(range.index, $event.value, 'user');
+                } else {
+                    this.quill.deleteText(range.index, range.length, 'user');
+                    this.quill.insertText(range.index, $event.value, 'user');
+                }
+            }
+            this.valuesDropdown.clear($event);
+        }
     }
 }

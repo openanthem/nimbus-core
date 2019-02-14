@@ -1,9 +1,27 @@
+/**
+ * @license
+ * Copyright 2016-2018 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, 
     DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule,
-    InputSwitchModule, TreeTableModule, EditorModule } from 'primeng/primeng';
+    InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule } from 'primeng/primeng';
+    
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { TableModule } from 'primeng/table';
@@ -75,9 +93,14 @@ import { LoggerService } from '../../services/logger.service';
 import { By } from '@angular/platform-browser';
 import { formGroupNmElementInputParam, formGroupNmButtonParam, formGroupnmParagraphParam, formGroupParam, formGroupNmLinkParam, formGroupNmHeaderParam, formGroupNmPickListParam, formGroupNmFormGridFiller, formGroupNestedFrmGrpEle} from 'mockdata';
 import { TableHeader } from './grid/table-header.component';
+import { InputMaskComp } from './form/elements/input-mask.component';
+import { Tab } from './content/tab.component';
+
 import { RichText } from './form/elements/rich-text.component';
 import { ChartModule } from 'primeng/chart';
 import { NmChart } from './charts/chart.component';
+import { NmMessageService } from './../../services/toastmessage.service';
+
 let param: Param;
 
 class MockWebContentSvc {
@@ -168,6 +191,8 @@ const declarations = [
   InputLegend,
   FormErrorMessage,
   PrintDirective,
+  InputMaskComp,
+  Tab,
   NmChart,
   RichText
  ];
@@ -193,6 +218,8 @@ const declarations = [
      InputSwitchModule, 
      TreeTableModule,
      StorageServiceModule,
+     InputMaskModule,
+     TabViewModule,
      ChartModule,
      EditorModule
  ];
@@ -206,6 +233,7 @@ const declarations = [
      PageService,
      CustomHttpClient,
      LoaderService,
+     NmMessageService,
      ConfigService
  ];
 

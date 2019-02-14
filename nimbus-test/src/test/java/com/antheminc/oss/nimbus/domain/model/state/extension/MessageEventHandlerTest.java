@@ -31,6 +31,7 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
@@ -60,6 +61,7 @@ public class MessageEventHandlerTest extends AbstractFrameworkIngerationPersista
 	}
 	
 	@Test
+	@WithMockUser(username="user", password="pwd")
 	public void t00_messageState_json_get() throws Exception{
 		domainRoot_refId = createOrGetDomainRoot_RefId();
 		assertNotNull(domainRoot_refId);
@@ -99,6 +101,7 @@ public class MessageEventHandlerTest extends AbstractFrameworkIngerationPersista
 	}
 	
 	@Test
+	@WithMockUser(username="user", password="pwd")
 	public void t02_messageState_json_onload() throws Exception{
 		MockHttpServletRequest home_newReq = createRequest(VIEW_PARAM_ROOT, Action._new);
 		mvc.perform(get(home_newReq.getRequestURI())

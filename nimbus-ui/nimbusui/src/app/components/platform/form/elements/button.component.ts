@@ -47,13 +47,23 @@ import { PrintConfig } from './../../../../shared/print-event';
     template: `
         <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc">
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.primary.toString() && element?.visible == true">
-                <button class="btn btn-primary"  eventpropagation (clickEvnt)="onSubmit()" [path]="element.path" type="{{element.config?.uiStyles?.attributes?.type}}" [disabled]="!form.valid">{{label}}</button>
+                <button class="btn btn-primary"  eventpropagation [form]= "form" (clickEvnt)="onSubmit()" [path]="element.path" type="{{element.config?.uiStyles?.attributes?.type}}" [disabled]="!form.valid">{{label}}</button>
             </ng-template>
-            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.secondary.toString() && element?.visible == true">
-                <button class="btn btn-secondary" [disabled]="disabled" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.type==componentTypes.reset.toString() && element?.visible == true">
+                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.secondary.toString() && element?.visible == true">
+                    <button class="btn btn-secondary" [disabled]="disabled" (click)="emitEvent($event)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                </ng-template>
+                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.plain.toString() && element?.visible == true">
+                    <button class="btn btn-plain {{cssClass}}" [disabled]="disabled" (click)="emitEvent($event)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                </ng-template>
             </ng-template>
-            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.plain.toString() && element?.visible == true">
-                <button class="btn btn-plain {{cssClass}}" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.type !== componentTypes.reset.toString() && element?.visible == true">
+                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.secondary.toString() && element?.visible == true">
+                    <button class="btn btn-secondary" [disabled]="disabled" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                </ng-template>
+                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.plain.toString() && element?.visible == true">
+                    <button class="btn btn-plain {{cssClass}}" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                </ng-template>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.destructive.toString() && element?.visible == true">
                 <button class="btn btn-delete" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
@@ -106,7 +116,9 @@ export class Button extends BaseElement {
             this.validate(this.form);
         } else if(this.element.config.uiStyles != null && this.element.config.uiStyles.attributes.style === this.componentTypes.print.toString()) {
             this.handlePrint($event);
-        } else {
+        } else if(this.element.config.uiStyles != null && this.element.config.uiStyles.attributes.type === this.componentTypes.reset.toString()) {
+            // do nothing for reset button.
+        }else {
             this.pageService.processEvent( this.element.path, this.element.config.uiStyles.attributes.b,
                 null, this.element.config.uiStyles.attributes.method );
         }
