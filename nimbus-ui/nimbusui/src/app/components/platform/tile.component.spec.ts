@@ -1,9 +1,26 @@
+/**
+ * @license
+ * Copyright 2016-2018 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, 
     DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, 
-    RadioButtonModule, CalendarModule, TreeTableModule, InputSwitchModule, InputMaskModule, EditorModule } from 'primeng/primeng';
+    RadioButtonModule, CalendarModule, TreeTableModule, InputSwitchModule, InputMaskModule, TabViewModule, EditorModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -76,6 +93,7 @@ import { PrintDirective } from '../../directives/print.directive';
 import { fieldValueParam } from 'mockdata';
 import { TableHeader } from './grid/table-header.component';
 import { InputMaskComp } from './form/elements/input-mask.component';
+import { Tab } from './content/tab.component';
 
 import { RichText } from './form/elements/rich-text.component';
 import { NmChart } from './charts/chart.component';
@@ -169,6 +187,7 @@ const declarations = [
     FormErrorMessage,
     PrintDirective,
     InputMaskComp,
+    Tab,
     NmChart,
     RichText
    ];
@@ -197,6 +216,7 @@ const imports = [
     TreeTableModule, 
     InputSwitchModule,
     InputMaskModule,
+    TabViewModule,
     ChartModule,
     EditorModule
    ];

@@ -1581,7 +1581,7 @@ public class ViewConfig {
 		 * 
 		 */
 		public enum Type {
-			DEFAULT, LEFT, RIGHT
+			DEFAULT, LEFT, RIGHT, DOWN
 		}
 
 		String alias() default "InputSwitch";
@@ -1600,7 +1600,7 @@ public class ViewConfig {
 		/**
 		 * It describes the Type of orientation, Accepted values can be
 		 * InputSwitch.Type.LEFT, InputSwitch.Type.RIGHT,
-		 * InputSwitch.Type.DEFAULT
+		 * InputSwitch.Type.DOWN, InputSwitch.Type.DEFAULT
 		 * 
 		 */
 		InputSwitch.Type orientation() default InputSwitch.Type.DEFAULT;
@@ -2385,7 +2385,14 @@ public class ViewConfig {
 	public @interface RichText {
 
 		public enum ToolbarFeature {
-			ALIGN, BACKGROUND, BLOCKQUOTE, BOLD, CLEAN, CODE, CODE_BLOCK, COLOR, DIRECTION, FONT, HEADER, IMAGE, INDENT, ITALIC, LINK, LIST, SCRIPT, SIZE, STRIKE, UNDERLINE, VIDEO;
+			ALIGN, BACKGROUND, BLOCKQUOTE, BOLD, CLEAN, CODE, CODE_BLOCK, COLOR, DIRECTION, FONT, HEADER, IMAGE, INDENT,
+			/**
+			 * <p>Adds a combobox to the toolbar. Selected values from the
+			 * combobox will be inserted into the editor's last known cursor
+			 * position (at the start if untouched).</p><p>Values can be
+			 * supplied by decorating the field with {@link Values}.</p>
+			 */
+			VALUES_COMBOBOX, ITALIC, LINK, LIST, SCRIPT, SIZE, STRIKE, UNDERLINE, VIDEO;
 		}
 
 		String alias() default "RichText";
@@ -2498,7 +2505,7 @@ public class ViewConfig {
 	 * <p>Section will render nested fields that are decorated with: <ul>
 	 * <li>{@link Accordion}</li> <li>{@link Button}</li>
 	 * <li>{@link ButtonGroup}</li> <li>{@link CardDetail}</li>
-	 * <li>{@link CardDetailsGrid}</li> <li>{@link ComboBox}</li>
+	 * <li>{@link CardDetailsGrid}</li> <li>{@link Tab}</li> <li>{@link ComboBox}</li>
 	 * <li>{@link Form}</li> <li>{@link Grid}</li> <li>{@link Link}</li>
 	 * <li>{@link Menu}</li> <li>{@link Paragraph}</li><li>{@link Chart}</li>
 	 * <li>{@link StaticText}</li> <li>{@link TextBox}</li> </ul>
@@ -2855,7 +2862,52 @@ public class ViewConfig {
 		String maskPlaceHolder() default "";		
 		
 	}
+	
+	
+	
+	/**
+	 * <p> Tab groups a collection of TabPanels in tabs.
+	 * 
+	 * <p> <b>Expected Field Structure</b>
+	 * 
+	 * <p> Tab will be rendered when annotating a field nested under one
+	 * of the following components: <ul> <li>{@link Tile}</li>
+	 * <li>{@link Section}</li> </ul>
+	 * 
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface Tab {
+		
+		String alias() default "Tab";		
+	}
+	
+	
+	
+	/**
+	 * <p> TabPanel is used to display content for the tabs.
+	 * <p>TabPanel will render nested fields that are decorated with: <ul>
+	 * <li>{@link Tab}</li> <li>{@link Section}</li> </ul>
+	 * We can have a section within a TabPanel or even a Tab to create a nested structure.
+	 * 
+	 * <p> <b>Expected Field Structure</b>
+	 * 
+	 * <p> TabPanel will be rendered when annotating a field nested under one
+	 * of the following components: <ul> <li>{@link Tab}</li> </ul>
+	 * 
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface TabPanel {
 
+		String alias() default "TabPanel";
+		
+		boolean closable() default false;		
+		
+	}
+	
 	/**
 	 * <p>Tile is a container component that groups a collection of contents.
 	 * 
@@ -2866,7 +2918,7 @@ public class ViewConfig {
 	 * 
 	 * <p>Tile will render nested fields that are decorated with: <ul>
 	 * <li>{@link Header}</li> <li>{@link Modal}</li> <li>{@link Section}</li>
-	 * <li>{@link Tile}</li> </ul>
+	 * <li>{@link Tile}</li> <li>{@link Tab}</li></ul>
 	 * 
 	 * @since 1.0
 	 */

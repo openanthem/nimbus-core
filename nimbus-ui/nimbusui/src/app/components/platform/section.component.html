@@ -1,4 +1,4 @@
-<div *ngIf="visible" class="{{cssClass}}" id="{{code}}">
+<div *ngIf="visible" id="{{code}}">
     <!-- Section Message -->
     <nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize"></nm-label>
      <ng-template ngFor let-msg [ngForOf]="element.message">
@@ -82,6 +82,9 @@
             <ng-template [ngIf]="element.alias == componentTypes.inputSwitch.toString()">
                 <nm-input-switch id="{{code}}" [element]="element" [(ngModel)]="element.leafState"></nm-input-switch>
             </ng-template>
+             <ng-template [ngIf]="element.alias == 'Tab'">
+                <nm-tab [element]="element"></nm-tab>
+             </ng-template>
         </ng-template>
     </ng-template>
 </div>
