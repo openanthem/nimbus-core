@@ -44,7 +44,6 @@ export class ToastMessageComponent {
     ngOnInit() {
 
         this._messageservice.messageEvent$.subscribe(messages => {
-            this.messageService.clear();
             messages.forEach(msg => {
                 this.ngZone.run(() => {
                         this.messageService.addAll(msg.messageArray);
