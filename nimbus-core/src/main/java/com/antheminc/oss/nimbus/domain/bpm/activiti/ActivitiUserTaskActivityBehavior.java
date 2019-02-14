@@ -28,26 +28,30 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.ProcessEngineContext;
+import com.antheminc.oss.nimbus.domain.bpm.ProcessRepository;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
+import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
-import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
 
+import lombok.Getter;
+
 /**
  * @author Rakesh Patel
  *
  */
+@Getter
 public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 
 	private static final long serialVersionUID = 1L;
@@ -59,6 +63,7 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 	BeanResolverStrategy beanResolver;
 	ModelRepositoryFactory repositoryFactory;
 	DomainConfigBuilder domainConfigBuilder;
+	ProcessRepository processRepo;
 
 	
 	public ActivitiUserTaskActivityBehavior(UserTask userTask) {
@@ -136,7 +141,7 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 			this.pathVariableResolver = beanResolver.find(CommandPathVariableResolver.class);
 			this.repositoryFactory = beanResolver.find(ModelRepositoryFactory.class);
 			this.domainConfigBuilder = beanResolver.find(DomainConfigBuilder.class);
-
+			this.processRepo = beanResolver.get(ProcessRepository.class);
 		}
 	}
 	
@@ -173,12 +178,17 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 	}	
 	
 	protected void updateProcessState(ProcessEngineContext context, List<String> activeTasks) {
+		ActivitiProcessFlow processFlow = (ActivitiProcessFlow)((ExecutionEntity<?,?>)context.getParam().getRootExecution().getState()).getFlow();
+		processFlow.setActiveTasks(activeTasks);
+		
 		ModelConfig<?> modelConfig = domainConfigBuilder.getModel(ProcessFlow.class);
-		Repo repo = modelConfig.getRepo();
-		String processStateAlias = StringUtils.isBlank(repo.alias()) ? modelConfig.getAlias() : repo.alias();
-		String entityProcessAlias = context.getParam().getRootDomain().getConfig().getAlias() + "_" + processStateAlias;
+		
+		String processStateAlias = modelConfig.getRepoAlias();
+		String entityProcessAlias = context.getParam().getRootDomain().getConfig().getRepoAlias() + "_" + processStateAlias;
+		
 		Long entityRefId = context.getParam().getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
-		repositoryFactory.get(repo)._update(entityProcessAlias, entityRefId, "/activeTasks", activeTasks);
+		
+		getProcessRepo()._update(entityProcessAlias, entityRefId, "/activeTasks", activeTasks);
 	}	
 
 }

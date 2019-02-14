@@ -1,8 +1,8 @@
 # Contributing to Anthem Open Source projects
 
-Want to hack on changes to an Anthem Open Source Project?  We have a contributor's guide that explains
+Want to hack on changes to the Nimbus Framework?  We have a contributor's guide that explains
 [setting up a development environment and the contribution
-process](https://anthemopensource.atlassian.net/wiki/spaces/opensource/pages/45842524/Setup+Development+Environment).
+process](https://anthemopensource.atlassian.net/wiki/spaces/OSS/pages/523436073/Contributing).
 
 This page contains information about reporting issues as well as some tips and
 guidelines useful to experienced open source contributors. Finally, make sure
@@ -146,7 +146,7 @@ Include an issue reference like `Closes #XXXX` or `Fixes #XXXX` in the pull requ
 description that close an issue. Including references automatically closes the issue
 on a merge.
 
-Please see the [Coding Style](#coding-style) for further guidelines.
+Please see the [Coding Style](https://anthemopensource.atlassian.net/wiki/spaces/OSS/pages/523698209/Nimbus+Framework+Code+Style) for further guidelines.
 
 ### Merge approval
 
@@ -224,7 +224,3 @@ intolerable.
 * Contact abuse@oss.antheminc.com to report abuse or appeal violations. In the case of
     appeals, we know that mistakes happen, and we'll work with you to come up with a
     fair solution if there has been a misunderstanding.
-
-## Coding Style
-
-Anthem will define these guidelines soon.

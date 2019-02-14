@@ -167,6 +167,10 @@ public class SampleCoreEntity extends IdLong {
 	
 	private int rule_param_affectState;
 	
+	@Rule("rules/testdecisiontable")
+	private String dtable_param;
+	
+	private String dtable_param_affectState;
 
 	@EnableConditional(when="state == 'Y'", targetPath="../attr_enable_nested")
 	private String attr_enable_trigger;
@@ -194,4 +198,6 @@ public class SampleCoreEntity extends IdLong {
 	private SampleValidateEntity2 attr_validate_nested_2;
 
 	private String testEntry;
+	
+	private List<String> attr_list_2_simple;
 }

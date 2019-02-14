@@ -30,7 +30,6 @@ import com.antheminc.oss.nimbus.domain.bpm.activiti.ActivitiProcessFlow;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
-import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
@@ -51,6 +50,8 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 	@Autowired CommandMessageConverter converter;
 	
 	@Autowired ModelRepositoryFactory repositoryFactory;
+	
+	@Autowired ProcessRepository processRepo;
 	
 	protected static final String BPM_ERR_DOMAIN_ALIAS = "testbpmfailmodel";
 	protected static final String BPM_ERR_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_ERR_DOMAIN_ALIAS;	
@@ -208,8 +209,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 			assertEquals("usertask2",processFlow.getActiveTasks().get(0));
 		}
 		
-		
-		ActivitiProcessFlow pf2 = repositoryFactory.get(Repo.Database.rep_mongodb)._get(domainRoot_refId, ActivitiProcessFlow.class, "testbpmfailmodel_processFlow");
+		ActivitiProcessFlow pf2 = processRepo._get(domainRoot_refId, ActivitiProcessFlow.class, "testbpmfailmodel_processFlow");
 		assertEquals("usertask2",pf2.getActiveTasks().get(0));
 		
 	}

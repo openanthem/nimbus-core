@@ -50,7 +50,7 @@ public class EventHandlerConfigFactory {
 	
 	public EventHandlerConfigFactory(BeanResolverStrategy beanResolver) {
 		this.beanResolver = beanResolver;
-		this.annotationConfigHandler = beanResolver.find(AnnotationConfigHandler.class);
+		this.annotationConfigHandler = beanResolver.find(AnnotationConfigHandler.class, "eventAnnotationConfigBuilder");
 	}
 	
 	@SuppressWarnings("unchecked")

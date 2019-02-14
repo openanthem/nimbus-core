@@ -1,5 +1,5 @@
 <nm-message messageContext="{{element?.message.context}}"  [messageArray]="element?.message.messageArray" [life]="element?.message.life" *ngIf="element?.message"></nm-message>
-<div class="card-holder" id="{{code}}" [ngClass]="styleWd" *ngIf="visible==true">
+<div class="card-holder {{cssClass}}" id="{{code}}" *ngIf="visible==true">
 		<div class="card-header">
 			<nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize" [labelClass]="imgSrc + ' card-title'"></nm-label>
 			<ng-template ngFor let-element [ngForOf]="nestedParams">
@@ -16,18 +16,21 @@
 				</ng-template>
 			</ng-template>		
 		</div>
-	<div class="card card-block {{styleHt}}">
+	<div class="card card-block ">
 		<div class="viewport" >
 			<ng-template ngFor let-element [ngForOf]="nestedParams">
 				<ng-template [ngIf]="element.alias == viewComponent.tile.toString()">
-					<nm-tile [element]="element" tileType="subtile"></nm-tile>
+					<nm-tile [element]="element" tileType="subtile" [nmPrint]="element"></nm-tile>
 				</ng-template>
 				<ng-template [ngIf]="element.alias == viewComponent.section.toString()">
-					<nm-section [element]="element" [position]="position+1"></nm-section>	
+					<nm-section [element]="element" [position]="position+1" [nmPrint]="element" class="{{element.config?.uiStyles?.attributes?.cssClass}}"></nm-section>	
 				</ng-template>
 				<ng-template [ngIf]="element.alias == viewComponent.modal.toString()">
-					<nm-modal [element]="element"></nm-modal>	
+					<nm-modal [element]="element" [nmPrint]="element" [contentSelector]="'div.ui-dialog-content'"></nm-modal>
 				</ng-template>
+				 <ng-template [ngIf]="element.alias == 'Tab'">
+			     	<nm-tab [element]="element"></nm-tab>
+			     </ng-template>
 			</ng-template>	
 		</div>
 	</div>

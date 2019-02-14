@@ -36,9 +36,9 @@ export class ValidationUtils {
     static buildStaticValidations(element:Param) :ValidatorFn[] {
         var checks: ValidatorFn[] = [];
          if (element.config.validation) {
-            element.config.validation.constraints.forEach(validator => {
-                if(validator.attribute != null && validator.attribute.groups == null || validator.attribute.groups.length == 0) {
-                    checks.push(ValidationUtils.constructValidations(validator, element.config.uiStyles.attributes.alias));
+            element.config.validation.constraints.forEach(constraint => {
+                if(constraint.attribute != null && constraint.attribute.groups == null || constraint.attribute.groups.length == 0) {
+                    ValidationUtils.addCheckSafely(checks, constraint, element);
                 }
             });
          }
@@ -48,11 +48,10 @@ export class ValidationUtils {
      static buildDynamicValidations(element:Param, groups: String[]) :ValidatorFn[] {
         var checks: ValidatorFn[] = [];
          if (element.config.validation) {
-            element.config.validation.constraints.forEach(validator => {
+            element.config.validation.constraints.forEach(constraint => {
                 groups.forEach(group => {
-                    if(validator.attribute.groups.some(x => x === group)) {
-                        var check = ValidationUtils.constructValidations(validator, element.config.uiStyles.attributes.alias)
-                        checks.push(check);
+                    if(constraint.attribute.groups.some(x => x === group)) {
+                        ValidationUtils.addCheckSafely(checks, constraint, element);
                     }
                 });
             });
@@ -60,35 +59,46 @@ export class ValidationUtils {
          return checks;
      }
 
-     static constructValidations(validator: Constraint, controlAlias: string) : ValidatorFn {
-        if (validator.name === ValidationConstraint._notNull.value) {
+    private static addCheckSafely(checks: ValidatorFn[], constraint: Constraint, element: Param) {
+        var check = ValidationUtils.constructValidations(constraint, element.config.uiStyles.attributes.alias)
+        if (check) {
+            checks.push(check);
+        } else {
+            // TODO - Refactor ValidatonUtils to be a service so that we can inject the LoggerService and output
+            // the error below. For now, we'll silence it.
+            //console.error(`UI Validation is not supported for @${constraint.name}. Remove @${constraint.name} from '${element.config.code}'.`);
+        }
+    }
+
+     static constructValidations(constraint: Constraint, controlAlias: string) : ValidatorFn {
+        if (constraint.name === ValidationConstraint._notNull.value) {
             if(controlAlias == 'CheckBox') {
               return Validators.requiredTrue;
             } else {
               return Validators.required;
             }
           }
-          else if (validator.name === ValidationConstraint._pattern.value) {
-            return Validators.pattern(validator.attribute.regexp);
+          else if (constraint.name === ValidationConstraint._pattern.value) {
+            return Validators.pattern(constraint.attribute.regexp);
           }
-          else if (validator.name === ValidationConstraint._size.value) {
-            return CustomValidators.minMaxSelection(controlAlias, validator.attribute);
+          else if (constraint.name === ValidationConstraint._size.value) {
+            return CustomValidators.minMaxSelection(controlAlias, constraint.attribute);
           }
-         else if (validator.name === ValidationConstraint._max.value) {
-              return Validators.maxLength(validator.attribute.value);
+         else if (constraint.name === ValidationConstraint._max.value) {
+              return Validators.maxLength(constraint.attribute.value);
           }
-          else if (validator.name === ValidationConstraint._number.value) {
+          else if (constraint.name === ValidationConstraint._number.value) {
             return CustomValidators.isNumber;
           }
-          else if (validator.name === ValidationConstraint._zip.value) {
+          else if (constraint.name === ValidationConstraint._zip.value) {
             return CustomValidators.isZip;
           }
-          else if (validator.name === ValidationConstraint._past.value) {
+          else if (constraint.name === ValidationConstraint._past.value) {
             return CustomValidators.isPast;
           }
-          else if (validator.name === ValidationConstraint._future.value) {
+          else if (constraint.name === ValidationConstraint._future.value) {
             return CustomValidators.isFuture;
-          }           
+          }
     }
 
     static createRequired(element:Param, groups: String[]) :boolean {
@@ -141,20 +151,5 @@ export class ValidationUtils {
             });
         }
         return requiredCss;
-    }
-
-    /**
-     * Retrieve the default error message for a given errorType.
-     * @param validationName the errorType for which to retrieve an error message
-     */
-    public static getDefaultErrorMessage(validationName: string): string {
-        return ServiceConstants.ERROR_MESSAGE_DEFAULTS[validationName];
-    }
-    
-    /**
-     * Retrieve all of the error names that validation rules are applied for.
-     */
-    public static getAllValidationNames(): string[] {
-        return Object.keys(ServiceConstants.ERROR_MESSAGE_DEFAULTS);
     }
 }

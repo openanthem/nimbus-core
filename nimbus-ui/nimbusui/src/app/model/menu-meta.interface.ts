@@ -76,6 +76,7 @@ export interface FooterConfig {
 }
 
 export interface Layout {
+    fixLayout: boolean;
     topBar: TopBarConfig;
     menu: MenuItem[];
     footer: FooterConfig;

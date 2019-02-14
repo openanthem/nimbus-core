@@ -21,10 +21,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Past;
+
 import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
-
 
 import lombok.Getter;
 import lombok.Setter;
@@ -45,20 +47,13 @@ import lombok.Setter;
 public class ViewConfig {
 
 	/**
-	 * **
-	 * <p>
-	 * Accordion groups a collection of contents in tabs.
+	 * ** <p> Accordion groups a collection of contents in tabs.
 	 * 
-	 * <p>
-	 * <b>Expected Field Structure</b>
+	 * <p> <b>Expected Field Structure</b>
 	 * 
-	 * <p>
-	 * Accordion will be rendered when annotating a field nested under one of the
-	 * following components:
-	 * <ul>
-	 * <li>{@link Form}</li>
-	 * <li>{@link Section}</li>
-	 * </ul>
+	 * <p> Accordion will be rendered when annotating a field nested under one
+	 * of the following components: <ul> <li>{@link Form}</li>
+	 * <li>{@link Section}</li> </ul>
 	 * 
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
@@ -70,40 +65,33 @@ public class ViewConfig {
 		String alias() default "Accordion";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "panel-default";
 
 		boolean multiple() default false;
 
 		boolean showExpandAll() default false;
-		
+
 		boolean showMessages() default false;
 	}
 
 	/**
-	 * <p>
-	 * AccordionTab is the section of Accordion.
+	 * <p> AccordionTab contains a collection of contents for an individual
+	 * section within an Accordion.
 	 * 
-	 * <p>
-	 * <b>Expected Field Structure</b>
+	 * <p> <b>Expected Field Structure</b>
 	 * 
-	 * <p>
-	 * AccordionTab should be used to decorate a field in a class that has been
-	 * decorated with Accordion.
-	 * <p>
-	 * <p>
-	 * AccordionTab will render nested fields in the same manner declared directly
-	 * under a {@link Form} component
+	 * <p> AccordionTab should be used to decorate a field in a class that has
+	 * been decorated with Accordion. <p> <p> AccordionTab will render nested
+	 * fields in the same manner declared directly under a {@link Form}
+	 * component
 	 * 
-	 * <p>
-	 * AccordionTab used within a {@link Section} component, should contain fields
-	 * decorated with one or more of the following components:
-	 * <ul>
-	 * <li>{@link CardDetail}</li>
-	 * <li>{@link ButtonGroup}</li>
-	 * <li>{@link Grid}
+	 * <p> AccordionTab used within a {@link Section} component, should contain
+	 * fields decorated with one or more of the following components: <ul>
+	 * <li>{@link CardDetail}</li> <li>{@link ButtonGroup}</li> <li>{@link Grid}
 	 *
 	 * 
 	 * @since 1.0
@@ -115,8 +103,9 @@ public class ViewConfig {
 		String alias() default "AccordionTab";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "panel-default";
 
@@ -146,8 +135,9 @@ public class ViewConfig {
 		String alias() default "ActionTray";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -168,8 +158,9 @@ public class ViewConfig {
 		String alias() default "Assessment";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "text-sm-right";
 	}
@@ -186,8 +177,9 @@ public class ViewConfig {
 		String alias() default "breadCrumb";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -197,51 +189,10 @@ public class ViewConfig {
 
 		boolean postEventOnChange() default false;
 	}
-	
-	
-	/**
-	 * <p><b>Expected Field Structure</b>
-	 * 
-	 * <p>TreeGrid will be rendered when annotating a field nested under one of
-	 * the following components: <ul> <li>{@link Section}</li>
-	 * <li>{@link Form}</li>
-	 * 
-	 */
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface TreeGrid {
-		String alias() default "TreeGrid";
-		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
-		 */
-		String cssClass() default "";
-	}
-	
-	
-	/**
-	 * <p><b>Expected Field Structure</b>
-	 * 
-	 * <p>Child entities that are within TreeGrid should be annotated with this.
-	 */	
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface TreeGridChild {
-		String alias() default "TreeGridChild";
-		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
-		 */
-		String cssClass() default "";
-	}
-	
 
 	/**
-	 * <p><b>Expected Field Structure</b>
+	 * <p>Button is an extension to the standard button input element with icons
+	 * and theming. <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Button will be rendered when annotating a field nested under one of
 	 * the following components: <ul> <li>{@link ActionTray}</li>
@@ -257,7 +208,21 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Button {
 		public enum Style {
-			DESTRUCTIVE, PLAIN, PRIMARY, SECONDARY, VALIDATION;
+			DESTRUCTIVE, PLAIN, PRIMARY,
+
+			/**
+			 * <p>Opens a print dialog with the rendered HTML content
+			 * represented by this button's {@link Button#printPath()}. <p>A
+			 * path should be provided to a component that supports printing.
+			 * The following components are supported to be targeted using
+			 * {@code printPath}: <ul> <li>{@link Accordion}</li>
+			 * <li>{@link CardDetails}</li> <li>{@link CardDetailsGrid}</li>
+			 * <li>{@link Form}</li> <li>{@link Grid}</li>
+			 * <li>{@link Modal}</li> <li>{@link Page}</li>
+			 * <li>{@link Section}</li> <li>{@link Tile}</li> </ul>
+			 * @see PrintConfig
+			 */
+			PRINT, SECONDARY, VALIDATION;
 		}
 
 		public enum Type {
@@ -271,8 +236,9 @@ public class ViewConfig {
 		boolean browserBack() default false;
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -286,6 +252,17 @@ public class ViewConfig {
 
 		String payload() default "";
 
+		/**
+		 * <p>Used to determine the HTML DOM content to print when
+		 * {@link #style()} is set to {@link Style#PRINT}. <p>The format of
+		 * {@code printPath} should start with {@code /} and the domain value
+		 * ({@code refId} is not needed). For example:
+		 * {@code "/domain/page/tile/section"} <p>If {@code printPath} is not
+		 * provided, the top most page that this button is declared within will
+		 * be used as the printable content.
+		 */
+		String printPath() default "";
+
 		Style style() default Style.PLAIN;
 
 		String title() default "";
@@ -296,7 +273,7 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <p>Container for buttons
+	 * <p>ButtonGroup contains a collection of Button components.
 	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
@@ -316,13 +293,16 @@ public class ViewConfig {
 		String alias() default "ButtonGroup";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "text-sm-center";
 	}
 
 	/**
+	 * <p>Calendar is an input component to select a date.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Calendar will be rendered when annotating a field nested under one of
@@ -330,8 +310,8 @@ public class ViewConfig {
 	 * 
 	 * <p>Calendar should decorate a field having a simple type.
 	 * 
-	 * <p>Additionally you can restrict calendar input as Past or Future Date by Annotating 
-	 * javax provided {@link Past} or {@link Future} respectively</p>
+	 * <p>Additionally you can restrict calendar input as Past or Future Date by
+	 * Annotating javax provided {@link Past} or {@link Future} respectively</p>
 	 * 
 	 * @since 1.0
 	 */
@@ -341,13 +321,18 @@ public class ViewConfig {
 	public @interface Calendar {
 		String alias() default "Calendar";
 
+		String cols() default "";
+
 		String controlId() default "";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
+
+		boolean dataEntryField() default true;
 
 		String help() default "";
 
@@ -372,12 +357,12 @@ public class ViewConfig {
 		boolean yearNavigator() default false;
 
 		String yearRange() default "1910:2050";
-		
-		String cols() default "";
 
 	}
 
 	/**
+	 * <p>CardDetail is a flexible container component.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>CardDetail will be rendered when annotating a field nested under one
@@ -415,8 +400,9 @@ public class ViewConfig {
 			String alias() default "CardDetailsBody";
 
 			/**
-			 * <p>CSS classes added here will be added to a container element surrounding this component.
-			 * <p>This can be used to apply additional styling, if necessary.
+			 * <p>CSS classes added here will be added to a container element
+			 * surrounding this component. <p>This can be used to apply
+			 * additional styling, if necessary.
 			 */
 			String cssClass() default "";
 		}
@@ -441,8 +427,9 @@ public class ViewConfig {
 			String alias() default "CardDetailsHeader";
 
 			/**
-			 * <p>CSS classes added here will be added to a container element surrounding this component.
-			 * <p>This can be used to apply additional styling, if necessary.
+			 * <p>CSS classes added here will be added to a container element
+			 * surrounding this component. <p>This can be used to apply
+			 * additional styling, if necessary.
 			 */
 			String cssClass() default "";
 		}
@@ -459,27 +446,29 @@ public class ViewConfig {
 			String alias() default "CardDetailsTag";
 
 			/**
-			 * <p>CSS classes added here will be added to a container element surrounding this component.
-			 * <p>This can be used to apply additional styling, if necessary.
+			 * <p>CSS classes added here will be added to a container element
+			 * surrounding this component. <p>This can be used to apply
+			 * additional styling, if necessary.
 			 */
 			String cssClass() default "";
 		}
-		
+
 		String alias() default "CardDetail";
 
-		boolean expandable() default false;
-
 		boolean border() default false;
-		
+
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
-		String cssClass() default "";	
+		String cssClass() default "";
 
 		boolean draggable() default false;
 
 		boolean editable() default false;
+
+		boolean expandable() default false;
 
 		String imgSrc() default "";
 
@@ -487,10 +476,14 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>CardDetailsGrid contains a collection of {@link CardDetail}
+	 * components.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>CardDetailsGrid will be rendered when annotating a field nested under
-	 * one of the following components: <ul> <li>{@link Accordion}</li><li>{@link Section}</li> </ul>
+	 * one of the following components: <ul>
+	 * <li>{@link Accordion}</li><li>{@link Section}</li> </ul>
 	 * 
 	 * <p>A field decorated with &#64;CardDetailsGrid should be an object
 	 * containing one or more fields. Each of these fields would represent a
@@ -507,8 +500,9 @@ public class ViewConfig {
 		String alias() default "CardDetailsGrid";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -520,6 +514,8 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>Checkbox is an extension to standard checkbox element.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>CheckBox will be rendered when annotating a field nested under one of
@@ -535,25 +531,30 @@ public class ViewConfig {
 	public @interface CheckBox {
 		String alias() default "CheckBox";
 
+		String cols() default "";
+
 		String controlId() default "";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
+
+		boolean dataEntryField() default true;
 
 		String help() default "";
 
 		String labelClass() default "anthem-label";
 
 		boolean postEventOnChange() default false;
-		
-		String cols() default "";
 
 	}
 
 	/**
+	 * <p>CheckBoxGroup is used for multi-select {@link Che components.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>CheckBoxGroup will be rendered when annotating a field nested under
@@ -569,13 +570,18 @@ public class ViewConfig {
 	public @interface CheckBoxGroup {
 		String alias() default "CheckBoxGroup";
 
+		String cols() default "";
+
 		String controlId() default "";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
+
+		boolean dataEntryField() default true;
 
 		String help() default "";
 
@@ -584,73 +590,16 @@ public class ViewConfig {
 		String level() default "0";
 
 		boolean postEventOnChange() default false;
-		
-		String cols() default "";
 
-	}
-	
-	/**
-	 * <p><b>Expected Field Structure</b>
-	 * 
-	 * <p>InputSwitch will be rendered when annotating a field nested under one of the
-	 * following components: <ul><li>{@link Form}</li> <li>{@link Section}</li></ul>
-	 * 
-	 * <p>InputSwitch should decorate a field having a simple type.
-	 * 
-	 * <p>If no orientation is specified, it's considered as DEFAULT. On the need basis
-	 * orientation can be supplied as the LEFT or RIGHT.
-	 * 
-	 * <br>orientation description: <ul><li>DEFAULT orientation places the component right next
-	 * to the Label.</li> <li>LEFT orientation places the component left to the Label.</li> <li>RIGHT
-	 * orientation places the component little away from the Label.</li></ul>
-	 * 
-	 * @since 1.1
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface InputSwitch {
-		
-		/**
-		 * Type of orientation.
-		 * 
-		 */
-		public enum Type {
-			LEFT,
-			RIGHT,
-			DEFAULT
-		}
-		String alias() default "InputSwitch";
-		
-		String controlId() default "";
-		
-		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
-		 */
-		String cssClass() default "";
-		
-		/**
-		 * postEventOnChange flag, by default is false. 
-		 * When it's set to true, posts the state changes on this component to the server.
-		 * 
-		 */
-		boolean postEventOnChange() default false;
-		
-		/**
-		 * It describes the Type of orientation, Accepted values can be InputSwitch.Type.LEFT, 
-		 * InputSwitch.Type.RIGHT, InputSwitch.Type.DEFAULT
-		 * 
-		 */
-		InputSwitch.Type orientation() default InputSwitch.Type.DEFAULT;
 	}
 
 	/**
+	 * <p>Combobox is used to select an item from a collection of options.
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>ComboBox will be rendered when annotating a field nested under one of
 	 * the following components: <ul> <li>{@link Form}</li> <li>Layout
-	 * Domain</li> <li>{@link GlobalNavMenu}</li> <li>{@link Section}</li> </ul>
+	 * Domain</li> <li>{@link Section}</li> </ul>
 	 * 
 	 * <p>ComboBox should decorate a field having a simple type.
 	 * 
@@ -662,13 +611,18 @@ public class ViewConfig {
 	public @interface ComboBox {
 		String alias() default "ComboBox";
 
+		String cols() default "";
+
 		String controlId() default "";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
+
+		boolean dataEntryField() default true;
 
 		String help() default "";
 
@@ -679,8 +633,6 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 
 		boolean readOnly() default false;
-		
-		String cols() default "";
 
 	}
 
@@ -723,6 +675,8 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>FieldValue is a container for displaying a single value.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>FieldValue will be rendered when annotating a field nested under one
@@ -779,8 +733,9 @@ public class ViewConfig {
 		String cols() default "4";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -815,6 +770,9 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>FieldValue is a container for displaying a logical grouping of
+	 * multiple {@link FieldValue} components.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>FieldValueGroup is a grouping of FieldValues. Used in scenarios where
@@ -834,13 +792,17 @@ public class ViewConfig {
 		String cols() default "1";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 	}
 
 	/**
+	 * <p>FileUpload is an advanced uploader with dragdrop support, multi file
+	 * uploads, auto uploading, progress tracking and validations.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>FileUpload will be rendered when annotating a field nested under one
@@ -848,12 +810,18 @@ public class ViewConfig {
 	 * 
 	 * <p>FileUpload should decorate a field having a simple type.
 	 * 
-	 * <p>Meta data can be sent along with the file contents by making use of metaData attribute.  Example configuration:
-	 * <pre>&#64;FileUpload(url="${cueIntegration.fileUploadUrl}", type= ".jpeg,.png", metaData= "memberId")</pre>
-	 * <p>And {@code memberId} can be configured as a hidden attribute inside form. 
+	 * <p>Meta data can be sent along with the file contents by making use of
+	 * metaData attribute. Example configuration:
 	 * 
-	 * <p>More than one item can be sent by configuring as comma separated values:
-	 * {@code metaData= "memberId,subscriberId"}
+	 * <pre>
+	 * &#64;FileUpload(url="${cueIntegration.fileUploadUrl}", type= ".jpeg,.png", metaData= "memberId")
+	 * </pre>
+	 * 
+	 * <p>And {@code memberId} can be configured as a hidden attribute inside
+	 * form.
+	 * 
+	 * <p>More than one item can be sent by configuring as comma separated
+	 * values: {@code metaData= "memberId,subscriberId"}
 	 * 
 	 * @since 1.0
 	 */
@@ -867,13 +835,18 @@ public class ViewConfig {
 
 		String alias() default "FileUpload";
 
+		String cols() default "";
+
 		ControlType controlType() default ControlType.FORMCONTROL;
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
+
+		boolean dataEntryField() default true;
 
 		String metaData() default "";
 
@@ -882,13 +855,14 @@ public class ViewConfig {
 		String type() default ".pdf,.png";
 
 		String url() default "";
-		
-		String cols() default "";
 
 	}
 
 	/**
-	 * <!--TODO Candidate for removal-->
+	 * <p>FilterButton is an extension to the standard button input element with
+	 * icons and theming related to filtering activities.
+	 * 
+	 * <!-- This component is not currently being used by the UI -->
 	 * 
 	 * @since 1.0
 	 */
@@ -897,12 +871,13 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface FilterButton {
 		String alias() default "FilterButton";
-
+		
 		String b() default "$execute";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "btn btn-primary";
 
@@ -930,26 +905,34 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>A Form is an HTML form container for user input contents.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Form will be rendered when annotating a field nested under one of the
 	 * following components: <ul> <li>Section</li> </ul>
 	 * 
 	 * <p>Form will render nested fields that are decorated with: <ul>
-	 * <li>{@link FormElementGroup}</li>
-	 * <li>{@link Accordion}</li> <li>{@link Button}</li>
-	 * <li>{@link ButtonGroup}</li> <li>{@link Calendar}</li>
-	 * <li>{@link CheckBox}</li> <li>{@link CheckBoxGroup}</li>
-	 * <li>{@link ComboBox}</li> <li>{@link FileUpload}</li>
-	 * <li>{@link Grid}</li> <li>{@link Header}</li>
-	 * <li>{@link MultiSelect}</li> <li>{@link MultiSelectCard}</li> 
+	 * <li>{@link FormElementGroup}</li> <li>{@link Accordion}</li>
+	 * <li>{@link Button}</li> <li>{@link ButtonGroup}</li>
+	 * <li>{@link Calendar}</li> <li>{@link CheckBox}</li>
+	 * <li>{@link CheckBoxGroup}</li> <li>{@link ComboBox}</li>
+	 * <li>{@link FileUpload}</li> <li>{@link Grid}</li> <li>{@link Header}</li>
+	 * <li>{@link MultiSelect}</li> <li>{@link MultiSelectCard}</li>
 	 * <li>{@link Paragraph}</li> <li>{@link PickList}</li>
 	 * <li>{@link Radio}</li> <li>{@link Signature}</li>
-	 * <li>{@link TextArea}</li> <li>{@link TextBox}</li> </ul>
+	 * <li>{@link TextArea}</li> <li>{@link TextBox}</li>
+	 * <li>{@link InputMask}</li> </ul>
+	 * <li>{@link Radio}</li>  <li>{@link RichText}</li> 
+	 * <li>{@link Signature}</li> <li>{@link TextArea}</li>
+	 * <li>{@link TextBox}</li> </ul>
+
 	 * 
-	 * <p><i>*Note: Nested class fields will <b>not</b> be rendered in the same manner as
-	 * fields declared directly under the Form decorated field. This is a change from previous version.
-	 * The nesting/grouping should be annotated with {@link FormElementGroup} where the elements need to be grouped.</i>
+	 * <p><i>*Note: Nested class fields will <b>not</b> be rendered in the same
+	 * manner as fields declared directly under the Form decorated field. This
+	 * is a change from previous version. The nesting/grouping should be
+	 * annotated with {@link FormElementGroup} where the elements need to be
+	 * grouped.</i>
 	 * 
 	 * @since 1.0
 	 */
@@ -959,37 +942,37 @@ public class ViewConfig {
 	public @interface Form {
 		String alias() default "Form";
 
+		String b() default ""; // remove
+
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
-		String b() default ""; // remove
+		boolean manualValidation() default false;
 
 		String navLink() default ""; // remove
+
+		boolean showMessages() default false;
 
 		boolean submitButton() default true; // remove
 
 		String submitUrl() default ""; // remove
-		
-		boolean showMessages() default false;
-		
-		boolean manualValidation() default false;
 	}
-	
+
 	/**
 	 * <p><b>Expected Field Structure</b>
 	 * 
-	 * <p>FormElementGroup will be rendered when annotating a field nested under one of the
-	 * following components: <ul> <li>Form</li> </ul>
+	 * <p>FormElementGroup will be rendered when annotating a field nested under
+	 * one of the following components: <ul> <li>Form</li> </ul>
 	 * 
-	 * <p>FormElementGroup will render nested fields that are decorated with: <ul>
-	 * <li>{@link Calendar}</li>
-	 * <li>{@link CheckBox}</li> <li>{@link CheckBoxGroup}</li>
-	 * <li>{@link ComboBox}</li> <li>{@link FileUpload}</li>
-	 * <li>{@link Header}</li>
-	 * <li>{@link MultiSelect}</li> <li>{@link MultiSelectCard}</li> 
+	 * <p>FormElementGroup will render nested fields that are decorated with:
+	 * <ul> <li>{@link Calendar}</li> <li>{@link CheckBox}</li>
+	 * <li>{@link CheckBoxGroup}</li> <li>{@link ComboBox}</li>
+	 * <li>{@link FileUpload}</li> <li>{@link Header}</li>
+	 * <li>{@link MultiSelect}</li> <li>{@link MultiSelectCard}</li>
 	 * <li>{@link Paragraph}</li> <li>{@link PickList}</li>
 	 * <li>{@link Radio}</li> <li>{@link Signature}</li>
 	 * <li>{@link TextArea}</li> <li>{@link TextBox}</li> </ul>
@@ -1002,22 +985,24 @@ public class ViewConfig {
 	public @interface FormElementGroup {
 		String alias() default "FormElementGroup";
 
+		String cols() default "1";
+
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
-		
-		String cols() default "1";
 	}
-	
+
 	/**
 	 * <p><b>Expected Field Structure</b>
 	 * 
-	 * <p>FormGridFiller will be rendered when annotating a field nested under one of the
-	 * following components: <ul> <li>Form</li> </ul>
+	 * <p>FormGridFiller will be rendered when annotating a field nested under
+	 * one of the following components: <ul> <li>Form</li> </ul>
 	 * 
-	 * <p>FormGridFiller is a filler that is placed in a form layout for empty cells. 
+	 * <p>FormGridFiller is a filler that is placed in a form layout for empty
+	 * cells.
 	 * 
 	 * @since 1.1
 	 */
@@ -1027,13 +1012,14 @@ public class ViewConfig {
 	public @interface FormGridFiller {
 		String alias() default "FormGridFiller";
 
+		String cols() default "";
+
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
-		
-		String cols() default "";
 	}
 
 	/**
@@ -1052,8 +1038,9 @@ public class ViewConfig {
 		String alias() default "Footer";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 	}
@@ -1074,8 +1061,9 @@ public class ViewConfig {
 		String alias() default "Global-Header";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 	}
@@ -1087,7 +1075,8 @@ public class ViewConfig {
 	 * one of the following components: <ul> <li>Layout Domain</li> </ul>
 	 * 
 	 * @since 1.0
-	 * @deprecated As of 1.1.7 onwards, {@code GlobalNavMenu} will no longer be rendered in the UI. Use {@link MenuPanel} instead.
+	 * @deprecated As of 1.1.7 onwards, {@code GlobalNavMenu} will no longer be
+	 *             rendered in the UI. Use {@link MenuPanel} instead.
 	 */
 	@Deprecated
 	@Retention(RetentionPolicy.RUNTIME)
@@ -1098,8 +1087,9 @@ public class ViewConfig {
 		String alias() default "Global-Nav-Menu";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 	}
@@ -1116,8 +1106,9 @@ public class ViewConfig {
 		String alias() default "globalSection";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -1125,6 +1116,8 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>Grid is a table container capable of displaying tabular data.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Grid will be rendered when annotating a field nested under one of the
@@ -1151,11 +1144,20 @@ public class ViewConfig {
 		boolean clearAllFilters() default false;
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
+		boolean dataEntryField() default true;
+
+		/**
+		 * <p>As of release 1.1.9, {@code dataKey} is no longer needed to
+		 * support grid row expansion. This attribute will be removed in the
+		 * future releases.
+		 */
+		@Deprecated
 		String dataKey() default "id";
 
 		boolean expandableRows() default false;
@@ -1179,8 +1181,20 @@ public class ViewConfig {
 		String postButtonLabel() default "";
 
 		String postButtonTargetPath() default "";
-
+		
+		/**
+		 * @deprecated As of 1.1.11 onwards, {@code postButtonUrl} will no longer 
+		 * represent the absolute path to make a http call for rowselection from UI. 
+		 * Replaced with {@link postButtonUri} attribute instead.
+		 */
+		@Deprecated
 		String postButtonUrl() default "";
+		
+		/**
+		 * Represents the relative path of the postButton on a rowselection Grid. 
+		 * Can use similar notation as url attribute of @Config for relative path to param i.e, '../', <!#this!>
+		 */
+		String postButtonUri() default "";	
 
 		boolean postEventOnChange() default false;
 
@@ -1189,9 +1203,21 @@ public class ViewConfig {
 		boolean showHeader() default true;
 
 		String url() default "";
+		
+		/**
+		 * @Since 1.1.11
+		 * Setting this to true will enable to select all the records in the dataset i.e across all pages 
+		 * within a table when selectAll checkbox in the header is checked. 
+		 * Default behavior is to select all the records only within the current  
+		 * page of the table when the table is paginated.
+		 */
+		boolean headerCheckboxToggleAllPages() default false;
 	}
 
 	/**
+	 * <p>GridColumn is a container for displaying a single value within a
+	 * {@link Grid}.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>GridColumn will be rendered when annotating a field within a
@@ -1286,6 +1312,11 @@ public class ViewConfig {
 		boolean applyValueStyles() default false;
 
 		/**
+		 * Custom Style for column
+		 */
+		String cssClass() default "";
+
+		/**
 		 * <p>The date/time components to include when displaying this
 		 * component, using predefined options or a custom format string.
 		 * <p>Generally speaking, a standard date format is acceptable as a
@@ -1368,6 +1399,9 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>GridRowBody is used to display additional content about the row data
+	 * within a {@link Grid}.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>The field decorated with &#64;GridRowBody is rendered using the same
@@ -1393,13 +1427,17 @@ public class ViewConfig {
 		boolean asynchronous() default false;
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 	}
 
 	/**
+	 * <p>Header is a container with a text header, equivalent to an HTML
+	 * header.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Header will be rendered when annotating a field nested under one of
@@ -1420,8 +1458,9 @@ public class ViewConfig {
 		String alias() default "Header";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -1429,7 +1468,7 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Candidate for removal-->
+	 * <!--TODO Write Javadoc -->
 	 * 
 	 * @since 1.0
 	 */
@@ -1445,7 +1484,15 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>Image is a container that renders an HTML image.
 	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>Image will be rendered in accordance to the rules of a component that
+	 * uses as an attribute within it's annotation definition.
+	 * 
+	 * <p>Image will have no effect when directly decorating a type and is
+	 * typically used as an annotation attribute.
 	 * 
 	 * @since 1.0
 	 */
@@ -1461,8 +1508,9 @@ public class ViewConfig {
 		String alias() default "Image";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -1485,6 +1533,9 @@ public class ViewConfig {
 		String alias() default "initialize";
 	}
 
+	/**
+	 * <!-- TODO Candidate for removal -->
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
@@ -1492,12 +1543,74 @@ public class ViewConfig {
 		String alias() default "InPlaceEdit";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
 		String type() default "text";
+	}
+
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>InputSwitch will be rendered when annotating a field nested under one
+	 * of the following components: <ul><li>{@link Form}</li>
+	 * <li>{@link Section}</li></ul>
+	 * 
+	 * <p>InputSwitch should decorate a field having a simple type.
+	 * 
+	 * <p>If no orientation is specified, it's considered as DEFAULT. On the
+	 * need basis orientation can be supplied as the LEFT or RIGHT.
+	 * 
+	 * <br>orientation description: <ul><li>DEFAULT orientation places the
+	 * component right next to the Label.</li> <li>LEFT orientation places the
+	 * component left to the Label.</li> <li>RIGHT orientation places the
+	 * component little away from the Label.</li></ul>
+	 * 
+	 * @since 1.1
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface InputSwitch {
+
+		/**
+		 * Type of orientation.
+		 * 
+		 */
+		public enum Type {
+			DEFAULT, LEFT, RIGHT, DOWN
+		}
+
+		String alias() default "InputSwitch";
+
+		String controlId() default "";
+
+		/**
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
+		 */
+		String cssClass() default "";
+
+		boolean dataEntryField() default true;
+
+		/**
+		 * It describes the Type of orientation, Accepted values can be
+		 * InputSwitch.Type.LEFT, InputSwitch.Type.RIGHT,
+		 * InputSwitch.Type.DOWN, InputSwitch.Type.DEFAULT
+		 * 
+		 */
+		InputSwitch.Type orientation() default InputSwitch.Type.DEFAULT;
+
+		/**
+		 * postEventOnChange flag, by default is false. When it's set to true,
+		 * posts the state changes on this component to the server.
+		 * 
+		 */
+		boolean postEventOnChange() default false;
 	}
 
 	/**
@@ -1512,8 +1625,9 @@ public class ViewConfig {
 		String alias() default "LinearGauge";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -1523,6 +1637,9 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>Link is a hyperlink component used for navigation or user interaction
+	 * of displayed text.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Link will be rendered when annotating a field nested under one of the
@@ -1550,8 +1667,9 @@ public class ViewConfig {
 		String b() default "$executeAnd$nav";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -1566,9 +1684,13 @@ public class ViewConfig {
 		String url() default "";
 
 		Type value() default Type.DEFAULT;
+
 	}
 
 	/**
+	 * <p>LinkMenu is a dropdown component used for displaying links within a
+	 * {@link Grid} row.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>LinkMenu will be rendered when annotating a field nested under one of
@@ -1586,8 +1708,9 @@ public class ViewConfig {
 		String alias() default "LinkMenu";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "dropdownTrigger";
 
@@ -1597,6 +1720,8 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>Menu is a container intended to display other navigation components.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Menu will be rendered when annotating a field nested under one of the
@@ -1618,8 +1743,9 @@ public class ViewConfig {
 		String alias() default "Menu";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -1645,6 +1771,26 @@ public class ViewConfig {
 	@Target({ ElementType.FIELD })
 	@ViewStyle
 	public @interface MenuLink {
+
+		/**
+		 * <p>Link Types that define the behavior of the {@link MenuLink}
+		 * component.
+		 * @author Tony Lopez
+		 * @since 1.1
+		 */
+		public static enum Type {
+			/**
+			 * <p>External links are links that navigate to another site,
+			 * different from the single page application.
+			 */
+			EXTERNAL,
+
+			/**
+			 * <p>Internal links are links that navigate within the single page
+			 * application.
+			 */
+			INTERNAL;
+		}
 
 		String alias() default "MenuLink";
 
@@ -1701,26 +1847,6 @@ public class ViewConfig {
 		 * component.
 		 */
 		String url() default "";
-
-		/**
-		 * <p>Link Types that define the behavior of the {@link MenuLink}
-		 * component.
-		 * @author Tony Lopez
-		 * @since 1.1
-		 */
-		public static enum Type {
-			/**
-			 * <p>Internal links are links that navigate within the single page
-			 * application.
-			 */
-			INTERNAL,
-
-			/**
-			 * <p>External links are links that navigate to another site,
-			 * different from the single page application.
-			 */
-			EXTERNAL;
-		}
 	}
 
 	/**
@@ -1733,13 +1859,33 @@ public class ViewConfig {
 	 * <li>{@link MenuPanel}</li><li>{@link Page}</li> </ul>
 	 * 
 	 * <p>MenuPanel will render nested fields that are decorated with: <ul>
-	 * <li>{@link MenuPanel}</li> <li>{@link MenuLink}</li> </ul>
+	 * <li>{@link MenuLink}</li> <li>{@link MenuPanel}</li> </ul>
 	 * @since 1.1
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
 	public @interface MenuPanel {
+
+		/**
+		 * <p>Link Types that define the behavior of the {@link MenuPanel}
+		 * component.
+		 * @author Tony Lopez
+		 * @since 1.1
+		 */
+		public static enum Type {
+			/**
+			 * <p>External links are links that navigate to another site,
+			 * different from the single page application.
+			 */
+			EXTERNAL,
+
+			/**
+			 * <p>Internal links are links that navigate within the single page
+			 * application.
+			 */
+			INTERNAL;
+		}
 
 		String alias() default "MenuPanel";
 
@@ -1784,39 +1930,21 @@ public class ViewConfig {
 		 * component.
 		 */
 		String url() default "";
-
-		/**
-		 * <p>Link Types that define the behavior of the {@link MenuPanel}
-		 * component.
-		 * @author Tony Lopez
-		 * @since 1.1
-		 */
-		public static enum Type {
-			/**
-			 * <p>Internal links are links that navigate within the single page
-			 * application.
-			 */
-			INTERNAL,
-
-			/**
-			 * <p>External links are links that navigate to another site,
-			 * different from the single page application.
-			 */
-			EXTERNAL;
-		}
 	}
-	
+
 	/**
-	 * <p>Renders a popup window with content defined by the nested fields
-	 * within the field that is decorated with <tt>&#64;Modal</tt>.
+	 * <p>Modal is a container to display content in an overlay window.
 	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Modal will be rendered when annotating a field nested under one of the
 	 * following components: <ul> <li>{@link Tile}</li> </ul>
 	 * 
+	 * <p>Modal will render nested fields that are decorated with: <ul>
+	 * <li>{@link Section}</li></ul>
+	 * 
 	 * <p><b>Notes:</b> <ul> <li>Default contextual properties are set by
-	 * <tt>ModalStateEventHandler</tt> during the <tt>OnStateLoad</tt>
+	 * <tt>ModalStateEventHandler</tt> during the {@code OnStateLoad}
 	 * event.</li> </ul>
 	 * 
 	 * @since 1.0
@@ -1840,8 +1968,9 @@ public class ViewConfig {
 		ParamContext context() default @ParamContext(enabled = true, visible = false);
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default ""; // new
 
@@ -1882,8 +2011,9 @@ public class ViewConfig {
 		String alias() default "MultiGrid";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "question-header";
 
@@ -1895,12 +2025,7 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <p><b>Expected Field Structure</b>
-	 * 
-	 * <p>MultiSelect will be rendered when annotating a field nested under one
-	 * of the following components: <ul> <li>{@link Form}</li> </ul>
-	 * 
-	 * <p>MultiSelect should decorate an array or collection.
+	 * <!-- TODO Candidate for removal -->
 	 * 
 	 * @since 1.0
 	 */
@@ -1910,9 +2035,12 @@ public class ViewConfig {
 	public @interface MultiSelect {
 		String alias() default "MultiSelect";
 
+		String cols() default "";
+
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -1922,17 +2050,12 @@ public class ViewConfig {
 
 		boolean postEventOnChange() default false;
 		
-		String cols() default "";
+		boolean dataEntryField() default true;
 
 	}
 
 	/**
-	 * <p><b>Expected Field Structure</b>
-	 * 
-	 * <p>MultiSelectCard will be rendered when annotating a field nested under
-	 * one of the following components: <ul> <li>{@link Form}</li> </ul>
-	 * 
-	 * <p>MultiSelectCard should decorate an array or collection.
+	 * <!-- TODO Candidate for removal -->
 	 * 
 	 * @since 1.0
 	 */
@@ -1943,13 +2066,18 @@ public class ViewConfig {
 		String alias() default "MultiSelectCard";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
+
+		boolean dataEntryField() default true;
 	}
 
 	/**
+	 * <p>Page is a container component that groups a collection of contents.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Page will be rendered when annotating a field nested under one of the
@@ -1967,8 +2095,9 @@ public class ViewConfig {
 		String alias() default "Page";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -1977,6 +2106,8 @@ public class ViewConfig {
 		String imgSrc() default "";
 
 		String route() default ""; // remove
+		
+		boolean fixLayout() default false;
 	}
 
 	/**
@@ -1996,6 +2127,8 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>Paragraph is a container for displaying text content.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Paragraph will be rendered when annotating a field nested under one of
@@ -2014,33 +2147,39 @@ public class ViewConfig {
 		String alias() default "Paragraph";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 	}
 
 	/**
+	 * <p>PickList is used to reorder items between different lists.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>PickList will be rendered when annotating a field nested under one of
 	 * the following components: <ul> <li>{@link Form}</li> </ul>
 	 * 
-	 * <p>PickList should decorate a complex type, with its nested param annotated as {@link PickListSelected}.
-	 * <p> Ex : 
+	 * <p>PickList should decorate a complex type, with its nested param
+	 * annotated as {@link PickListSelected}. <p> Ex :
+	 * 
 	 * <pre>
-	 * 	&#64;PickList(sourceHeader="Available Category", targetHeader="Selected Category")
-	 *  &#64;Values(value=A_Category.class)
-	 * 	private PicklistType category; 
-	 * 	
-	 *  &#64;Getter &#64;Setter &#64;Type(SomeClass.class)
-	 *	public static class PicklistType {
-	 *	&#64;Values(value=AllCategory.class)
-	 *	&#64;Path("category")
-	 *	&#64;PickListSelected(postEventOnChange=true)
-	 *	private String[] selected; 
-	 *	}
-	 *	
+	 * &#64;PickList(sourceHeader = "Available Category", targetHeader = "Selected Category")
+	 * &#64;Values(value = A_Category.class)
+	 * private PicklistType category;
+	 * 
+	 * &#64;Getter
+	 * &#64;Setter
+	 * &#64;Type(SomeClass.class)
+	 * public static class PicklistType {
+	 * 	&#64;Values(value = AllCategory.class)
+	 * 	&#64;Path("category")
+	 * 	&#64;PickListSelected(postEventOnChange = true)
+	 * 	private String[] selected;
+	 * }
+	 * 
 	 * </pre>
 	 * 
 	 * @since 1.0
@@ -2051,66 +2190,145 @@ public class ViewConfig {
 	public @interface PickList {
 		String alias() default "PickList";
 
+		String cols() default "";
+
 		/**
-		 * <p>CSS classes added here will be added to the container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to the container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
-		
+
+		boolean dataEntryField() default true;
+
 		String help() default "";
 
 		String labelClass() default "anthem-label";
 
 		boolean readOnly() default false;
 
+		/**
+		 * <p>When {@code true}, the sort controls on source list are shown on
+		 * the UI
+		 */
+		boolean showSourceControls() default false;
+
+		/**
+		 * <p>When {@code true}, the sort controls on target list are shown on
+		 * the UI
+		 */
+		boolean showTargetControls() default false;
+
 		String sourceHeader() default "SourceList";
 
 		String targetHeader() default "TargetList";
-		
-		/**
-		 * <p>When {@code true}, the sort controls on source list are shown on the UI
-		 */
-		boolean showSourceControls() default false;
-		
-		/**
-		 * <p>When {@code true}, the sort controls on target list are shown on the UI
-		 */
-		boolean showTargetControls() default false;
-		
-		String cols() default "";
 
 	}
-	
+
 	/**
 	 * <p><b>Expected Field Structure</b>
 	 * 
-	 * <p>PickListSelected will be rendered when annotating a field nested under one of the following components:
-	 * <ul>
-	 * <li>{@link PickList}</li>
-	 * </ul>
+	 * <p>PickListSelected will be rendered when annotating a field nested under
+	 * one of the following components: <ul> <li>{@link PickList}</li> </ul>
 	 * 
-	 * <p>PickListSelected should decorate an array or collection
-	 * <p>A comprehensive list of {@link @Values} on a given {@link PickList} should be annotated on the PickListSelected field 
-	 * so that a map for all code-label pairs will be available for the chosen items.
+	 * <p>PickListSelected should decorate an array or collection <p>A
+	 * comprehensive list of {@link @Values} on a given {@link PickList} should
+	 * be annotated on the PickListSelected field so that a map for all
+	 * code-label pairs will be available for the chosen items.
 	 * 
 	 * @since 1.0
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
+	@Target({ ElementType.FIELD })
 	@ViewStyle
 	public @interface PickListSelected {
-		
+
 		String alias() default "PickListSelected";
-		
+
 		/**
-		 * <p>When {@code true} and the value of this component is changed on the client, the updated 
-		 * value will be sent to the server.
+		 * <p>When {@code true} and the value of this component is changed on
+		 * the client, the updated value will be sent to the server.
 		 */
 		boolean postEventOnChange() default false;
-		
+
 	}
 
 	/**
+	 * <p>Defines print configuration for a {@link ViewStyle} component.
+	 * 
+	 * <p>{@code PrintConfig} should decorate a field that is also decorated
+	 * with {@link Button}.
+	 * 
+	 * <p><b>Sample Usage</b>
+	 * 
+	 * <pre>
+	 * &#64;Button(style = Button.Style.PRINT)
+	 * &#64;PrintConfig(autoPrint = false)
+	 * private String print;
+	 * </pre>
+	 * 
+	 * @author Tony Lopez
+	 * @since 1.1
+	 *
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewParamBehavior
+	public @interface PrintConfig {
+
+		/**
+		 * <p>Whether or not to open the print dialog immediately after the
+		 * print window/tab is opened.
+		 */
+		boolean autoPrint() default true;
+
+		/**
+		 * <p>Whether or not to close the opened browser window/tab containing
+		 * the printable content after the user completes actions within the
+		 * native browser print dialog.
+		 */
+		boolean closeAfterPrint() default true;
+
+		/**
+		 * <p>The delay (in milliseconds) between when the browser opens a new
+		 * window/tab containing the printable content and when the browser
+		 * opens the native print dialog. <p>The {@code delay} will be applied
+		 * only when {@link #useDelay()} is {@code true}.
+		 */
+		int delay() default 300;
+
+		/**
+		 * <p>A relative URI of a stylesheet that should be applied to the
+		 * printable content. The URI's provided are relative to the server
+		 * context of the client application. For example,
+		 * {@code "/styles/sheet1.css"} would resolve to:
+		 * {@code http://localhost:8080/appcontext/styles/sheet1.css} <p>*Note:
+		 * The protocol, host, port, and context are client specific. <p>If
+		 * providing a very large stylesheet, it may be necessary to modify the
+		 * {@link delay} property so that the stylesheet have time to load prior
+		 * to the print actions taking place.
+		 */
+		String stylesheet() default "";
+
+		/**
+		 * <p>Whether or not to include the single page application styles with
+		 * the printable content. <p>This feature is experimental and may be
+		 * removed in the future.
+		 */
+		boolean useAppStyles() default false;
+
+		/**
+		 * <p>Whether or not to use the {@link delay} setting. <p>If
+		 * {@link #stylesheet()} is provided as a non-empty array,
+		 * {@code useDelay} will be set to {@code true} regardless of the value
+		 * set.
+		 */
+		boolean useDelay() default true;
+	}
+
+	/**
+	 * <p>Radio is an extension to standard radio button element.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Radio will be rendered when annotating a field nested under one of the
@@ -2126,13 +2344,18 @@ public class ViewConfig {
 	public @interface Radio {
 		String alias() default "Radio";
 
+		String cols() default "";
+
 		String controlId() default "";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
+
+		boolean dataEntryField() default true;
 
 		String help() default "";
 
@@ -2141,12 +2364,137 @@ public class ViewConfig {
 		String level() default "0";
 
 		boolean postEventOnChange() default false;
-		
+
+	}
+
+	/**
+	 * <p>RichText is a rich text editor.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>RichText will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Form}</li> </ul>
+	 * 
+	 * <p>RichText should decorate a field having a simple type.
+	 * 
+	 * @since 1.2
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface RichText {
+
+		public enum ToolbarFeature {
+			ALIGN, BACKGROUND, BLOCKQUOTE, BOLD, CLEAN, CODE, CODE_BLOCK, COLOR, DIRECTION, FONT, HEADER, IMAGE, INDENT,
+			/**
+			 * <p>Adds a combobox to the toolbar. Selected values from the
+			 * combobox will be inserted into the editor's last known cursor
+			 * position (at the start if untouched).</p><p>Values can be
+			 * supplied by decorating the field with {@link Values}.</p>
+			 */
+			VALUES_COMBOBOX, ITALIC, LINK, LIST, SCRIPT, SIZE, STRIKE, UNDERLINE, VIDEO;
+		}
+
+		String alias() default "RichText";
+
+		/**
+		 * <p>Drives the size of the component by how many columns it occupies
+		 * on the UI.
+		 */
 		String cols() default "";
 
+		String controlId() default "";
+
+		/**
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
+		 */
+		String cssClass() default "";
+
+		/**
+		 * <p>Whether or not this field should be considered a user-input field.
+		 */
+		boolean dataEntryField() default true;
+
+		/**
+		 * <p>Whitelist of formats to display, see <a
+		 * href="http://quilljs.com/docs/formats/">here</a> for available
+		 * options.
+		 */
+		String formats() default "";
+
+		/**
+		 * <p>Placeholder text to show when editor is empty.
+		 */
+		String placeholder() default "";
+
+		/**
+		 * <p>When {@code true} and the value of this component is changed on
+		 * the client, the updated value will be sent to the server.
+		 */
+		boolean postEventOnChange() default false;
+
+		/**
+		 * <p>Marks if this rich text box should be used in readonly mode. Using this mode will
+		 * simply display a readonly text field with the rich text formatting preserved.
+		 */
+		boolean readOnly() default false;
+		
+		/**
+		 * <p>The features to include when rendering the toolbar.<p>Features
+		 * will be rendered in the order they are configured.
+		 */
+		ToolbarFeature[] toolbarFeatures() default { ToolbarFeature.HEADER, ToolbarFeature.FONT, ToolbarFeature.BOLD,
+				ToolbarFeature.ITALIC, ToolbarFeature.UNDERLINE, ToolbarFeature.STRIKE, ToolbarFeature.COLOR,
+				ToolbarFeature.BACKGROUND, ToolbarFeature.SCRIPT, ToolbarFeature.LIST, ToolbarFeature.INDENT,
+				ToolbarFeature.ALIGN, ToolbarFeature.LINK, ToolbarFeature.CLEAN };
 	}
 	
 	/**
+	 * <p>Fonts is a {@link ViewParamBehavior} that can be used to apply fonts
+	 * to the decorated component.</p>
+	 * 
+	 * @since 1.2
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD, ElementType.TYPE })
+	@ViewParamBehavior
+	public static @interface Fonts {
+		String[] value() default { "Serif", "Monospace" };
+	}
+	
+	/**
+	 * <p>Headings is a {@link ViewParamBehavior} that can be used to apply
+	 * headings to the decorated component.</p>
+	 * 
+	 * @since 1.2
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewParamBehavior
+	public static @interface Headings {
+		KeyValuePair[] value() default { @KeyValuePair(key = "Heading", value = "1"),
+				@KeyValuePair(key = "Subheading", value = "2") };
+	}
+
+	/**
+	 * <p>KeyValuePair is a simple container annotation that stores key/value
+	 * pair information.</p>
+	 * 
+	 * @since 1.2
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	public static @interface KeyValuePair {
+		String key();
+
+		String value();
+	}
+	
+	/**
+	 * <p>Section is a container component that groups a collection of contents.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Section will be rendered when annotating a field nested under one of
@@ -2155,11 +2503,11 @@ public class ViewConfig {
 	 * </ul>
 	 * 
 	 * <p>Section will render nested fields that are decorated with: <ul>
-	 * <li>{@link AccordionMain}</li> <li>{@link Button}</li>
+	 * <li>{@link Accordion}</li> <li>{@link Button}</li>
 	 * <li>{@link ButtonGroup}</li> <li>{@link CardDetail}</li>
-	 * <li>{@link CardDetailsGrid}</li> <li>{@link ComboBox}</li>
+	 * <li>{@link CardDetailsGrid}</li> <li>{@link Tab}</li> <li>{@link ComboBox}</li>
 	 * <li>{@link Form}</li> <li>{@link Grid}</li> <li>{@link Link}</li>
-	 * <li>{@link Menu}</li> <li>{@link Paragraph}</li>
+	 * <li>{@link Menu}</li> <li>{@link Paragraph}</li><li>{@link Chart}</li>
 	 * <li>{@link StaticText}</li> <li>{@link TextBox}</li> </ul>
 	 * 
 	 * @since 1.0
@@ -2177,30 +2525,32 @@ public class ViewConfig {
 		String alias() default "Section";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
+		String imgSrc() default "";
+
+		Image.Type imgType() default Image.Type.FA;
+
 		Type value() default Type.DEFAULT; // HEADER and LEFTBAR should be
 											// removed in future
-		
-		String imgSrc() default "";
-		
-		Image.Type imgType() default Image.Type.FA;
 	}
 
 	/**
-	 * <p>The Signature component is used to capture a user's signature using user input in the form of
-	 * a <a href="https://www.ietf.org/rfc/rfc2397.txt">Data URL</a>.
+	 * <p>Signature is an HTML canvas element that can be used to capture
+	 * signature content.
 	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Signature will be rendered when annotating a field nested under one of
 	 * the following components: <ul> <li>{@link Form}</li> </ul>
 	 * 
-	 * <p>Signature should decorate a field having a simple type.
-	 * <p><b>Sample Usage:</b>
+	 * <p>Signature should decorate a field having a simple type. <p><b>Sample
+	 * Usage:</b>
+	 * 
 	 * <pre>
 	 * &#64;Signature
 	 * private String userSignature;
@@ -2216,20 +2566,20 @@ public class ViewConfig {
 	public @interface Signature {
 
 		/**
-		 * <p>The strategy for how the signature drawing should be captured on the
-		 * UI.
+		 * <p>The strategy for how the signature drawing should be captured on
+		 * the UI.
 		 */
 		public enum CaptureType {
 
 			/**
-			 * <p>Signature data is captured in between the mouse down and mouse up
-			 * events.
+			 * <p>Signature data is captured in between the mouse down and mouse
+			 * up events.
 			 */
 			DEFAULT,
 
 			/**
-			 * <p>Signature data is captured upon the click event. Capturing will
-			 * continue until the click event is invoked a second time.
+			 * <p>Signature data is captured upon the click event. Capturing
+			 * will continue until the click event is invoked a second time.
 			 */
 			ON_CLICK;
 		}
@@ -2243,45 +2593,63 @@ public class ViewConfig {
 		 * @see com.antheminc.oss.nimbus.domain.defn.ViewConfig.Signature.CaptureType
 		 */
 		CaptureType captureType() default CaptureType.DEFAULT;
+
 		/**
 		 * <p>The label value displayed on the "clear" button.
 		 */
 		String clearLabel() default "Clear";
+
 		/**
-		 * <p>CSS classes added here will be added to the container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to the container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
+
 		/**
-		 * <p>Method name from app_scripts.js is provided in scriptName, which will be triggered 
-		 * on click of "Get updated signature" button
+		 * <p>Tells that the control is eligible for form validations.
 		 */
-		String scriptName() default "";
+		boolean dataEntryField() default true;
+
 		/**
-		 * <p>The width of the signature canvas. 
+		 * <p>The width of the signature canvas.
 		 */
 		String height() default "60";
+
 		/**
-		 * <p>When {@code true}, the the label and help text will be hidden for this component.
+		 * <p>When {@code true}, the the label and help text will be hidden for
+		 * this component.
 		 */
 		boolean hidden() default false;
+
 		/**
-		 * <p>When {@code true} and the value of this component is changed on the client, the updated 
-		 * value will be sent to the server.
+		 * <p>When {@code true} and the value of this component is changed on
+		 * the client, the updated value will be sent to the server.
 		 */
 		boolean postEventOnChange() default false;
+
 		/**
-		 * <p>To be used by the client as a unique identifier for this component.
-		 * <p><b>THIS VALUE SHOULD NOT BE CHANGED!
+		 * <p>Method name from app_scripts.js is provided in scriptName, which
+		 * will be triggered on click of "Get updated signature" button
+		 */
+		String scriptName() default "";
+
+		/**
+		 * <p>To be used by the client as a unique identifier for this
+		 * component. <p><b>THIS VALUE SHOULD NOT BE CHANGED!
 		 */
 		String type() default "signature";
+
 		/**
-		 * <p>The width of the signature canvas. 
+		 * <p>The width of the signature canvas.
 		 */
 		String width() default "345";
 	}
 
 	/**
+	 * <p>StaticText is a container for displaying html content or text "as is"
+	 * to the UI.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>StaticText will be rendered when annotating a field nested under one
@@ -2301,21 +2669,15 @@ public class ViewConfig {
 		String contentId() default "";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 	}
 
 	/**
-	 * <p><b>Expected Field Structure</b>
-	 * 
-	 * <p>SubHeader will be rendered when annotating a field nested under one of
-	 * the following components: <ul> <li>Layout Domain</li> </ul>
-	 * 
-	 * <p>SubHeader should decorate a field having a simple type.
-	 * 
-	 * @since 1.0
+	 * <!-- TODO Candidate for removal -->
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
@@ -2324,8 +2686,9 @@ public class ViewConfig {
 		String alias() default "SubHeader";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "col-sm-6 pb-0 align-top"; // pb-0 is added
 																// for the demo.
@@ -2345,8 +2708,9 @@ public class ViewConfig {
 		String alias() default "TabInfo";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -2354,6 +2718,9 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>TextArea is a text input component that allows for a specified number
+	 * of rows.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>TextArea will be rendered when annotating a field nested under one of
@@ -2373,13 +2740,18 @@ public class ViewConfig {
 	public @interface TextArea {
 		String alias() default "TextArea";
 
+		String cols() default "";
+
 		String controlId() default "";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
+
+		boolean dataEntryField() default true;
 
 		String help() default "";
 
@@ -2394,11 +2766,12 @@ public class ViewConfig {
 		String rows() default "5";
 
 		String type() default "textarea";
-		
-		String cols() default "";
+
 	}
 
 	/**
+	 * <p>TextBox is a text input component.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>TextBox will be rendered when annotating a field nested under one of
@@ -2415,13 +2788,18 @@ public class ViewConfig {
 	public @interface TextBox {
 		String alias() default "TextBox";
 
+		String cols() default "";
+
 		String controlId() default "";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
+
+		boolean dataEntryField() default true;
 
 		String help() default "";
 
@@ -2434,12 +2812,105 @@ public class ViewConfig {
 		boolean readOnly() default false;
 
 		String type() default "text";
-		
-		String cols() default "";
 
 	}
-
+	
+	
 	/**
+	 * <p>InputMask is a text input component.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>InputMask will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Form}</li>
+	 * 
+	 * <p>InputMask should decorate a field having a simple type.
+	 * 
+	 * @since 1.0
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface InputMask {
+		String alias() default "InputMask";
+		
+		boolean dataEntryField() default true;
+		
+		boolean postEventOnChange() default false;
+		
+		/**
+		 * <p> maskStyle can be used to define the restricted format user is expected to enter.
+		 * For example maskStyle="99-9999" would let user enter only 6 numerical values in the i/p box.
+		 */
+		String mask() default "";
+		
+		/**
+		 * <p> Please visit PrimeNG's website for details on the below parameter.
+		 */
+		
+		String slotChar() default "_";
+		
+		/**
+		 * <p> Please visit PrimeNG's website for details on the below parameter.
+		 */		
+		String charRegex() default "[A-Za-z]";
+		
+		
+		/**
+		 * <p> Please visit PrimeNG's website for details on the below parameter.
+		 */
+		String maskPlaceHolder() default "";		
+		
+	}
+	
+	
+	
+	/**
+	 * <p> Tab groups a collection of TabPanels in tabs.
+	 * 
+	 * <p> <b>Expected Field Structure</b>
+	 * 
+	 * <p> Tab will be rendered when annotating a field nested under one
+	 * of the following components: <ul> <li>{@link Tile}</li>
+	 * <li>{@link Section}</li> </ul>
+	 * 
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface Tab {
+		
+		String alias() default "Tab";		
+	}
+	
+	
+	
+	/**
+	 * <p> TabPanel is used to display content for the tabs.
+	 * <p>TabPanel will render nested fields that are decorated with: <ul>
+	 * <li>{@link Tab}</li> <li>{@link Section}</li> </ul>
+	 * We can have a section within a TabPanel or even a Tab to create a nested structure.
+	 * 
+	 * <p> <b>Expected Field Structure</b>
+	 * 
+	 * <p> TabPanel will be rendered when annotating a field nested under one
+	 * of the following components: <ul> <li>{@link Tab}</li> </ul>
+	 * 
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface TabPanel {
+
+		String alias() default "TabPanel";
+		
+		boolean closable() default false;		
+		
+	}
+	
+	/**
+	 * <p>Tile is a container component that groups a collection of contents.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Tile will be rendered when annotating a field nested under one of the
@@ -2447,7 +2918,7 @@ public class ViewConfig {
 	 * 
 	 * <p>Tile will render nested fields that are decorated with: <ul>
 	 * <li>{@link Header}</li> <li>{@link Modal}</li> <li>{@link Section}</li>
-	 * <li>{@link Tile}</li> </ul>
+	 * <li>{@link Tile}</li> <li>{@link Tab}</li></ul>
 	 * 
 	 * @since 1.0
 	 */
@@ -2466,14 +2937,75 @@ public class ViewConfig {
 		String alias() default "Tile";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
 		String imgSrc() default "";
 
 		Size size() default Size.Large;
+	}
+
+	/**
+	 * <p>TreeGrid is is used to display hierarchical data in tabular format.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>TreeGrid will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Section}</li>
+	 * <li>{@link Form}</li></ul>
+	 * 
+	 * <p>TreeGrid will render nested fields that are decorated with: <ul>
+	 * <li>{@link GridColumn}</li> <li>{@link LinkMenu}</li>
+	 * <li>{@link TreeGridChild}</li> </ul>
+	 * 
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface TreeGrid {
+		String alias() default "TreeGrid";
+
+		/**
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
+		 */
+		String cssClass() default "";
+
+		boolean dataEntryField() default true;
+	}
+
+	/**
+	 * <p>TreeGridChild is the recursive child of {@link TreeGrid} and is used
+	 * to display hierarchical data in tabular format.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>TreeGridChild will be rendered when annotating a field nested under
+	 * one of the following components: <ul> <li>{@link TreeGrid}</li> </ul>
+	 * 
+	 * <p>{@code TreeGridChild} should decorate a field having a
+	 * collection/array with a defined type. The type should match the
+	 * collection element type of the parent field decorated with
+	 * {@link TreeGrid}. Consequently, the rendered fields for
+	 * {@code TreeGridChild} would be the same as those rendered for
+	 * {@link TreeGrid}.
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface TreeGridChild {
+		String alias() default "TreeGridChild";
+
+		/**
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
+		 */
+		String cssClass() default "";
 	}
 
 	/**
@@ -2489,7 +3021,7 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!-- TODO Write javadoc -->
+	 * <p>ViewRoot is the entry point for a view domain definition.
 	 *
 	 * @since 1.0
 	 */
@@ -2513,5 +3045,54 @@ public class ViewConfig {
 	@Inherited
 	public @interface ViewStyle {
 
+	}
+	
+	/**
+	 * <p>Chart is readonly component with some interaction(hide/show charts when the corresponding legend is clicked.
+	 * 
+	 * <p><b>The projection object for the chart is List<DataGroup></b>
+	 * 
+	 * <p>Chart will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Section}</li>
+	 * 
+	 * @since 1.2
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface Chart {
+		public enum Type {
+			BAR, LINE, PIE, DOUGHNUT
+		}
+
+		String alias() default "Chart";
+
+		/**
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
+		 */
+		String cssClass() default "";
+		
+		/**
+		 * <p>Provides the title to x-axis, if the graph is cartesian </p>
+		 */
+		String xAxisLabel() default "";
+		
+		/**
+		 * <p>Provides the title to y-axis, if the graph is cartesian </p>
+		 */
+		String yAxisLabel() default "";
+		
+		/**
+		 * <p>Specify the type of graph</p>
+		 */
+		Type value() default Type.BAR;
+		
+		/**
+		 * <p>Specify the increments on the y-axis. Default is number algorithm based on different y axes values</p>
+		 */
+		String stepSize() default "";
+											
 	}
 }

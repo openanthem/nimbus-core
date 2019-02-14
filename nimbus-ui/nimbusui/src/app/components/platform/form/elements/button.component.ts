@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 'use strict';
-import { Length } from './../../../../shared/app-config.interface';
-import { Component, Input, Output, EventEmitter, ViewEncapsulation, KeyValueDiffer, KeyValueDiffers} from '@angular/core';
+import { Component, Input, Output, EventEmitter, KeyValueDiffer, KeyValueDiffers } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
 import { GenericDomain } from './../../../../model/generic-domain.model';
@@ -29,6 +28,10 @@ import { FileService } from '../../../../services/file.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { ComponentTypes } from '../../../../shared/param-annotations.enum';
+import { PrintService } from './../../../../services/print.service';
+import { ViewConfig } from './../../../../shared/param-annotations.enum';
+import { ParamUtils } from './../../../../shared/param-utils';
+import { PrintConfig } from './../../../../shared/print-event';
 
 /**
  * \@author Dinakar.Meda
@@ -44,24 +47,37 @@ import { ComponentTypes } from '../../../../shared/param-annotations.enum';
     template: `
         <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc">
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.primary.toString() && element?.visible == true">
-                <button class="btn btn-primary" (click)="onSubmit()" type="{{element.config?.uiStyles?.attributes?.type}}" [disabled]="!form.valid">{{label}}</button>
+                <button class="btn btn-primary"  eventpropagation [form]= "form" (clickEvnt)="onSubmit()" [path]="element.path" type="{{element.config?.uiStyles?.attributes?.type}}" [disabled]="!form.valid">{{label}}</button>
             </ng-template>
-            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.secondary.toString() && element?.visible == true">
-                <button class="btn btn-secondary" [disabled]="disabled" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.type==componentTypes.reset.toString() && element?.visible == true">
+                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.secondary.toString() && element?.visible == true">
+                    <button class="btn btn-secondary" [disabled]="disabled" (click)="emitEvent($event)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                </ng-template>
+                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.plain.toString() && element?.visible == true">
+                    <button class="btn btn-plain {{cssClass}}" [disabled]="disabled" (click)="emitEvent($event)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                </ng-template>
             </ng-template>
-            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.plain.toString() && element?.visible == true">
-                <button class="btn btn-plain {{cssClass}}" (click)="emitEvent(this)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.type !== componentTypes.reset.toString() && element?.visible == true">
+                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.secondary.toString() && element?.visible == true">
+                    <button class="btn btn-secondary" [disabled]="disabled" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                </ng-template>
+                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.plain.toString() && element?.visible == true">
+                    <button class="btn btn-plain {{cssClass}}" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                </ng-template>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.destructive.toString() && element?.visible == true">
-                <button class="btn btn-delete" (click)="emitEvent(this)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-delete" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.validation.toString() && element?.visible == true">
-                <button class="btn btn-primary" (click)="emitEvent(this)" [disabled]="form.valid">{{label}}</button>
+                <button class="btn btn-primary" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" [disabled]="form.valid">{{label}}</button>
+            </ng-template>
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.print.toString() && element?.visible == true">
+                <button class="btn btn-secondary" eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" [disabled]="disabled">{{label}}</button>
             </ng-template>
         </ng-template>
         
         <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc && element?.visible == true">
-            <button (click)="emitEvent(this)" [disabled]="disabled" title="{{element.config?.uiStyles?.attributes?.title}}" type="button" class="{{btnClass}}">
+            <button eventpropagation (clickEvnt)="emitEvent($event)" [path]="element.path" [disabled]="disabled" title="{{element.config?.uiStyles?.attributes?.title}}" type="button" class="{{btnClass}}">
                 <nm-image [name]="element.config?.uiStyles?.attributes?.imgSrc" [type]="element.config?.uiStyles?.attributes?.imgType" [cssClass]=""></nm-image>
                 {{label}}
             </button>    
@@ -77,6 +93,7 @@ export class Button extends BaseElement {
     @Input() actionTray?: boolean;
 
     @Output() buttonClickEvent = new EventEmitter();
+
     @Output() elementChange = new EventEmitter();
     private imagesPath: string;
     private btnClass: string;
@@ -86,7 +103,8 @@ export class Button extends BaseElement {
     componentTypes = ComponentTypes;
 
     constructor( private pageService: PageService, private _wcs: WebContentSvc, 
-        private location: Location, private fileService: FileService, private http: CustomHttpClient, private logger: LoggerService, private differs: KeyValueDiffers) {
+        private location: Location, private fileService: FileService, private http: CustomHttpClient, private logger: LoggerService, private differs: KeyValueDiffers,
+        private printService: PrintService) {
         super(_wcs);
     }
 
@@ -96,8 +114,13 @@ export class Button extends BaseElement {
             this.location.back();
         } else if(this.element.config.uiStyles != null && this.element.config.uiStyles.attributes.style === this.componentTypes.validation.toString()){
             this.validate(this.form);
-        } else {
-            this.buttonClickEvent.emit( $event );
+        } else if(this.element.config.uiStyles != null && this.element.config.uiStyles.attributes.style === this.componentTypes.print.toString()) {
+            this.handlePrint($event);
+        } else if(this.element.config.uiStyles != null && this.element.config.uiStyles.attributes.type === this.componentTypes.reset.toString()) {
+            // do nothing for reset button.
+        }else {
+            this.pageService.processEvent( this.element.path, this.element.config.uiStyles.attributes.b,
+                null, this.element.config.uiStyles.attributes.method );
         }
     }
 
@@ -114,12 +137,6 @@ export class Button extends BaseElement {
         } else {
             this.btnClass = 'btn btn-icon icon ' + this.cssClass;
         }
-    
-        this.buttonClickEvent.subscribe(( $event ) => {
-
-            this.pageService.processEvent( $event.element.path, $event.element.config.uiStyles.attributes.b,
-                null, $event.element.config.uiStyles.attributes.method );
-        } );
 
         this.pageService.validationUpdate$.subscribe(event => {
             if(event.path == this.element.path) {
@@ -138,7 +155,7 @@ export class Button extends BaseElement {
                 this.elementChange.emit();
             }
         }
-}
+    }
 
     
 
@@ -161,6 +178,16 @@ export class Button extends BaseElement {
             }
         }
         return hasFile;
+    }
+
+    handlePrint($event: any) {
+        let printConfig = PrintConfig.fromNature(ParamUtils.getUiNature(this.element, ViewConfig.printConfig.toString()));
+        let printPath = this.element.config.uiStyles.attributes.printPath;
+        // If printPath is not provided, default is to use the page
+        if (!printPath) {
+            printPath = ParamUtils.getDomainPageFromPath(this.element.path);
+        }
+        this.printService.emitPrintEvent(printPath, $event, printConfig);
     }
 
     onSubmit() {

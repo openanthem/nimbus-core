@@ -41,8 +41,7 @@ import lombok.Getter;
  */
 @EnableLoggingInterceptor
 @Getter(AccessLevel.PROTECTED)
-public class RuleStateEventHandler extends EvalExprWithCrudActions<Rule> 
-		implements OnStateLoadHandler<Rule>, OnStateChangeHandler<Rule> {
+public class RuleStateEventHandler extends EvalExprWithCrudActions<Rule> {
 	
 	private static final Map<String, RulesConfig> rulesConfigCache = new HashMap<>();
 	

@@ -35,8 +35,12 @@ import { BaseLabel } from '../base-label.component';
         <H4 *ngIf="size=='H4'" [className]="cssClass">{{label}}</H4>
         <H5 *ngIf="size=='H5'" [className]="cssClass">{{label}}</H5>
         <H6 *ngIf="size=='H6'" [className]="cssClass">{{label}}</H6>
+        <span *ngIf="size== undefined" [className]="cssClass">{{label}}</span>
         <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
-    `
+    `,
+    providers: [
+        WebContentSvc
+    ],
 })
 
 export class Label extends BaseLabel {
@@ -44,7 +48,8 @@ export class Label extends BaseLabel {
     @Input() size: String;
     @Input() labelClass: String;
 
-    constructor(private wcs: WebContentSvc, private pageService: PageService) {
+
+    constructor(wcs: WebContentSvc, pageService: PageService) {
         super(wcs, pageService);
     }
 

@@ -49,7 +49,7 @@ export class FormErrorMessage {
         this.totalCount = 0;
         this.totalMandtoryCount = 0;
         this.calculateFieldCount(this.element);
-        return 'Required: '+ this.mandatoryLeft +' of '+ this.totalMandtoryCount;
+        return 'Required: '+ (this.totalMandtoryCount - this.mandatoryLeft) +' of '+ this.totalMandtoryCount;
     }
 
     calculateFieldCount(param: Param) {
@@ -63,8 +63,8 @@ export class FormErrorMessage {
                         //below condition will evaluate static and dynamic validation(groups)
                         if(ValidationUtils.applyelementStyle(element) || ValidationUtils.createRequired(element,element.activeValidationGroups)) {
                             this.totalMandtoryCount++;
+                            this.checkControlValidity(this.form,element.config.code)
                         }
-                        this.checkControlValidity(this.form,element.config.code)
                     }
                 } 
                 
@@ -77,10 +77,8 @@ export class FormErrorMessage {
         Object.keys(formGroup.controls).forEach(field => {
             let ctrl = formGroup.controls[field];
             if(ctrl instanceof FormControl) {
-                if(field === code) {
-                    if(ctrl.getError('required')!= null) {
-                        this.mandatoryLeft++
-                    }
+                if(field === code && ctrl.errors) {
+                        this.mandatoryLeft++;
                 }
             } else if (ctrl instanceof FormGroup) {
                 this.checkControlValidity(ctrl, code);

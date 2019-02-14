@@ -1,7 +1,25 @@
+/**
+ * @license
+ * Copyright 2016-2018 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { Param } from './../../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { ChangeDetectorRef, ViewChild, Component, EventEmitter } from '@angular/core';
-import { FormGroup, NgModel } from '@angular/forms';
+import { FormGroup, NgModel, Validators, FormControl, ValidatorFn } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of as observableOf,  Observable } from 'rxjs';
@@ -14,8 +32,12 @@ import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
 import { ConfigService } from '../../../../services/config.service';
 import { ValidationUtils } from '../../validators/ValidationUtils';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+import { Constraint } from '../../../../shared/param-config';
+import { fieldValueParam } from 'mockdata';
 
-let fixture, app, changeDetectorRef, controlSubscribers;
+let changeDetectorRef, controlSubscribers;
 
 @Component({ 
     template: ``
@@ -65,152 +87,186 @@ class MockValidationUtils {
     }
 }
 
+const declarations = [
+  BaseControlClass
+ ];
+ const imports = [
+  HttpModule,
+  HttpClientTestingModule
+ ];
+ const providers = [
+  {provide: ChangeDetectorRef, useClass: MockChangeDetectorRef},
+  {provide: ControlSubscribers, useClass: MockControlSubscribers},
+  {provide: WebContentSvc, useClass: MockWebContentSvc},
+  PageService,
+  CustomHttpClient,
+  LoaderService,
+  ConfigService
+ ];
+ let fixture, hostComponent;
 describe('BaseControl', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        BaseControlClass
-       ],
-       imports: [
-        HttpModule,
-        HttpClientTestingModule
-       ],
-       providers: [
-        {provide: ChangeDetectorRef, useClass: MockChangeDetectorRef},
-        {provide: ControlSubscribers, useClass: MockControlSubscribers},
-        {provide: WebContentSvc, useClass: MockWebContentSvc},
-        PageService,
-        CustomHttpClient,
-        LoaderService,
-        ConfigService
-       ]
-    }).compileComponents();
+
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(BaseControlClass);
-    app = fixture.debugElement.componentInstance;
+    hostComponent = fixture.debugElement.componentInstance;
+    const fg = new FormGroup({});
+    const checks: ValidatorFn[] = [];
+    checks.push(Validators.required);
+    fg.addControl(fieldValueParam.config.code, new FormControl(fieldValueParam.leafState, checks));
+    hostComponent.form = fg;
+    hostComponent.element = fieldValueParam;
     changeDetectorRef = TestBed.get(ChangeDetectorRef);
     controlSubscribers = TestBed.get(ControlSubscribers);
+  });
+
+  it('should create the BaseControlClass',async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
-  it('should create the app', async(() => {
-    expect(app).toBeTruthy();
-  }));
-
-  it('setState() should update the frminp.element.leafState.test', async(() => {
+  it('setState() should update the frminp.element.leafState.test',async(() => {
     const frminp = { element: { leafState: {} } };
     const eve = { test: 123 };
-    app.setState(eve, frminp);
+    hostComponent.setState(eve, frminp);
     expect(frminp.element.leafState['test']).toEqual(123);
   }));
 
-  it('emitValueChangedEvent(formControl, test) should call the controlSubscribers.controlValueChanged.emit()', async(() => {
+  it('emitValueChangedEvent(formControl, test) should call the controlSubscribers.controlValueChanged.emit()',async(() => {
     const formControl = { value: 'test', element: 'tElement' };
     spyOn(controlSubscribers.controlValueChanged, 'emit').and.callThrough();
-    app.emitValueChangedEvent(formControl, 'test');
+    hostComponent.emitValueChangedEvent(formControl, 'test');
     expect(controlSubscribers.controlValueChanged.emit).toHaveBeenCalled();
   }));
 
-  it('emitValueChangedEvent(formControl, test) should call the controlSubscribers.controlValueChanged.emit() with no value in inPlaceEditContext', async(() => {
+  it('emitValueChangedEvent(formControl, test) should call the controlSubscribers.controlValueChanged.emit() with no value in inPlaceEditContext',async(() => {
     const formControl = { value: 'test', element: 'tElement' };
-    app.inPlaceEditContext = { value: '' };
+    hostComponent.inPlaceEditContext = { value: '' };
     spyOn(controlSubscribers.controlValueChanged, 'emit').and.callThrough();
-    app.emitValueChangedEvent(formControl, 'test');
+    hostComponent.emitValueChangedEvent(formControl, 'test');
     expect(controlSubscribers.controlValueChanged.emit).toHaveBeenCalled();
   }));
 
-  it('ngOnInit() should update the app.value', async(() => {
-    app.element = { leafState: 'testState', config: { validation: { constraints: [{ name: '', attribute: '' }] } } };
-    app.ngOnInit();
-    expect(app.value).toEqual('testState');
+  it('ngOnInit() should update the value property',async(() => {
+    hostComponent.element.leafState = 'testState';
+    hostComponent.ngOnInit();
+    expect(hostComponent.value).toEqual('testState');
   }));
 
-  it('ngOnInit() should not update requiredCss Property from ValidationUtils.rebindValidations()', async(() => {
-    app.element = { activeValidationGroups: [1], leafState: 'testState', config: { uiStyles: { attributes: { alias: '' } }, validation: { constraints: [{ name: '', attribute: { groups: [1] } }] }, code: 'test' } };
-    app.form = { controls: { test: { setValidators: () => {} } } };
-    app.ngOnInit();
-    expect(app.requiredCss).toBeFalsy();
+  it('ngOnInit() should not update requiredCss Property from ValidationUtils.rebindValidations()',() => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.activeValidationGroups = ['1'];
+      hostComponent.element.leafState = 'testState';
+      hostComponent.element.config.uiStyles.attributes.alias = '';
+      hostComponent.element.config.validation.constraints[0].name = '';
+      hostComponent.element.config.validation.constraints[0].attribute.groups = ['1'];
+      spyOn(ValidationUtils, 'rebindValidations').and.returnValue(false);
+      hostComponent.ngOnInit();
+      expect(hostComponent.requiredCss).toBeFalsy();
+    });
+  });
+
+  it('ngOnInit() should not update requiredCss Property from ValidationUtils.applyelementStyle()',async(() => {
+    hostComponent.element.activeValidationGroups = ['1'];
+    hostComponent.element.leafState = 'testState';
+    hostComponent.form = null;
+    hostComponent.ngOnInit();
+    expect(hostComponent.requiredCss).toBeFalsy();
   }));
 
-  it('ngOnInit() should not update requiredCss Property from ValidationUtils.applyelementStyle()', async(() => {
-    app.element = { activeValidationGroups: [1], leafState: 'testState', config: { uiStyles: { attributes: { alias: '' } }, validation: { constraints: [{ name: '', attribute: { groups: [1] } }] }, code: 'test' } };
-    app.form = { controls: { test: null } };
-    app.ngOnInit();
-    expect(app.requiredCss).toBeFalsy();
-  }));
-
-  it('ngAfterViewInit() should call controlSubscribers.validationUpdateSubscriber() and controlSubscribers.onChangeEventSubscriber()', async(() => {
-    app.form = { controls: { test: { valueChanges: observableOf('') } } };
-    app.element = { config: { code: 'test' } };
-    spyOn(app, 'setState').and.returnValue('');
+  it('ngAfterViewInit() should call controlSubscribers.validationUpdateSubscriber() and controlSubscribers.onChangeEventSubscriber()',async(() => {
+    spyOn(hostComponent, 'setState').and.returnValue('');
     spyOn(controlSubscribers, 'validationUpdateSubscriber').and.callThrough();
     spyOn(controlSubscribers, 'onChangeEventSubscriber').and.callThrough();
-    app.ngAfterViewInit();
+    hostComponent.ngAfterViewInit();
     expect(controlSubscribers.validationUpdateSubscriber).toHaveBeenCalled();
     expect(controlSubscribers.onChangeEventSubscriber).toHaveBeenCalled();
   }));
 
-  it('ngAfterViewInit() should not call controlSubscribers.validationUpdateSubscriber() and call controlSubscribers.onChangeEventSubscriber()', async(() => {
-    app.form = { controls: { test: { valueChanges: observableOf('') } } };
-    app.element = { config: { code: 'testa' } };
-    spyOn(app, 'setState').and.returnValue('');
+  it('ngAfterViewInit() should not call controlSubscribers.validationUpdateSubscriber() and call controlSubscribers.onChangeEventSubscriber()',async(() => {
+    hostComponent.element.config.code = '';
+    spyOn(hostComponent, 'setState').and.returnValue('');
     spyOn(controlSubscribers, 'validationUpdateSubscriber').and.callThrough();
     spyOn(controlSubscribers, 'onChangeEventSubscriber').and.callThrough();
-    app.ngAfterViewInit();
+    hostComponent.ngAfterViewInit();
     expect(controlSubscribers.validationUpdateSubscriber).not.toHaveBeenCalled();
     expect(controlSubscribers.onChangeEventSubscriber).toHaveBeenCalled();
   }));
 
-  it('setInPlaceEditContext() should update the inPlaceEditContext property', async(() => {
-    app.setInPlaceEditContext('test');
-    expect(app.showLabel).toBeFalsy();
-    expect(app.inPlaceEditContext).toEqual('test');
+  it('setInPlaceEditContext() should update the inPlaceEditContext property',async(() => {
+    hostComponent.setInPlaceEditContext('test');
+    expect(hostComponent.showLabel).toBeFalsy();
+    expect(hostComponent.inPlaceEditContext).toEqual('test');
   }));
 
-  it('hidden property should be updated from element', async(() => {
-    app.element = { config: { uiStyles: { attributes: { hidden: true } } } };
-    expect(app.hidden).toBeTruthy();
-  }));
+  it('hidden property should be updated from element',() => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes = {"hidden": true};
+      expect(hostComponent.hidden).toBeTruthy();
+    });
+  });
 
-  it('readOnly property should be updated from element', async(() => {
-    app.element = { config: { uiStyles: { attributes: { readOnly: true } } } };
-    expect(app.readOnly).toBeTruthy();
-  }));
+  it('readOnly property should be updated from element',() => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes = {"readOnly": true};
+      expect(hostComponent.readOnly).toBeTruthy();
+    });
+  });
 
-  it('type property should be updated from element', async(() => {
-    app.element = { config: { uiStyles: { attributes: { type: true } } } };
-    expect(app.type).toBeTruthy();
-  }));
+  it('type property should be updated from element',() => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes = {"type": 'type'};
+      expect(hostComponent.type).toEqual('type');
+    });
+  });
 
-  it('help property should be updated from element', async(() => {
-    app.element = { config: { uiStyles: { attributes: { help: true } } } };
-    expect(app.help).toBeTruthy();
-  }));
+  it('help property should be updated from element',() => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes = {"help": 'help'};
+      expect(hostComponent.help).toEqual('help');
+    });
+  });
 
-  it("getConstraint() should return undefined", async(() => {
-    app.element = { config: { validation: { constraints: false } } };
-    expect(app.getConstraint("test")).toBeFalsy();
-  }));
- 
-  it("getConstraint() should return constraints object", async(() => {
-    app.element = { config: { validation: { constraints: [{ name: "test" }] } } };
-    expect(app.getConstraint("test")).toEqual({ name: "test" });
-  }));
- 
-  it("getConstraint() should throw error", async(() => {
-    app.element = { config: { validation: { constraints: [{ name: "test" }, { name: "test" }] } } };
-    expect(() => {
-      app.getConstraint("test");
-    }).toThrow();
-  }));
- 
-  it("getMaxLength() should return constraint.attribute.value", async(() => {
+  it('getConstraint() should return undefined',() => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.validation = {"constraints": []};
+      expect(hostComponent.getConstraint('test')).toBeFalsy();
+    });
+  });
+
+  it('getConstraint() should return constraints object',() => {
+    fixture.whenStable().then(() => {
+      const constraint = new Constraint();
+      constraint.name = 'test';
+      hostComponent.element.config.validation = {"constraints": [constraint]};
+      expect(hostComponent.getConstraint('test')).toEqual(constraint);
+    });
+  });
+
+  it('getConstraint() should throw error',() => {
+    fixture.whenStable().then(() => {
+      const constraint = new Constraint();
+      constraint.name = 'test';
+      const constraint1 = new Constraint();
+      constraint1.name = 'test';
+      hostComponent.element.config.validation.constraints = [constraint, constraint1];
+      expect(() => {
+        hostComponent.getConstraint('test');
+      }).toThrow();
+    });
+  });
+
+  it('getMaxLength() should return constraint.attribute.value',async(() => {
     const constraint = { attribute: { value: 123 } };
-    spyOn(app, "getConstraint").and.returnValue(constraint);
-    expect(app.getMaxLength()).toEqual(123);
+    spyOn(hostComponent, 'getConstraint').and.returnValue(constraint);
+    expect(hostComponent.getMaxLength()).toEqual(123);
   }));
- 
-  it("getMaxLength() should return undefined", async(() => {
-    spyOn(app, "getConstraint").and.returnValue("");
-    expect(app.getMaxLength()).toBeFalsy();
+
+  it('getMaxLength() should return undefined',async(() => {
+    spyOn(hostComponent, 'getConstraint').and.returnValue('');
+    expect(hostComponent.getMaxLength()).toBeFalsy();
   }));
  
 });

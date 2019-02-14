@@ -14,6 +14,9 @@ export class ViewConfig extends Enum<string> {
     public static readonly actiontray = new Enum('ViewConfig.ActionTray');
     public static readonly picklist = new Enum('ViewConfig.PickList');
     public static readonly selectedPicklist = new Enum('ViewConfig.PickListSelected');
+    public static readonly printConfig = new Enum('ViewConfig.PrintConfig');
+    public static readonly fonts = new Enum('ViewConfig.Fonts');
+    public static readonly headings = new Enum('ViewConfig.Headings');
 
     static attributeList(): String[] {
       const keys = Object.keys(ViewConfig);
@@ -45,6 +48,10 @@ export class ViewComponent extends Enum<string> {
     public static readonly tabInfo = new Enum('TabInfo');
     public static readonly picklist = new Enum('PickList');
     public static readonly selectedPicklist = new Enum('PickListSelected');
+    public static readonly paragraph = new Enum('Paragraph');
+    public static readonly header = new Enum('Header');
+    public static readonly formGridFiller = new Enum('FormGridFiller');
+    public static readonly chart = new Enum('Chart');
 
     static attributeList(): String[] {
       const keys = Object.keys(ViewConfig);
@@ -66,6 +73,8 @@ export class ComponentTypes extends Enum<string> {
   public static readonly header = new Enum('Header');
   public static readonly formGridFiller = new Enum('FormGridFiller');
   public static readonly text = new Enum('text');
+  public static readonly tab = new Enum('Tab');
+  public static readonly mask = new Enum('InputMask');
   public static readonly signature = new Enum('signature');
   public static readonly textarea = new Enum('textarea');
   public static readonly date = new Enum('date');
@@ -95,9 +104,13 @@ export class ComponentTypes extends Enum<string> {
   public static readonly plain = new Enum('PLAIN');
   public static readonly destructive = new Enum('DESTRUCTIVE');
   public static readonly validation = new Enum('VALIDATION');
+  public static readonly reset = new Enum('reset');
+  public static readonly print = new Enum('PRINT');
   public static readonly toast = new Enum('TOAST');
   public static readonly inputSwitch = new Enum('InputSwitch');
   public static readonly link = new Enum('Link');
+  public static readonly chart = new Enum('Chart');
+  public static readonly richText = new Enum('RichText');
   
   static attributeList(): String[] {
     const keys = Object.keys(ComponentTypes);

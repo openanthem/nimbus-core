@@ -31,7 +31,7 @@ import { WebContentSvc } from '../../../services/content-management.service';
 @Component({
     selector: 'nm-card-details-field-group',
     template:`
-        <div [ngClass]="getComponentClass()">
+        <fieldset>
             <nm-input-label *ngIf="!isLabelEmpty"
                 [element]="element" 
                 [required]="false">
@@ -41,37 +41,20 @@ import { WebContentSvc } from '../../../services/content-management.service';
                 <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
                     <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>
                 </ng-template>
+                <!-- Paragraph -->
+                <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.paragraph.toString()">
+                    <nm-paragraph [element]="field"></nm-paragraph>
+                </ng-template>
             </ng-template>
-        </div>
+        </fieldset>
     `
 })
 
 export class CardDetailsFieldGroupComponent extends BaseElement {
-    private fieldGroupClass: string = '';
     componentTypes = ComponentTypes;
 
-    getComponentClass() {
-        let componentClass: string[] = [];
-        if (this.cssClass) {
-            componentClass.push(this.cssClass);
-        }
-
-        // Field Group Style
-        if (this.element.config.uiStyles.attributes.cols === '6') { // occupies 1 cols of 6
-            componentClass.push('col-sm-2');
-        } else if (this.element.config.uiStyles.attributes.cols === '4') { // occupies 1 cols of 4
-            componentClass.push('col-sm-3');
-        } else if (this.element.config.uiStyles.attributes.cols === '3') { // occupies 1 cols of 3
-            componentClass.push('col-sm-4');
-        } else if (this.element.config.uiStyles.attributes.cols === '2') { // occupies 1 cols of 2
-            componentClass.push('col-sm-6');
-        } else if (this.element.config.uiStyles.attributes.cols === '1') { // occupies 1 col of 1
-            componentClass.push('col-sm-12');
-        } else {
-            componentClass.push('col-sm-3');
-        }
-
-        return componentClass;
+    constructor(private _wcs: WebContentSvc) {
+        super(_wcs);
     }
 
 }

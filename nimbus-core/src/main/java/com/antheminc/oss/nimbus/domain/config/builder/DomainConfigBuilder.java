@@ -26,6 +26,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.core.type.filter.RegexPatternTypeFilter;
+import org.springframework.core.type.filter.TypeFilter;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
@@ -34,6 +36,8 @@ import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.ClassLoadUtils;
+
+import java.util.regex.Pattern;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -50,17 +54,22 @@ public class DomainConfigBuilder {
 
 	private final EntityConfigBuilder configBuilder;
 	private final List<String> basePackages;
+	private final List<String> packagesToexclude;
+	
+	ClassPathScanningCandidateComponentProvider scanner;
 	
 	protected final JustLogit logit = new JustLogit(DomainConfigBuilder.class);
 	
 	
-	public DomainConfigBuilder(EntityConfigBuilder configBuilder, List<String> basePackages) {
+	public DomainConfigBuilder(EntityConfigBuilder configBuilder, List<String> basePackages, List<String> packagesToexclude) {
 		this.configBuilder = configBuilder;
 		this.basePackages = Optional.ofNullable(basePackages)
 								.orElseThrow(()->new InvalidConfigException("base packages must be configured for scanning domain models."));
 		
 		this.cacheDomainRootModel = new HashMap<>();
 		this.configVisitor = new EntityConfigVisitor();
+		this.packagesToexclude=packagesToexclude;
+		this.scanner = new ClassPathScanningCandidateComponentProvider(false);
 	}
 	
 	public ModelConfig<?> getRootDomainOrThrowEx(String rootAlias) {
@@ -85,6 +94,12 @@ public class DomainConfigBuilder {
 	public void load() {
 		logit.trace(()->"Start-> Load model config...");
 		logit.trace(()->"Configured basePackages: "+getBasePackages());
+		logit.trace(()->"Excluded basePackages: "+getPackagesToexclude());
+		
+		if (packagesToexclude != null)				
+			packagesToexclude.forEach(pkg -> scanner.addExcludeFilter(new RegexPatternTypeFilter(Pattern.compile(pkg))));		
+		
+		scanner.addIncludeFilter(new AnnotationTypeFilter(Domain.class));
 		
 		List<String> rootBasePackages = EntityConfigVisitor.determineRootPackages(getBasePackages());
 		
@@ -94,10 +109,7 @@ public class DomainConfigBuilder {
 	}
 	
 	public <T> void handlePackage(String basePackage) {
-		
-		ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
-		scanner.addIncludeFilter(new AnnotationTypeFilter(Domain.class));
-		
+				
 		for (BeanDefinition bd : scanner.findCandidateComponents(basePackage)) {
 			String classNm = bd.getBeanClassName();
 			

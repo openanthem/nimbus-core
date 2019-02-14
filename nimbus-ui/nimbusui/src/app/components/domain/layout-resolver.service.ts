@@ -1,3 +1,4 @@
+import { ViewRoot } from './../../shared/app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -16,10 +17,8 @@
  */
 'use strict';
 
-import { WebContentSvc } from './../../services/content-management.service';
-import { BreadcrumbService } from './../platform/breadcrumb/breadcrumb.service';
 import { Injectable } from '@angular/core';
-import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
+import { Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { PageService } from '../../services/page.service';
@@ -34,22 +33,17 @@ import { LoggerService } from '../../services/logger.service';
  * 
  */
 @Injectable()
-export class LayoutResolver implements Resolve<string> {
+export class LayoutResolver implements Resolve<ViewRoot> {
 
     constructor(
         private _pageSvc: PageService,
         private _configSvc: ConfigService,
-        private router: Router,
-        private _breadcrumbService: BreadcrumbService,
         private _logger: LoggerService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<string> | Promise<string> {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ViewRoot> | Promise<ViewRoot> {
         let flowName = route.params['domain'];
         let flowConfig = this._configSvc.getFlowConfig(flowName);
         if (flowConfig && flowConfig.model) {
-
-            // Push the home breadcrumb into memory under the domain name.
-            // this._breadcrumbService.push(flowName, 'Home', flowConfig.model.params[0].path);
 
             let routeToDefaultPage: boolean = true;
             if (route.firstChild.params['pageId'] || route.firstChild.params['subdomain']) {
@@ -57,13 +51,13 @@ export class LayoutResolver implements Resolve<string> {
             }
             return this._pageSvc.getFlowLayoutConfig(flowName, routeToDefaultPage).then(layout => {
                 this._logger.debug('layout resolver service flowName can be navigated' + flowName);
-                return layout;
+                return this._configSvc.getFlowConfig(flowName);
             });
         } else {
             this._pageSvc.getLayoutConfigForFlow(flowName);
             return this._pageSvc.layout$.pipe(map(layout => {
                 this._logger.debug('layout resolver service flowName can be navigated' + flowName);
-                return layout;
+                return this._configSvc.getFlowConfig(flowName);
             }),first());
         }
     }

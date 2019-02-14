@@ -19,12 +19,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.util.CollectionUtils;
 
-import com.antheminc.oss.nimbus.domain.defn.ConfigNature.Ignore;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
-import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -61,19 +58,7 @@ public class DefaultJsonModelSerializer extends JsonSerializer<Model<?>> {
 	}
 	
 	private boolean include(Param<?> p) {
-		if(CollectionUtils.isEmpty(p.getConfig().getExtensions())) 
-			return true;
-			
-		boolean b = p.getConfig().getExtensions().stream()
-			.map(AnnotationConfig::getAnnotation)
-			.filter(a->a.annotationType()==Ignore.class)
-				.map(Ignore.class::cast)
-					.map(Ignore::listeners)
-					.filter(array->ArrayUtils.contains(array, ListenerType.websocket))
-					.findFirst()
-					.isPresent();
-		
-		return !b;
+		return !p.getConfig().containsIgnoreListener(ListenerType.websocket);
 	}
 
 }

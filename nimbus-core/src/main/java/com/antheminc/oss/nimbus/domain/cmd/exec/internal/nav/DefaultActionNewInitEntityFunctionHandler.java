@@ -79,7 +79,7 @@ public class DefaultActionNewInitEntityFunctionHandler<T> implements FunctionHan
 			json = cmdMessage.getRawPayload();
 		}
 			
-		if(json == null || StringUtils.equalsIgnoreCase(json, "\"null\""))
+		if(json == null)
 			return null;
 		return resolveAsJson(cmdMessage.getCommand(), targetParam.getConfig(), json);
 		

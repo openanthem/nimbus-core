@@ -1,3 +1,4 @@
+import { EditorModule } from 'primeng/editor';
 import { AppRoutingModule } from './app.routing.module';
 import { TableModule } from 'primeng/table';
 import { MessagesModule } from 'primeng/messages';
@@ -28,7 +29,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
  * 
  */
 import { Type, ErrorHandler } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, getTestBed } from '@angular/core/testing';
 import { BreadcrumbService } from './components/platform/breadcrumb/breadcrumb.service';
 import { PageService } from './services/page.service';
 import { ConfigService } from './services/config.service';
@@ -65,30 +66,23 @@ import { MessageModule } from 'primeng/message';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser/';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing'
+import { TestCtx } from 'ng-bullet';
+import { NmMessageService } from './services/toastmessage.service';
 
-export interface TestContext<H> {
-    create(testType: Type<H>, declarations: any[], imports?: any[], providers?: any[], componentWithTemplateUrl?: boolean): void;
-    fixture: ComponentFixture<H>;
-    hostComponent: H;
-    hostElement: any;
-}
+export const allproviders =  [ PageService, ConfigService, WebContentSvc, HttpClient, AppInitService,
+    CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
+    { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
+    { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService, Location,
+    { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
+    { provide: 'JSNLOG', useValue: JL },
+    { provide: ErrorHandler, useClass: CustomErrorHandler },
+    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE},
+    SessionStoreService, ControlSubscribers, 
+    AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 
+    RouteService, MessageService, GridUtils, DateTimeFormatPipe, NmMessageService]
 
-export function setup(): void {
-    
-    let allproviders =  [ PageService, ConfigService, WebContentSvc, HttpClient, AppInitService,
-        CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
-       // { provide: APP_INITIALIZER, useFactory: init_app, deps: [AppInitService], multi: true },
-        { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
-        { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService, Location,
-        { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: ErrorHandler, useClass: CustomErrorHandler },
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE},
-        SessionStoreService, ControlSubscribers, 
-        AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 
-        RouteService, MessageService, GridUtils, DateTimeFormatPipe]
-
-    let allimports = [
+export const allimports = [
         BrowserModule,
         HttpClientModule,
         ReactiveFormsModule,
@@ -120,36 +114,27 @@ export function setup(): void {
         StorageServiceModule,
         AngularSvgIconModule,
         ToastModule,
-        InputSwitchModule
+        InputSwitchModule,
+        RouterTestingModule,
+        EditorModule
     ]
-    beforeEach(function<H>(this: TestContext<H>) {
-        this.create = (testType: Type<H>, declarations:any[], imports?: any[], providers?: any[], componentWithTemplateUrl?: boolean) => {
-            if(componentWithTemplateUrl) {
-                TestBed.configureTestingModule({
-                    declarations: declarations,
-                    providers: providers? providers: allproviders,
-                    imports: imports? imports : allimports
-    
-                }).compileComponents();
-            } else {
-                TestBed.configureTestingModule({
-                    declarations: declarations,
-                    providers: providers? providers: allproviders,
-                    imports: imports? imports : allimports
-    
-                });
-            }
-            this.fixture = TestBed.createComponent(testType);
-            this.hostComponent = this.fixture.componentInstance;
-            this.hostElement = this.fixture.nativeElement;
 
-        };
-        
-    });
 
-    afterEach(function<H>(this: TestContext<H>) {
-        if (this.fixture) {
-            this.fixture.destroy();
-        }
-    });
+export interface TestContext<H> {
+    fixture: ComponentFixture<H>;
+   hostComponent: H;
+    hostElement: any;
+}
+
+export function setup(declarations: any[], imports?: any[], providers?: any[]) {
+    TestBed.configureTestingModule({
+        declarations: declarations,
+        providers: providers ? providers : allproviders,
+        imports:  imports ? imports : allimports
+        })
+}
+export function instantiateComponent(testType: any) {
+    // fixture = TestBed.createComponent(testType);
+    // hostComponent = fixture.componentInstance;
+    // this.hostElement = fixture.nativeElement;
 }

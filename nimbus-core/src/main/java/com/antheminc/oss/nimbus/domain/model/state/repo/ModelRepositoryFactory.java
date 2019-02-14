@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
 import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 
 /**
  * @author Soham Chakravarti
@@ -27,5 +28,5 @@ public interface ModelRepositoryFactory {
 
 	public ModelRepository get(Repo.Database db);
 	
-	public ModelPersistenceHandler getHandler(Repo repo);
+	public ModelRepository get(ModelConfig<?> mConfig);
 }

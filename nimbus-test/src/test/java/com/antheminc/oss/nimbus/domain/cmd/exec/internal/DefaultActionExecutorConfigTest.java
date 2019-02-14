@@ -61,8 +61,8 @@ public class DefaultActionExecutorConfigTest extends AbstractFrameworkIngeration
 		return req;
 	}
 	
-	@WithMockUser(username="user", password="pwd")
 	@Test
+	@WithMockUser(username="user", password="pwd")
 	public void t00_json() throws Exception {
 
 		

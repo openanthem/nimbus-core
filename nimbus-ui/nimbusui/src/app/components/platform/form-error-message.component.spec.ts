@@ -1,4 +1,3 @@
-import { By } from '@angular/platform-browser';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -20,7 +19,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, FormControl } from '@angular/forms';
 import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, 
     DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, 
-    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
+    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { HttpModule } from '@angular/http';
@@ -29,12 +28,12 @@ import { JL } from 'jsnlog';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import {ToastModule} from 'primeng/toast';
+import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
 
 import { Form } from './form.component';
 import { FrmGroupCmp } from './form-group.component';
 import { Accordion } from '../platform/content/accordion.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
-import { Button } from '../platform/form/elements/button.component';
 import { FormElement } from './form-element.component';
 import { MessageComponent } from './message/message.component';
 import { DataTable } from './grid/table.component';
@@ -47,7 +46,6 @@ import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.componen
 import { RadioButton } from '../platform/form/elements/radio.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
-import { DateControl } from '../platform/form/elements/date.component';
 import { TextArea } from '../platform/form/elements/textarea.component';
 import { Signature } from '../platform/form/elements/signature.component'
 import { InputText } from '../platform/form/elements/textbox.component';
@@ -88,8 +86,20 @@ import { Label } from './content/label.component';
 import { CardDetailsFieldGroupComponent } from './card/card-details-field-group.component';
 import { InputLegend } from './form/elements/input-legend.component';
 import { setup, TestContext } from './../../setup.spec';
+import { configureTestSuite } from 'ng-bullet';
 import { Param } from './../../shared/param-state';
 import { FormErrorMessage } from './form-error-message.component';
+import { PrintDirective } from '../../directives/print.directive';
+import { formErrorMessageParam } from 'mockdata';
+import { InputMaskComp } from './form/elements/input-mask.component';
+import { Tab } from './content/tab.component';
+
+import { RichText } from './form/elements/rich-text.component';
+import { ChartModule } from 'primeng/chart';
+import { NmChart } from './charts/chart.component';
+import { EditorModule } from 'primeng/editor';
+import { TableHeader } from './grid/table-header.component';
+import { By } from '@angular/platform-browser';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -97,114 +107,150 @@ import { FormErrorMessage } from './form-error-message.component';
  * \@howToUse 
  * 
  */
-var payload: string;
+let param: Param;
 
+@Component({
+    template: '<div></div>',
+    selector: 'nm-button'
+  })
+  class Button {
+  
+    @Input() element: any;
+    @Input() payload: string;
+    @Input() form: any;
+    @Input() actionTray?: boolean;
+  
+    @Output() buttonClickEvent = new EventEmitter();
+  
+    @Output() elementChange = new EventEmitter();
+    private imagesPath: string;
+    private btnClass: string;
+    private disabled: boolean;
+    files: any;
+    differ: any;
+    componentTypes;
+  }
+
+const declarations = [ Form,
+    FrmGroupCmp,
+    Accordion,
+    ButtonGroup,
+    Button,
+    FormElement,
+    MessageComponent,
+    DataTable,
+    TableHeader,
+    FileUploadComponent,
+    OrderablePickList,
+    MultiselectCard,
+    MultiSelectListBox,
+    CheckBox,
+    CheckBoxGroup,
+    RadioButton,
+    ComboBox,
+    Calendar,
+    TextArea,
+    Signature,
+    InputText,
+    Paragraph,
+    Header,
+    Section,
+    ActionDropdown,
+    TooltipComponent,
+    SelectItemPipe,
+    Menu,
+    Link,
+    StaticText,
+    CardDetailsComponent,
+    CardDetailsGrid,
+    ActionLink,
+    CardDetailsFieldComponent,
+    InPlaceEditorComponent,
+    DateTimeFormatPipe,
+    HeaderCheckBox,
+    SvgComponent,
+    Image,
+    TreeGrid,
+    InputSwitch,
+    FormGridFiller,
+    DisplayValueDirective,
+    InputLabel,
+    FormErrorMessage,
+    Label,
+    CardDetailsFieldGroupComponent,
+    InputLegend ,
+    PrintDirective,
+    InputMaskComp,
+    Tab,
+    NmChart,
+    RichText
+];
+const imports = [   FormsModule, ReactiveFormsModule,
+    GrowlModule,
+    MessagesModule,
+    DialogModule,
+    ReactiveFormsModule,
+    AccordionModule,
+    DataTableModule,
+    DropdownModule,
+    FileUploadModule,
+    PickListModule,
+    ListboxModule,
+    CheckboxModule,
+    RadioButtonModule,
+    CalendarModule,
+    TableModule,
+    KeyFilterModule,
+    HttpModule,
+    HttpClientTestingModule,
+    StorageServiceModule,
+    AngularSvgIconModule,
+    ToastModule,
+    InputSwitchModule, 
+    TreeTableModule,
+    InputMaskModule,
+    TabViewModule,
+    ChartModule,
+    EditorModule
+ ];
+const providers = [];
+
+let fixture, hostComponent;
 describe("form error message component", () => {
-    payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';
-    let param: Param = JSON.parse(payload);
 
-    setup();
+    configureTestSuite(() => {
+        setup( declarations, imports, providers);
+      });
 
-    beforeEach(async function(this: TestContext<FormErrorMessage>) {
-        let declarations = [ Form,
-            FrmGroupCmp,
-            Accordion,
-            ButtonGroup,
-            Button,
-            FormElement,
-            MessageComponent,
-            DataTable,
-            FileUploadComponent,
-            OrderablePickList,
-            MultiselectCard,
-            MultiSelectListBox,
-            CheckBox,
-            CheckBoxGroup,
-            RadioButton,
-            ComboBox,
-            Calendar,
-            DateControl,
-            TextArea,
-            Signature,
-            InputText,
-            Paragraph,
-            Header,
-            Section,
-            ActionDropdown,
-            TooltipComponent,
-            SelectItemPipe,
-            Menu,
-            Link,
-            StaticText,
-            CardDetailsComponent,
-            CardDetailsGrid,
-            ActionLink,
-            CardDetailsFieldComponent,
-            InPlaceEditorComponent,
-            DateTimeFormatPipe,
-            HeaderCheckBox,
-            SvgComponent,
-            Image,
-            TreeGrid,
-            InputSwitch,
-            FormGridFiller,
-            DisplayValueDirective,
-            InputLabel,
-            FormErrorMessage,
-            Label,
-            CardDetailsFieldGroupComponent,
-            InputLegend ];
-        let imports = [   FormsModule, ReactiveFormsModule,
-            GrowlModule,
-            MessagesModule,
-            DialogModule,
-            ReactiveFormsModule,
-            AccordionModule,
-            DataTableModule,
-            DropdownModule,
-            FileUploadModule,
-            PickListModule,
-            ListboxModule,
-            CheckboxModule,
-            RadioButtonModule,
-            CalendarModule,
-            TableModule,
-            KeyFilterModule,
-            HttpModule,
-            HttpClientTestingModule,
-            StorageServiceModule,
-            AngularSvgIconModule,
-            ToastModule,
-            InputSwitchModule, 
-            TreeTableModule ];
-
-        this.create(FormErrorMessage, declarations);
-        let fg= new FormGroup({});
-        var checks: ValidatorFn[] = [];
+    beforeEach(() => {
+        fixture = TestBed.createComponent(FormErrorMessage);
+        hostComponent = fixture.debugElement.componentInstance;
+        const fg = new FormGroup({});
+        const checks: ValidatorFn[] = [];
         checks.push(Validators.required);
-        param.type.model.params[0].visible = true;
-        fg.addControl(param.type.model.params[0].config.code, new FormControl(param.type.model.params[0].leafState,checks));
-        this.hostComponent.form = fg;
-        this.hostComponent.element = param;
-        
+        formErrorMessageParam.type.model.params[0].visible = true;
+        fg.addControl(formErrorMessageParam.type.model.params[0].config.code, new FormControl(formErrorMessageParam.type.model.params[0].leafState,checks));
+        hostComponent.form = fg;
+        hostComponent.element = formErrorMessageParam;
     });
 
-
-    it("check if message is displayed", function(this: TestContext<FormErrorMessage>) {
-        this.fixture.detectChanges();
-        let messageDom = this.fixture.debugElement.query(By.css('div'));
-        expect(this.hostComponent).toBeTruthy();
-        expect(messageDom.nativeElement.innerHTML).toEqual(' Remaining 0 of 1 ');
-             
+    it("check if message is displayed",  () => {
+        fixture.whenStable().then(() => {
+            fixture.detectChanges();
+            let messageDom = fixture.debugElement.query(By.css('div'));
+            expect(hostComponent).toBeTruthy();
+            expect(messageDom.nativeElement.innerHTML).toEqual(' Remaining 0 of 1 ');
+        });
     });
 
-    it("check if message is re-evaluated on form value change", function(this: TestContext<FormErrorMessage>) {
-        this.fixture.detectChanges();
-        this.hostComponent.form.controls[param.type.model.params[0].config.code].setValue("");
-        this.fixture.detectChanges();
-        let messageDom = this.fixture.debugElement.query(By.css('div'));
-        expect(this.hostComponent).toBeTruthy();
+    it("check if message is re-evaluated on form value change",  () => {
+        fixture.whenStable().then(() => {
+        fixture.detectChanges();
+        hostComponent.form.controls[formErrorMessageParam.type.model.params[0].config.code].setValue("");
+        fixture.detectChanges();
+        let messageDom = fixture.debugElement.query(By.css('div'));
+        expect(hostComponent).toBeTruthy();
         expect(messageDom.nativeElement.innerHTML).toEqual(' Remaining 1 of 1 ');
-             
+        });
     });
 });

@@ -83,6 +83,21 @@ public class SampleCoreValuesEntity {
 		
 		@Radio
 		private String statusReason2;
+		
+		@ValuesConditional(targetPath = "/../contactStatus", resetOnChange = false, condition = {
+			@ValuesConditional.Condition(when = "state == 'changeit'", then = @Values(StatusPast.class))
+		})
+		@ValuesConditional(targetPath = "/../multiSelect", resetOnChange = false, condition = {
+				@ValuesConditional.Condition(when = "state == null", then = @Values(StatusFuture.class)),
+				@ValuesConditional.Condition(when = "state != null", then = @Values(StatusList.class))
+			})
+		private String contactType;
+		
+		@Values(StatusAll.class)
+		private Status contactStatus;
+		
+		@Values(StatusAll.class)
+		private String[] multiSelect;
 	}
 	
 	public static class SR_DEFAULT implements Source {
@@ -107,6 +122,52 @@ public class SampleCoreValuesEntity {
 		public List<ParamValue> getValues(String paramCode) {
 			final List<ParamValue> values = new ArrayList<>();
 			values.add(new ParamValue("B1", "B1"));
+			return values;
+		}
+	}
+	@Getter
+	public static enum Status {
+		CURRENT("Current"),
+		PAST("Past");
+		private String name;
+		private Status(String name){
+			this.name = name;
+		}
+	}
+	public static class StatusAll implements Source {
+		@Override
+		public List<ParamValue> getValues(String paramCode) {
+			final List<ParamValue> values = new ArrayList<>();
+			values.add(new ParamValue("PAST", "Past"));
+			values.add(new ParamValue("CURRENT", "Current"));
+			return values;
+		}
+	}
+	public static class StatusPast implements Source {
+		@Override
+		public List<ParamValue> getValues(String paramCode) {
+			final List<ParamValue> values = new ArrayList<>();
+			values.add(new ParamValue("PAST", "Past"));
+			return values;
+		}
+	}
+	
+	public static class StatusFuture implements Source {
+		@Override
+		public List<ParamValue> getValues(String paramCode) {
+			final List<ParamValue> values = new ArrayList<>();
+			values.add(new ParamValue("FUTURE", "Future"));
+			return values;
+		}
+	}
+	
+	public static class StatusList implements Source {
+		@Override
+		public List<ParamValue> getValues(String paramCode) {
+			final List<ParamValue> values = new ArrayList<>();
+			values.add(new ParamValue("FUTURE", "Future"));
+			values.add(new ParamValue("PAST", "Past"));
+			values.add(new ParamValue("CURRENT", "Current"));
 			return values;
 		}
 	}

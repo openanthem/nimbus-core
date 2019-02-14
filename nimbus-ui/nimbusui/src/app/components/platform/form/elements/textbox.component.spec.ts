@@ -26,9 +26,13 @@ import { FormGroup, ValidatorFn, FormControl } from '@angular/forms';
 import { Param } from '../../../../shared/param-state';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-import { setup, TestContext } from './../../../../setup.spec';
 import { InputText } from './textbox.component';
 import { StorageServiceModule } from 'angular-webstorage-service';
+import { ControlSubscribers } from '../../../../services/control-subscribers.service';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext, instantiateComponent } from '../../../../setup.spec';
+import { textBoxElement } from 'mockdata';
+import { ServiceConstants } from '../../../../services/service.constants';
 
 /**
  * \@author Sandeep.Mantha
@@ -38,50 +42,133 @@ import { StorageServiceModule } from 'angular-webstorage-service';
  * 
  */
 
-let  param: Param, payload, controlService;
+let fixture, hostComponent, controlService;
+const declarations = [InputText, TooltipComponent, InputLabel];
+const imports =  [ FormsModule, HttpClientTestingModule, HttpModule, StorageServiceModule ];
 
 describe('InputText', () => {
-  payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';
-  param = JSON.parse(payload);
-
-  setup();
-
-  beforeEach(function(this: TestContext<InputText>){
-    let declarations = [InputText, TooltipComponent, InputLabel];
-    let imports =  [ FormsModule, HttpClientTestingModule, HttpModule, StorageServiceModule ];
-    this.create(InputText, declarations, imports);
-    let fg= new FormGroup({});
-    let checks: ValidatorFn[] = [];
-    //controlService = TestBed.get(ControlSubscribers);
-    checks.push(Validators.required);
-    fg.addControl(param.config.code, new FormControl(param.leafState,checks));
-    this.hostComponent.form = fg;
-    this.hostComponent.element = param;
-  });
-
-  it('form control value with default leafstate', async function(this: TestContext<InputText>){
-    this.fixture.detectChanges();
-    expect(this.hostComponent.form.controls['firstName'].value).toBe('testData');
-    expect(this.hostComponent).toBeTruthy();
+    configureTestSuite(() => {
+        setup(declarations, imports);
+    });
   
-  });
-
-  it('control validity',async function(this: TestContext<InputText>){
-    this.hostComponent.form.controls['firstName'].setValue('');
-    this.fixture.detectChanges();
-    expect(this.hostComponent.form.controls['firstName'].valid).toBeFalsy();
-   
-  });
-
-  it('post on focus out', async function(this: TestContext<InputText>) {
-    this.fixture.detectChanges();
-    spyOn(this.hostComponent, 'emitValueChangedEvent').and.callThrough();
-    const textBox = this.fixture.debugElement.children[0].nativeElement;
-    textBox.value = 'abcd123';
-    textBox.dispatchEvent(new Event('input'));
-    textBox.dispatchEvent(new Event('focusout'));
-    this.fixture.detectChanges();
-    expect(this.hostComponent.emitValueChangedEvent).toHaveBeenCalled();   
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(InputText);
+        hostComponent = fixture.debugElement.componentInstance;
+        this.hostElement = fixture.nativeElement;
+        const fg = new FormGroup({});
+        const checks: ValidatorFn[] = [];
+        checks.push(Validators.required);
+        fg.addControl(textBoxElement.config.code, new FormControl(textBoxElement.leafState, checks));
+        hostComponent.form = fg;
+        hostComponent.element = textBoxElement as Param;
+        controlService = TestBed.get(ControlSubscribers);
+    });
   
+    it('should create the InputText', async () => {
+        expect(hostComponent).toBeTruthy();
+    });
+
+    it('form control value with default leafstate', async () => {
+        fixture.whenStable().then(() => {
+            fixture.detectChanges();
+            expect(hostComponent.form.controls['firstName'].value).toBe('testing textbox leafState');
+            expect(hostComponent).toBeTruthy();
+        });
+    });
+
+    it('control validity', async () => {
+        fixture.whenStable().then(() => {
+            hostComponent.form.controls['firstName'].setValue('');
+            fixture.detectChanges();
+            expect(hostComponent.form.controls['firstName'].valid).toBeFalsy();
+        });
+    });
+
+    it('post on focus out', async () => {
+        const debugElement = fixture.debugElement;
+        fixture.whenStable().then(() => {
+            fixture.detectChanges();
+            spyOn(hostComponent, 'emitValueChangedEvent').and.callThrough();
+            const textBox = debugElement.query(By.css('.form-control.text-input'));
+            textBox.value = 'abcd123';
+            textBox.dispatchEvent(new Event('input'));
+            textBox.dispatchEvent(new Event('focusout'));
+            fixture.detectChanges();
+            expect(hostComponent.emitValueChangedEvent).toHaveBeenCalled();
+        });
+    });
+
+    it('nm-input-label should be created if the label is configured', async(() => {
+        ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+        fixture.detectChanges();
+        const labelEle = document.getElementsByTagName('nm-input-label');
+        expect(labelEle.length).toEqual(1);
+    }));
+
+    it('nm-input-label should not be created if the label is not configured', async(() => {
+        ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+        hostComponent.element.labels = [];
+        fixture.detectChanges();
+        const labelEle = document.getElementsByTagName('nm-input-label');
+        expect(labelEle.length).toEqual(0);
+    }));
+
+    it('input should be created if the hidden and readOnly is configured as false', async(() => {
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const textBox = debugElement.query(By.css('.form-control.text-input'));
+        expect(textBox).toBeTruthy();
+    }));
+
+    it('input should not be created if the hidden and readOnly is configured as true', async(() => {
+        hostComponent.element.config.uiStyles.attributes.hidden = true;
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const textBox = debugElement.query(By.css('.form-control.text-input'));
+        expect(textBox).toBeFalsy();
+    }));
+
+    it('input should be created if the hidden is configured as true', async(() => {
+        hostComponent.element.config.uiStyles.attributes.hidden = true;
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const textBox = debugElement.query(By.css('input'));
+        expect(textBox).toBeTruthy();
+    }));
+
+    it('pre should be created if the hidden and readonly is configured as false and display value', async(() => {
+        hostComponent.element.config.uiStyles.attributes.hidden = false;
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const preEle = debugElement.query(By.css('pre'));
+        expect(preEle).toBeTruthy();
+        expect(preEle.nativeElement.innerText).toEqual('testing textbox leafState');
+    }));
+
+    it('pre should be created if the hidden is false and readonly is configured as true', async(() => {
+        hostComponent.element.config.uiStyles.attributes.hidden = false;
+        hostComponent.element.config.uiStyles.attributes.readOnly = true;
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const preEle = debugElement.query(By.css('pre'));
+        expect(preEle).toBeFalsy();
+    }));
+
+    it('p should be created if the if readOnly is configured as true and display the leafState', async(() => {
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const pEle = debugElement.query(By.css('p'));
+        expect(pEle).toBeTruthy();
+        expect(pEle.nativeElement.innerText).toEqual('testing textbox leafState');
+    }));
+
+    it('p should not be created if the if readOnly is configured as false', async(() => {
+        hostComponent.element.config.uiStyles.attributes.readOnly = false;
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const pEle = debugElement.query(By.css('p'));
+        expect(pEle).toBeFalsy();
+    }));
+
 });
+

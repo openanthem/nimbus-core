@@ -1,3 +1,20 @@
+/**
+ * @license
+ * Copyright 2016-2018 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { ViewComponent } from './../shared/param-annotations.enum';
 import { TestBed, inject, async } from '@angular/core/testing';
 import { HttpClient, HttpRequest } from '@angular/common/http';
@@ -296,14 +313,6 @@ describe('LayoutService', () => {
     expect(headerMenus).not.toEqual([]);
   }));
 
-  it('getLeftMenu() should return empty array and call buildMenu()', async(() => {
-    const labelConfig = { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { url: '/url' }, name: 'ViewConfig.Link' } } }] } }, config: { uiStyles: { attributes: { alias: ViewComponent.menupanel.toString()} } } }] };
-    spyOn(service, 'buildMenu').and.returnValue('');
-    const res = service.getLeftMenu(labelConfig);
-    expect(res).toEqual([]);
-    expect(service.buildMenu).toHaveBeenCalled();
-  }));
-
   it('getActionTrayItems() should return param', async(() => {
     const actionTrayParam = { config: { uiStyles: { attributes: { alias: 'ActionTray' } } } };
     const actionTrayConfig = { params: [actionTrayParam] };
@@ -318,15 +327,13 @@ describe('LayoutService', () => {
     expect(res).toEqual(undefined);
   }));
 
-  it('parseLayoutConfig() should call getLeftMenu(), getTopBar(), getFooterItems() and getActionTrayItems()', async(() => {
+  it('parseLayoutConfig() should call getTopBar(), getFooterItems() and getActionTrayItems()', async(() => {
     const flowModel = { params: [{ type: { model: {params: [{config: { uiStyles: { attributes: { alias: '' }}}}]} }, config: { uiStyles: { attributes: { alias: 'Page' } } } }] };
-    spyOn(service, 'getLeftMenu').and.returnValue(1);
     spyOn(service, 'getTopBar').and.returnValue(2);
     spyOn(service, 'getFooterItems').and.returnValue(4);
     spyOn(service, 'getActionTrayItems').and.returnValue(5);
     service.layout$ = { next: () => {} };
     service.parseLayoutConfig(flowModel);
-    expect(service.getLeftMenu).toHaveBeenCalled();
     expect(service.getTopBar).toHaveBeenCalled();
     expect(service.getFooterItems).toHaveBeenCalled();
     expect(service.getActionTrayItems).toHaveBeenCalled();
