@@ -44,7 +44,7 @@ public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunc
 		exampleSearchCriteria.setWhere(criteria);
 		exampleSearchCriteria.setAggregateCriteria(cmd.getFirstParameterValue(Constants.SEARCH_REQ_AGGREGATE_MARKER.code));
 		
-		exampleSearchCriteria.setProjectCriteria(buildProjectCritera(cmd));
+		exampleSearchCriteria.setProjectCriteria(buildProjectCriteria(cmd));
 		exampleSearchCriteria.setPageRequest(buildPageCriteria(cmd));
 		
 		exampleSearchCriteria.setCmd(executionContext.getCommandMessage().getCommand());

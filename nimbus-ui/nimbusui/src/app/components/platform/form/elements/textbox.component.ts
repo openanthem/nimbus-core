@@ -71,4 +71,8 @@ export class InputText extends BaseControl<String> {
     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
         super(controlService,wcs,cd);
     }
+
+    ngOnInit() {
+        super.ngOnInit();
+    }
 }

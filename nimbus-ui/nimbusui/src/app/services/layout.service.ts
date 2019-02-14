@@ -106,11 +106,12 @@ export class LayoutService {
         }
     }
 
-    private parseLayoutConfig(flowModel: Model) {
+    public parseLayoutConfig(flowModel: Model) {
         let layout = {} as Layout;
         const pageParam: Param = flowModel.params.find (p => ( p.config &&
                                     p.config.uiStyles && p.config.uiStyles.attributes && 
                                     p.config.uiStyles.attributes.alias === ViewComponent.page.toString()));
+        layout['fixLayout'] = pageParam.config.uiStyles.attributes.fixLayout;
         layout['menu'] = this.getMenu(pageParam.type.model);
         layout['topBar'] = this.getTopBar(pageParam.type.model);
         layout['footer'] = this.getFooterItems(pageParam.type.model);
@@ -273,7 +274,7 @@ export class LayoutService {
     }
 
     createMenuItem(element: Param): MenuItem {
-        let item = {} as MenuItem;
+        let item = {} as MenuItem;        
         item.label = this.wcs.findLabelContent(element).text;
         item.path = element.path;
         item.page = element.config.uiStyles.attributes.page;
@@ -283,6 +284,7 @@ export class LayoutService {
         item.type = element.config.uiStyles.attributes.type;
         item.target = element.config.uiStyles.attributes.target;
         item.rel = element.config.uiStyles.attributes.rel;
+        item.visible = element.visible;
         return item;
     }
 
@@ -308,10 +310,6 @@ export class LayoutService {
         }
     }
 
-    getDefinitions() {
-        return this.httpClient.get(ServiceConstants.IMAGE_URL + '/svg-definitions.component.html', {responseType: 'text'});
-    }
-    
     private getActionTrayItems(layoutConfig: Model): Param {
 
         const actionTrayParam: Param = layoutConfig.params.find( param => ( param.config.uiStyles != null && 

@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
+import java.lang.annotation.Annotation;
 import java.util.Optional;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
@@ -32,7 +33,7 @@ import lombok.Setter;
  *
  */
 @Getter(AccessLevel.PROTECTED)
-public abstract class AbstractConditionalStateEventHandler {
+public abstract class AbstractConditionalStateEventHandler<A extends Annotation> extends AbstractEventHandlerSupport<A> {
 
 	protected BeanResolverStrategy beanResolver;
 	protected ExpressionEvaluator expressionEvaluator;

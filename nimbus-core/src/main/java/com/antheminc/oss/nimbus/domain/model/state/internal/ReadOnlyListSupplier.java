@@ -37,10 +37,15 @@ import lombok.RequiredArgsConstructor;
 @Getter @RequiredArgsConstructor
 public class ReadOnlyListSupplier<E> implements List<E> {
 
+	private static final String ERROR_MSG = "param: ";
 	private final ListParam<E> p;
 	
 	private CollectionsTemplate<List<Param<?>>, Param<?>> templateParams() {
 		return p.getType().getModel().templateParams();
+	}
+	
+	private InvalidOperationAttemptedException ex() {
+		return new InvalidOperationAttemptedException(ERROR_MSG + this.p);
 	}
 	
 	@Override
@@ -65,12 +70,12 @@ public class ReadOnlyListSupplier<E> implements List<E> {
 
 	@Override
 	public Iterator<E> iterator() {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public Object[] toArray() {
-		return Optional.ofNullable(p.getLeafState()).map(List::toArray).orElse(Collections.EMPTY_LIST.toArray());
+		return Optional.ofNullable(p.getLeafState()).map(List::toArray).orElse(Collections.emptyList().toArray());
 	}
 
 	@Override
@@ -80,81 +85,81 @@ public class ReadOnlyListSupplier<E> implements List<E> {
 
 	@Override
 	public boolean add(E e) {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public boolean remove(Object o) {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public boolean addAll(Collection<? extends E> c) {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public boolean addAll(int index, Collection<? extends E> c) {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> c) {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public boolean retainAll(Collection<?> c) {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public void clear() {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public E set(int index, E element) {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public void add(int index, E element) {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public E remove(int index) {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public int indexOf(Object o) {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public int lastIndexOf(Object o) {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public ListIterator<E> listIterator() {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public ListIterator<E> listIterator(int index) {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 
 	@Override
 	public List<E> subList(int fromIndex, int toIndex) {
-		throw new InvalidOperationAttemptedException("param: "+p);
+		throw ex();
 	}
 }

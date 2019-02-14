@@ -1,3 +1,20 @@
+/**
+ * @license
+ * Copyright 2016-2018 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { CalendarModule } from 'primeng/primeng';
@@ -18,61 +35,96 @@ import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
 import { InputLabel } from './input-label.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+import { calendarElement } from 'mockdata';
+import { By } from '@angular/platform-browser';
+import { ServiceConstants } from '../../../../services/service.constants';
+import { NmMessageService } from './../../../../services/toastmessage.service';
+import { Param } from './../../../../shared/param-state';
 
-let fixture, app;
-
+const declarations = [
+  Calendar,
+  TooltipComponent,
+  InputLabel
+ ];
+ const imports = [
+  CalendarModule,
+  FormsModule,
+  HttpModule,
+  HttpClientModule,
+  StorageServiceModule
+ ];
+ const providers = [
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: LocationStrategy, useClass: HashLocationStrategy },
+  Location,
+  PageService,
+  CustomHttpClient,
+  NmMessageService,
+  LoaderService,
+  ConfigService,
+  LoggerService,
+  SessionStoreService,
+  AppInitService
+ ];
+ let fixture, hostComponent;
 describe('Calendar', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        Calendar,
-        TooltipComponent,
-        InputLabel
-       ],
-       imports: [
-        CalendarModule,
-        FormsModule,
-        HttpModule,
-        HttpClientModule,
-        StorageServiceModule
-       ],
-       providers: [
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        Location,
-        PageService,
-        CustomHttpClient,
-        LoaderService,
-        ConfigService,
-        LoggerService,
-        SessionStoreService,
-        AppInitService
-       ]
-    }).compileComponents();
+
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(Calendar);
-    app = fixture.debugElement.componentInstance;
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = calendarElement as Param;
+  });
+
+  it('should create the Calendar', async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
-    it('should create the app', async(() => {
-      expect(app).toBeTruthy();
-    }));
+  it('nm-input-label should be created if the label is configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('nm-input-label'));
+    expect(labelEle).toBeTruthy();
+  }));
 
-    it('ngOnInit() should call applyDateConstraint()', async(() => {
-      app.element = { leafState: '' };
-      spyOn(app, 'applyDateConstraint').and.returnValue('');
-      app.ngOnInit();
-      expect(app.applyDateConstraint).toHaveBeenCalled();
-    }));
+  it('nm-input-label should not be created if the label is not configured', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    hostComponent.element.labels = [];
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const labelEle = debugElement.query(By.css('nm-input-label'));
+    expect(labelEle).toBeFalsy();
+  }));
 
-    it('ngOnInit() should update minDate and maxDate', async(() => {
-      app.getConstraint = () => {
-        return true;
-      };
-      app.applyDateConstraint();
-      const presentTime = new Date();
-      expect(app.minDate).toEqual(presentTime);
-      expect(app.maxDate).toEqual(presentTime);
-    }));
+  it('p-calendar should be created', async(() => {
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const pCalendarEle = debugElement.query(By.css('p-calendar'));
+    expect(pCalendarEle).toBeTruthy();
+  }));
+
+  it('ngOnInit() should call applyDateConstraint()', async(() => {
+    const spy = spyOn((hostComponent as any), 'applyDateConstraint').and.returnValue('');
+    hostComponent.ngOnInit();
+    expect(spy).toHaveBeenCalled();
+  }));
+
+  it('ngOnInit() should update minDate and maxDate', async(() => {
+    (hostComponent as any).getConstraint = () => {
+      return true;
+    };
+    (hostComponent as any).applyDateConstraint();
+    const presentTime = new Date();
+    expect(hostComponent.minDate).toEqual(presentTime);
+    expect(hostComponent.maxDate).toEqual(presentTime);
+  }));
 
 });

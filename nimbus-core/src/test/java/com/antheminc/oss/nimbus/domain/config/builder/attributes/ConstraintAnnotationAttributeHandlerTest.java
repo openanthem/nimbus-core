@@ -19,19 +19,18 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import javax.validation.constraints.NotNull;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.PropertyResolver;
+
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 
 /**
  * 
@@ -40,11 +39,15 @@ import org.mockito.runners.MockitoJUnitRunner;
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@RunWith(MockitoJUnitRunner.class)
 public class ConstraintAnnotationAttributeHandlerTest {
 
-	@InjectMocks
 	private ConstraintAnnotationAttributeHandler testee;
+	
+	private BeanResolverStrategy beanResolver;
+	
+	private PropertyResolver propertyResolver;
+	
+	private Environment env;
 	
 	@NotNull(message = "Enter a value for t1_str")
 	private final String t1_str = null;
@@ -52,52 +55,66 @@ public class ConstraintAnnotationAttributeHandlerTest {
 	@NotNull
 	private final String t2_str = null;
 	
-	private static Validator validator;
+	@NotNull(message = "${spel.validation.message}")
+	private final String t3_str = null;
     
-    @BeforeClass
-    public static void setUp() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+    @Before
+    public void setUp() {
+    	this.propertyResolver = Mockito.mock(PropertyResolver.class);
+    	this.env = Mockito.mock(Environment.class);
+        this.beanResolver = Mockito.mock(BeanResolverStrategy.class);
+        Mockito.when(this.beanResolver.get(PropertyResolver.class)).thenReturn(this.propertyResolver);
+        Mockito.when(this.beanResolver.get(Environment.class)).thenReturn(this.env);
+    	this.testee = new ConstraintAnnotationAttributeHandler(this.beanResolver);
     }
     
 	@Test
-	public void t1_generateFrom_messageProvided() throws Exception {
+	public void testUseCustomMessage() throws Exception {
 		final Field annotatedElement = this.getClass().getDeclaredField("t1_str");
 		final Annotation annotation = annotatedElement.getAnnotation(NotNull.class);
 		final Map<String, Object> actual = this.testee.generateFrom(annotatedElement, annotation);
 		Assert.assertEquals("Enter a value for t1_str", actual.get("message"));
 	}
 	
+	/**
+	 * This test case passes the SpEL expression back to the framework chain,
+	 * where it will be resolved elsewhere.
+	 */
 	@Test
-	public void t2_generateFrom_noMessageProvided() throws Exception {
+	public void testUseCustomMessageWithSpel() throws Exception {
+		String expected = "${spel.validation.message}";
+		final Field annotatedElement = this.getClass().getDeclaredField("t3_str");
+		final Annotation annotation = annotatedElement.getAnnotation(NotNull.class);
+		final Map<String, Object> actual = this.testee.generateFrom(annotatedElement, annotation);
+		Assert.assertEquals(expected, actual.get("message"));
+	}
+	
+	@Test
+	public void testUseClientDefinedDefaultMessage() throws Exception {
+		String expected = "Very Important Field!";
+		final Field annotatedElement = this.getClass().getDeclaredField("t2_str");
+		final Annotation annotation = annotatedElement.getAnnotation(NotNull.class);
+		Mockito.when(this.propertyResolver.getProperty("javax.validation.constraints.NotNull.message")).thenReturn(expected);
+		final Map<String, Object> actual = this.testee.generateFrom(annotatedElement, annotation);
+		Assert.assertEquals(expected, actual.get("message"));
+	}
+	
+	@Test
+	public void testUseFrameworkDefinedDefaultMessage() throws Exception {
+		String expected = "Field is required.";
 		final Field annotatedElement = this.getClass().getDeclaredField("t2_str");
 		final Annotation annotation = annotatedElement.getAnnotation(NotNull.class);
 		final Map<String, Object> actual = this.testee.generateFrom(annotatedElement, annotation);
-		Assert.assertEquals("", actual.get("message"));
+		Assert.assertEquals(expected, actual.get("message"));
 	}
-    
-//    @Test
-//    public void testDateRangeNegative() {
-//    	TestBean test = new TestBean();
-//        String date = "03/15/2017";
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-//        test.setDt(LocalDate.parse(date,formatter));
-//        
-//        java.util.Set<ConstraintViolation<TestBean>> validate = (java.util.Set<ConstraintViolation<TestBean>>) validator.validate(test);
-//        System.out.println(validate);
-//        assertEquals(1, validate.size());
-//        assertEquals("dt", validate.iterator().next().getPropertyPath().toString());
-//    }
-//    
-//    @Test
-//    public void testDateRangePositive() {
-//        TestBean test = new TestBean();
-//        String date = "03/15/2018";
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-//        test.setDt(LocalDate.parse(date,formatter));
-//        
-//        java.util.Set<ConstraintViolation<TestBean>> validate = (java.util.Set<ConstraintViolation<TestBean>>) validator.validate(test);
-//        System.out.println(validate);
-//        assertEquals(0, validate.size());
-//    }
+	
+	@Test
+	public void testUndefinedDefaultMessage() throws Exception {
+		this.testee = new ConstraintAnnotationAttributeHandler(this.beanResolver, "blank");
+		String expected = "{javax.validation.constraints.NotNull.message}";
+		final Field annotatedElement = this.getClass().getDeclaredField("t2_str");
+		final Annotation annotation = annotatedElement.getAnnotation(NotNull.class);
+		final Map<String, Object> actual = this.testee.generateFrom(annotatedElement, annotation);
+		Assert.assertEquals(expected, actual.get("message"));
+	}
 }

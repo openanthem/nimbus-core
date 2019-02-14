@@ -1,3 +1,22 @@
+/**
+ * @license
+ * Copyright 2016-2018 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { NmMessageService } from './../../../../services/toastmessage.service';
+import { Param } from './../../../../shared/param-state';
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
@@ -7,6 +26,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { JL } from 'jsnlog';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { of as observableOf,  Observable } from 'rxjs';
 
 import { Button } from './button.component';
 import { PageService } from '../../../../services/page.service';
@@ -15,23 +35,33 @@ import { LoaderService } from '../../../../services/loader.service';
 import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { FileService } from '../../../../services/file.service';
-import { Subject } from 'rxjs';
+import { Subject, observable } from 'rxjs';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
 import { SvgComponent } from '../../svg/svg.component';
 import { Image } from '../../image.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup, TestContext } from '../../../../setup.spec';
+import { UiAttribute } from '../../../../shared/param-config';
+import { FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms';
+import { PrintDirective } from '../../../../directives/print.directive';
+import { PrintService } from '../../../../services/print.service';
+import { EventPropagationDirective } from './event-propagation.directive';
+import { By } from '@angular/platform-browser';
+import { buttonPrimaryElement, buttonSecondaryElement, buttonDestructiveElement, buttonValidationElement, buttonPrintElement, buttonPlainElement } from 'mockdata';
 
-let fixture, app, location, pageService;
+let location, pageService, fileService;
 
 class MockLocation {
     back() { }
 }
 
 class MockPageService {
-    validationUpdate$: Subject<any>
-
+    validationUpdate$: Subject<any>;
+    postResponseProcessing$: Subject<any>;
     constructor() {
         this.validationUpdate$ = new Subject();
+        this.postResponseProcessing$ = new Subject();
     }
     processEvent(a, b, c, d) {
 
@@ -42,177 +72,370 @@ class MockPageService {
     }
 }
 
+class MockFileService {
+  test = new Subject();
+  uploadFile(a, b) {
+    this.test.next('');
+    return this.test;
+  }
+}
+
+const declarations = [
+  Button,
+  SvgComponent,
+  Image,
+  PrintDirective,
+  EventPropagationDirective
+];
+const imports = [
+   HttpModule,
+   HttpClientTestingModule,
+   RouterTestingModule,
+   StorageServiceModule,
+   AngularSvgIconModule
+];
+const providers = [
+   {provide: Location, useClass: MockLocation},
+   {provide: PageService, useClass: MockPageService},
+   { provide: 'JSNLOG', useValue: JL },
+   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+   {provide: FileService, useClass: MockFileService},
+   CustomHttpClient,
+   LoaderService,
+   ConfigService,
+   LoggerService,
+   AppInitService,
+   SessionStoreService,
+   NmMessageService,
+   PrintService
+];
+let fixture, hostComponent;
 describe('Button', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-          Button,
-          SvgComponent,
-          Image
-       ],
-       imports: [
-           HttpModule,
-           HttpClientTestingModule,
-           RouterTestingModule,
-           StorageServiceModule,
-           AngularSvgIconModule
-       ],
-       providers: [
-           {provide: Location, useClass: MockLocation},
-           {provide: PageService, useClass: MockPageService},
-           { provide: 'JSNLOG', useValue: JL },
-           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-           CustomHttpClient,
-           LoaderService,
-           ConfigService,
-           LoggerService,
-           FileService,
-           AppInitService,
-           SessionStoreService
-       ]
-    }).compileComponents();
+
+  configureTestSuite(() => {
+    setup( declarations, imports, providers);
+  });
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(Button);
-    app = fixture.debugElement.componentInstance;
-    location = TestBed.get(Location);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.form = new FormGroup({
+      search: new FormControl()
+   });
+    hostComponent.element = buttonPrimaryElement;
     pageService = TestBed.get(PageService);
+    location = TestBed.get(Location);
+    fileService = TestBed.get(FileService);
+  });
+
+  it('should create the Button', async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
-    it('should create the app', async(() => {
-      expect(app).toBeTruthy();
-    }));
-
-    it('emitEvent() should update the location', async(() => {
-      app.element = { config: { uiStyles: { attributes: { browserBack: 123 } } } };
+  it('emitEvent() should update the location', () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.browserBack = true;
       spyOn(location, 'back').and.callThrough();
-      app.emitEvent('eve');
+      hostComponent.emitEvent('eve');
       expect(location.back).toHaveBeenCalled();
-    }));
+    });
+  });
 
-    it('emitEvent() should emit buttonClickEvent', async(() => {
-      app.element = { config: { uiStyles: { attributes: { browserBack: null } } } };
-      spyOn(app.buttonClickEvent, 'emit').and.callThrough();
-      app.emitEvent('eve');
-      expect(app.buttonClickEvent.emit).toHaveBeenCalled();
-    }));
+  it('emitEvent() should emit buttonClickEvent', () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.browserBack = null;
+      spyOn(hostComponent.buttonClickEvent, 'emit').and.callThrough();
+      hostComponent.emitEvent('eve');
+      expect(hostComponent.buttonClickEvent.emit).not.toHaveBeenCalled();
+    });
+  });
 
-    it('ngOnInit() should update disabled property as false', async(() => {
-      app.element = { config: { code: 's', uiStyles: { attributes: { payload: 'a' } } }, enabled: true };
-      app.ngOnInit();
-      expect(app.disabled).toBeFalsy();
-    }));
+  it('ngOnInit() should update disabled property as false', () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.enabled = true;
+      hostComponent.ngOnInit();
+      expect((hostComponent as any).disabled).toBeFalsy();
+    });
+  });
 
-    it('ngOnInit() should update call pageService.processEvent()', async(() => {
-      app.element = { config: { code: 's', uiStyles: { attributes: { payload: 'a' } } }, enabled: true };
-      const eve = { element: { config: { uiStyles: { attributes: { b: 'a', method: 'method' } } }, path: 'test' } };
-      app.buttonClickEvent = new Subject();
-      spyOn(pageService, 'processEvent').and.callThrough();
-      app.ngOnInit();
-      app.buttonClickEvent.next(eve);
+  it('checkObjectType() should return false', async(() => {
+      expect(hostComponent.checkObjectType('test', { test: 'test' })).toBeFalsy();
+  }));
+
+  it('checkObjectType() should return true', async(() => {
+    expect(hostComponent.checkObjectType('Object', {ttttesttest1 : 'testtest1'})).toBeTruthy();
+  }));
+
+  it('getFileParameter() should call checkObjectType()', async(() => {
+    const item: any = { a: [1] };
+    spyOn(hostComponent, 'checkObjectType').and.returnValue(true);
+    const key = hostComponent.getFileParameter(item);
+    expect(hostComponent.checkObjectType).toHaveBeenCalled();
+    expect(key).toEqual('a');
+  }));
+
+  it('getFileParameter() should return null', async(() => {
+    const item: any = {};
+    spyOn(hostComponent, 'checkObjectType').and.returnValue(true);
+    const key = hostComponent.getFileParameter(item);
+    expect(key).toBeFalsy();
+  }));
+
+  it('getFileParameter() should call checkObjectType() and return null', async(() => {
+    const item: any = { a: [1] };
+    spyOn(hostComponent, 'checkObjectType').and.returnValue(false);
+    const key = hostComponent.getFileParameter(item);
+    expect(hostComponent.checkObjectType).toHaveBeenCalled();
+    expect(key).toBeFalsy();
+  }));
+
+  it('getFileParameter() should call checkObjectType() and return null on empty array', async(() => {
+    const item: any = { a: [] };
+    spyOn(hostComponent, 'checkObjectType').and.returnValue(true);
+    const key = hostComponent.getFileParameter(item);
+    expect(hostComponent.checkObjectType).toHaveBeenCalled();
+    expect(key).toBeFalsy();
+  }));
+
+  it('getFileParameter() should return false if a is not File', async(() => {
+    const item: any = { a: [1] };
+    hostComponent.checkObjectType = (a, b) => {
+      if (a === 'File') {
+        return false;
+      }
+      return true;
+    };
+    const key = hostComponent.getFileParameter(item);
+    expect(key).toBeFalsy();
+  }));
+
+  it('onSubmit() should call pageService.processEvent() without form.value.formControl', () => {
+    fixture.whenStable().then(() => {
+      spyOn(pageService, 'processEvent').and.returnValue('');
+      hostComponent.onSubmit();
       expect(pageService.processEvent).toHaveBeenCalled();
-    }));
+    });
+  });
 
-    it('ngOnInit() should update disabled property as true based on pageService.validationUpdate$ subject', async(() => {
-      app.element = { path: 'test', config: { code: 's', uiStyles: { attributes: { payload: 'a' } } }, enabled: true };
+  it('onSubmit() should call pageService.processEvent() with form.value.formControl', () => {
+    fixture.whenStable().then(() => {
+      const files = [{} as File];
+      hostComponent.form.value.fileControl = files;
+      spyOn(pageService, 'processEvent').and.returnValue('');
+      hostComponent.element.config.uiStyles.attributes.formReset = false;
+      hostComponent.onSubmit();
+      fileService.uploadFile('', '');
+      expect(pageService.processEvent).toHaveBeenCalled();
+    });
+  });
+
+  it('reset() should call form.reset()', () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.formReset = true;
+      spyOn(hostComponent.form, 'reset').and.callThrough();
+      hostComponent.reset();
+      expect(hostComponent.form.reset).toHaveBeenCalled();
+    });
+  });
+
+  it('reset() should not call form.reset()', () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.config.uiStyles.attributes.formReset = false;
+      spyOn(hostComponent.form, 'reset').and.callThrough();
+      hostComponent.reset();
+      expect(hostComponent.form.reset).not.toHaveBeenCalled();
+    });
+  });
+
+  it('getAllURLParams() should return null', async(() => {
+    expect(hostComponent.getAllURLParams('www.test.com')).toBeFalsy();
+  }));
+
+  it('Button should be created if the imgSrc is not provided', async(() => {
+    hostComponent.element = buttonPrimaryElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();
+  }));
+
+  it('nm-image should not be created if imgSrc is not provided', async(() => {
+    hostComponent.element = buttonPrimaryElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const imageEle = debugElement.query(By.css('nm-image'));
+    expect(imageEle).toBeFalsy();
+  }));
+
+  it('nm-image should be created if imgSrc is provided', async(() => {
+    hostComponent.element = buttonPrintElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const imageEle = debugElement.query(By.css('nm-image'));
+    expect(imageEle).toBeTruthy();
+  }));
+
+  it('On click image button should call emitEvent()', async(() => {
+    hostComponent.element = buttonPrintElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    spyOn(hostComponent, 'emitEvent').and.callThrough();
+    buttonEle.nativeElement.click();
+    fixture.whenStable().then(() => {
+      expect(hostComponent.emitEvent).toHaveBeenCalled();
+    });
+  }));
+
+  it('Primary button should be created if style is configured as primary', async(() => {
+    hostComponent.element = buttonPrimaryElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-primary');
+  }));
+
+  it('On click primary button should call onSubmit()', async(() => {
+    hostComponent.element = buttonPrimaryElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    spyOn(hostComponent, 'onSubmit').and.callThrough();
+    buttonEle.nativeElement.click();
+    fixture.whenStable().then(() => {
+      expect(hostComponent.onSubmit).toHaveBeenCalled();
+    });
+  }));
+
+  it('secondary button should be created if style is configured as secondary', async(() => {
+    hostComponent.element = buttonSecondaryElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-secondary');
+  }));
+
+  it('On click secondary button should call emitEvent()', async(() => {
+    hostComponent.element = buttonSecondaryElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    spyOn(hostComponent, 'emitEvent').and.callThrough();
+    buttonEle.nativeElement.click();
+    fixture.whenStable().then(() => {
+      expect(hostComponent.emitEvent).toHaveBeenCalled();
+    });
+  }));
+
+  it('plain button should be created if style is configured as plain', async(() => {
+    hostComponent.element = buttonPlainElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-plain');
+  }));
+
+  it('On click plain button should call emitEvent()', async(() => {
+    hostComponent.element = buttonPlainElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    spyOn(hostComponent, 'emitEvent').and.callThrough();
+    buttonEle.nativeElement.click();
+    fixture.whenStable().then(() => {
+      expect(hostComponent.emitEvent).toHaveBeenCalled();
+    });
+  }));
+
+  it('destructive button should be created if style is configured as destructive', async(() => {
+    hostComponent.element = buttonDestructiveElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-delete');
+  }));
+
+  it('On click destructive button should call emitEvent()', async(() => {
+    hostComponent.element = buttonDestructiveElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    spyOn(hostComponent, 'emitEvent').and.callThrough();
+    buttonEle.nativeElement.click();
+    fixture.whenStable().then(() => {
+      expect(hostComponent.emitEvent).toHaveBeenCalled();
+    });
+  }));
+
+  it('validation button should be created if style is configured as validation', async(() => {
+    hostComponent.element = buttonValidationElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();    
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-primary');
+  }));
+
+  it('On click validation button should call emitEvent()', async(() => {
+    hostComponent.element = buttonValidationElement as Param;
+    hostComponent.form = new FormGroup({
+      validationButton: new FormControl()
+   });
+   hostComponent.form.controls['validationButton'].setErrors({'incorrect': true});
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    spyOn(hostComponent, 'emitEvent').and.callThrough();
+    buttonEle.nativeElement.click();
+    fixture.whenStable().then(() => {
+      expect(hostComponent.emitEvent).toHaveBeenCalled();
+    });
+  }));
+
+  it('print button should be created if style is configured as print', async(() => {
+    hostComponent.element = buttonPrintElement as Param;
+    hostComponent.element.config.uiStyles.attributes.imgSrc = '';
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    expect(buttonEle).toBeTruthy();
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-secondary');
+  }));
+
+  it('On click print button should call emitEvent()', async(() => {
+    hostComponent.element = buttonPrintElement as Param;
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const buttonEle = debugElement.query(By.css('button'));
+    spyOn(hostComponent, 'emitEvent').and.callThrough();
+    buttonEle.nativeElement.click();
+    fixture.whenStable().then(() => {
+      expect(hostComponent.emitEvent).toHaveBeenCalled();
+    });
+  }));
+
+  it('ngOnInit() should update disabled property as true based on pageService.validationUpdate$ subject', () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.enabled = false;
       const eve = { path: 'test', enabled: false };
-      app.ngOnInit();
+      hostComponent.ngOnInit();
       pageService.logError(eve);
-      expect(app.disabled).toBeTruthy();
-    }));
+      expect((hostComponent as any).disabled).toBeTruthy();
+    });
+  });
 
-    it('ngOnInit() should update disabled property as false based on pageService.validationUpdate$ subject', async(() => {
-      app.element = { path: 'test', config: { code: 's', uiStyles: { attributes: { payload: 'a' } } }, enabled: true };
+  it('ngOnInit() should update disabled property as false based on pageService.validationUpdate$ subject', () => {
+    fixture.whenStable().then(() => {
+      hostComponent.element.enabled = true;
       const eve = { path: '1test', enabled: false };
-      app.ngOnInit();
+      hostComponent.ngOnInit();
       pageService.logError(eve);
-      expect(app.disabled).toBeFalsy();
-    }));
-
-    it('checkObjectType() should return false', async(() => {
-      expect(app.checkObjectType('test', { test: 'test' })).toBeFalsy();
-    }));
-
-    it('checkObjectType() should return true', async(() => {
-      expect(app.checkObjectType('String', 'testtest1')).toBeTruthy();
-    }));
-
-    it('getFileParameter() should call checkObjectType()', async(() => {
-      const item = { a: [1] };
-      spyOn(app, 'checkObjectType').and.returnValue(true);
-      const key = app.getFileParameter(item);
-      expect(app.checkObjectType).toHaveBeenCalled();
-      expect(key).toEqual('a');
-    }));
-
-    it('getFileParameter() should return null', async(() => {
-      const item = {};
-      spyOn(app, 'checkObjectType').and.returnValue(true);
-      const key = app.getFileParameter(item);
-      expect(key).toBeFalsy();
-    }));
-
-    it('getFileParameter() should call checkObjectType() and return null', async(() => {
-      const item = { a: [1] };
-      spyOn(app, 'checkObjectType').and.returnValue(false);
-      const key = app.getFileParameter(item);
-      expect(app.checkObjectType).toHaveBeenCalled();
-      expect(key).toBeFalsy();
-    }));
-
-    it('getFileParameter() should call checkObjectType() and return null on empty array', async(() => {
-      const item = { a: [] };
-      spyOn(app, 'checkObjectType').and.returnValue(true);
-      const key = app.getFileParameter(item);
-      expect(app.checkObjectType).toHaveBeenCalled();
-      expect(key).toBeFalsy();
-    }));
-
-    it('getFileParameter() should return false if a is not File', async(() => {
-      const item = { a: [1] };
-      app.checkObjectType = (a, b) => {
-        if (a === 'File') {
-          return false;
-        }
-        return true;
-      };
-      const key = app.getFileParameter(item);
-      expect(key).toBeFalsy();
-    }));
-
-    it('onSubmit() should call pageService.processEvent()', async(() => {
-      app.form = { value: { fileId: '', name: '', fileControl: false } };
-      app.element = { path: '', config: { uiStyles: { attributes: { b: '' } } } };
-      spyOn(pageService, 'processEvent').and.returnValue('');
-      app.onSubmit();
-      expect(pageService.processEvent).toHaveBeenCalled();
-    }));
-
-    it('onSubmit() should call pageService.processEvent() without form.value.formControl also', async(() => {
-      app.form = { value: { fileId: '', name: '', fileControl: '' } };
-      app.element = { path: '', config: { uiStyles: { attributes: { b: '' } } } };
-      spyOn(pageService, 'processEvent').and.returnValue('');
-      app.onSubmit();
-      expect(pageService.processEvent).toHaveBeenCalled();
-    }));
-
-    it('reset() should call form.reset()', async(() => {
-      app.form = { reset: () => {} };
-      app.element = { config: { uiStyles: { attributes: { formReset: true } } } };
-      spyOn(app.form, 'reset').and.callThrough();
-      app.reset();
-      expect(app.form.reset).toHaveBeenCalled();
-    }));
-
-    it('reset() should not call form.reset(),', async(() => {
-      app.reset();
-      app.form = { reset: () => {} };
-      app.element = { config: { uiStyles: { attributes: { formReset: false } } } };
-      spyOn(app.form, 'reset').and.callThrough();
-      app.reset();
-      expect(app.form.reset).not.toHaveBeenCalled();
-    }));
-
-    it('getAllURLParams() should return null', async(() => {
-      expect(app.getAllURLParams('www.test.com')).toBeFalsy();
-    }));
+      expect((hostComponent as any).disabled).toBeFalsy();
+    });
+  });
 
 });

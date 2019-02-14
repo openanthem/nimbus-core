@@ -39,8 +39,10 @@ import com.antheminc.oss.nimbus.domain.config.builder.AnnotationAttributeHandler
 import com.antheminc.oss.nimbus.domain.config.builder.AnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.DefaultAnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.domain.config.builder.EventAnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.ConstraintAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
+import com.antheminc.oss.nimbus.domain.model.config.EntityConfig.Scope;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultEntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultExecutionConfigProvider;
@@ -74,6 +76,10 @@ public class DefaultCoreBuilderConfig {
 	
 	private List<String> basePackages;
 	
+	private List<String> basePackagesToExclude;
+	
+	private Map<Scope, List<String>> domainSet;
+	
 	@Value("${platform.config.secure.regex}")
 	private String secureRegex;
 	
@@ -90,7 +96,7 @@ public class DefaultCoreBuilderConfig {
 	
 	@Bean
 	public DomainConfigBuilder domainConfigBuilder(EntityConfigBuilder configBuilder){
-		return new DomainConfigBuilder(configBuilder, basePackages);
+		return new DomainConfigBuilder(configBuilder, basePackages, basePackagesToExclude);
 	}
 	
 	@Bean
@@ -133,12 +139,17 @@ public class DefaultCoreBuilderConfig {
 		return new DetourExecutionConfigProvider();
 	}
 	
-	@Bean 
-	public AnnotationConfigHandler annotationConfigHandler(PropertyResolver propertyResolver) {
+	@Bean(name="default.annotationConfigBuilder")
+	public AnnotationConfigHandler annotationConfigHandler(BeanResolverStrategy beanResolver, PropertyResolver propertyResolver) {
 		Map<Class<? extends Annotation>, AnnotationAttributeHandler> attributeHandlers = new HashMap<>();
-		attributeHandlers.put(Constraint.class, new ConstraintAnnotationAttributeHandler());
+		attributeHandlers.put(Constraint.class, new ConstraintAnnotationAttributeHandler(beanResolver));
 		
 		return new DefaultAnnotationConfigHandler(new DefaultAnnotationAttributeHandler(), attributeHandlers, propertyResolver);
+	}
+	
+	@Bean(name="default.eventAnnotationConfigBuilder")
+	public AnnotationConfigHandler eventAnnotationConfigHandler() {
+		return new EventAnnotationConfigHandler();
 	}
 	
 	@Bean
@@ -146,8 +157,11 @@ public class DefaultCoreBuilderConfig {
 		if(typeClassMappings==null) {
 			typeClassMappings = new HashMap<>();
 		}
+		if(domainSet == null) {
+			domainSet = new HashMap<>();
+		}
 		
-		return new DefaultEntityConfigBuilder(beanResolver, typeClassMappings);
+		return new DefaultEntityConfigBuilder(beanResolver, typeClassMappings, domainSet);
 	}
 	
 	@Bean

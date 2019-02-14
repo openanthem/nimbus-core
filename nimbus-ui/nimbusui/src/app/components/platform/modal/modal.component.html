@@ -1,20 +1,22 @@
 <ng-template [ngIf]="type == componentTypes.dialog.toString()">
-    <p-dialog [(visible)]="display" 
-    [closable]="closable"
-    [closeOnEscape]="false" 
-    [modal]="true" 
-    [width]="width" 
-    (visibleChange)="closeDialog($event)"
-    appendTo="body" 
-    [responsive]="true" 
-    [blockScroll]="true">
-        <p-header *ngIf="label">
-            {{label}}
-            <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
+    <p-dialog #modal
+        [(visible)]="display" 
+        [closable]="closable"
+        [closeOnEscape]="false" 
+        [focusOnShow]="false"
+        [modal]="true" 
+        [width]="width" 
+        (visibleChange)="closeDialog($event)"
+        appendTo="body" 
+        [responsive]="true" 
+        [blockScroll]="true">
+        
+        <p-header>
+            <nm-input-label [element]="element"></nm-input-label>
         </p-header>
         <ng-template ngFor let-element [ngForOf]="nestedParams">
             <ng-template [ngIf]="element.alias == viewComponent.section.toString()">
-                <nm-section [element]="element"></nm-section>	
+                <nm-section [element]="element" [nmPrint]="element"></nm-section>	
             </ng-template>
         </ng-template>   
     </p-dialog>

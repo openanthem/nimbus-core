@@ -179,44 +179,6 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 			return pConfig;
 		} 
 	}
-
-	@ToString(callSuper=true)
-	public class ExParamLinked extends ExParam {
-		private static final long serialVersionUID = 1L;
-		
-		private final Param<?> linkedParam;
-		
-		public ExParamLinked(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig, Param<?> linkedParam) {
-			super(rootCommand, provider, exConfig);
-			this.linkedParam = linkedParam;
-		}
-		
-		@Override
-		public String getPath() {
-			String p = super.getPath();
-			
-			p = linkedParam.getPath() + p;
-			return p;
-		}
-		
-		@Override
-		public String getBeanPath() {
-			String p = super.getBeanPath();
-			
-			p = linkedParam.getBeanPath() + p;
-			return p;
-		}
-		
-		@Override
-		public boolean isLinked() {
-			return true;
-		}
-		
-		@Override
-		public Param<?> findIfLinked() {
-			return linkedParam;
-		}
-	}
 	
 	@Getter @Setter @ToString(callSuper=true, of="rootRefId")
 	public class ExParam extends DefaultParamState<ExecutionEntity<V, C>> {

@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 'use strict';
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, SimpleChanges, SimpleChange } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { LabelConfig } from '../../../shared/param-config';
 import { Param } from '../../../shared/param-state';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
@@ -59,7 +58,7 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                     <!-- Form Elements -->
                     <ng-template [ngIf]="form !== undefined">
                         <ng-template ngFor let-frmElem [ngForOf]="tab.type?.model?.params">
-                            <nm-frm-grp [element]="frmElem" [form]="form" [elementCss]="elementCss" [position]="position + 1"> 
+                            <nm-frm-grp [element]="frmElem" [form]="form" class="{{elementCss}}" [position]="position + 1"> 
                             </nm-frm-grp>
                         </ng-template>
                     </ng-template>
@@ -82,20 +81,21 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                                     [element]="tabElement" 
                                     [params]="tabElement?.config?.type?.elementConfig?.type?.model?.paramConfigs"
                                     (onScrollEvent)="onScrollEvent()"
-                                    [position]="position+1">
+                                    [position]="position+1"
+                                    [nmPrint]="tabElement">
                                 </nm-table>
                             </ng-template>
                             <!-- Card Content -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetail.toString()">
-                                <nm-card-details [element]="tabElement" [position]="position+1"></nm-card-details>
+                                <nm-card-details [element]="tabElement" [position]="position+1" [nmPrint]="tabElement"></nm-card-details>
                             </ng-template>
                             <!-- Card Detaisl Grid -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetailsGrid.toString()">
-                                <nm-card-details-grid [position]="position+1" [element]="tabElement"></nm-card-details-grid>
+                                <nm-card-details-grid [position]="position+1" [element]="tabElement" [nmPrint]="tabElement"></nm-card-details-grid>
                             </ng-template>
                             <!-- Form Param -->
                             <ng-template [ngIf]="tabElement.alias == viewComponent.form.toString()">
-                                <nm-form [position]="position+1" [element]="tabElement" [model]="tabElement.type?.model"></nm-form>
+                                <nm-form [position]="position+1" [element]="tabElement" [model]="tabElement.type?.model" [nmPrint]="tabElement"></nm-form>
                             </ng-template>
                         </ng-template>
                     </ng-template>
@@ -123,6 +123,20 @@ export class Accordion extends BaseElement {
         super.ngOnInit();
         this.updatePositionWithNoLabel();     
     }
+
+    /** Handling model changes to Accordions **/
+    ngOnChanges(changes: SimpleChanges) {
+        const model: SimpleChange = changes.model;
+        console.log('here .. ' + model);
+    }
+
+    ngAfterViewInit() {
+        console.log('here ngAfterViewInit .. ');
+    }
+
+    // ngDoCheck() {
+    //     console.log('here ngAfterViewChecked .. ');
+    // }
 
     /**
      * Expand Multiple Tabs?

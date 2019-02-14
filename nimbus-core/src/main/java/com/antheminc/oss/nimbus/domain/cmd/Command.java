@@ -22,8 +22,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
@@ -372,18 +374,40 @@ public class Command implements Serializable {
 		}
 		
 		/* behavior(s) */
-		sb.append("?").append(Constants.MARKER_URI_BEHAVIOR.code).append("=");	//	?b=
+		sb.append(Constants.REQUEST_PARAMETER_MARKER.code).append(Constants.MARKER_URI_BEHAVIOR.code).append(Constants.PARAM_ASSIGNMENT_MARKER.code);	//	?b=
 		sb.append(getBehaviors().get(0).name());	// $execute (or other behavior)	
 		
 		getBehaviors().stream().sequential().skip(1).forEach(b->{
 			sb.append(Constants.SEPARATOR_AND.code).append(b.name());
 		});
 		
-		/* TODO: other request params */
+		addRequestParamsToUri(sb);
 		
 		return sb.toString();
 	}
 	
+	public String toRemoteUri(Type endWhenType, Action withAction, Behavior withBehavior) {
+		String baseUri = buildUri(endWhenType);
+		StringBuilder sb = new StringBuilder(baseUri);
+		
+		/* action */
+		sb.append(Constants.SEPARATOR_URI.code).append(withAction.name());
+		
+		/* behavior=$execute */
+		sb.append(Constants.REQUEST_PARAMETER_MARKER.code).append(Constants.MARKER_URI_BEHAVIOR.code).append(Constants.PARAM_ASSIGNMENT_MARKER.code);	//	?b=
+		sb.append(withBehavior);	// $execute (or other behavior)	
+		
+		return sb.toString();
+	}
+
+	private void addRequestParamsToUri(StringBuilder sb) {
+		if(MapUtils.isEmpty(getRequestParams()))
+			return;
+		
+		getRequestParams().entrySet().stream()
+			.filter(e -> !StringUtils.equals(e.getKey()+Constants.PARAM_ASSIGNMENT_MARKER.code, Constants.MARKER_URI_BEHAVIOR.code+Constants.PARAM_ASSIGNMENT_MARKER.code))
+			.forEach(e -> Stream.of(e.getValue()).forEach(v -> sb.append(Constants.REQUEST_PARAMETER_DELIMITER.code).append(e.getKey()).append(Constants.PARAM_ASSIGNMENT_MARKER.code).append(v)));
+	}
 	
 	public String[] getParameterValue(String requestParameter){
 		if(requestParams != null && requestParams.containsKey(requestParameter)){
@@ -413,4 +437,5 @@ public class Command implements Serializable {
 	public boolean containsFunction() {
 		return requestParams != null && requestParams.containsKey(Constants.KEY_FUNCTION.code);
 	}
+	
 }

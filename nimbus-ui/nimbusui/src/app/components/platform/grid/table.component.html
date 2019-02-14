@@ -16,7 +16,7 @@
     </div>
 
     <p-table #dt [value]="value" [columns]="params" 
-        [dataKey]="element.config?.uiStyles?.attributes?.dataKey"
+        [dataKey]="'elemId'"
         [(selection)]="selectedRows"
         [rows]="element.config?.uiStyles?.attributes?.pageSize"
         [totalRecords]=totalRecords
@@ -41,7 +41,7 @@
                 <th style="width: 2.25em" *ngIf="element?.config?.uiStyles?.attributes?.expandableRows"></th>
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
                     <th *ngIf="showColumn(col)" [pSortableColumn]="col" [pSortableColumnDisabled]="!col?.uiStyles?.attributes?.sortable" [ngClass]="getColumnStyle(col)">
-                        <span *ngIf="showHeader(col)">{{col.header}}</span>
+                        <span *ngIf="showHeader(col)"><nm-th [element]="element" [paramConfig]="col" ></nm-th></span>
                         <p-sortIcon [field]="col" *ngIf="col?.uiStyles?.attributes?.alias === viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.sortable !== false"></p-sortIcon>
                     </th>
                 </ng-template>
@@ -132,7 +132,7 @@
         <ng-template pTemplate="rowexpansion" let-rowData>
             <tr class="ui-expanded-row-content">
                 <td [attr.colspan]="columnsToShow" >
-                    <nm-section *ngIf="rowData.nestedElement" [position]="position+1" [element]="rowData.nestedElement"></nm-section>
+                    <nm-section *ngIf="rowData.nestedElement" [position]="position+1" [element]="rowData.nestedElement" [nmPrint]="rowData.nestedElement"></nm-section>
                 </td>
             </tr>
         </ng-template>

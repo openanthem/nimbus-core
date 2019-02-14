@@ -79,7 +79,7 @@ export class DisplayValueDirective {
      */
     getValue(val: any): any {
         var re = / /gi;
-        if (val instanceof String) {
+        if (typeof val === 'string') {
             return val.replace(re, "");
         } else {
             return val;

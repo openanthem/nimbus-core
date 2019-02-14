@@ -24,7 +24,7 @@ import { ParamConfig, LabelConfig } from './param-config';
 import { Message } from './message';
 import { ViewComponent } from './param-annotations.enum';
 import { TableComponentConstants } from '../components/platform/grid/table.component.constants';
-
+import { DataGroup } from './../components/platform/charts/chartdata';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -36,7 +36,6 @@ export class Param implements Serializable<Param, string> {
     configId: string;
     type: Type;
     leafState: any;
-    previousLeafState: any;
     path: string;
     collection: boolean;
     collectionElem: boolean;
@@ -158,8 +157,7 @@ export class Param implements Serializable<Param, string> {
         
  
         return paramPath;
-    }     
-    
+    }
     deserialize( inJson, path ) {
         this.configId = inJson.configId;
         // Set Config in ParamConfig Map
@@ -230,11 +228,23 @@ export class Param implements Serializable<Param, string> {
                     }
                 }
             }
+        } else if(this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === ViewComponent.chart.toString()) {
+            let data: DataGroup[] = [];
+            if(inJson.leafState!=null) {
+                this.leafState = new DataGroup().deserialize(inJson.leafState);
+            } else if(inJson.type && inJson.type.model && inJson.type.model.params) {
+                for ( var p in inJson.type.model.params ) {
+                    let eventModelParam = new Param(this.configSvc).deserialize(inJson.type.model.params[p], this.path);
+                    if(eventModelParam.leafState !=null) {
+                        data.push(new DataGroup().deserialize(eventModelParam.leafState) );
+                    }
+                }
+                this.leafState = data;
+            }
         } else if (this.config && this.config.type && ParamUtils.isKnownDateType(this.config.type.name)) {
             this.leafState = ParamUtils.convertServerDateStringToDate(inJson.leafState, this.config.type.name);
         } else {
             this.leafState = inJson.leafState;
-            this.previousLeafState = inJson.leafState;
             // Handle any transformations that need to be applied to the leaf state
             if (typeof inJson.leafState === 'object' && (this.type.model && this.type.model.params)) {
 

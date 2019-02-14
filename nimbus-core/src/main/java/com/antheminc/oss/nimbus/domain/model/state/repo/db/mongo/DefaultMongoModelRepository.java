@@ -30,7 +30,8 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -69,20 +70,18 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	}
 	
 	@Override
-	public <T> T _new(ModelConfig<T> mConfig) {
+	public <T> T _new(Command cmd, ModelConfig<T> mConfig) {
 		T newState = getBeanHandler().instantiate(mConfig.getReferredClass());
-		return _new(mConfig, newState);
+		return _new(cmd, mConfig, newState);
 	}
 	
 	@Override
-	public <T> T _new(ModelConfig<T> mConfig, T newState) {
+	public <T> T _new(Command cmd, ModelConfig<T> mConfig, T newState) {
 		// detect id paramConfig
 		ParamConfig<?> pId = Optional.ofNullable(mConfig.getIdParamConfig())
 								.orElseThrow(()->new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param."));
 		
-		Repo repo = mConfig.getRepo();
-		
-		Long id = getIdSequenceRepo().getNextSequenceId(repo != null && StringUtils.isNotBlank(repo.alias())?repo.alias():mConfig.getAlias());
+		Long id = getIdSequenceRepo().getNextSequenceId(mConfig.getRepoAlias());
 		
 		ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(), pId.getCode());
 		getBeanHandler().setValue(va, newState, id);
@@ -91,14 +90,15 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	}
 
 	@Override
-	public <ID extends Serializable, T> T _save(String alias, T state) {
+	public <T> T _save(String alias, T state) {
 		getMongoOps().save(state, alias);
 		return state;
 	}
 	
 	@Override
-	public <ID extends Serializable, T> T _get(ID id, Class<T> referredClass, String alias) {
-		T state = getMongoOps().findById(id, referredClass, alias);
+	public <T> T _get(Command cmd, ModelConfig<T> mConfig) {
+		Long id = cmd.getRefId(Type.DomainAlias);
+		T state = getMongoOps().findById(id, mConfig.getReferredClass(), mConfig.getRepoAlias());
 		return state;
 	}
 	
@@ -109,38 +109,38 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	}
 	
 	@Override
-	public <ID extends Serializable, T> T _update(String alias, ID id, String path, T state) {
+	public <T> T _update(Param<?> param, T state) {
 		// TODO Soham: Refactor
-		path = resolvePath(path);
+		String path = resolvePath(param.getBeanPath());
 	  
-	  Query query = new Query(Criteria.where("_id").is(id));
-	  Update update = new Update();
-	  if(StringUtils.isBlank(path) || StringUtils.equalsIgnoreCase(path, "/c")) {
-		  getMongoOps().save(state, alias);
-	  }
-	  else{
-		  if(StringUtils.equals(path, "/id") || StringUtils.equals(path, "id")) { 
-		  	// if we updated the  document with path "/id", MongoDB is upserting with a new document with same _id but property field as "/id". e.g. if patient document already exist with
-		  	// all the fields populated, it would insert a new patient document with same _id like:
-		  	//	{"_id": NumberLong(1), "/id":NumberLong(1)}
-		  	// whereas there is already a correct patient document as:
-		  	//	{"_id": NumberLong(1), "firstName":"Rakesh"}
-		  	// I think this is because the "id" property gets saved in the monog as "_id" key and so when the next update comes with path="/id", for MongoDB, it would be a new field (non id),
-		  	// hence, ends up creating a new document. for now just returning from this mehtod without going to MongoDB.
-		  		return state;
-		  	}
-		   path = StringUtils.substringAfter(path, "/");
-		   path = path.replaceAll("/", "\\.");
-		   if(state == null)
-			   update.unset(path);
-		   else
-			   update.set(path, state);
-		   getMongoOps().upsert(query, update, alias);
-	  } 
-	  return state;
-	 }
-	 
-
+		Query query = new Query(Criteria.where("_id").is(param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias)));
+		Update update = new Update();
+		if(StringUtils.isBlank(path) || StringUtils.equalsIgnoreCase(path, "/c")) {
+			getMongoOps().save(state, param.getRootDomain().getConfig().getRepoAlias());
+		}
+		else{
+			if(StringUtils.equals(path, "/id") || StringUtils.equals(path, "id")) { 
+			 // if we updated the  document with path "/id", MongoDB is upserting with a new document with same _id but property field as "/id". e.g. if patient document already exist with
+			 // all the fields populated, it would insert a new patient document with same _id like:
+			 //	{"_id": NumberLong(1), "/id":NumberLong(1)}
+			 // whereas there is already a correct patient document as:
+			 //	{"_id": NumberLong(1), "firstName":"Rakesh"}
+			 // I think this is because the "id" property gets saved in the monog as "_id" key and so when the next update comes with path="/id", for MongoDB, it would be a new field (non id),
+			 // hence, ends up creating a new document. for now just returning from this mehtod without going to MongoDB.
+				return state;
+			}
+			path = StringUtils.substringAfter(path, "/");
+			path = path.replaceAll("/", "\\.");
+			if(state == null)
+				update.unset(path);
+			else
+				update.set(path, state);
+			getMongoOps().upsert(query, update, param.getRootDomain().getConfig().getRepoAlias());
+		} 
+		
+		return state;
+	}
+	
 	
 	@Override
 	public <T> T _replace(String alias, T state) {
@@ -159,19 +159,26 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	}
 	
 	@Override
-	public <ID extends Serializable, T> T _delete(ID id, Class<T> referredClass, String alias) {
+	public <T> T _delete(Param<?> param) {
+		Serializable id = param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
+		Class<T> referredClass = (Class<T>)param.getRootDomain().getConfig().getReferredClass();
+		String alias = param.getRootDomain().getConfig().getRepoAlias();
+		
 		Query query = new Query(Criteria.where("_id").is(id));
 		T state = getMongoOps().findAndRemove(query, referredClass, alias);
 		return state;
 	}
 
 	@Override
-	public <T> Object _search(Class<T> referredDomainClass, String alias, Supplier<SearchCriteria<?>> criteria) {
+	public <T> Object _search(Param<?> param, Supplier<SearchCriteria<?>> criteria) {
 		SearchCriteria<?> sc = criteria.get();
+		Class<?> referredClass = param.getRootDomain().getConfig().getReferredClass();
+		String alias = param.getRootDomain().getConfig().getRepoAlias();
+		
 		if(sc instanceof ExampleSearchCriteria) {
-			return getSearchByExample().search(referredDomainClass, alias, sc);
+			return getSearchByExample().search(referredClass, alias, sc);
 		}
-		return getSearchByQuery().search(referredDomainClass, alias, sc);
+		return getSearchByQuery().search(referredClass, alias, sc);
 	}
 
 }
