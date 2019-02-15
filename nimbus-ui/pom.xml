@@ -122,11 +122,9 @@
                             <executable>${project.basedir}/nimbusui/node_modules/.bin/ng</executable>
                             <workingDirectory>${project.basedir}/nimbusui</workingDirectory>
                             <arguments>
-                                <argument>test </argument>
-                                <argument>--watch=false </argument>
+                                <argument>test</argument>
+                                <argument>--watch=false</argument>
                                 <argument>--code-coverage</argument>
-                                <argument>--browsers</argument>
-                                <argument>${testconfig.ui.browsers}</argument>
                             </arguments>
                           </configuration>
                     </plugin>
