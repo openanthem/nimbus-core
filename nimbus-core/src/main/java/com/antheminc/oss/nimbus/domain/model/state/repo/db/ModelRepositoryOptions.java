@@ -16,10 +16,9 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 /**
- * @author Rakesh Patel
+ * @author Tony Lopez
  *
  */
-public interface DBSearch {
-	
-	public <T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria);
+public interface ModelRepositoryOptions {
+
 }
