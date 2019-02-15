@@ -1,3 +1,20 @@
+/**
+ * @license
+ * Copyright 2016-2018 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { ParamConfig } from './../shared/param-config';
 import { TestBed, async } from '@angular/core/testing';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
@@ -23,6 +40,7 @@ import { pageServiceProcessResponse, pageServiceOutputs, pageServiceRootParam, p
     pageServiceModel, pageServiceSetViewRootAndNavigateOutput, pageServiceTraverseParam, pageServiceTraverseParamEventModel, 
     pageServiceTraverseParamPayload, pageServiceCreateGridDataGridElementParams, pageServiceCreateGridDataParam, 
     configServiceParamConfigs, pageServiceCreateGridDataResult, pageServiceTraverseNestedPathResult } from 'mockdata'
+import { NmMessageService } from './toastmessage.service';
 
 let http, backend, service, location, loggerService, sessionStoreService, loaderService, configService, configService_actual;
 
@@ -89,6 +107,7 @@ describe('PageService', () => {
         { provide: ConfigService, useClass: MockConfigService },
         { provide: LoaderService, useClass: MockLoaderService },
         { provide: Location, useClass: MockLocation},
+        NmMessageService,
         PageService,
         CustomHttpClient
       ],
@@ -117,19 +136,6 @@ describe('PageService', () => {
         spyOn(loggerService, 'error').and.callThrough();
         service.logError('test');
         expect(loggerService.error).toHaveBeenCalled();
-    }));
-
-    it('notifyErrorEvent() should update the messageEvent subject', async(() => {
-        service.messageEvent = { next: () => { } };
-        spyOn(service.messageEvent, 'next').and.callThrough();
-        let execExp: ExecuteException = new ExecuteException();
-        execExp.message = "test exception";
-        execExp.code = "404";
-        const message = new Message();
-        message.messageArray = [({ severity: 'error', summary: 'Error Message', detail: 'test exception', life: 10000 })];
-        message.context = 'TOAST';
-        service.notifyErrorEvent(execExp);
-        expect(service.messageEvent.next).toHaveBeenCalledWith([message]);
     }));
 
     it('getFlowRootDomainId() should return the domainId', async(() => {
@@ -256,15 +262,15 @@ describe('PageService', () => {
         expect(service.getUpdatedParamPath(eveModel)).toEqual('123/');
     }));
 
-    it('traverseFlowConfig() should call traverseConfig()', async(() => {
-        const eveModel = new ModelEvent();
-        eveModel.value = { 'path': '/ownerlandingview', 'message': 'testMessage' };
-        spyOn(service, 'traverseConfig').and.returnValue('');
-        spyOn(service.messageEvent, 'next').and.callThrough();
-        service.traverseFlowConfig(eveModel, 'ownerlandingview');
-        expect(service.traverseConfig).toHaveBeenCalledWith(configServiceFlowConfigs.ownerlandingview.model.params, eveModel);
-        expect(service.messageEvent.next).toHaveBeenCalledWith('testMessage');
-    }));
+    // it('traverseFlowConfig() should call traverseConfig()', async(() => {
+    //     const eveModel = new ModelEvent();
+    //     eveModel.value = { 'path': '/ownerlandingview', 'message': 'testMessage' };
+    //     spyOn(service, 'traverseConfig').and.returnValue('');
+    //     spyOn(service.messageEvent, 'next').and.callThrough();
+    //     service.traverseFlowConfig(eveModel, 'ownerlandingview');
+    //     expect(service.traverseConfig).toHaveBeenCalledWith(configServiceFlowConfigs.ownerlandingview.model.params, eveModel);
+    //     expect(service.messageEvent.next).toHaveBeenCalledWith('testMessage');
+    // }));
 
     it('traverseFlowConfig() should throw an warning', async(() => {
         const eveModel = new ModelEvent();

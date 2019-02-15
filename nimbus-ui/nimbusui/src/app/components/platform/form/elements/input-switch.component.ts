@@ -81,6 +81,9 @@ export class InputSwitch extends BaseControl<boolean> {
          else if (style === 'RIGHT') {
              return "right";
          }
+         else if (style === 'DOWN') {
+            return "down";
+        }
          else {
              return "";
          }
