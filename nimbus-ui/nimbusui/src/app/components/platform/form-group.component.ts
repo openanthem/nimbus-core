@@ -43,11 +43,13 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         <span [hidden]="!element.visible" [ngClass]="getCssClass()">
             <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias == viewComponent.formElementGroup.toString()">
                 <fieldset>
-                    <nm-input-legend [element]="element"></nm-input-legend>
-                    <ng-template ngFor let-frmElem [ngForOf]="element.type.model.params">
-                        <nm-frm-grp [element]="frmElem" [hidden]="!frmElem.visible" [form]="form" [position]="position"> 
-                        </nm-frm-grp>
-                    </ng-template>
+                    <div class="fieldsetFlex">
+                        <nm-input-legend [element]="element"></nm-input-legend>
+                        <ng-template ngFor let-frmElem [ngForOf]="element.type.model.params">
+                            <nm-frm-grp [element]="frmElem" [ngClass]="getElementClass(frmElem)" [hidden]="!frmElem.visible" [form]="form" [position]="position"> 
+                            </nm-frm-grp>
+                        </ng-template>
+                    </div>
                 </fieldset>
             </ng-template>
 
@@ -80,7 +82,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             </ng-template> 
             
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.buttongroup.toString()">
-                <nm-button-group [form]="form" [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass"> 
+                <nm-button-group [form]="form" [buttonList]="element.type?.model?.params" class="{{element.config?.uiStyles?.attributes?.cssClass}} buttonGroup"> 
                 </nm-button-group>
             </ng-template>
         </span>
@@ -111,6 +113,15 @@ export class FrmGroupCmp extends BaseElement {
                 return '';
             }
         }
+        return '';
+    }
+
+    getElementClass(child: Param) {
+        if (child.config.uiStyles) {
+            if (child.config.uiStyles.attributes && child.config.uiStyles.attributes.cssClass && child.config.uiStyles.attributes.cssClass != '') {
+                return child.config.uiStyles.attributes.cssClass;
+            } 
+        } 
         return '';
     }
 

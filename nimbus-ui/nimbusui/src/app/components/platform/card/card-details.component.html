@@ -9,7 +9,7 @@
                         <!-- ButtonGroup -->
                         <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.buttonGroup.toString()">
                             <div class="float-right">
-                                <nm-button-group [buttonList]="field.type?.model?.params" [cssClass]="field.config?.uiStyles?.attributes?.cssClass">
+                                <nm-button-group [buttonList]="field.type?.model?.params" class="{{field.config?.uiStyles?.attributes?.cssClass}} buttonGroup">
                                 </nm-button-group>
                             </div>
                         </ng-template>

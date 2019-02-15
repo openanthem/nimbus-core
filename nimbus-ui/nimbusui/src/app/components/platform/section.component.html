@@ -67,7 +67,7 @@
                 </div>
             </ng-template>
             <ng-template [ngIf]="element.alias == viewComponent.buttongroup.toString()">
-                <nm-button-group [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass">
+                <nm-button-group [buttonList]="element.type?.model?.params" class="{{element.config?.uiStyles?.attributes?.cssClass}} buttonGroup">
                 </nm-button-group>
             </ng-template>
             <!--textbox control without a form-->

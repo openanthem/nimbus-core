@@ -6,7 +6,7 @@
 				<!-- ButtonGroup -->
 				<ng-template [ngIf]="element.alias == componentTypes.buttonGroup.toString()">
 					<div class="">
-						<nm-button-group [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass">
+						<nm-button-group [buttonList]="element.type?.model?.params" class="{{element.config?.uiStyles?.attributes?.cssClass}} buttonGroup">
 						</nm-button-group>
 					</div>
 				</ng-template>

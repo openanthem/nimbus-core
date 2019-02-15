@@ -67,7 +67,7 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                             <!-- ButtonGroup -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.buttonGroup.toString()">
                                 <div class="">
-                                    <nm-button-group [buttonList]="tabElement.type?.model?.params" [cssClass]="tabElement.config?.uiStyles?.attributes?.cssClass">
+                                    <nm-button-group [buttonList]="tabElement.type?.model?.params" class="{{tabElement.config?.uiStyles?.attributes?.cssClass}} buttonGroup">
                                     </nm-button-group>
                                 </div>
                             </ng-template>
