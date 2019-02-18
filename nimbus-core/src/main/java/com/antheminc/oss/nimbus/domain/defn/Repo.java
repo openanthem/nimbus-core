@@ -34,6 +34,7 @@ public @interface Repo {
 	/* 2rd level repository: persistent stores */
 	public enum Database {
 		rep_none,
+		rep_custom,
 		rep_mongodb,
 		rep_rdbms,
 		rep_ws;
@@ -43,7 +44,8 @@ public @interface Repo {
 		}
 		
 		public static boolean isPersistable(Repo repo) {
-			return exists(repo) && (repo.value() == Database.rep_mongodb || repo.value() == Database.rep_rdbms);
+			return exists(repo) && (repo.value() == Database.rep_mongodb || repo.value() == Database.rep_rdbms
+					|| repo.value() == Database.rep_custom);
 		}
 	}
 
@@ -70,6 +72,7 @@ public @interface Repo {
 	
 	NamedNativeQuery[] namedNativeQueries() default {};
 	
+	String extensionBean() default "";
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value=ElementType.TYPE)

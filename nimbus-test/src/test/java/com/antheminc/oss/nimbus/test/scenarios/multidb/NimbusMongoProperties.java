@@ -13,19 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.repo;
+package com.antheminc.oss.nimbus.test.scenarios.multidb;
 
-import com.antheminc.oss.nimbus.domain.defn.Repo;
+import org.springframework.boot.autoconfigure.mongo.MongoProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import lombok.Data;
 
 /**
- * @author Soham Chakravarti
+ * @author Tony Lopez
  *
  */
-public interface ModelRepositoryFactory {
-
-	public ModelRepository get(Repo repo);
-
-	public ModelRepository get(Repo.Database db);
-
-	public ModelRepository get(Repo.Database db, String extensionBean);
+@Data
+@ConfigurationProperties(prefix = "nimbus.mongodb")
+public class NimbusMongoProperties {
+    private MongoProperties primary = new MongoProperties();
+    private MongoProperties secondary = new MongoProperties();
 }

@@ -15,9 +15,11 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -40,11 +42,28 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 	
 	@Override
 	public ModelRepository get(Repo repo) {
-		return get(repo.value());
+		return repo != null ? get(repo.value(), repo.extensionBean()) : null;
 	}
 	
 	@Override
+	public ModelRepository get(Repo.Database db, String extensionBean) {
+		if (!Repo.Database.rep_custom.equals(db)) {
+			return getBeanResolver().get(ModelRepository.class, db.name());
+		}
+
+		if (StringUtils.isEmpty(extensionBean)) {
+			throw new InvalidConfigException("extensionBean must be defined for rep_custom implementations!");
+		}
+		
+		return getBeanResolver().get(ModelRepository.class, toModelRepositoryBeanName(db.name(), extensionBean));
+	}
+		
+	@Override
 	public ModelRepository get(Repo.Database db) {
-		return getBeanResolver().get(ModelRepository.class, db.name());
+		return get(db, null);
+	}
+	
+	private String toModelRepositoryBeanName(String dbName, String extensionBean) {
+		return dbName + "[" + extensionBean + "]";
 	}
 }
