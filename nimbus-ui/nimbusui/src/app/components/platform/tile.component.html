@@ -28,9 +28,9 @@
 				<ng-template [ngIf]="element.alias == viewComponent.modal.toString()">
 					<nm-modal [element]="element" [nmPrint]="element" [contentSelector]="'div.ui-dialog-content'"></nm-modal>
 				</ng-template>
-				 <ng-template [ngIf]="element.alias == 'Tab'">
-			     	<nm-tab [element]="element"></nm-tab>
-			     </ng-template>
+				<ng-template [ngIf]="element.alias == 'Tab'">
+					<nm-tab [element]="element"></nm-tab>
+				</ng-template>
 			</ng-template>	
 		</div>
 	</div>
