@@ -56,8 +56,8 @@ public class DefaultMongoConfig {
 	}
 	
 	@Bean(name="default.rep_mongodb")
-	public DefaultMongoModelRepository defaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo, BeanResolverStrategy beanResolver, MongoDBModelRepositoryOptions options){
-		return new DefaultMongoModelRepository(mongoOps, idSequenceRepo, beanResolver, options);
+	public DefaultMongoModelRepository defaultMongoModelRepository(MongoOperations mongoOps, BeanResolverStrategy beanResolver, MongoDBModelRepositoryOptions options){
+		return new DefaultMongoModelRepository(mongoOps, beanResolver, options);
 	}
 	
 	@Bean
@@ -67,10 +67,4 @@ public class DefaultMongoConfig {
 			.addSearchOperation(new MongoSearchByQueryOperation(mongoOps, domainConfigBuilder))
 			.build();
 	}
-	
-	@Bean
-	public MongoIdSequenceRepository mongoIdSequenceRepository(MongoOperations mongoOperations){
-		return new MongoIdSequenceRepository(mongoOperations);
-	}
-
 }

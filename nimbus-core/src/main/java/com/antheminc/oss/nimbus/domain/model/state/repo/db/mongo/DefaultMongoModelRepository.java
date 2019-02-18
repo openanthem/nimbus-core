@@ -36,6 +36,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
+import com.antheminc.oss.nimbus.domain.model.state.repo.MongoIdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositoryOptions;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBSearchOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
@@ -56,12 +57,13 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	private final JavaBeanHandler beanHandler;
 	private final MongoDBModelRepositoryOptions options;
 	
-	public DefaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo, 
-			BeanResolverStrategy beanResolver, MongoDBModelRepositoryOptions options) {
+	public DefaultMongoModelRepository(MongoOperations mongoOps, BeanResolverStrategy beanResolver, 
+			MongoDBModelRepositoryOptions options) {
 		this.mongoOps = mongoOps;
-		this.idSequenceRepo = idSequenceRepo;
 		this.beanHandler = beanResolver.get(JavaBeanHandler.class);
 		this.options = options;
+		
+		this.idSequenceRepo = new MongoIdSequenceRepository(mongoOps);
 	}
 	
 	@Override
