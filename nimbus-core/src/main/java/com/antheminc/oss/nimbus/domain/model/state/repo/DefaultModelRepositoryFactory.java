@@ -38,7 +38,6 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 		this.beanResolver = beanResolver;
 	}
 	
-	
 	@Override
 	public ModelRepository get(Repo repo) {
 		return get(repo.value());
@@ -48,10 +47,4 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 	public ModelRepository get(Repo.Database db) {
 		return getBeanResolver().get(ModelRepository.class, db.name());
 	}
-
-	@Override
-	public ModelPersistenceHandler getHandler(Repo repo) {
-		return getBeanResolver().get(ModelPersistenceHandler.class, repo.value().name()+"_handler");
-	}
-	
 }
