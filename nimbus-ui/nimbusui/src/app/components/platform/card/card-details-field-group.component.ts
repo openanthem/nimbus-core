@@ -33,18 +33,18 @@ import { WebContentSvc } from '../../../services/content-management.service';
     template:`
         <fieldset>
             <div class="fieldsetFlex">
-                <nm-input-label *ngIf="!isLabelEmpty"
+                <nm-input-legend *ngIf="!isLabelEmpty"
                     [element]="element" 
                     [required]="false">
-                </nm-input-label>
+                </nm-input-legend>
                 <ng-template ngFor let-field [ngForOf]="element?.type?.model?.params">
                     <!-- FieldValue-->
                     <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
-                        <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>
+                        <nm-card-details-field [element]="field" [(value)]="field.leafState" [ngClass]="field.config.uiStyles.attributes.cssClass"></nm-card-details-field>
                     </ng-template>
                     <!-- Paragraph -->
                     <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.paragraph.toString()">
-                        <nm-paragraph [element]="field"></nm-paragraph>
+                        <nm-paragraph [element]="field" [ngClass]="field.config.uiStyles.attributes.cssClass"></nm-paragraph>
                     </ng-template>
                 </ng-template>
             </div>

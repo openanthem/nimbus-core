@@ -12,7 +12,10 @@
                 <nm-card-details-grid [position]="position+1" [element]="element" [nmPrint]="element"></nm-card-details-grid>
             </ng-template>
             <ng-template [ngIf]="element.alias == componentTypes.cardDetail.toString()">
-                <nm-card-details [position]="position+1" [element]="element" [nmPrint]="element"></nm-card-details>
+                <nm-card-details [position]="position+1" 
+                [element]="element" 
+                [nmPrint]="element"
+                [ngClass]="element.config.uiStyles.attributes.cssClass"></nm-card-details>
             </ng-template>
             <!-- Paragraph -->
             <ng-template [ngIf]="element.alias == componentTypes.paragraph.toString()">

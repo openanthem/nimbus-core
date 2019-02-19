@@ -87,7 +87,10 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                             </ng-template>
                             <!-- Card Content -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetail.toString()">
-                                <nm-card-details [element]="tabElement" [position]="position+1" [nmPrint]="tabElement"></nm-card-details>
+                                <nm-card-details [element]="tabElement" 
+                                    [position]="position+1" 
+                                    [nmPrint]="tabElement"
+                                    [ngClass]="tabElement.config.uiStyles.attributes.cssClass"></nm-card-details>
                             </ng-template>
                             <!-- Card Detaisl Grid -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetailsGrid.toString()">
