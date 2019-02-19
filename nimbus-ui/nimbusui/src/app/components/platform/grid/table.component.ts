@@ -215,6 +215,9 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                     });
                 });
 
+                // reset the table state in the session after primeNG upgrade.
+                 this.dt.expandedRowKeys={};
+
                 let gridListSize = this.value ? this.value.length : 0;
                 // Check for Server Pagination Vs Client Pagination
                 if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.lazyLoad) {
