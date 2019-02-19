@@ -33,7 +33,7 @@ import { BaseLabel } from '../../base-label.component';
 @Component({
     selector: 'nm-input-legend',
     template: `
-      <legend [ngClass]="{'required': required, '': !required}">
+      <legend [ngClass]="{'required': required, '': !required}" *ngIf="label && label !=null ">
             {{label}}
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
       </legend>

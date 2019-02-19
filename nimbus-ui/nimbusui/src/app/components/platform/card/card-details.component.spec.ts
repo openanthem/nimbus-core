@@ -56,6 +56,7 @@ import { Subject } from 'rxjs';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
 import { cardDetailsBodyElement, cardDetailsHeaderElement } from 'mockdata';
 import { NmMessageService } from './../../../services/toastmessage.service';import { Param } from './../../../shared/param-state';
+import { InputLegend } from '../../platform/form/elements/input-legend.component';
 
 class MockPageService {
     public eventUpdate$: Subject<any>;
@@ -119,7 +120,8 @@ const declarations = [
   InputLabel,
   Button,
   Image,
-  SvgComponent
+  SvgComponent,
+  InputLegend
 ];
 const imports = [
   FormsModule,
