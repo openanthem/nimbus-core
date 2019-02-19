@@ -268,10 +268,6 @@ describe('CardDetailsFieldComponent', () => {
     expect(hostComponent.onTouched).toEqual(test);
   }));
 
-  it('getComponentClass() should return array [cssClass]',  async(() => {
-    expect(hostComponent.getComponentClass()).toEqual([hostComponent.element.config.uiStyles.attributes.cssClass]);
-  }));
-
   it('value getter() should return _value property value',  async(() => {
     hostComponent.value = 'test';
     expect(hostComponent._value).toEqual('test');

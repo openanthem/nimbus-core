@@ -33,9 +33,9 @@ import { ViewComponent } from './../../../shared/param-annotations.enum';
     providers: [WebContentSvc],
     template: `    
                 <p-tabView *ngIf="element?.visible">  
-                   <ng-template ngFor let-tabPanel [ngForOf]="nestedParams">
+                   <ng-template ngFor let-tabPanel let-tabIndex="index" [ngForOf]="nestedParams">
                         <p-tabPanel *ngIf="tabPanel?.visible" [disabled]="!tabPanel?.enabled"
-                        [closable]="tabPanel?.config?.uiStyles?.attributes?.closable">
+                        [closable]="tabPanel?.config?.uiStyles?.attributes?.closable" [selected]="tabIndex == 0">
                         
                             <ng-template  pTemplate="header" > 
                                 <nm-label [element]="tabPanel"></nm-label>

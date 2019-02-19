@@ -12,7 +12,10 @@
                 <nm-card-details-grid [position]="position+1" [element]="element" [nmPrint]="element"></nm-card-details-grid>
             </ng-template>
             <ng-template [ngIf]="element.alias == componentTypes.cardDetail.toString()">
-                <nm-card-details [position]="position+1" [element]="element" [nmPrint]="element"></nm-card-details>
+                <nm-card-details [position]="position+1" 
+                [element]="element" 
+                [nmPrint]="element"
+                [ngClass]="element.config.uiStyles.attributes.cssClass"></nm-card-details>
             </ng-template>
             <!-- Paragraph -->
             <ng-template [ngIf]="element.alias == componentTypes.paragraph.toString()">
@@ -40,6 +43,7 @@
             <ng-template [ngIf]="element.alias == componentTypes.accordion.toString()">
                 <nm-accordion [position]="position+1" [element]="element" [nmPrint]="element"></nm-accordion>
             </ng-template>
+            <!--Chart-->
             <ng-template [ngIf]="element.alias == componentTypes.chart.toString()">
                 <nm-chart [element]="element"></nm-chart>
             </ng-template>
@@ -53,7 +57,7 @@
                     [nmPrint]="element">
                 </nm-table>
             </ng-template>
-
+            <!--Tree Grid-->
             <ng-template [ngIf]="element.alias == componentTypes.treeGrid.toString()">
                 <nm-treegrid
                     [element]="element" 
@@ -66,8 +70,9 @@
                     <nm-button [element]="element"> </nm-button>
                 </div>
             </ng-template>
+            <!--Button Group-->
             <ng-template [ngIf]="element.alias == viewComponent.buttongroup.toString()">
-                <nm-button-group [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass">
+                <nm-button-group [buttonList]="element.type?.model?.params" class="{{element.config?.uiStyles?.attributes?.cssClass}} buttonGroup">
                 </nm-button-group>
             </ng-template>
             <!--textbox control without a form-->
@@ -82,9 +87,10 @@
             <ng-template [ngIf]="element.alias == componentTypes.inputSwitch.toString()">
                 <nm-input-switch id="{{code}}" [element]="element" [(ngModel)]="element.leafState"></nm-input-switch>
             </ng-template>
-             <ng-template [ngIf]="element.alias == 'Tab'">
+            <!--Tab-->
+            <ng-template [ngIf]="element.alias == 'Tab'">
                 <nm-tab [element]="element"></nm-tab>
-             </ng-template>
+            </ng-template>
         </ng-template>
     </ng-template>
 </div>

@@ -10,7 +10,8 @@
                     [position]="!isLabelEmpty ? position+1 : position" 
                     [collectionElem]="card.collectionElem" 
                     [elemId]="card.elemId" 
-                    [nmPrint]="element">
+                    [nmPrint]="element"
+                    [ngClass]="element.config.uiStyles.attributes.cssClass">
                 </nm-card-details>
             </ng-template>
         </ng-template>
