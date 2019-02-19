@@ -77,26 +77,118 @@ describe('PrintDirective', () => {
         directive.element = printDirectiveElement;
       });
 
-  it('should create an instance', () => {
-    expect(directive).toBeTruthy();
-    const test: any = '123';
-    directive.getPrintableContent(test);
-  });
+    it('should create an instance', () => {
+        expect(directive).toBeTruthy();
+        const test: any = '123';
+        directive.getPrintableContent(test);
+    });
 
-  it('ngAfterViewInit() should call loggerservice.debug() and execute()', () => {
-    spyOn(loggerService, 'debug').and.callThrough();
-    spyOn(directive, 'execute').and.returnValue('');
-    directive.ngAfterViewInit();
-    printService.emitPrintEvent(printServiceSubject);
-    expect(loggerService.debug).toHaveBeenCalledWith('Stylesheets found. useDelay will be set to true with delay of 300');
-    expect(directive.execute).toHaveBeenCalledWith(printServiceSubject);
-  });
+    it('applyStylesToWindow() should call the printWindow.document.head.appendChild() for links and style', () => {
+        const event = { 'printConfig': { 'useAppStyles': true, 'stylesheet': 'test' } };
+        const printWindow = {
+            "document": {
+                "body": { "innerHTML": "test" },
+                "head": { "appendChild": () => { } }
+            }
+        };
+        const links = ['test'];
+        links['item'] = () => { return { 'cloneNode': () => { return { 'href': '' } }, 'rel': 'stylesheet', 'href': '/test' }; }
+        spyOn(window.document, 'getElementsByTagName').and.returnValue(links);
+        spyOn(printWindow.document.head, 'appendChild').and.callThrough();
+        directive.applyStylesToWindow(event, printWindow);
+        expect(printWindow.document.head.appendChild).toHaveBeenCalledTimes(3);
+    });
 
-  it('ngOnDestroy() should unsubscribe the subscription', () => {
-    directive.subscription = new Subscription();
-    spyOn(directive.subscription, 'unsubscribe').and.returnValue('');
-    directive.ngOnDestroy();
-    expect(directive.subscription.unsubscribe).toHaveBeenCalled();
-  });
+    it('getPrintableContent() should call logger.debug() and return innerHTML', () => {
+        directive.nativeElement = {
+            'parentElement': 'testParentElement'
+        };
+        const event = {
+            'uiEvent': {
+                'srcElement': {
+                    'closest': () => { return { 'innerHTML': 'testInnerHTML' } }
+                }
+            }
+        };
+        directive.isPage = true;
+        directive.contentSelector = true;
+        spyOn(loggerService, 'debug').and.callThrough();
+        const res = directive.getPrintableContent(event);
+        expect(loggerService.debug).toHaveBeenCalledWith('Print feature is looking for parent via selector: "true"');
+        expect(res).toEqual('testInnerHTML');
+    });
 
+    it('getPrintableContent() should call logger.debug() and throw an error', () => {
+        directive.nativeElement = {
+            'parentElement': 'testParentElement'
+        };
+        const event = {
+            'uiEvent': {
+                'srcElement': {
+                    'closest': () => { return ''; }
+                }
+            }
+        };
+        directive.isPage = true;
+        directive.contentSelector = true;
+        spyOn(loggerService, 'debug').and.callThrough();
+        expect(() => {
+            directive.getPrintableContent(event);
+        }).toThrow();
+        expect(loggerService.debug).toHaveBeenCalledWith('Print feature is looking for parent via selector: "true"');
+    });
+
+    it('execute() should call window.open(), applyStylesToWindow() and doPrintActions()', () => {
+        const event = { 'printConfig': { 'useDelay': '' } };
+        const printWindow = { 'document': { 'body': { 'innerHTML': 'test' } } };
+        spyOn(window, 'open').and.returnValue(printWindow);
+        spyOn(directive, 'applyStylesToWindow').and.returnValue('');
+        spyOn(directive, 'doPrintActions').and.returnValue('');
+        directive.execute(event);
+        expect(window.open).toHaveBeenCalledWith('', '_blank');
+        expect(directive.applyStylesToWindow).toHaveBeenCalledWith(event, printWindow);
+        expect(directive.doPrintActions).toHaveBeenCalledWith(event, printWindow);
+    });
+
+    it('execute() should call window.open(), applyStylesToWindow() and printWindow.setTimeout()', () => {
+        const event = { 'printConfig': { 'useDelay': 10 } };
+        const printWindow = { 'document': { 'body': { 'innerHTML': 'test' } }, 'setTimeout': () => { } };
+        spyOn(window, 'open').and.returnValue(printWindow);
+        spyOn(directive, 'applyStylesToWindow').and.returnValue('');
+        spyOn(printWindow, 'setTimeout').and.returnValue('');
+        directive.execute(event);
+        expect(window.open).toHaveBeenCalledWith('', '_blank');
+        expect(directive.applyStylesToWindow).toHaveBeenCalledWith(event, printWindow);
+        expect(printWindow.setTimeout).toHaveBeenCalled();
+    });
+
+    it('ngAfterViewInit() should call loggerservice.debug() and execute()', () => {
+        spyOn(loggerService, 'debug').and.callThrough();
+        spyOn(directive, 'execute').and.returnValue('');
+        directive.ngAfterViewInit();
+        printService.emitPrintEvent(printServiceSubject);
+        expect(loggerService.debug).toHaveBeenCalledWith('Stylesheets found. useDelay will be set to true with delay of 300');
+        expect(directive.execute).toHaveBeenCalledWith(printServiceSubject);
+    });
+
+    it('doPrintActions() should call the window.print() and window.close()', () => {
+        spyOn(window, 'print').and.returnValue('');
+        spyOn(window, 'close').and.returnValue('');
+        const event = {
+            'printConfig': {
+                'autoPrint': true,
+                'closeAfterPrint': true
+            }
+        };
+        directive.doPrintActions(event, window);
+        expect(window.print).toHaveBeenCalled();
+        expect(window.close).toHaveBeenCalled();
+    });
+
+    it('ngOnDestroy() should unsubscribe the subscription', () => {
+        directive.subscription = new Subscription();
+        spyOn(directive.subscription, 'unsubscribe').and.returnValue('');
+        directive.ngOnDestroy();
+        expect(directive.subscription.unsubscribe).toHaveBeenCalled();
+    });
 });
