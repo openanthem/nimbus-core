@@ -23,6 +23,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { WebContentSvc } from './content-management.service';
 import { LabelConfig } from './../shared/param-config';
 import { ServiceConstants } from './service.constants';
+import { cmsParam } from 'mockdata';
 
 let http, backend, service;
 
@@ -42,28 +43,18 @@ describe('WebContentSvc', () => {
   }));
 
   it('findLabelContent() should call findLabelContentFromConfig()', async(() => {
-    service.findLabelContentFromConfig = () => {};
     spyOn(service, 'findLabelContentFromConfig').and.callThrough();
-    const param = {
-      labels: 'test',
-      config: {
-        code: 123
-      }
-    };
-    service.findLabelContent(param);
-    expect(service.findLabelContentFromConfig).toHaveBeenCalled();
+    service.findLabelContent(cmsParam);
+    expect(service.findLabelContentFromConfig).toHaveBeenCalledWith(cmsParam.labels, cmsParam.config.code);
   }));
 
-  it('findLabelContent() should call  findLabelContentFromConfig()', async(() => {
-    spyOn(service, 'findLabelContentFromConfig').and.returnValue('test');
-    const param = {
-      labels: 'a',
-        config: {
-            labelConfigs: '',
-            code: ''
-        }
-    };
-    expect(service.findLabelContent(param)).toEqual('test');
+  it('findLabelContentFromConfig() should return labels', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
+    const labels = new LabelConfig();
+    labels.locale = 'en-US';
+    labels.text = 'Owners';
+    const res = service.findLabelContentFromConfig(cmsParam.labels, cmsParam.config.code);
+    expect(res).toEqual(labels);
   }));
 
   it('findLabelContent() should return undefined', async(() => {
