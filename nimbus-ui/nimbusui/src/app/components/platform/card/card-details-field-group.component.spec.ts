@@ -54,6 +54,7 @@ import { AppInitService } from '../../../services/app.init.service';
 import { cardDetailsFieldGroupElement, newCardDetailsFieldGroupElement } from 'mockdata';
 import { Paragraph } from '../content/paragraph.component';
 import { NmMessageService } from './../../../services/toastmessage.service';
+import { InputLegend } from '../../platform/form/elements/input-legend.component';
 
 let fixture,hostComponent;
 
@@ -69,7 +70,8 @@ const declarations = [
   SelectItemPipe,
   DisplayValueDirective,
   InputLabel,
-  Paragraph
+  Paragraph,
+  InputLegend
 ];
 const imports = [
     FormsModule, 
@@ -102,29 +104,30 @@ describe('CardDetailsFieldGroupComponent', () => {
   beforeEach(() => {
    fixture = TestBed.createComponent(CardDetailsFieldGroupComponent);
    hostComponent = fixture.debugElement.componentInstance;
-   hostComponent.element = cardDetailsFieldGroupElement as Param;;
+   hostComponent.element = cardDetailsFieldGroupElement as Param;
   });
 
   it('should create the CardDetailsFieldGroupComponent',  async(() => {
     expect(hostComponent).toBeTruthy(); 
   }));
 
-  it('Label should be created on providing the element.labelconfig display the value provided',async(() => {
+  it('legend should be created on providing the element.labelconfig display the value provided',async(() => {
+    hostComponent.element = newCardDetailsFieldGroupElement as Param;
     ServiceConstants.LOCALE_LANGUAGE = 'en-US';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const labelEle = debugElement.query(By.css('nm-input-label'));
-    expect(labelEle.name).toEqual('nm-input-label');
-    expect(labelEle.nativeElement.innerText.toString().trim()).toEqual('Case ID');
+    const legendEle = debugElement.query(By.css('nm-input-legend'));
+    expect(legendEle).toBeTruthy();
+    expect(legendEle.nativeElement.innerText.toString().trim()).toEqual('Case ID');
   }));
 
-  it('Label should not be created on if element.labelconfig is empty',async(() => {
+  it('legend should not be created on if element.labelconfig is empty',async(() => {
     ServiceConstants.LOCALE_LANGUAGE = 'en-US';
     hostComponent.element.type.model.params[0].labels = [];
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const labelEle = debugElement.query(By.css('nm-input-label'))
-    expect(labelEle.nativeElement.innerText.toString()).toEqual('');
+    const legendEle = debugElement.query(By.css('nm-input-legend'))
+    expect(legendEle).toBeFalsy();
   }));
 
   it('nm-card-details-field should be created if element?.type?.model?.params[0].config?.uiStyles?.attributes?.alias === FieldValue',async(() => {
