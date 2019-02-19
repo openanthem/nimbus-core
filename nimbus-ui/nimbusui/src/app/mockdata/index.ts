@@ -32,3 +32,6 @@ export * from './textarea.component.mockdata.spec';
 export * from './textbox.component.mockdata.spec';
 export * from './inplace-editor.component.mockdata.spec';
 export * from './page.service.mockdata.spec';
+export * from './display-value.directive.mockdata.spec';
+export * from './print.directive.mockdata.spec';
+export * from './content-management.service.mockdata.spec';
