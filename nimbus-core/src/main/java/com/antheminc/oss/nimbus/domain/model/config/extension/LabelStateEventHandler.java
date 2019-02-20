@@ -143,17 +143,16 @@ public class LabelStateEventHandler extends AbstractConfigEventHandler implement
 		if (targetParam.isCollection()) {
 			Map<String, Set<LabelState>> elemLabels = new HashMap<>();
 			ParamConfig<?> p = targetParam.getConfig().getType().findIfCollection().getElementConfig();
-
-			p.getType().findIfNested().getModelConfig().getParamConfigs().forEach(ec -> {
-
-				if (CollectionUtils.isNotEmpty(ec.getLabels())) {
-					Set<LabelState> listParamLabels = new HashSet<>();
-					ec.getLabels().forEach((label) -> {
-						listParamLabels.add(convert(label, contextParam));
-					});
-					elemLabels.put(ec.getId(), listParamLabels);
+			
+			if (!p.isLeaf()) {
+				for(ParamConfig<?> paramConfig : p.getType().findIfNested().getModelConfig().getParamConfigs()) {
+					if (CollectionUtils.isNotEmpty(paramConfig.getLabels())) {
+						Set<LabelState> listParamLabels = new HashSet<>();
+						paramConfig.getLabels().forEach((label) -> listParamLabels.add(convert(label, contextParam)));
+						elemLabels.put(paramConfig.getId(), listParamLabels);
+					}
 				}
-			});
+			}
 
 			targetParam.findIfCollection().setElemLabels(elemLabels);
 		}
