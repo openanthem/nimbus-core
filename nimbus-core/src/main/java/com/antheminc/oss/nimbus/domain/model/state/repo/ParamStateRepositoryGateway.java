@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.util.ClassUtils;
 
 import com.antheminc.oss.nimbus.InvalidArgumentException;
 import com.antheminc.oss.nimbus.UnsupportedScenarioException;
@@ -36,6 +37,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
+import com.antheminc.oss.nimbus.support.PrimitiveUtils;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 
 import lombok.Getter;
@@ -146,6 +148,19 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		return newState;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> void uninstantiate(Param<T> param) {
+		T newState = null;
+		
+		Class<?> referredClass = param.getConfig().getReferredClass();
+		if (referredClass.isPrimitive()) {
+			newState = (T) PrimitiveUtils.getDefaultValue(referredClass);
+		}
+		
+		_setRaw(param, newState);
+	}
+	
 	@Override
 	public <P> P _getRaw(Param<P> param) {
 		return _getRaw(defaultRepStrategy, param);
@@ -235,8 +250,16 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 				if(parentParam==null)
 					return currRep._set(param, null);
 				
-				if(parentParam.getState()!=null)
+				if(parentParam.getState()!=null) {
+					// ripple to mapsTo elements of mapped children
+					param.traverse(p -> {
+						if (p.isMapped()) {
+							uninstantiate(p.findIfMapped().getMapsTo());
+						}
+					});
+					
 					return currRep._set(param, null);
+				}
 				
 				return null;
 			}
