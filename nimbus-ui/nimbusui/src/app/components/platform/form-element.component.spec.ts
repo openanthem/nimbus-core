@@ -308,7 +308,6 @@ describe('FormElement', () => {
   it('two way binding',  () => {
     fixture.whenStable().then(() => {
       hostComponent.elementCss = '';
-      hostComponent.getComponentClass();
       fixture.detectChanges();
       let textBox;
       textBox = fixture.debugElement.query(By.css('.form-control.text-input')).nativeElement;
@@ -323,7 +322,6 @@ describe('FormElement', () => {
   it('getErrorStyles() should return alert string', () => {
     fixture.whenStable().then(() => {
       hostComponent.elementCss = '';
-      hostComponent.getComponentClass();
       fixture.detectChanges();
       let textBox;
       textBox = fixture.debugElement.query(By.css('.form-control.text-input')).nativeElement;
@@ -340,7 +338,6 @@ describe('FormElement', () => {
 
   it('isValid property should be updated from form.controls',  async(() => {
     hostComponent.elementCss = '';
-    hostComponent.getComponentClass();
     hostComponent.form.controls[hostComponent.element.config.code].setValue('test');
     fixture.detectChanges();
       expect(hostComponent.isValid).toBeTruthy();

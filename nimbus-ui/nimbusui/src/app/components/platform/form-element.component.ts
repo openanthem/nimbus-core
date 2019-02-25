@@ -108,25 +108,6 @@ export class FormElement extends BaseElement {
         return (!this.isPristine && !this.isValid);
     }
 
-    getComponentClass() {
-        let componentClass: string[] = [];
-        componentClass.push('form-group');
-        let overrideClass: string = '';
-        if (this.element.config.uiStyles && this.element.config.uiStyles.attributes &&
-            this.element.config.uiStyles.attributes.cssClass && this.element.config.uiStyles.attributes.cssClass !== '') {
-                overrideClass = this.element.config.uiStyles.attributes.cssClass;
-        }  
-        
-        if (overrideClass != '') {
-            componentClass.push(overrideClass);
-        }
-
-        // Error Styles
-        componentClass.push(this.getErrorStyles());
-
-        return componentClass;
-    }
-
     ngOnInit() {
         super.ngOnInit();
         this.updatePositionWithNoLabel();

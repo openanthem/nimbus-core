@@ -404,7 +404,7 @@ public class ViewConfig {
 			 * surrounding this component. <p>This can be used to apply
 			 * additional styling, if necessary.
 			 */
-			String cssClass() default "";
+			String cssClass() default "fourColumn";
 		}
 
 		/**

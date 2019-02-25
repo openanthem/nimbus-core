@@ -64,6 +64,7 @@ import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.s
 import { AppInitService } from '../../../services/app.init.service';
 import { PrintService } from '../../../services/print.service';
 import { cardDetailsGridElement, cardDetailsGridNewElement } from 'mockdata';
+import { InputLegend } from '../../platform/form/elements/input-legend.component';
 
 class MockPageService {
     eventUpdate$: Subject<any>;
@@ -121,7 +122,8 @@ const declarations = [
     Button,
     Image,
     SvgComponent,
-    PrintDirective
+    PrintDirective,
+    InputLegend
     ];
 const imports = [ 
     FormsModule,
