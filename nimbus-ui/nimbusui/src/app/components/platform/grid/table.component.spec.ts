@@ -109,7 +109,7 @@ import { ServiceConstants } from '../../../services/service.constants';
 import { WindowRefService } from '../../../services/window-ref.service';
 import { AppInitService } from '../../../services/app.init.service';
 import { PrintService } from '../../../services/print.service';
-import { tableParams, tableElement, tableGridValueUpdate } from 'mockdata';
+import { tableParams, tableElement, tableGridValueUpdate, tableGridValue } from 'mockdata';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { TableHeader } from './table-header.component';
 import { InputMaskComp } from './../form/elements/input-mask.component';
@@ -549,6 +549,16 @@ describe('DataTable', () => {
         const debugElement = fixture.debugElement;
         const expenderIconEle = debugElement.query(By.css('.fa.fa-fw.fa-chevron-circle-right.ui-row-toggler'));
         expect(expenderIconEle).toBeFalsy();
+    }));
+
+    it('Expanded row expander icon should be reset after receiving gridValueUpdate', async(() => {
+        hostComponent.element.config.uiStyles.attributes.expandableRows = true;
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const expenderIconEle = debugElement.query(By.css('.fa.fa-fw.fa-chevron-circle-right.ui-row-toggler'));
+        expenderIconEle.nativeElement.click();
+        pageService.gridValueUpdate$.next(tableGridValue);
+        expect(expenderIconEle).toBeTruthy();
     }));
 
     it('td in body should be created if hidden attribute is configured as false and it is not a gridrowbody', async(() => {
