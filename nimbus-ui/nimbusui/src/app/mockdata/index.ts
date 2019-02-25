@@ -54,4 +54,4 @@ export * from './display-value.directive.mockdata.spec';
 export * from './print.directive.mockdata.spec';
 export * from './content-management.service.mockdata.spec';
 export * from './layout.service.mockdata.spec';
-export * from './form-builder.service.mockdata';
+export * from './form-builder.service.mockdata.spec';
