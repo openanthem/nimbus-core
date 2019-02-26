@@ -74,7 +74,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             </ng-template>
 
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.paragraph.toString()">
-                <nm-paragraph [element]="element"></nm-paragraph>
+                <nm-paragraph [element]="element" [ngClass]="element.config.uiStyles.attributes.cssClass" [hidden]="!element.visible"></nm-paragraph>
             </ng-template>
 
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.header.toString()">

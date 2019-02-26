@@ -19,7 +19,7 @@
             </ng-template>
             <!-- Paragraph -->
             <ng-template [ngIf]="element.alias == componentTypes.paragraph.toString()">
-                <nm-paragraph [element]="element"></nm-paragraph>
+                <nm-paragraph [element]="element" [ngClass]="element.config.uiStyles.attributes.cssClass" [hidden]="!element.visible"></nm-paragraph>
             </ng-template>
             <!-- Static Text-->
             <ng-template [ngIf]="element.alias == componentTypes.staticText.toString()">
