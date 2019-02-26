@@ -91,6 +91,7 @@ public enum Constants {
 	CLIENT_USER_KEY("client-user-key"),
 	
 	REQUEST_PARAMETER_URL_MARKER("url"),
+	REQUEST_PARAMETER_VALUE_MARKER("value"),
 	REQUEST_PARAMETER_DELIMITER("&"),
 	PARAM_ASSIGNMENT_MARKER("="),
 	
