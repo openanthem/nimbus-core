@@ -38,7 +38,7 @@ import { BaseElement } from '../base-element.component';
       WebContentSvc
   ],
   template: `
-      <p *ngIf="visible == true" [class]="cssClass" [innerHTML]="htmlContent"></p>
+      <p *ngIf="visible == true" [innerHTML]="htmlContent"></p>
    `
 })
 export class Paragraph extends BaseElement {
