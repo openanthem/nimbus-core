@@ -4,7 +4,7 @@
 
     <div class="footer-text">
         <ng-template *ngIf="footerConfig?.disclaimer">
-            <nm-paragraph [element]="footerConfig.disclaimer"></nm-paragraph>
+            <nm-paragraph [element]="footerConfig.disclaimer" [ngClass]="footerConfig.disclaimer.config.uiStyles.attributes.cssClass" [hidden]="!footerConfig.disclaimer.visible"></nm-paragraph>
         </ng-template>  
         <ul *ngIf="footerConfig">
 

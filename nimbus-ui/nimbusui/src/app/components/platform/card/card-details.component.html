@@ -15,7 +15,7 @@
                         </ng-template>
                         <!-- Paragraph -->
                         <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.paragraph.toString()">
-                            <nm-paragraph [element]="field"></nm-paragraph>
+                            <nm-paragraph [element]="field" [ngClass]="field.config.uiStyles.attributes.cssClass" [hidden]="!field.visible"></nm-paragraph>
                         </ng-template>
                         <!-- FieldValueGroup-->
                         <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValueGroup.toString()">
@@ -40,7 +40,7 @@
                         </ng-template>
                         <!-- Paragraph -->
                         <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.paragraph.toString()">
-                            <nm-paragraph [element]="field"></nm-paragraph>
+                            <nm-paragraph [element]="field" [ngClass]="field.config.uiStyles.attributes.cssClass" [hidden]="!field.visible"></nm-paragraph>
                         </ng-template>
                         <!-- FieldValueGroup-->
                         <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValueGroup.toString()">

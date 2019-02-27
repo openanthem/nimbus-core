@@ -44,7 +44,7 @@ import { WebContentSvc } from '../../../services/content-management.service';
                     </ng-template>
                     <!-- Paragraph -->
                     <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.paragraph.toString()">
-                        <nm-paragraph [element]="field" [ngClass]="field.config.uiStyles.attributes.cssClass"></nm-paragraph>
+                        <nm-paragraph [element]="field" [ngClass]="field.config.uiStyles.attributes.cssClass" [hidden]="!field.visible"></nm-paragraph>
                     </ng-template>
                 </ng-template>
             </div>
