@@ -23,7 +23,7 @@
                         </ng-template>
                         <!-- FieldValue-->
                         <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
-                            <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>
+                            <nm-card-details-field [element]="field" [(value)]="field.leafState" [ngClass]="field.config.uiStyles.attributes.cssClass" [hidden]="!field.visible"></nm-card-details-field>
                         </ng-template>
                     </span>
                 </ng-template>
@@ -48,7 +48,7 @@
                         </ng-template>
                         <!-- FieldValue-->
                         <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
-                            <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>
+                            <nm-card-details-field [element]="field" [(value)]="field.leafState" [ngClass]="field.config.uiStyles.attributes.cssClass" [hidden]="!field.visible"></nm-card-details-field>
                         </ng-template>
                         <ng-template [ngIf]="field.config?.uiStyles?.isLink">
                             <div class="form-group">
