@@ -566,6 +566,11 @@ public interface EntityState<T> {
 				this.locale = Locale.getDefault().toLanguageTag();
 			}
 			
+			public LabelState(String text) {
+				this();
+				this.text = text;
+			}
+			
 			@Override
 			public boolean equals(Object obj) {
 				if(obj==null && this.text==null)
