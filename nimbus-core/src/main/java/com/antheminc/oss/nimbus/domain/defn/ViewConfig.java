@@ -25,10 +25,10 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.Past;
 
 import com.antheminc.oss.nimbus.domain.Event;
-import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
-import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Autocomplete;
+import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -657,7 +657,6 @@ public class ViewConfig {
 	 * 
 	 * @since 1.3
 	 */
-	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
@@ -1146,6 +1145,12 @@ public class ViewConfig {
 	 * following components: <ul> <li>{@link Form}</li> <li>{@link Section}</li>
 	 * </ul>
 	 * 
+	 * <p><b>Labels</b>
+	 * 
+	 * <p>Any labels defined within the <i>collection element</i> configuration
+	 * will be assigned to the decorated param and available via
+	 * {@link ListParam#getElemLabels()}.
+	 * 
 	 * <p><b>Configuring Row Item Display</b>
 	 * 
 	 * <p>The class being used in the decorated collection's parameterized type
@@ -1160,6 +1165,7 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
+	@OnStateLoad
 	public @interface Grid {
 		String alias() default "Grid";
 
