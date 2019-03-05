@@ -185,7 +185,7 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		return refId;
 	}
 	
-	protected ProcessFlow startBusinessProcess(Param<?> rootDomainParam){
+	protected ProcessFlow startBusinessProcessIfApplicable(Param<?> rootDomainParam){
 		String lifecycleKey = rootDomainParam.findIfNested().getConfig().getDomainLifecycle();
 		
 		if(StringUtils.isEmpty(lifecycleKey))

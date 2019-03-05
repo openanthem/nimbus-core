@@ -109,7 +109,7 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 		
 		// hook up BPM
 		Param<?> rootDomainParam = getRootDomainParam(eCtx);
-		ProcessFlow processEntityState = startBusinessProcess(rootDomainParam);
+		ProcessFlow processEntityState = startBusinessProcessIfApplicable(rootDomainParam);
 		
 		if(processEntityState==null)
 			return eCtx;
