@@ -20,7 +20,9 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElementLinked;
@@ -32,10 +34,13 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.EntityConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
+import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 
@@ -58,6 +63,8 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 	private final ModelRepositoryFactory repositoryFactory;
 	private final CommandMessageConverter converter;
 	
+	private final BPMGateway bpmGateway;
+	
 	public AbstractCommandExecutor(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 		
@@ -66,6 +73,7 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
 		this.javaBeanHandler = beanResolver.get(JavaBeanHandler.class);
 		this.converter = beanResolver.get(CommandMessageConverter.class);
+		this.bpmGateway = beanResolver.get(BPMGateway.class);
 	}
 	
 	@Override
@@ -175,5 +183,32 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		
 		Object refId = getJavaBeanHandler().getValue(va, entity);
 		return refId;
+	}
+	
+	protected ProcessFlow startBusinessProcess(Param<?> rootDomainParam){
+		String lifecycleKey = rootDomainParam.findIfNested().getConfig().getDomainLifecycle();
+		
+		if(StringUtils.isEmpty(lifecycleKey))
+			return null;
+		return getBpmGateway().startBusinessProcess(rootDomainParam, lifecycleKey);
+
+	}
+	
+	protected void saveExecutionState(QuadModel<?, ?> q, ModelConfig<?> rootDomainConfig, ProcessFlow processEntityState) {
+		ExecutionEntity<?, ?> e = q.getRoot().getState();
+		Long refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
+		processEntityState.setId(refId);
+		
+		e.setFlow(processEntityState);
+		
+		ModelConfig<?> modelConfig = getDomainConfigBuilder().getModel(ProcessFlow.class);
+		Repo repo = modelConfig.getRepo();
+		
+		if(!Repo.Database.exists(repo))
+			throw new InvalidConfigException(ProcessFlow.class.getSimpleName()+" must have @Repo configured for db persistence, but found none.");
+		
+		String processStateAlias = StringUtils.isBlank(repo.alias()) ? modelConfig.getAlias() : repo.alias();
+		String entityProcessAlias = resolveEntityAliasByRepo(rootDomainConfig) + "_" + processStateAlias;
+		getRepositoryFactory().get(repo)._save(entityProcessAlias, processEntityState);
 	}
 }
