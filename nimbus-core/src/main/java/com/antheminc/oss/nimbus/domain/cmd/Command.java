@@ -63,6 +63,13 @@ public class Command implements Serializable {
 	
 	private Map<String, String[]> requestParams;
 	
+	private ProviderType providerType = ProviderType.INTERNAL;
+	
+	public static enum ProviderType {
+		WEB_DISPATCHER,
+		INTERNAL;
+	}
+	
 	@JsonIgnore
 	private final Instant createdInstant = Instant.now();
 	

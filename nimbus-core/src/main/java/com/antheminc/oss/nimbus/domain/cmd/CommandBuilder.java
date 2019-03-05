@@ -29,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.InvalidArgumentException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
+import com.antheminc.oss.nimbus.domain.cmd.Command.ProviderType;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.support.JustLogit;
@@ -261,6 +262,11 @@ public class CommandBuilder {
 	
 	public CommandBuilder setBehaviors(List<Behavior> behaviors) {
 		cmd.setBehaviors(behaviors);
+		return withCommand(cmd);
+	}
+	
+	public CommandBuilder withProviderType(ProviderType providerType) {
+		cmd.setProviderType(providerType);
 		return withCommand(cmd);
 	}
 }
