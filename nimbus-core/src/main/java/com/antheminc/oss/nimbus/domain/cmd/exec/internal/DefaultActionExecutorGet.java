@@ -23,6 +23,7 @@ import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.Command.ProviderType;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
@@ -81,8 +82,19 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 		eCtx.setQuadModel(q);
 		
 		// hook-up BPM
-		final ProcessFlow processEntityState = loadProcessState(rootDomainConfig, eCtx);
-		q.getRoot().getState().setFlow(processEntityState);
+		ProcessFlow processEntityState = loadProcessState(rootDomainConfig, eCtx);
+		if (null != processEntityState) {
+			q.getRoot().getState().setFlow(processEntityState);
+			return eCtx;
+		}
+		
+		// if there is a bpm defined, it is not started, and this request is from the dispatcher, start the BPM
+		if (ProviderType.WEB_DISPATCHER == eCtx.getCommandMessage().getCommand().getProviderType()) {
+			processEntityState = startBusinessProcessIfApplicable((Param<?>) getRootDomainParam(eCtx));
+			if (null != processEntityState) {
+				saveExecutionState(eCtx.getQuadModel(), getRootDomainConfig(eCtx), processEntityState);
+			}
+		}
 		
 		return eCtx;
 	}
