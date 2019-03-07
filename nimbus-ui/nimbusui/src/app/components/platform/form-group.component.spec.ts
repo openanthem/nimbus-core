@@ -104,13 +104,7 @@ import { NmMessageService } from './../../services/toastmessage.service';
 let param: Param;
 
 class MockWebContentSvc {
-    findLabelContent(param) {
-        const test = {
-            text: 'tText',
-            helpText: 'tHelpText'
-        }
-        return test;
-    }
+
 }
 
 @Component({

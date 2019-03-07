@@ -114,6 +114,11 @@ export const layoutServicePageParam: any = {
   },
   "message": [],
   "values": [],
-  "labels": [],
+  "labels": [
+      {
+        locale: "en-US",
+        text: "testing label"
+      }
+  ],
   "elemLabels": {}
 };
