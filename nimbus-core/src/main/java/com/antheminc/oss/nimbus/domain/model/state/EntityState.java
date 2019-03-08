@@ -641,7 +641,7 @@ public interface EntityState<T> {
 			private final Context context;
 			private final String styleClass;
 			
-			
+			private boolean isTransient = true;
 
 			@Override
 			public boolean equals(Object obj) {
