@@ -147,12 +147,7 @@ export class MockActivatedRoute implements ActivatedRoute {
 }
 
 class MockWebContentSvc {
-  findLabelContent(a) {
-    return {
-      text: 213,
-      helpText: 345
-    };
-  }
+
 }
 
 @Component({

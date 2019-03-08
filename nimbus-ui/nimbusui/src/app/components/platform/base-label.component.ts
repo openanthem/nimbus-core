@@ -16,10 +16,8 @@
  */
 'use strict';
 
-import { Component, Input } from '@angular/core';
-import { WebContentSvc } from '../../services/content-management.service';
+import { Input } from '@angular/core';
 import { Param } from './../../shared/param-state';
-import { LabelConfig } from './../../shared/param-config';
 import { PageService } from './../../services/page.service';
 import { ParamUtils } from './../../shared/param-utils';
 
@@ -33,44 +31,31 @@ import { ParamUtils } from './../../shared/param-utils';
 export abstract class BaseLabel {
 
     @Input() element: Param;
-    protected labelConfig: LabelConfig;
 
-    constructor(private _wcs: WebContentSvc, private _pageService: PageService) {
+    constructor() {
 
-    }
-    /**	
-     * Retrieve the label config from the provided param and set it into this instance's labelConfig.
-     * @param param The param for which to load label content for.	
-     */	
-    protected loadLabelConfig(param: Param): void {	
-        this.labelConfig = this._wcs.findLabelContent(param);	
     }
 
     /**
      * Get the tooltip help text for this element.
      */
     public get helpText(): string {
-        this.loadLabelConfig(this.element);
-        return ParamUtils.getHelpText(this.labelConfig);
+        return ParamUtils.getHelpText(this.element);
     }
 
     /**
      * Get the label text for this element.
      */
     public get label(): string {
-        this.loadLabelConfig(this.element);
-        return ParamUtils.getLabelText(this.labelConfig);
+        return ParamUtils.getLabelText(this.element);
     }
 
     /**
      * Get the css classes to apply for this element.
      */
     public getCssClass(): string {
-        let cssClass = '';
-        if (this.labelConfig && this.labelConfig.cssClass) {
-            cssClass = this.labelConfig.cssClass;
-        }
-        return cssClass;
+        let cssClass = ParamUtils.getLabelCss(this.element);
+        return cssClass ? cssClass : '';
     }
 }
 

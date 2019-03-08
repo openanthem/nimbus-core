@@ -70,12 +70,7 @@ class MockControlSubscribers {
 }
 
 class MockWebContentSvc {
-    findLabelContent(a) {
-        return {
-            text: 'testing',
-            helpText: 'help'
-        };
-     }
+
 }
 
 class MockValidationUtils {

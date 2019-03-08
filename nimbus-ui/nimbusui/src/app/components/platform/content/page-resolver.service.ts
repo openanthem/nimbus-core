@@ -1,3 +1,4 @@
+import { ParamUtils } from './../../../shared/param-utils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -49,10 +50,9 @@ export class PageResolver implements Resolve<Param> {
         let flow = route.parent.url[0]['path'];
         return this._pageSvc.getPageConfigById(pageId, flow).then(page => {
             if (page) {
-                let labelConfig: LabelConfig = this._wcs.findLabelContent(page);
-                let labelText = page.config.code;
-                if (labelConfig.text && labelConfig.text.trim().length > 0) {
-                    labelText = labelConfig.text;
+                let labelText = ParamUtils.getLabelText(page);
+                if (!labelText || labelText.length === 0) {
+                    labelText = page.config.code;
                 }
                 // Push the home breadcrumb into memory under the domain name.
                 this._breadcrumbService.push(page.config.code, labelText, route['_routerState'].url);

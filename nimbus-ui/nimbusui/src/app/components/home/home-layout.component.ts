@@ -1,3 +1,4 @@
+import { ParamUtils } from './../../shared/param-utils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -163,8 +164,8 @@ export class HomeLayoutCmp {
                     if(layout.topBar != null && layout.topBar.branding != null) {
                         this.branding = layout.topBar.branding;
                         if (this.branding.title) {
-                            let titleLabel: LabelConfig = this.wcs.findLabelContent(this.branding.title);
-                            this.titleService.setTitle(titleLabel.text);    
+                            let titleLabel = ParamUtils.getLabelText(this.branding.title);
+                            this.titleService.setTitle(titleLabel);    
                         }
                         this.topMenuItems = layout.topBar.headerMenus;
                     }

@@ -1,4 +1,3 @@
-import { WebContentSvc } from './../../../services/content-management.service';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -17,7 +16,6 @@ import { WebContentSvc } from './../../../services/content-management.service';
  */
 'use strict';
 import { Component, Input } from '@angular/core';
-import { PageService } from './../../../services/page.service';
 import { BaseLabel } from '../base-label.component';
 
 /**
@@ -38,9 +36,6 @@ import { BaseLabel } from '../base-label.component';
         <span *ngIf="size== undefined" [className]="cssClass">{{label}}</span>
         <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
     `,
-    providers: [
-        WebContentSvc
-    ],
 })
 
 export class Label extends BaseLabel {
@@ -49,8 +44,8 @@ export class Label extends BaseLabel {
     @Input() labelClass: String;
 
 
-    constructor(wcs: WebContentSvc, pageService: PageService) {
-        super(wcs, pageService);
+    constructor() {
+        super();
     }
 
     /**

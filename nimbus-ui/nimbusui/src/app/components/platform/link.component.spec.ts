@@ -34,9 +34,7 @@ import { fieldValueParam } from 'mockdata';
 let pageService, configService, param: Param;
 
 class MockWebContentSvc {
-    findLabelContentFromConfig(a, b) {
 
-    }
 }
 
 class MockPageService {
