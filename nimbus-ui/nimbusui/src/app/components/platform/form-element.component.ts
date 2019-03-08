@@ -45,7 +45,6 @@ var counter = 0;
 
 export class FormElement extends BaseElement {
 
-    @Input() element: Param;
     @Input() form: FormGroup;
     elemMessages: Message[];
     id: String = 'form-control' + counter++;

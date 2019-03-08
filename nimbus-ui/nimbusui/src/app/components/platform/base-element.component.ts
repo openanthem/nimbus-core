@@ -1,3 +1,4 @@
+import { Message } from './../../shared/message';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -239,9 +240,9 @@ export class BaseElement {
     }
 
     ngOnDestroy(){
-        if(this.element.message)                 
-        this.element.message = [];              
+        if(this.element.message) {
+            this.element.message = this.element.message.filter(m => !m.transient);
+        }
     }
-    
 }
 
