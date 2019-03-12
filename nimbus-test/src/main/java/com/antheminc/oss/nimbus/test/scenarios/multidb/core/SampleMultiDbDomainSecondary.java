@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Domain(value = "sample_multidb_secondary", includeListeners = { ListenerType.persistence })
-@Repo(value = Database.rep_custom, extensionBean = "secondary")
+@Repo(value = Database.rep_custom, modelRepositoryBean = "rep_dbSecondary")
 public class SampleMultiDbDomainSecondary {
 
 	private static final long serialVersionUID = 1L;

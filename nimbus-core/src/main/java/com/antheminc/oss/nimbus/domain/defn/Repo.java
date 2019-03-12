@@ -34,10 +34,14 @@ public @interface Repo {
 	/* 2rd level repository: persistent stores */
 	public enum Database {
 		rep_none,
-		rep_custom,
-		rep_mongodb,
-		rep_rdbms,
-		rep_ws;
+		/**
+		 * <p>Configures the decorated domain entity definition to hook up to a
+		 * {@link com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository}
+		 * bean identified using {@link Repo#modelRepositoryBean()}. <p>Consider
+		 * using {@code rep_custom} when needing to configure different data
+		 * sources for one or more domain entity definitions.
+		 */
+		rep_custom, rep_mongodb, rep_rdbms, rep_ws;
 		
 		public static boolean exists(Repo repo) {
 			return repo!=null && repo.value() != Repo.Database.rep_none;
@@ -72,7 +76,15 @@ public @interface Repo {
 	
 	NamedNativeQuery[] namedNativeQueries() default {};
 	
-	String extensionBean() default "";
+	/**
+	 * <p>The name of a
+	 * {@link com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository}
+	 * bean to use for the decorated entity definition.
+	 * <p>{@code modelRepositoryBean} is used exclusively with
+	 * {@link Database#rep_custom} to allow domain entities to specify their own
+	 * repository implementation.
+	 */
+	String modelRepositoryBean() default "";
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value=ElementType.TYPE)

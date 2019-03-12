@@ -42,7 +42,7 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 	
 	@Override
 	public ModelRepository get(Repo repo) {
-		return repo != null ? get(repo.value(), repo.extensionBean()) : null;
+		return repo != null ? get(repo.value(), repo.modelRepositoryBean()) : null;
 	}
 	
 	@Override
@@ -55,15 +55,11 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 			throw new InvalidConfigException("extensionBean must be defined for rep_custom implementations!");
 		}
 		
-		return getBeanResolver().get(ModelRepository.class, toModelRepositoryBeanName(db.name(), extensionBean));
+		return getBeanResolver().get(ModelRepository.class, extensionBean);
 	}
 		
 	@Override
 	public ModelRepository get(Repo.Database db) {
 		return get(db, null);
-	}
-	
-	private String toModelRepositoryBeanName(String dbName, String extensionBean) {
-		return dbName + "[" + extensionBean + "]";
 	}
 }

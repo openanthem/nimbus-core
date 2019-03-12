@@ -58,11 +58,11 @@ public class MultipleMongoDBTest {
 	protected ExecutionContextLoader executionContextLoader;
 
 	@Autowired
-	@Qualifier("default.MongoOperations[primary]")
+	@Qualifier("default.MongoOperationsPrimary")
 	private MongoOperations mongoTemplatePrimary;
 
 	@Autowired
-	@Qualifier("default.MongoOperations[secondary]")
+	@Qualifier("default.MongoOperationsSecondary")
 	private MongoOperations mongoTemplateSecondary;
 
 	@SuppressWarnings("unchecked")

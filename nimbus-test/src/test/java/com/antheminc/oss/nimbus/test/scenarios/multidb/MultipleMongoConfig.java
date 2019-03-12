@@ -67,22 +67,22 @@ public class MultipleMongoConfig {
 	}
 
 	@Primary
-	@Bean("default.rep_custom[primary]")
+	@Bean("default.rep_dbPrimary")
 	public DefaultMongoModelRepository mongoModelRepositoryPrimary(
-			@Qualifier("default.MongoOperations[primary]") MongoOperations mongoOps, BeanResolverStrategy beanResolver,
+			@Qualifier("default.MongoOperationsPrimary") MongoOperations mongoOps, BeanResolverStrategy beanResolver,
 			MongoDBModelRepositoryOptions options) {
 		return new DefaultMongoModelRepository(mongoOps, beanResolver, options);
 	}
 
-	@Bean("default.rep_custom[secondary]")
+	@Bean("default.rep_dbSecondary")
 	public DefaultMongoModelRepository mongoModelRepositorySecondary(
-			@Qualifier("default.MongoOperations[secondary]") MongoOperations mongoOps,
+			@Qualifier("default.MongoOperationsSecondary") MongoOperations mongoOps,
 			BeanResolverStrategy beanResolver, MongoDBModelRepositoryOptions options) {
 		return new DefaultMongoModelRepository(mongoOps, beanResolver, options);
 	}
 
 	@Primary
-	@Bean({ "default.MongoOperations", "default.MongoOperations[primary]" })
+	@Bean({ "default.MongoOperations", "default.MongoOperationsPrimary" })
 	public MongoTemplate mongoTemplatePrimary(MongoCustomConversions customConversions) throws Exception {
 		MongoDbFactory factory = factoryPrimary(this.nimbusMongoProperties.getPrimary());
 		MappingMongoConverter mongoConverter = new MappingMongoConverter(new DefaultDbRefResolver(factory),
@@ -91,7 +91,7 @@ public class MultipleMongoConfig {
 		return new MongoTemplate(factory, mongoConverter);
 	}
 
-	@Bean("default.MongoOperations[secondary]")
+	@Bean("default.MongoOperationsSecondary")
 	public MongoTemplate mongoTemplateSecondary(MongoCustomConversions customConversions) throws Exception {
 		MongoDbFactory factory = factorySecondary(this.nimbusMongoProperties.getSecondary());
 		MappingMongoConverter mongoConverter = new MappingMongoConverter(new DefaultDbRefResolver(factory),
