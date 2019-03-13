@@ -90,12 +90,19 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 		if(StringUtils.equalsIgnoreCase(entryToResolve, Constants.SERVER_PAGE_EXP_MARKER.code)) {
 			return mapPageCriteria(eCtx, param);
 		}
+		if(StringUtils.equalsIgnoreCase(entryToResolve, Constants.SERVER_AUTOSEARCH_MARKER.code)) {
+            return mapAutoSearchCriteria(eCtx, param);
+		}
 		if(StringUtils.equalsIgnoreCase(entryToResolve, Constants.SERVER_FILTER_EXPR_MARKER.code)) {
 			return mapFilterCriteria(eCtx, param);
 		}
 		
 		return key;
 	}
+	
+    private String mapAutoSearchCriteria(ExecutionContext eCtx, Param<?> param) {
+        return eCtx.getCommandMessage().getCommand().getFirstParameterValue(Constants.SERVER_AUTOSEARCH_MARKER.code);
+        }
 
 	private String mapPageCriteria(ExecutionContext eCtx, Param<?> param) {
 		//String pageCriteria = eCtx.getCommandMessage().getCommand().getFirstParameterValue(Constants.SERVER_PAGE_CRITERIA_EXPR_MARKER.code);

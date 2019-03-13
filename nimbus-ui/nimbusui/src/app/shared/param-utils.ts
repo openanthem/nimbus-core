@@ -20,6 +20,8 @@ import { ServiceConstants } from '../services/service.constants';
 import { Param } from './param-state';
 import { LabelConfig } from './param-config';
 import { UiNature } from './param-config';
+import { ValidationUtils } from '../components/platform/validators/ValidationUtils';
+import { ValidatorFn } from '@angular/forms/src/directives/validators';
 
 /**
  * \@author Tony.Lopez
@@ -385,4 +387,25 @@ export class ParamUtils {
            return currentPath.concat(ServiceConstants.PATH_SEPARATOR).concat(resolvePathSegment);
        }
    }
+
+   public static validate(event: any, control: any){
+    let frmCtrl = control.form.controls[event.config.code];
+    if(frmCtrl!=null) {
+        if(event.path === control.element.path) {
+            //bind dynamic validations on a param as a result of a state change of another param
+            if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
+                control.requiredCss = ValidationUtils.rebindValidations(frmCtrl,event.activeValidationGroups,control.element);
+            } else {
+                control.requiredCss = ValidationUtils.applyelementStyle(control.element);
+                var staticChecks: ValidatorFn[] = [];
+                staticChecks = ValidationUtils.buildStaticValidations(control.element);
+                frmCtrl.setValidators(staticChecks);
+            }
+            ValidationUtils.assessControlValidation(event,frmCtrl);
+            control.disabled = !event.enabled;  
+            
+        }
+
+    }
+  }
 }

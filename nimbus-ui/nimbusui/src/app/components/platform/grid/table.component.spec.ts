@@ -20,7 +20,7 @@ import { NmMessageService } from './../../../services/toastmessage.service';
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule, InputMaskModule, EditorModule  } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule, InputMaskModule, EditorModule, AutoCompleteModule  } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, FormControl } from '@angular/forms';
@@ -113,6 +113,7 @@ import { tableParams, tableElement, tableGridValueUpdate, tableGridValue } from 
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { TableHeader } from './table-header.component';
 import { InputMaskComp } from './../form/elements/input-mask.component';
+import { NmAutocomplete } from './../form/elements/autocomplete.component';
 import { RichText } from '../form/elements/rich-text.component';
 
 let configService, pageService, elementRef, objectUtils, domHandler, tableService, cd, param, webContentSvc;
@@ -256,6 +257,7 @@ const declarations = [
   FormErrorMessage,
   PrintDirective,
   InputMaskComp,
+  NmAutocomplete,
   RichText
 ];
 const imports = [
@@ -284,6 +286,7 @@ const imports = [
    StorageServiceModule,
    BrowserAnimationsModule,
    InputMaskModule,
+   AutoCompleteModule,
    EditorModule
 ];
 const providers = [

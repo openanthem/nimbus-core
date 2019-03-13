@@ -38,6 +38,7 @@ import com.antheminc.oss.nimbus.InvalidArgumentException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.channel.web.WebSessionIdLoggerInterceptor;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
@@ -216,10 +217,11 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		ExecutionConfig executionConfig = cmdParam != null ? cmdParam.getConfig().getExecutionConfig() : null;
 		
 		// if present, hand-off to each command within execution config
-		if(executionConfig != null && CollectionUtils.isNotEmpty(executionConfig.get())) {
-			List<MultiOutput> execConfigOutputs = executeConfig(eCtx, cmdParam, executionConfig.get());
-			execConfigOutputs.stream().forEach(mOut->addMultiOutput(mOutput, mOut));
-		}
+        //if(executionConfig != null && CollectionUtils.isNotEmpty(executionConfig.get())) {
+		if(cmdMsg.getCommand().getAction() == Action._get && executionConfig != null && CollectionUtils.isNotEmpty(executionConfig.get())) {
+               List<MultiOutput> execConfigOutputs = executeConfig(eCtx, cmdParam, executionConfig.get());
+               execConfigOutputs.stream().forEach(mOut->addMultiOutput(mOutput, mOut));
+        }
 		else {// otherwise, execute self
 			List<Output<?>> selfExecOutputs = executeSelf(eCtx, cmdParam);
 			selfExecOutputs.stream().forEach(out->addOutput(mOutput, out));

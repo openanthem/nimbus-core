@@ -114,7 +114,9 @@ public enum Constants {
 	SEARCH_REQ_PAGINATION_SORT_PROPERTY("sortBy"),
 	
 	SEARCH_NAMED_QUERY_DELIMTER("~~"),
-	SEARCH_NAMED_QUERY_RESULT("result");
+	SEARCH_NAMED_QUERY_RESULT("result"),
+	
+	SERVER_AUTOSEARCH_MARKER("autocompletesearchvalue");
 	
 	
 	

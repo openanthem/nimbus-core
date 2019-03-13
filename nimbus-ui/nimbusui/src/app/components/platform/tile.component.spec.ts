@@ -20,7 +20,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, 
     DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, 
-    RadioButtonModule, CalendarModule, TreeTableModule, InputSwitchModule, InputMaskModule, TabViewModule, EditorModule } from 'primeng/primeng';
+    RadioButtonModule, CalendarModule, TreeTableModule, InputSwitchModule, InputMaskModule, TabViewModule, EditorModule, AutoCompleteModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -98,6 +98,7 @@ import { Tab } from './content/tab.component';
 import { RichText } from './form/elements/rich-text.component';
 import { NmChart } from './charts/chart.component';
 import { ChartModule } from 'primeng/chart';
+import { NmAutocomplete } from './form/elements/autocomplete.component';
 let pageService;
 
 class MockPageService {
@@ -187,6 +188,7 @@ const declarations = [
     FormErrorMessage,
     PrintDirective,
     InputMaskComp,
+    NmAutocomplete,
     Tab,
     NmChart,
     RichText
@@ -218,7 +220,8 @@ const imports = [
     InputMaskModule,
     TabViewModule,
     ChartModule,
-    EditorModule
+    EditorModule,
+    AutoCompleteModule
    ];
 const providers = [
     {provide: PageService, useClass: MockPageService},
