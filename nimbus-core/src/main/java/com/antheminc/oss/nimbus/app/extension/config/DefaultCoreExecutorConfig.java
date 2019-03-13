@@ -28,7 +28,6 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorConfig;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorDelete;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.FunctionExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorGet;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorNav;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorNew;
@@ -42,9 +41,6 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultCommandPathVaria
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.HierarchyMatchBasedBeanFinder;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.DBSearch;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByExample;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByQuery;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 import com.antheminc.oss.nimbus.support.expr.SpelExpressionEvaluator;
 
@@ -140,16 +136,6 @@ public class DefaultCoreExecutorConfig {
 	@Bean(name="default.processGateway")
 	public DefaultCommandExecutorGateway defaultProcessGateway(BeanResolverStrategy beanResolver){
 		return new DefaultCommandExecutorGateway(beanResolver);
-	}
-	
-	@Bean(name="searchByExample")
-	public DBSearch searchByExample(BeanResolverStrategy beanResolver) {
-		return new MongoSearchByExample(beanResolver);
-	}
-	
-	@Bean(name="searchByQuery")
-	public DBSearch searchByQuery(BeanResolverStrategy beanResolver) {
-		return new MongoSearchByQuery(beanResolver);
 	}
 
 	@Bean(name="default._search$execute")

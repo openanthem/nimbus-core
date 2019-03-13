@@ -13,19 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.repo;
-
-import com.antheminc.oss.nimbus.domain.defn.Repo;
+package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 /**
- * @author Soham Chakravarti
+ * @author Rakesh Patel
  *
  */
-public interface ModelRepositoryFactory {
-
-	public ModelRepository get(Repo repo);
-
-	public ModelRepository get(Repo.Database db);
-
-	public ModelRepository get(Repo.Database db, String extensionBean);
+public interface DBSearchOperation {
+	
+	boolean shouldAllow(SearchCriteria<?> criteria);
+	
+	<T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria);
 }

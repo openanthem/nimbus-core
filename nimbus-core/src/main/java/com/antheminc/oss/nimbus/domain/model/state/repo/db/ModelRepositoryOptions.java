@@ -13,20 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.repo;
-
-import java.util.List;
-
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
-
+package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 /**
- * @author Rakesh Patel
+ * @author Tony Lopez
  *
  */
-public interface ModelPersistenceHandler {
-	
-	public boolean handle(List<ModelEvent<Param<?>>> modelEvents);
-	
+public interface ModelRepositoryOptions {
+
 }
