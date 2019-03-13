@@ -54,6 +54,8 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	
 	private final SessionProvider sessionProvider;
 	
+	public static final ThreadLocal<Action> TH_ACTION = new ThreadLocal<>();
+	
 	public DefaultExecutionContextLoader(BeanResolverStrategy beanResolver) {
 		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
 		this.quadModelBuilder = beanResolver.get(QuadModelBuilder.class);
@@ -75,10 +77,6 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		} else // _new takes priority
 		if(rootDomainCmd.isRootDomainOnly() && rootDomainCmd.getAction()==Action._new) {
 			eCtx = loadEntity(eCtx, getExecutorActionNew());
-			
-			// init state post registering of quadModel in session
-			eCtx.getRootModel().initState();
-			
 		} else // check if already exists in session
 		if(sessionExists(eCtx)) { 
 			QuadModel<?, ?> q = sessionGet(eCtx);
@@ -104,18 +102,22 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	}
 	
 	private ExecutionContext loadEntity(ExecutionContext eCtx, CommandExecutor<?> executor) {
-		CommandMessage cmdMsg = eCtx.getCommandMessage();
-		String inputCmdUri = cmdMsg.getCommand().getAbsoluteUri();
-		
-		Input input = new Input(inputCmdUri, eCtx, cmdMsg.getCommand().getAction(), Behavior.$execute);
-		Output<?> output = executor.execute(input);
-		
-		// update context
-		eCtx = output.getContext();
-		
-		ModelConfig<?> rootDomainConfig = getDomainConfigBuilder().getRootDomainOrThrowEx(cmdMsg.getCommand().getRootDomainAlias());
-		
-		sessionPutIfApplicable(rootDomainConfig, eCtx);
+		TH_ACTION.set(eCtx.getCommandMessage().getCommand().getAction());
+		try {
+			CommandMessage cmdMsg = eCtx.getCommandMessage();
+			String inputCmdUri = cmdMsg.getCommand().getAbsoluteUri();
+			
+			Input input = new Input(inputCmdUri, eCtx, cmdMsg.getCommand().getAction(), Behavior.$execute);
+			Output<?> output = executor.execute(input);
+			
+			// update context
+			eCtx = output.getContext();
+			ModelConfig<?> rootDomainConfig = getDomainConfigBuilder().getRootDomainOrThrowEx(cmdMsg.getCommand().getRootDomainAlias());
+			sessionPutIfApplicable(rootDomainConfig, eCtx);
+			eCtx.getRootModel().initState();
+		}finally {
+			TH_ACTION.set(null);
+		}
 		
 		return eCtx;
 	}
