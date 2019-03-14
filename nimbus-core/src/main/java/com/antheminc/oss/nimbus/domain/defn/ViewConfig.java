@@ -650,12 +650,12 @@ public class ViewConfig {
 	 * <p>
 	 *  Example config:
 	 * <pre>
-	 * &#64;@Autocomplete(display="label", postEventOnChange = true, minLength = 2)
-	 * &#64;@Config(url = "/p/owner/_search?fn=lookup&where=owner.firstName.containsIgnoreCase('<!autocompletesearchvalue!>')&projection.mapsTo=code:id,label:firstName")
+	 * &#64;Autocomplete(display="label", postEventOnChange = true, minLength = 2)
+	 * &#64;Config(url = "/p/owner/_search?fn=lookup&where=owner.firstName.containsIgnoreCase('<!autocompletesearchvalue!>')&projection.mapsTo=code:id,label:firstName")
 	 * </pre>
 	 * 
 	 * 
-	 * @since 1.0
+	 * @since 1.3
 	 */
 	
 	@Retention(RetentionPolicy.RUNTIME)
