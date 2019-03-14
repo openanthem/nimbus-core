@@ -124,7 +124,6 @@ export class Accordion extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
-        this.updatePositionWithNoLabel();     
     }
 
     /** Handling model changes to Accordions **/

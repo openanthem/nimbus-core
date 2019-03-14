@@ -109,7 +109,6 @@ export class FormElement extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
-        this.updatePositionWithNoLabel();
     }
 
     getElementStyle() {
