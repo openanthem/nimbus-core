@@ -318,7 +318,6 @@ describe('PageContent', () => {
   });
 
   it('should create the Header',  async(() => {
-    console.log('this.printService..spec',printService);
     expect(hostComponent).toBeTruthy();
   }));
 
