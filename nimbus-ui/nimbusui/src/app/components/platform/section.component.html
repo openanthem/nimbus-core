@@ -91,6 +91,9 @@
             <ng-template [ngIf]="element.alias == 'Tab'">
                 <nm-tab [element]="element"></nm-tab>
             </ng-template>
+            <ng-template [ngIf]="element.alias == componentTypes.autocomplete.toString()">
+                <nm-autocomplete [element]="element" [(ngModel)]="element.leafState"></nm-autocomplete>
+            </ng-template>
         </ng-template>
     </ng-template>
 </div>

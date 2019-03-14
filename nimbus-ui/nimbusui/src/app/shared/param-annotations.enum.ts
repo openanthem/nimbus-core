@@ -75,6 +75,7 @@ export class ComponentTypes extends Enum<string> {
   public static readonly text = new Enum('text');
   public static readonly tab = new Enum('Tab');
   public static readonly mask = new Enum('InputMask');
+  public static readonly autocomplete = new Enum('Autocomplete');
   public static readonly signature = new Enum('signature');
   public static readonly textarea = new Enum('textarea');
   public static readonly date = new Enum('date');
