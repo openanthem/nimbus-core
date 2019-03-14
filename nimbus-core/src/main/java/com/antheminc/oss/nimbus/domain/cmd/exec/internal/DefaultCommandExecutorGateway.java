@@ -216,8 +216,6 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		Param<?> cmdParam = findParamByCommandOrThrowEx(eCtx);
 		ExecutionConfig executionConfig = cmdParam != null ? cmdParam.getConfig().getExecutionConfig() : null;
 		
-		// if present, hand-off to each command within execution config
-        //if(executionConfig != null && CollectionUtils.isNotEmpty(executionConfig.get())) {
 		if(cmdMsg.getCommand().getAction() == Action._get && executionConfig != null && CollectionUtils.isNotEmpty(executionConfig.get())) {
                List<MultiOutput> execConfigOutputs = executeConfig(eCtx, cmdParam, executionConfig.get());
                execConfigOutputs.stream().forEach(mOut->addMultiOutput(mOutput, mOut));

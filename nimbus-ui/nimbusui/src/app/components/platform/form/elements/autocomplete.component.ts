@@ -61,15 +61,13 @@ export const AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any = {
             (completeMethod)="search($event)">
         </p-autoComplete>  
   </ng-template>
-  
+
    `
 })
 
 export class NmAutocomplete extends BaseControl<any> {
 
     @ViewChild(NgModel) model: NgModel;
-    @Input() element: Param;
-    @Input() form: FormGroup;
     results: any[];
     searchTerm$ = new Subject<string>();
     suggestionObj: any[];
