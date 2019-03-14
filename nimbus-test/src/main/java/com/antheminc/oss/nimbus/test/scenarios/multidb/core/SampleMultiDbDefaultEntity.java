@@ -25,14 +25,12 @@ import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 /**
  * @author Tony Lopez
  *
  */
 @Data
-@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Domain(value = "sample_multidb_default", includeListeners = { ListenerType.persistence })
 @Repo(value = Database.rep_mongodb)
