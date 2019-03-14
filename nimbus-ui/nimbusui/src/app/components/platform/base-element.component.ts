@@ -212,6 +212,9 @@ export class BaseElement {
     }
 
     getHeaderSize(position) {
+        if (!position) {
+            return undefined;
+        }
         if (position > 6) {
             return 'H6';
         }
