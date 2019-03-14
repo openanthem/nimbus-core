@@ -1349,7 +1349,7 @@ describe('DataTable', () => {
 
     it('postGridData() should call the pageService.processEvent()', () => {
         fixture.whenStable().then(() => {
-            const eleConfig = { code: '', uiStyles: { attributes: { postButtonTargetPath: true, postButtonUrl: '/test' } } };
+            const eleConfig = { code: '', uiStyles: { attributes: { postButtonTargetPath: true } } };
             spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
             hostComponent.selectedRows = [{ elemId: 123 }];
             spyOn(pageService, 'processEvent').and.returnValue('');

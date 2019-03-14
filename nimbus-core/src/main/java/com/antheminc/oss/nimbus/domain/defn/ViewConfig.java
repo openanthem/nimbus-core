@@ -1117,32 +1117,6 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <p><b>Expected Field Structure</b>
-	 * 
-	 * <p>GlobalNavMenu will be rendered when annotating a field nested under
-	 * one of the following components: <ul> <li>Layout Domain</li> </ul>
-	 * 
-	 * @since 1.0
-	 * @deprecated As of 1.1.7 onwards, {@code GlobalNavMenu} will no longer be
-	 *             rendered in the UI. Use {@link MenuPanel} instead.
-	 */
-	@Deprecated
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface GlobalNavMenu {
-
-		String alias() default "Global-Nav-Menu";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "";
-	}
-
-	/**
 	 * <!--TODO Candidate for removal-->
 	 * 
 	 * @since 1.0
@@ -1200,14 +1174,6 @@ public class ViewConfig {
 
 		boolean dataEntryField() default true;
 
-		/**
-		 * <p>As of release 1.1.9, {@code dataKey} is no longer needed to
-		 * support grid row expansion. This attribute will be removed in the
-		 * future releases.
-		 */
-		@Deprecated
-		String dataKey() default "id";
-
 		boolean expandableRows() default false;
 
 		boolean export() default false;
@@ -1229,14 +1195,6 @@ public class ViewConfig {
 		String postButtonLabel() default "";
 
 		String postButtonTargetPath() default "";
-		
-		/**
-		 * @deprecated As of 1.1.11 onwards, {@code postButtonUrl} will no longer 
-		 * represent the absolute path to make a http call for rowselection from UI. 
-		 * Replaced with {@link postButtonUri} attribute instead.
-		 */
-		@Deprecated
-		String postButtonUrl() default "";
 		
 		/**
 		 * Represents the relative path of the postButton on a rowselection Grid. 

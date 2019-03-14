@@ -522,7 +522,6 @@ export const formInput:any = {
                 "showAsLink": false,
                 "headerCheckboxToggleAllPages": false,
                 "rowSelection": false,
-                "postButtonUrl": "",
                 "pagination": true,
                 "dataEntryField": true,
                 "postButtonTargetPath": "",
