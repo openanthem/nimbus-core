@@ -1,3 +1,4 @@
+import { Converter } from './object.conversion';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -20,6 +21,8 @@ import { ServiceConstants } from '../services/service.constants';
 import { Param } from './param-state';
 import { LabelConfig } from './param-config';
 import { UiNature } from './param-config';
+import { ValidationUtils } from '../components/platform/validators/ValidationUtils';
+import { ValidatorFn } from '@angular/forms/src/directives/validators';
 
 /**
  * \@author Tony.Lopez
@@ -270,18 +273,31 @@ export class ParamUtils {
         return true;
     }
 
-    static getHelpText(labelConfig: LabelConfig) {
-        if (!labelConfig) {
+    static getLabelConfig(labelConfigs: LabelConfig[]) {
+        if (!labelConfigs || labelConfigs.length === 0) {
             return undefined;
         }
-        return labelConfig.helpText;
+        return labelConfigs.find(c => c.locale == ServiceConstants.LOCALE_LANGUAGE);
     }
 
-    static getLabelText(labelConfig: LabelConfig) {
-        if (!labelConfig) {
+    private static getLabelConfigProperty(element: Param, field: string): any {
+        if (!element) {
             return undefined;
         }
-        return labelConfig.text;
+        let labelConfig = ParamUtils.getLabelConfig(element.labels);
+        return labelConfig ? labelConfig[field] : undefined;
+    }
+
+    static getHelpText(element: Param) {
+        return ParamUtils.getLabelConfigProperty(element, 'helpText');
+    }
+
+    static getLabelText(element: Param) {
+        return ParamUtils.getLabelConfigProperty(element, 'text');
+    }
+
+    static getLabelCss(element: Param) {
+        return ParamUtils.getLabelConfigProperty(element, 'cssClass');
     }
 
     /**
@@ -385,4 +401,25 @@ export class ParamUtils {
            return currentPath.concat(ServiceConstants.PATH_SEPARATOR).concat(resolvePathSegment);
        }
    }
+
+   public static validate(event: any, control: any){
+    let frmCtrl = control.form.controls[event.config.code];
+    if(frmCtrl!=null) {
+        if(event.path === control.element.path) {
+            //bind dynamic validations on a param as a result of a state change of another param
+            if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
+                control.requiredCss = ValidationUtils.rebindValidations(frmCtrl,event.activeValidationGroups,control.element);
+            } else {
+                control.requiredCss = ValidationUtils.applyelementStyle(control.element);
+                var staticChecks: ValidatorFn[] = [];
+                staticChecks = ValidationUtils.buildStaticValidations(control.element);
+                frmCtrl.setValidators(staticChecks);
+            }
+            ValidationUtils.assessControlValidation(event,frmCtrl);
+            control.disabled = !event.enabled;  
+            
+        }
+
+    }
+  }
 }

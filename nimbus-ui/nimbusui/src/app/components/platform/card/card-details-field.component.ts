@@ -59,12 +59,6 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
         super.ngOnInit();
     }
 
-    getComponentClass() {
-        let componentClass: string[] = [];
-        componentClass.push(this.cssClass);
-        return componentClass;
-    }
-
     onChange: any = () => { };
     onTouched: any = () => { };
     get value() {

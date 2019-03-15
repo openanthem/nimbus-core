@@ -1,5 +1,5 @@
 
-<div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.dataEntryField" [hidden]="!element?.visible" [ngClass]="getComponentClass()">
+<div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.dataEntryField" [hidden]="!element?.visible" class="form-group">
    
     <nm-input id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.text.toString()" [element]="element" [form]="form"></nm-input>
     <nm-input-mask id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias==componentTypes.mask.toString()" [element]="element" [form]="form"></nm-input-mask>
@@ -15,6 +15,7 @@
     <nm-multiselect-card id="{{id}}"  *ngIf="element.config.uiStyles?.attributes?.alias == componentTypes.multiSelectCard.toString()" [formControlName]="element.config?.code" ngDefaultControl [element]="element" [form]="form"></nm-multiselect-card>
     <nm-upload id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.fileUpload.toString()" [formControlName]="element.config?.code" [element]="element" [form]="form"></nm-upload>
     <nm-input-switch id="{{id}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.inputSwitch.toString()" [element]="element"  [form]="form"></nm-input-switch>
+    <nm-autocomplete id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.autocomplete.toString()" [element]="element"  [form]="form"></nm-autocomplete>
 
     <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == componentTypes.grid.toString()">
         <nm-table

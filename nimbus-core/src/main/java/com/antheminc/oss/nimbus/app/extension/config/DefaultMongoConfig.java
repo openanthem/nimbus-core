@@ -25,8 +25,10 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
-import com.antheminc.oss.nimbus.domain.model.state.repo.MongoIdSequenceRepository;
+import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositoryOptions;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByExampleOperation;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByQueryOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
 import com.antheminc.oss.nimbus.support.mongo.MongoConvertersBuilder;
 
@@ -44,13 +46,15 @@ public class DefaultMongoConfig {
 	}
 	
 	@Bean(name="default.rep_mongodb")
-	public DefaultMongoModelRepository defaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo, BeanResolverStrategy beanResolver){
-		return new DefaultMongoModelRepository(mongoOps, idSequenceRepo, beanResolver);
+	public DefaultMongoModelRepository defaultMongoModelRepository(MongoOperations mongoOps, BeanResolverStrategy beanResolver, MongoDBModelRepositoryOptions options){
+		return new DefaultMongoModelRepository(mongoOps, beanResolver, options);
 	}
 	
 	@Bean
-	public MongoIdSequenceRepository mongoIdSequenceRepository(MongoOperations mongoOperations){
-		return new MongoIdSequenceRepository(mongoOperations);
+	public MongoDBModelRepositoryOptions defaultMongoDBModelRepositoryOptions(MongoOperations mongoOps, DomainConfigBuilder domainConfigBuilder) {
+		return MongoDBModelRepositoryOptions.builder()
+			.addSearchOperation(new MongoSearchByExampleOperation(mongoOps, domainConfigBuilder))
+			.addSearchOperation(new MongoSearchByQueryOperation(mongoOps, domainConfigBuilder))
+			.build();
 	}
-
 }

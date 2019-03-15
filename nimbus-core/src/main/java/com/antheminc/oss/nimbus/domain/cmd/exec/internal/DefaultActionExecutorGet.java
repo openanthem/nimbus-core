@@ -100,21 +100,7 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 		// create quad-model
 		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, null);
 		
-		return executeCb(eCtx, e);
-	}
-
-	// TODO: [SOHAM] interim solution
-	public static final ThreadLocal<Action> TH_ACTION = new ThreadLocal<>();
-	
-	private QuadModel<?, ?> executeCb(ExecutionContext eCtx, ExecutionEntity<?, ?> e) {
-		try {
-			TH_ACTION.set(Action._get);
-			QuadModel<?, ?> q = getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);
-			q.getRoot().initState();
-			return q;
-		} finally {
-			TH_ACTION.set(null);
-		}
+		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);
 	}
 
 	protected QuadModel<?, ?> handleMapped(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, Object mapped, Action action) {
@@ -129,7 +115,6 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 								.orElseThrow(()->new InvalidStateException("Expected first response from command gateway to return mapsTo core parm, but not found for mapsToCmd: "+mapsToCmd));
 		
 		QuadModel<?, ?> q = getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), mapped, coreParam);
-		q.getRoot().initState();
 		return q;
 	}
 	

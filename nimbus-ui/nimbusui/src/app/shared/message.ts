@@ -29,6 +29,7 @@ export class Message implements Serializable<Message, string> {
     type: string;
     text: string;
     context: string;
+    transient: boolean = true;
     messageArray: any[] = [];
     life: number;
     styleClass: string;
@@ -40,7 +41,7 @@ export class Message implements Serializable<Message, string> {
         obj = Converter.convert(inJson,obj);
 
         if(this.context !== undefined && this.text){
-            obj = Message.createMessage(this.type, this.context, this.text, this.life, this.styleClass);
+            obj = Message.createMessage(this.type, this.context, this.text, this.life, this.styleClass, inJson.transient);
         }
 
         return obj;
@@ -53,7 +54,7 @@ export class Message implements Serializable<Message, string> {
      * \@howToUse 
      *      Call this createMessage method by providing it with 4 variables
      */
-    public static createMessage( type, context, detail, life, styleClass): Message {
+    public static createMessage( type, context, detail, life, styleClass, transient? : boolean): Message {
         let severity: string, summary: string, updatedLife: number;
         
         let message = new Message();
@@ -61,6 +62,7 @@ export class Message implements Serializable<Message, string> {
         message.type = type;
         message.styleClass = styleClass;
         updatedLife = life;
+        message.transient = transient;
         
         switch (type) {               
 

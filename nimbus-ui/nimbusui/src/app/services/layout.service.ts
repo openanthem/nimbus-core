@@ -1,3 +1,4 @@
+import { ParamUtils } from './../shared/param-utils';
 import { URLUtils } from './../shared/url-utils';
 /**
  * @license
@@ -275,7 +276,7 @@ export class LayoutService {
 
     createMenuItem(element: Param): MenuItem {
         let item = {} as MenuItem;        
-        item.label = this.wcs.findLabelContent(element).text;
+        item.label = ParamUtils.getLabelText(element);
         item.path = element.path;
         item.page = element.config.uiStyles.attributes.page;
         item.icon = element.config.uiStyles.attributes.imgSrc;

@@ -78,12 +78,7 @@ class MockPageService {
 }
 
 class MockWebContentSvc {
-    findLabelContent(a) {
-        const res = {
-            text: 'testing'
-        };
-        return res;
-    }
+
 }
 
 class MockBreadcrumbService {
@@ -170,7 +165,6 @@ describe('PageResolver', () => {
 
   it('resolve() should call breadcrumpservice.push() without labelText', async(() => {
     let spy = spyOn(breadcrumpservice, 'push').and.callThrough();
-    spyOn(wcservice, 'findLabelContent').and.returnValue({});
     let result = service.resolve(route, rustate);
     result.then(data => {
         expect(breadcrumpservice.push).toHaveBeenCalled();
@@ -178,7 +172,6 @@ describe('PageResolver', () => {
   }));
 
   it('resolve() should call router.navigate()', async(() => {
-    spyOn(wcservice, 'findLabelContent').and.returnValue({});
     spyOn(pageservice, 'getPageConfigById').and.returnValue(new Promise(
         (resolve, reject) => {
             resolve(null);

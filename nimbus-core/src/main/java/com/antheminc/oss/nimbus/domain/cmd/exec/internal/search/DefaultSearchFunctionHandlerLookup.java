@@ -176,12 +176,12 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		
 		String property = StringUtils.substringBeforeLast(orderBy, PROPERTY_DELIMITER);
 		String direction = StringUtils.substringAfterLast(orderBy, PROPERTY_DELIMITER);
-		
+		Comparator<ParamValue> pvComparator = Comparator.comparing(pv -> expressionEvaluator.getValue(property, pv, String.class));
 		try {
 			if(StringUtils.equalsAnyIgnoreCase(direction, Constants.SEARCH_REQ_ORDERBY_DESC_MARKER.code))
-				CollectionsTemplate.sortSelfReverse(paramValues, Comparator.comparing(pv -> expressionEvaluator.getValue(property, pv, String.class)));
+				CollectionsTemplate.sortSelfReverse(paramValues, pvComparator);
 			else if(StringUtils.equalsAnyIgnoreCase(direction, Constants.SEARCH_REQ_ORDERBY_ASC_MARKER.code))
-				CollectionsTemplate.sortSelf(paramValues, Comparator.comparing(pv -> expressionEvaluator.getValue(property, pv, String.class)));
+				CollectionsTemplate.sortSelf(paramValues, pvComparator);
 			else
 				throw new FrameworkRuntimeException("Valid sort direction(s) are "+Constants.SEARCH_REQ_ORDERBY_DESC_MARKER.code+" OR "+Constants.SEARCH_REQ_ORDERBY_ASC_MARKER.code+" but found: "+direction+" , in command: "+cmd); 
 		}

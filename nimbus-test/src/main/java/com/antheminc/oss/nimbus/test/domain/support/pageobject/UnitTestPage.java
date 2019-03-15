@@ -258,14 +258,10 @@ public abstract class UnitTestPage {
 		}
 
 		final String sPayload;
-		if (payload.getClass().equals(String.class)) {
-			sPayload = (String) payload;
-		} else {
-			try {
-				sPayload = this.objectMapper.writeValueAsString(payload);
-			} catch (JsonProcessingException e) {
-				throw new RuntimeException("Failed to convert payload to string.", e);
-			}
+		try {
+			sPayload = this.objectMapper.writeValueAsString(payload);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Failed to convert payload to string.", e);
 		}
 
 		return sPayload;

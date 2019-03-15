@@ -24,6 +24,8 @@ import { GenericDomain } from './../model/generic-domain.model';
 import { Param } from './../shared/param-state';
 import { HttpMethod } from '../shared/command.enum';
 import { AbstractControl } from '@angular/forms/src/model';
+import { ParamUtils } from './../shared/param-utils';
+
 
 /**
  * \@author Sandeep.Mantha
@@ -97,24 +99,8 @@ export class ControlSubscribers {
 
     public validationUpdateSubscriber(control:BaseControl<any>) {
         this.pageService.validationUpdate$.subscribe(event => {
-            let frmCtrl = control.form.controls[event.config.code];
-            if(frmCtrl!=null) {
-                if(event.path === control.element.path) {
-                    //bind dynamic validations on a param as a result of a state change of another param
-                    if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
-                        control.requiredCss = ValidationUtils.rebindValidations(frmCtrl,event.activeValidationGroups,control.element);
-                    } else {
-                        control.requiredCss = ValidationUtils.applyelementStyle(control.element);
-                        var staticChecks: ValidatorFn[] = [];
-                        staticChecks = ValidationUtils.buildStaticValidations(control.element);
-                        frmCtrl.setValidators(staticChecks);
-                    }
-                    ValidationUtils.assessControlValidation(event,frmCtrl);
-                    control.disabled = !event.enabled;   
-                }
-
-            }
-        });
+            ParamUtils.validate(event, control);
+        });       
     }
 
     public resetPreviousLeafState(val: any) {

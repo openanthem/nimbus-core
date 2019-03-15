@@ -184,7 +184,6 @@ export class ActionLink extends BaseElement{
         }
     
         ngOnInit() {
-            this.loadLabelConfigFromConfigs(this.element.labels, this.element.config.code);
 
             // replace parameters in url enclosed within {}
             if (this.element.config && this.element.config.uiStyles && this.element.config.uiStyles.attributes && this.element.config.uiStyles.attributes.url) {

@@ -67,7 +67,7 @@ import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerReflection;
 @EnableCaching
 public class DefaultCoreConfiguration {
 	
-	@Bean
+	@Bean(name="default.repositoryFactory")
 	public DefaultModelRepositoryFactory defaultModelRepositoryFactory(BeanResolverStrategy beanResolver){
 		/*Add ModelRepository implementation beans to a lookup map*/
 		Map<String, ModelRepository> repoBeanLookup = new HashMap<>();

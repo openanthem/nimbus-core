@@ -200,4 +200,10 @@ public class SampleCoreEntity extends IdLong {
 	private String testEntry;
 	
 	private List<String> attr_list_2_simple;
+	
+	private String p1;
+	
+	private String p2;
+	
+	private int p3;
 }

@@ -58,12 +58,7 @@ class MockPageService {
 }
 
 class MockWebContentSvc {
-    findLabelContent(param1) {
-      const test = {
-        text: 'testing'
-      };
-      return test;
-    }
+
 }
 
 let fixture, hostComponent, pageService;

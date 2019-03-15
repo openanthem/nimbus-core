@@ -58,7 +58,7 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                     <!-- Form Elements -->
                     <ng-template [ngIf]="form !== undefined">
                         <ng-template ngFor let-frmElem [ngForOf]="tab.type?.model?.params">
-                            <nm-frm-grp [element]="frmElem" [form]="form" class="{{elementCss}}" [position]="position + 1"> 
+                            <nm-frm-grp [element]="frmElem" [form]="form" [ngClass]="getElementClass(elementCss, frmElem)" [position]="position + 1"> 
                             </nm-frm-grp>
                         </ng-template>
                     </ng-template>
@@ -67,7 +67,7 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                             <!-- ButtonGroup -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.buttonGroup.toString()">
                                 <div class="">
-                                    <nm-button-group [buttonList]="tabElement.type?.model?.params" [cssClass]="tabElement.config?.uiStyles?.attributes?.cssClass">
+                                    <nm-button-group [buttonList]="tabElement.type?.model?.params" class="{{tabElement.config?.uiStyles?.attributes?.cssClass}} buttonGroup">
                                     </nm-button-group>
                                 </div>
                             </ng-template>
@@ -87,7 +87,10 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                             </ng-template>
                             <!-- Card Content -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetail.toString()">
-                                <nm-card-details [element]="tabElement" [position]="position+1" [nmPrint]="tabElement"></nm-card-details>
+                                <nm-card-details [element]="tabElement" 
+                                    [position]="position+1" 
+                                    [nmPrint]="tabElement"
+                                    [ngClass]="tabElement.config.uiStyles.attributes.cssClass"></nm-card-details>
                             </ng-template>
                             <!-- Card Detaisl Grid -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetailsGrid.toString()">
@@ -238,6 +241,22 @@ export class Accordion extends BaseElement {
             if (tab.type.model.params[i].alias === ViewComponent.image.toString()) {
                 return tab.type.model.params[i].config.uiStyles.attributes.cssClass;
             }
+        }
+    }
+
+    getElementClass(parentCss: String, child: Param) {
+        if (child.config.uiStyles) {
+            if (child.config.uiStyles.attributes && child.config.uiStyles.attributes.cssClass && child.config.uiStyles.attributes.cssClass != '') {
+                return child.config.uiStyles.attributes.cssClass;
+            } else {
+                if (parentCss) {
+                    return parentCss;
+                } else {
+                    return '';
+                }
+            }
+        } else {
+            return '';
         }
     }
 

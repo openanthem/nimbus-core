@@ -1,3 +1,4 @@
+import { ParamUtils } from './../../../shared/param-utils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -44,7 +45,10 @@ export class TableHeader {
     
     ngOnInit() {
         this.paramConfig['field'] = this.paramConfig.code;
-        this.paramConfig.label = this._wcs.findLabelContentFromConfig(this.element.elemLabels.get(this.paramConfig.id), this.paramConfig.code).text;
+        let colElemLabelConfig = ParamUtils.getLabelConfig(this.element.elemLabels.get(this.paramConfig.id));
+        if (colElemLabelConfig) {
+            this.paramConfig.label = colElemLabelConfig.text;
+        }
         this.paramConfig['header'] = this.paramConfig.label;
         if (this.paramConfig.uiStyles.attributes.hidden) {
             this.paramConfig['exportable'] = false;
