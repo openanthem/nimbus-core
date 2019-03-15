@@ -105,13 +105,7 @@ import { NmAutocomplete } from './form/elements/autocomplete.component';
 let param: Param;
 
 class MockWebContentSvc {
-    findLabelContent(param) {
-        const test = {
-            text: 'tText',
-            helpText: 'tHelpText'
-        }
-        return test;
-    }
+
 }
 
 @Component({

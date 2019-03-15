@@ -112,12 +112,7 @@ import { NmMessageService } from './../../../services/toastmessage.service';
 let pageService, webContentSvc, configService;
 
 class MockWebContentSvc {
-  findLabelContent(param1) {
-    const test = {
-      text: 'testing'
-    };
-    return test;
-  }
+
 }
 
 class MockPageService {

@@ -1,3 +1,4 @@
+import { ServiceConstants } from './service.constants';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -368,7 +369,7 @@ describe('LayoutService', () => {
   }));
 
   it('createMenuItem() should return item', async(() => {
-    spyOn(webContentSvc, 'findLabelContent').and.returnValue({'text': 'testing label'});
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
     layoutServicePageParam.config.uiStyles.attributes.page = 'testing page'
     layoutServicePageParam.config.uiStyles.attributes.imgSrc = 'testing imgSrc';
     layoutServicePageParam.config.uiStyles.attributes.imgType = 'testing imgType';

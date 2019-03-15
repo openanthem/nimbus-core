@@ -47,7 +47,6 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     showLabel: boolean = true;
     disabled: boolean;
     requiredCss:boolean = false;
-    labelConfig: LabelConfig;
 
     stateChangeSubscriber: Subscription;
     validationChangeSubscriber: Subscription;
@@ -79,7 +78,6 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         
         this.value = this.element.leafState;
         this.disabled = !this.element.enabled;
-        this.loadLabelConfig(this.element);
         this.requiredCss = ValidationUtils.applyelementStyle(this.element);
         if (this.form) {
             let frmCtrl = this.form.controls[this.element.config.code];
@@ -88,14 +86,6 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
                 this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,this.element.activeValidationGroups,this.element);
             } 
         }
-    }
-
-    /**	
-     * Retrieve the label config from the provided param and set it into this instance's labelConfig.
-     * @param param The param for which to load label content for.	
-     */	
-    protected loadLabelConfig(param: Param): void {	
-        this.labelConfig = this.wcs.findLabelContent(param);	
     }
 
     ngAfterViewInit(){
@@ -145,14 +135,14 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
      * Get the tooltip help text for this element.
      */
     public get helpText(): string {
-        return ParamUtils.getHelpText(this.labelConfig);
+        return ParamUtils.getHelpText(this.element);
     }
 
     /**
      * Get the label text for this element.
      */
     public get label(): string {
-        return ParamUtils.getLabelText(this.labelConfig);
+        return ParamUtils.getLabelText(this.element);
     }
 
     /**

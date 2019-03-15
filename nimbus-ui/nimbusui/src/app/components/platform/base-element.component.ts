@@ -1,3 +1,4 @@
+import { Message } from './../../shared/message';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -51,7 +52,6 @@ import { ValidationConstraint } from './../../shared/validationconstraints.enum'
  */
 export class BaseElement {
     @Input() element: Param;
-    public labelConfig: LabelConfig;
     protected _nestedParams: Param[];
     protected _imgSrc: string;
     protected _cols: string;
@@ -73,27 +73,7 @@ export class BaseElement {
      * Initialization activities this Param
      */
     ngOnInit() {
-        this.loadLabelConfig(this.element);
         this.requiredCss = ValidationUtils.applyelementStyle(this.element);
-    }
-
-    /**	
-     * Retrieve the label config from the provided param for the active Locale 
-     * and set it into this instance's labelConfig.
-     * @param param The param for which to load label content for.	
-     */	
-    protected loadLabelConfig(param: Param): void {	
-        this.labelConfig = this.wcs.findLabelContent(param);	
-    }
-
-    /**	
-     * Retrieve the label config from the provided labelConfigs that has the same provided code 
-     * and set it into this instance's labelConfig. If no label config is found, defaultLabel can
-     * be used to set a default label if the WebContentService allows for it.
-     * @param param The param for which to load label content for.	
-     */	
-    protected loadLabelConfigFromConfigs(labelConfigs: LabelConfig[], defaultLabel?: string): void {	
-        this.labelConfig = this.wcs.findLabelContentFromConfig(labelConfigs, defaultLabel);	
     }
 
     /**
@@ -173,14 +153,14 @@ export class BaseElement {
      * Get the tooltip help text for this element.
      */
     public get helpText(): string {
-        return ParamUtils.getHelpText(this.labelConfig);
+        return ParamUtils.getHelpText(this.element);
     }
 
     /**
      * Get the label text for this element.
      */
     public get label(): string {
-        return ParamUtils.getLabelText(this.labelConfig);
+        return ParamUtils.getLabelText(this.element);
     }
 
     /**
@@ -239,9 +219,9 @@ export class BaseElement {
     }
 
     ngOnDestroy(){
-        if(this.element.message)                 
-        this.element.message = [];              
+        if(this.element.message) {
+            this.element.message = this.element.message.filter(m => !m.transient);
+        }
     }
-    
 }
 

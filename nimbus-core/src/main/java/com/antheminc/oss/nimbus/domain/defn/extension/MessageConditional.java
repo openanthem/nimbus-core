@@ -55,6 +55,12 @@ public @interface MessageConditional {
 	Context context() default Context.INLINE;
 
 	/**
+	 * <p>When {@code true}, the message will NOT be preserved on the server and
+	 * UI on successive retrievals. Set this value to {@code false} when needing
+	 * to always display a message.
+	 */
+	boolean isTransient() default true;
+	/**
 	 * <p>CSS class to override UI default class.
 	 */
 	String cssClass() default "";

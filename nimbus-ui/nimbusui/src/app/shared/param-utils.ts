@@ -1,3 +1,4 @@
+import { Converter } from './object.conversion';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -272,18 +273,31 @@ export class ParamUtils {
         return true;
     }
 
-    static getHelpText(labelConfig: LabelConfig) {
-        if (!labelConfig) {
+    static getLabelConfig(labelConfigs: LabelConfig[]) {
+        if (!labelConfigs || labelConfigs.length === 0) {
             return undefined;
         }
-        return labelConfig.helpText;
+        return labelConfigs.find(c => c.locale == ServiceConstants.LOCALE_LANGUAGE);
     }
 
-    static getLabelText(labelConfig: LabelConfig) {
-        if (!labelConfig) {
+    private static getLabelConfigProperty(element: Param, field: string): any {
+        if (!element) {
             return undefined;
         }
-        return labelConfig.text;
+        let labelConfig = ParamUtils.getLabelConfig(element.labels);
+        return labelConfig ? labelConfig[field] : undefined;
+    }
+
+    static getHelpText(element: Param) {
+        return ParamUtils.getLabelConfigProperty(element, 'helpText');
+    }
+
+    static getLabelText(element: Param) {
+        return ParamUtils.getLabelConfigProperty(element, 'text');
+    }
+
+    static getLabelCss(element: Param) {
+        return ParamUtils.getLabelConfigProperty(element, 'cssClass');
     }
 
     /**

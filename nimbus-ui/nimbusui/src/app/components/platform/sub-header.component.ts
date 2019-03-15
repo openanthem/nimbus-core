@@ -52,9 +52,5 @@ export class SubHeaderCmp extends BaseElement{
     constructor(private _wcs: WebContentSvc) {
         super(_wcs);
     }
-
-    ngOnInit() {
-        this.loadLabelConfig(this.param);
-    }
     
 }
