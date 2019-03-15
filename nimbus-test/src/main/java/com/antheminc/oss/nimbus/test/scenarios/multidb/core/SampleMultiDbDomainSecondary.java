@@ -36,7 +36,6 @@ import lombok.EqualsAndHashCode;
 @Repo(value = Database.rep_custom, modelRepositoryBean = "rep_dbSecondary")
 public class SampleMultiDbDomainSecondary {
 
-	private static final long serialVersionUID = 1L;
 	@Ignore
 	private String _class = this.getClass().getName(); 
 	@Id
@@ -44,6 +43,10 @@ public class SampleMultiDbDomainSecondary {
 	private String secondaryField1;
 	private String secondaryField2;
 	
+	public SampleMultiDbDomainSecondary() {
+		
+	}
+
 	public SampleMultiDbDomainSecondary(Long id, String secondaryField1, String secondaryField2) {
 		this.id = id;
 		this.secondaryField1 = secondaryField1;

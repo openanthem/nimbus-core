@@ -36,13 +36,16 @@ import lombok.EqualsAndHashCode;
 @Repo(value = Database.rep_custom, modelRepositoryBean = "rep_dbPrimary")
 public class SampleMultiDbDomainPrimary {
 
-	private static final long serialVersionUID = 1L;
 	@Ignore
 	private final String _class = this.getClass().getName(); 
 	@Id
 	private Long id;
 	private String primaryField1;
 	private String primaryField2;
+	
+	public SampleMultiDbDomainPrimary() {
+		
+	}
 	
 	public SampleMultiDbDomainPrimary(Long id, String primaryField1, String primaryField2) {
 		this.id = id;
