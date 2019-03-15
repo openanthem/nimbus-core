@@ -44,6 +44,10 @@ public class SampleMultiDbDefaultEntity {
 		private String field1;
 		private String field2;
 		
+		public SampleMultiDbDefaultEntity() {
+			
+		}
+		
 		public SampleMultiDbDefaultEntity(Long id, String primaryField1, String primaryField2) {
 			this.id = id;
 			this.field1 = primaryField1;
