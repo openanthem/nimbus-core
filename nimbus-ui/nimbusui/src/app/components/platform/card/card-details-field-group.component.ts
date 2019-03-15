@@ -31,7 +31,7 @@ import { WebContentSvc } from '../../../services/content-management.service';
 @Component({
     selector: 'nm-card-details-field-group',
     template:`
-        <div>
+        <fieldset>
             <nm-input-label *ngIf="!isLabelEmpty"
                 [element]="element" 
                 [required]="false">
@@ -46,7 +46,7 @@ import { WebContentSvc } from '../../../services/content-management.service';
                     <nm-paragraph [element]="field"></nm-paragraph>
                 </ng-template>
             </ng-template>
-        </div>
+        </fieldset>
     `
 })
 

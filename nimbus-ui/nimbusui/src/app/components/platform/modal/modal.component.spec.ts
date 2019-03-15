@@ -1,8 +1,27 @@
+/**
+ * @license
+ * Copyright 2016-2018 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 'use strict';
 import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule, EditorModule  } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule, InputMaskModule, EditorModule  } from 'primeng/primeng';
+
 import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, FormControl } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -68,6 +87,8 @@ import { PrintDirective } from '../../../directives/print.directive';
 import { Subject } from 'rxjs';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { fieldValueParam } from 'mockdata';
+import { InputMaskComp } from './../form/elements/input-mask.component';
+
 import { RichText } from '../form/elements/rich-text.component';
 import { ChartModule } from 'primeng/chart';
 import { NmChart } from './../charts/chart.component';
@@ -170,6 +191,7 @@ const declarations = [
     InputLegend,
     FormErrorMessage,
     PrintDirective,
+    InputMaskComp,
     NmChart,
     RichText
    ];
@@ -196,6 +218,7 @@ const declarations = [
        ToastModule,
        InputSwitchModule,
        TreeTableModule,
+       InputMaskModule,
        ChartModule,
        EditorModule
    ];

@@ -173,6 +173,7 @@ public class DefaultCoreConfiguration {
 		return new SpringSecurityAuditorAware(beanResolver);
 	}
 	
+	
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
 		return builder.build();
