@@ -23,6 +23,7 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Page;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewRoot;
+import com.antheminc.oss.nimbus.domain.defn.extension.Lifecycle;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
 import lombok.Getter;
@@ -32,11 +33,12 @@ import lombok.Setter;
  * @author Sandeep Mantha
  *
  */
-@Domain(value="samplebpmn", includeListeners={ListenerType.websocket}, lifecycle = "samplebpmn")
+@Domain(value="samplebpmn", includeListeners={ListenerType.websocket})
 @ViewRoot(layout = "")
 @Repo(value = Repo.Database.rep_none, cache = Repo.Cache.rep_device)
 @Getter @Setter
 @MapsTo.Type(SampleCoreEntity.class)
+@Lifecycle(name="samplebpmn")
 public class VRSampleWithBpmn {
 	
 	private String attr_task1;

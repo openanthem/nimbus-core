@@ -33,6 +33,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.Notification;
 import com.antheminc.oss.nimbus.domain.model.state.Notification.ActionType;
+import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadNewHandler;
 import com.antheminc.oss.nimbus.domain.model.state.support.DefaultJsonModelSerializer;
 import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
@@ -110,6 +111,7 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 		// hook up on state load new events
 		if(isNew())
 			onStateLoadNewEvent(this);
+		onStateLoadEvent(this);
 
 	}
 	
@@ -122,6 +124,19 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 					OnStateLoadNewHandler<Annotation> handler = eventHandlerConfig.getOnStateLoadNewHandler(ac);
 					if(handler.shouldAllow(ac, m.getAssociatedParam())) {
 						handler.onStateLoadNew(ac, m.getAssociatedParam());
+					}
+				});
+		}
+	}
+	
+	protected static void onStateLoadEvent(Model<?> m) {
+		EventHandlerConfig eventHandlerConfig = m.getConfig().getEventHandlerConfig();
+		if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateLoadAnnotations()!=null) {
+			eventHandlerConfig.getOnStateLoadAnnotations().stream()
+				.forEach(ac->{
+					OnStateLoadHandler<Annotation> handler = eventHandlerConfig.getOnStateLoadHandler(ac);
+					if(handler.shouldAllow(ac, m.getAssociatedParam())) {
+						handler.onStateLoad(ac, m.getAssociatedParam());
 					}
 				});
 		}

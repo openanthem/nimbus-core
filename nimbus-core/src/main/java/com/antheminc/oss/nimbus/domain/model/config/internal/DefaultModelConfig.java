@@ -18,7 +18,6 @@ package com.antheminc.oss.nimbus.domain.model.config.internal;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -72,11 +71,6 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 		return templateParamConfigs;
 	}
 
-	@Override @JsonIgnore 
-	public String getDomainLifecycle() {
-		return Optional.ofNullable(getDomain()).map(Domain::lifecycle).orElse(null);
-	}
-	
 	@Override
 	public <K> ParamConfig<K> findParamByPath(String path) {
 		// handle scenario if path = "/"

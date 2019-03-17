@@ -86,11 +86,6 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 	}
 	
 
-	/**
-	 * The class BPMStatefulTestModel has two parameters; parameterBeforeHumanTask and parameterAfterHumanTask
-	 * The bpm lifecyle (bpmstatefulmodel.bpmn20.xml)checks for assignment of parameterBeforeHumanTask and stops if the parameter is not assigned.
-	 * Once parameterBeforeHumanTask is set to a value, it should trigger the bpmn which would subsequently set parameterAfterHumanTask
-	 */
 	@Test
 	@SuppressWarnings("unchecked")
 	public void t01_stateful_bpm() {
@@ -213,6 +208,37 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 		assertEquals("usertask2",pf2.getActiveTasks().get(0));
 		
 	}
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void t05_corefirstnew_bpm() {
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(PLATFORM_ROOT + "/ctvsubscribermodel")
+					.addAction(Action._new)
+					.getMock();
+		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
+		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		assertNotNull(domainRoot_refId);
+		
+		
+		request = MockHttpRequestBuilder.withUri(BPM_CV_PARAM_ROOT + ":"+domainRoot_refId+"/_get")
+				.getMock();
+		holder = (Holder<MultiOutput>)controller.handlePost(request, null);
+
+		
+		String updateUri = BPM_CV_PARAM_ROOT + ":"+domainRoot_refId+"/.m/coreParameter";
+		MockHttpServletRequest request4 = MockHttpRequestBuilder.withUri(updateUri)
+				.addAction(Action._update)
+				.getMock();
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.toJson("Assigned"));	
+		
+		MockHttpServletRequest request3 = MockHttpRequestBuilder.withUri(BPM_CV_PARAM_ROOT).addRefId(domainRoot_refId)
+				.addAction(Action._get)
+				.getMock();
+		holder = (Holder<MultiOutput>)controller.handlePost(request3, null);		
+		
+		Param<?> response = (Param<?>)holder.getState().getSingleResult();
+		assertEquals(response.findStateByPath("/viewResultParameter"),"Complete");
+	}	
 		
 	
 }

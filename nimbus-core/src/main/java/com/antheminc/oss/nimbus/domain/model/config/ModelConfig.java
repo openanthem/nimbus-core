@@ -30,8 +30,6 @@ public interface ModelConfig<T> extends EntityConfig<T> {
 	
 	public String getRepoAlias();
 	
-	public String getDomainLifecycle();
-	
 	public Repo getRepo();
 	
 	public boolean isRemote();

@@ -13,31 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.defn;
+package com.antheminc.oss.nimbus.domain.defn.extension;
 
-import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.antheminc.oss.nimbus.domain.Event;
+import com.antheminc.oss.nimbus.domain.defn.event.EventType;
+
 /**
- * @author Soham Chakravarti
+ * @author Jayant Chaudhuri
  *
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(value=ElementType.TYPE)
-@Model
-public @interface Domain {
-
-	String value();
+@Retention(RUNTIME)
+@Target({TYPE})
+@Event
+public @interface Lifecycle {
+	String name();
+	EventType[] eventType() default {EventType.OnStateLoad,EventType.OnStateLoadNew};
 	
-	ListenerType[] includeListeners() default { };
-	
-	enum ListenerType {
-		none,
-		websocket,
-		persistence,
-		update
-		
-	}
 }

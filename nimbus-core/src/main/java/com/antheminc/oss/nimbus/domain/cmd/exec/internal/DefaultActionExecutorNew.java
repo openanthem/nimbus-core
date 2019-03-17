@@ -17,9 +17,6 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.bpm.ProcessRepository;
@@ -33,14 +30,12 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
-import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
-import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 
@@ -119,22 +114,6 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 		// set to context
 		eCtx.setQuadModel(q);
 		
-		// hook up BPM
-		Param<?> rootDomainParam = getRootDomainParam(eCtx);
-		
-		ProcessFlow processEntityState = startBusinessProcess(rootDomainParam);
-		
-		if(processEntityState==null)
-			return eCtx;
-		
-		ExecutionEntity<?, ?> e = q.getRoot().getState();
-		Long refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
-		processEntityState.setId(refId);
-		
-		e.setFlow(processEntityState);
-		
-		saveProcessState(resolveEntityAliasByRepo(rootDomainConfig), processEntityState);
-		
 		return eCtx;
 	}
 	
@@ -181,29 +160,6 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 	private void updateCommandWithRefId(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, ExecutionEntity<?, ?> e) {
 		Long refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
 		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
-	}
-	
-	private ProcessFlow startBusinessProcess(Param<?> rootDomainParam){
-		String lifecycleKey = rootDomainParam.findIfNested().getConfig().getDomainLifecycle();
-		
-		if(StringUtils.isEmpty(lifecycleKey))
-			return null;
-		return getBpmGateway().startBusinessProcess(rootDomainParam, lifecycleKey);
-
-	}
-	
-	protected void saveProcessState(String resolvedEntityAlias, ProcessFlow processEntityState) {
-		ModelConfig<?> processModelConfig = getDomainConfigBuilder().getModel(ProcessFlow.class);
-		Repo repo = processModelConfig.getRepo();
-		
-		if(!Repo.Database.exists(repo))
-			throw new InvalidConfigException(ProcessFlow.class.getSimpleName()+" must have @Repo configured for db persistence, but found none.");
-		
-		String processStateAlias = processModelConfig.getRepoAlias();
-		
-		String entityProcessAlias = resolvedEntityAlias + "_" + processStateAlias;
-		
-		getProcessRepo()._save(processEntityState, entityProcessAlias);
 	}
 	
 }
