@@ -20,7 +20,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule} from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule, AutoCompleteModule} from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing'
 import { HttpClientModule } from '@angular/common/http';
@@ -108,6 +108,7 @@ import { RichText } from './../form/elements/rich-text.component';
 import { TableHeader } from './../grid/table-header.component';
 import { Param } from './../../../shared/param-state';
 import { NmMessageService } from './../../../services/toastmessage.service';
+import { NmAutocomplete } from './../form/elements/autocomplete.component';
 
 let logger, pageService, param, printService;
 
@@ -147,12 +148,7 @@ export class MockActivatedRoute implements ActivatedRoute {
 }
 
 class MockWebContentSvc {
-  findLabelContent(a) {
-    return {
-      text: 213,
-      helpText: 345
-    };
-  }
+
 }
 
 @Component({
@@ -258,6 +254,7 @@ const declarations = [
   FormErrorMessage,
   PrintDirective,
   InputMaskComp,
+  NmAutocomplete,
   Tab,
   NmChart,
   RichText
@@ -288,6 +285,7 @@ const declarations = [
   TreeTableModule,
   InputMaskModule,
   TabViewModule,
+  AutoCompleteModule,
   ChartModule,
   EditorModule
  ];

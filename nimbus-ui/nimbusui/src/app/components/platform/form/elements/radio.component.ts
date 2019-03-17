@@ -40,18 +40,20 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc, ControlSubscribers],
   template: `
     <fieldset>
-        <nm-input-legend [element]="element" [required]="requiredCss">
-        </nm-input-legend>
-        <div class="checkboxHolder" >
-            <div class="form-checkrow" *ngFor="let val of element?.values; let i = index">
-                <p-radioButton 
-                    name="{{element?.config?.code}}" 
-                    [(ngModel)]="value"
-                    [disabled]="disabled"
-                    [value]="val.code" 
-                    [label]="val.label" 
-                    (ngModelChange)="emitValueChangedEvent(this,$event)">
-                </p-radioButton>
+        <div class="fieldsetFlex">
+            <nm-input-legend [element]="element" [required]="requiredCss">
+            </nm-input-legend>
+            <div class="checkboxHolder" >
+                <div class="form-checkrow" *ngFor="let val of element?.values; let i = index">
+                    <p-radioButton 
+                        name="{{element?.config?.code}}" 
+                        [(ngModel)]="value"
+                        [disabled]="disabled"
+                        [value]="val.code" 
+                        [label]="val.label" 
+                        (ngModelChange)="emitValueChangedEvent(this,$event)">
+                    </p-radioButton>
+                </div>
             </div>
         </div>
     </fieldset>

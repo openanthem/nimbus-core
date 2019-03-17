@@ -29,4 +29,6 @@ public interface ModelRepositoryFactory {
 	public ModelRepository get(Repo.Database db);
 	
 	public ModelRepository get(ModelConfig<?> mConfig);
+
+	public ModelRepository get(Repo.Database db, String extensionBean);
 }

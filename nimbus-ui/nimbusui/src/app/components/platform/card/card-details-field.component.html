@@ -1,6 +1,6 @@
 <div class="col-sm-12 mb-1 {{cssClass}}" *ngIf="element.config.uiStyles.attributes.type==componentTypes.divider.toString()">
 </div>
-<div [ngClass]="getComponentClass()" *ngIf="element.config.uiStyles.attributes.type==componentTypes.field.toString()">
+<div *ngIf="element.config.uiStyles.attributes.type==componentTypes.field.toString()">
     <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc && element?.visible == true">
         <ng-template [ngIf]="element.config.uiStyles.attributes.inplaceEdit">
             <inplace-editor [element]="element"></inplace-editor>

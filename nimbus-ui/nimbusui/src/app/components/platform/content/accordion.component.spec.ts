@@ -27,7 +27,7 @@ import { JL } from 'jsnlog';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
   FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule } from 'primeng/primeng';
+  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, AutoCompleteModule } from 'primeng/primeng';
   import { TableModule } from 'primeng/table';
   import { KeyFilterModule } from 'primeng/keyfilter';
   import { ToastModule } from 'primeng/toast';
@@ -54,6 +54,7 @@ import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
 import { AppInitService } from '../../../services/app.init.service';
+import { NmAutocomplete } from './../form/elements/autocomplete.component';
 import { Image } from '../image.component';
 import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { FrmGroupCmp } from '../form-group.component';
@@ -107,15 +108,11 @@ import { EditorModule } from 'primeng/editor';
 import { TableHeader } from './../grid/table-header.component';
 import { NmMessageService } from './../../../services/toastmessage.service';
 
+
 let pageService, webContentSvc, configService;
 
 class MockWebContentSvc {
-  findLabelContent(param1) {
-    const test = {
-      text: 'testing'
-    };
-    return test;
-  }
+
 }
 
 class MockPageService {
@@ -212,6 +209,7 @@ const declarations = [
   FormErrorMessage,
   PrintDirective,
   InputMaskComp,
+  NmAutocomplete,
   Tab,
   NmChart,
   RichText
@@ -248,6 +246,7 @@ const imports = [
   BrowserAnimationsModule,
   InputMaskModule,
   TabViewModule,
+  AutoCompleteModule,
   EditorModule
 ];
 const providers = [

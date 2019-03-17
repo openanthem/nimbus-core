@@ -17,6 +17,9 @@ package com.antheminc.oss.nimbus.domain.model.state.repo;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
@@ -45,14 +48,22 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 
 	@Override
 	public ModelRepository get(Repo repo) {
-		return repo !=null ? get(repo.value()): null;
+		return repo != null ? get(repo.value(), repo.modelRepositoryBean()) : null;
 	}
 	
 	@Override
-	public ModelRepository get(Repo.Database db) {
-		return REPO_BEAN_LOOKUP.get(db.name());
-	}
+	public ModelRepository get(Repo.Database db, String extensionBean) {
+		if (!Repo.Database.rep_custom.equals(db)) {
+			return REPO_BEAN_LOOKUP.get(db.name());
+		}
 
+		if (StringUtils.isEmpty(extensionBean)) {
+			throw new InvalidConfigException("extensionBean must be defined for rep_custom implementations!");
+		}
+		
+		return getBeanResolver().get(ModelRepository.class, extensionBean);
+	}
+		
 	@Override
 	public ModelRepository get(ModelConfig<?> mConfig) {
 		if(mConfig.isRemote()) {
@@ -60,5 +71,8 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 		} 			
 		return get(mConfig.getRepo());
 	}
-	
+
+	public ModelRepository get(Repo.Database db) {
+		return get(db, null);
+	}
 }

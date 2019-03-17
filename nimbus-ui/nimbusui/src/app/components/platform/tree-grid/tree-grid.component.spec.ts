@@ -1,3 +1,4 @@
+import { NmAutocomplete } from './../form/elements/autocomplete.component';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -19,7 +20,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, AutoCompleteModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
@@ -183,6 +184,7 @@ class MockPageService {
     TextArea,
     InputLegend,
     FormElement,
+    NmAutocomplete,
     FormGridFiller,
     Header,
     Signature,
@@ -205,6 +207,7 @@ const imports = [
      FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
      ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule,
      AngularSvgIconModule,
+     AutoCompleteModule,
      HttpClientModule,
      StorageServiceModule,
      HttpModule, 

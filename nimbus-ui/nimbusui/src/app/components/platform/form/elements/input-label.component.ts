@@ -16,8 +16,6 @@
  */
 'use strict';
 import { Component, Input } from '@angular/core';
-import { PageService } from './../../../../services/page.service';
-import { WebContentSvc } from './../../../../services/content-management.service';
 import { BaseLabel } from '../../base-label.component';
 
 /**
@@ -45,8 +43,8 @@ export class InputLabel extends BaseLabel {
     @Input() for: string;
     @Input() required: boolean;
     
-    constructor(private wcs: WebContentSvc, private pageService: PageService) {
-        super(wcs, pageService);
+    constructor() {
+        super();
     }
 
     /**

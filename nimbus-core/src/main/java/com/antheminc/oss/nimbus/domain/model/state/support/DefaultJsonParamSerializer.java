@@ -16,8 +16,10 @@
 package com.antheminc.oss.nimbus.domain.model.state.support;
 
 import java.io.IOException;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -29,6 +31,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.Valida
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListElemParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.Message;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -108,10 +111,19 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 			
 			if(CollectionUtils.isNotEmpty(p.getMessages())) {
 				writer.writeObjectIfNotNull(K_MESSAGE, p::getMessages);
+				
+				Set<Message> nonTransientMessages = p.getMessages().stream()
+						.filter(m -> !m.isTransient()).collect(Collectors.toSet());
+				
 				// Resetting the message in param, so that once the message is read through the http response, it is removed from param state.
 				/* TODO Scenarios where further conditional processing is done based on the message text needs to be addressed,
 				 since the message state has been reset. There will be a sync issue until a state is reloaded and message is set.*/
 				p.setMessages(null);
+				
+				// Keep non-transient messages (see MessageConditional#isTransient)
+				if (!nonTransientMessages.isEmpty()) {
+					p.setMessages(nonTransientMessages);
+				}
 			}
 			writer.writeObjectIfNotNull(K_VALUES, p::getValues);
 			writer.writeObjectIfNotNull(K_LABELS, p::getLabels);

@@ -27,7 +27,7 @@ import { of as observableOf, Observable } from 'rxjs';
 import {
     DataTableModule, TreeTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule,
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule,
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, InputMaskModule, TabViewModule
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, InputMaskModule, TabViewModule, AutoCompleteModule
 } from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -108,6 +108,7 @@ import { Button } from './../form/elements/button.component';
 import { TreeGrid } from './../tree-grid/tree-grid.component';
 import {tabElement} from 'mockdata';
 import { componentFactoryName } from '@angular/compiler';
+import { NmAutocomplete } from '../form/elements/autocomplete.component';
 
 
 let pageService;
@@ -169,6 +170,7 @@ const declarations = [
     SvgComponent,
     ActionLink,
     InputMaskComp,
+    NmAutocomplete,
     RichText,
     Signature,
     Calendar,
@@ -188,7 +190,7 @@ const imports = [
     StorageServiceModule,
     DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule,
     FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule,
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, TabViewModule, TreeTableModule,
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, TabViewModule, AutoCompleteModule, TreeTableModule,
     FormsModule, ReactiveFormsModule, InputMaskModule, ToastModule, ChartModule, DataTableModule, TableModule,
     KeyFilterModule, InputSwitchModule, FileUploadModule, AngularSvgIconModule
 ];

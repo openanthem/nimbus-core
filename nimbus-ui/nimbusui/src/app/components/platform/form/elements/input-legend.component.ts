@@ -16,8 +16,6 @@
  */
 'use strict';
 import { Component, Input } from '@angular/core';
-import { PageService } from './../../../../services/page.service';
-import { WebContentSvc } from './../../../../services/content-management.service';
 import { BaseLabel } from '../../base-label.component';
 
 /**
@@ -33,7 +31,7 @@ import { BaseLabel } from '../../base-label.component';
 @Component({
     selector: 'nm-input-legend',
     template: `
-      <legend [ngClass]="{'required': required, '': !required}">
+      <legend [ngClass]="{'required': required, '': !required}" *ngIf="label && label !=null ">
             {{label}}
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
       </legend>
@@ -43,7 +41,7 @@ import { BaseLabel } from '../../base-label.component';
   export class InputLegend extends BaseLabel {
     @Input() required: boolean;
 
-    constructor(private wcs: WebContentSvc, private pageService: PageService) {
-        super(wcs, pageService);
+    constructor() {
+        super();
     }
   }

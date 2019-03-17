@@ -235,6 +235,8 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     inlineStyle: string;
     formats: string;
     toolbarFeatures: string[];
+    display: string;
+    minLength: number;
 
     deserialize( inJson ) {
         let obj = this;

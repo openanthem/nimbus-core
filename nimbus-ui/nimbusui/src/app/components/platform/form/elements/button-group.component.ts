@@ -31,7 +31,7 @@ import { ViewComponent } from '../../../../shared/param-annotations.enum';
 @Component({
     selector: 'nm-button-group',
     template:`
-        <div class="{{cssClass}} buttonGroup">
+        <div>
             <ng-template ngFor let-element [ngForOf]="buttonList">
                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.button.toString()">
                     <nm-button [form]="form" [element]="element"></nm-button>
@@ -44,7 +44,6 @@ import { ViewComponent } from '../../../../shared/param-annotations.enum';
 export class ButtonGroup {
    @Input() buttonList: Param[];
    @Input() form: FormGroup;
-   @Input() cssClass: string;
    viewComponent = ViewComponent;
 
    constructor() { }

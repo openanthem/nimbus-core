@@ -19,8 +19,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorGet;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -58,7 +59,7 @@ public class ParamStateAtomicPersistenceEventListener extends ParamStatePersiste
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean listen(ModelEvent<Param<?>> event) {
-		if(DefaultActionExecutorGet.TH_ACTION.get() == Action._get)
+		if(DefaultExecutionContextLoader.TH_ACTION.get() == Action._get)
 			return false;
 		
 		Param<?> p = (Param<?>) event.getPayload();
@@ -84,7 +85,6 @@ public class ParamStateAtomicPersistenceEventListener extends ParamStatePersiste
 		
 		modelRepo._update(pRoot, pRoot.getState());
 		return true;
-		
 	}
 	
 }

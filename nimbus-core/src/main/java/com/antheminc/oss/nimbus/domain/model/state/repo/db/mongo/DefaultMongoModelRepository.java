@@ -21,13 +21,12 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
@@ -38,9 +37,10 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.DBSearch;
+import com.antheminc.oss.nimbus.domain.model.state.repo.MongoIdSequenceRepository;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositoryOptions;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBSearchOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 
@@ -56,17 +56,15 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	private final MongoOperations mongoOps;
 	private final IdSequenceRepository idSequenceRepo;
 	private final JavaBeanHandler beanHandler;
+	private final MongoDBModelRepositoryOptions options;
 	
-	@Autowired @Qualifier("searchByExample") 
-	DBSearch searchByExample;
-	
-	@Autowired @Qualifier("searchByQuery") 
-	DBSearch searchByQuery;
-
-	public DefaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo, BeanResolverStrategy beanResolver) {
+	public DefaultMongoModelRepository(MongoOperations mongoOps, BeanResolverStrategy beanResolver, 
+			MongoDBModelRepositoryOptions options) {
 		this.mongoOps = mongoOps;
-		this.idSequenceRepo = idSequenceRepo;
 		this.beanHandler = beanResolver.get(JavaBeanHandler.class);
+		this.options = options;
+		
+		this.idSequenceRepo = new MongoIdSequenceRepository(mongoOps);
 	}
 	
 	@Override
@@ -174,11 +172,10 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		SearchCriteria<?> sc = criteria.get();
 		Class<?> referredClass = param.getRootDomain().getConfig().getReferredClass();
 		String alias = param.getRootDomain().getConfig().getRepoAlias();
-		
-		if(sc instanceof ExampleSearchCriteria) {
-			return getSearchByExample().search(referredClass, alias, sc);
+		Optional<MongoDBSearchOperation> searchOperation = getOptions().getSearchOperations().stream().filter(o -> o.shouldAllow(sc)).findFirst();
+		if (!searchOperation.isPresent()) {
+			throw new FrameworkRuntimeException("Unable to determine search operation for search criteria: " + sc);
 		}
-		return getSearchByQuery().search(referredClass, alias, sc);
+		return searchOperation.get().search(referredClass, alias, sc);
 	}
-
 }

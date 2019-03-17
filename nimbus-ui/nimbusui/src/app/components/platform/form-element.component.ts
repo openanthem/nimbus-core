@@ -45,7 +45,6 @@ var counter = 0;
 
 export class FormElement extends BaseElement {
 
-    @Input() element: Param;
     @Input() form: FormGroup;
     elemMessages: Message[];
     id: String = 'form-control' + counter++;
@@ -106,25 +105,6 @@ export class FormElement extends BaseElement {
 
     get showErrors() {
         return (!this.isPristine && !this.isValid);
-    }
-
-    getComponentClass() {
-        let componentClass: string[] = [];
-        componentClass.push('form-group');
-        let overrideClass: string = '';
-        if (this.element.config.uiStyles && this.element.config.uiStyles.attributes &&
-            this.element.config.uiStyles.attributes.cssClass && this.element.config.uiStyles.attributes.cssClass !== '') {
-                overrideClass = this.element.config.uiStyles.attributes.cssClass;
-        }  
-        
-        if (overrideClass != '') {
-            componentClass.push(overrideClass);
-        }
-
-        // Error Styles
-        componentClass.push(this.getErrorStyles());
-
-        return componentClass;
     }
 
     ngOnInit() {

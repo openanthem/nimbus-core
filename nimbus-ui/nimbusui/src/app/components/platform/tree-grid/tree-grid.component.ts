@@ -30,7 +30,7 @@ import { ViewComponent } from '../../../shared/param-annotations.enum';
 import { GridUtils } from './../../../shared/grid-utils';
 import { ChangeDetectorRef } from '@angular/core';
 import { TreeTable } from 'primeng/primeng';
-
+import { ParamUtils } from './../../../shared/param-utils';
 
 /**
  * \@author Vivek Kamineni
@@ -97,7 +97,10 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
 
         if (this.params) {
             this.params.forEach(column => {
-                column.label = this._wcs.findLabelContentFromConfig(this.element.elemLabels.get(column.id), column.code).text;
+                let colElemLabelConfig = ParamUtils.getLabelConfig(this.element.elemLabels.get(column.id));
+                if (colElemLabelConfig) {
+                    column.label = colElemLabelConfig.text;
+                }
                 column['field'] = column.code;
                 column['header'] = column.label;
             });

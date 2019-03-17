@@ -91,6 +91,7 @@ public enum Constants {
 	CLIENT_USER_KEY("client-user-key"),
 	
 	REQUEST_PARAMETER_URL_MARKER("url"),
+	REQUEST_PARAMETER_VALUE_MARKER("value"),
 	REQUEST_PARAMETER_DELIMITER("&"),
 	PARAM_ASSIGNMENT_MARKER("="),
 	
@@ -115,9 +116,9 @@ public enum Constants {
 	SEARCH_NAMED_QUERY_DELIMTER("~~"),
 	SEARCH_NAMED_QUERY_RESULT("result"),
 	HTTP_RESPONSEBODY_INTERCEPTOR_HEADER("responseBody"),
-	HTTP_RESPONSEBODY_INTERCEPTOR_HEADER_RAW("_raw");
+	HTTP_RESPONSEBODY_INTERCEPTOR_HEADER_RAW("_raw"),	
 	
-	
+	SERVER_AUTOSEARCH_MARKER("autocompletesearchvalue");
 	
 	
 	public final String code;

@@ -35,9 +35,11 @@ import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuer
 import org.springframework.data.querydsl.SimpleEntityPathResolver;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
-import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.LookupSearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.QuerySearchCriteria;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.OrderSpecifier;
@@ -55,18 +57,17 @@ import lombok.Setter;
  */
 @EnableAPIMetricCollection
 @SuppressWarnings({ "rawtypes", "unchecked"})
-public class MongoSearchByQuery extends MongoDBSearch {
+public class MongoSearchByQueryOperation extends MongoDBSearchOperation {
+
+	public MongoSearchByQueryOperation(MongoOperations mongoOps, DomainConfigBuilder domainConfigBuilder) {
+		super(mongoOps, domainConfigBuilder);
+	}
 
 	private static final ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
 	private static final String orderByAliasSuffix = ".";
 	
 	private static final String AGGREGATION_QUERY_REGEX = ".*\"?'?aggregate\"?'?\\s*:.*";
 	private static final Pattern AGGREGATION_QUERY_REGEX_PATTERN = Pattern.compile(AGGREGATION_QUERY_REGEX, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-
-	
-	public MongoSearchByQuery(BeanResolverStrategy beanResolver) {
-		super(beanResolver);
-	}
 	
 	@RequiredArgsConstructor
 	class QueryBuilder {
@@ -204,6 +205,11 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		public static final String CONTENT_KEY = "content";
 		
 		List<T> content;
+	}
+
+	@Override
+	public boolean shouldAllow(SearchCriteria<?> criteria) {
+		return criteria instanceof QuerySearchCriteria || criteria instanceof LookupSearchCriteria;
 	}
 	
 	/*

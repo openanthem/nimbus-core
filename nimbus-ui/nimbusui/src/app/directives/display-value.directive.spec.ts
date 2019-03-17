@@ -19,11 +19,12 @@ import { TestBed, async } from '@angular/core/testing';
 
 import { DisplayValueDirective } from './display-value.directive';
 import { ElementRef, Renderer2 } from '@angular/core';
+import { displayValueDirectiveConfig, displayValueDirectiveChanges } from 'mockdata';
 
 class MockElementRef {
     nativeElement = {
         style: {
-            backgroundColor: ''
+            backgroundColor: 'red'
         }
     };
 }
@@ -49,31 +50,64 @@ describe('DisplayValueDirective', () => {
         elementRef = TestBed.get(ElementRef);
         renderer = TestBed.get(Renderer2);
         directive = new DisplayValueDirective(elementRef, renderer)
+        directive.config = displayValueDirectiveConfig;
       });
 
     it('should create an instance', () => {
-      expect(directive).toBeTruthy();
+        expect(directive).toBeTruthy();
     });
 
-    it('ngOnInit() should call renderer.addClass', () => {
-      directive.config = { code: 'test', uiStyles: { attributes: { applyValueStyles: true } } };
-      spyOn(renderer, 'addClass').and.callThrough();
-      directive.ngOnInit();
-      expect(renderer.addClass).toHaveBeenCalled();
-      expect(renderer.addClass).toHaveBeenCalledWith({ style: { backgroundColor: '' } }, 'test');
-      expect(renderer.addClass).toHaveBeenCalledWith({ style: { backgroundColor: '' } }, 'placeholder');
+    it('ngOnInit() should call renderer.addClass()', () => {
+        spyOn(renderer, 'addClass').and.callThrough();
+        directive.ngOnInit();
+        expect(renderer.addClass).toHaveBeenCalledWith({ style: { backgroundColor: 'red' } }, 'placeholder');
     });
 
-    it('ngOnChanges() should call renderer.addClass(), renderer.removeClass() and directive.,getValue()', () => {
-      directive.config = { code: 'test', uiStyles: { attributes: { applyValueStyles: true } } };
-      const changes = { displayValue: { previousValue: '123', currentValue: 'current' } };
-      spyOn(renderer, 'addClass').and.callThrough();
-      spyOn(renderer, 'removeClass').and.callThrough();
-      spyOn(directive, 'getValue').and.callThrough();
-      directive.ngOnChanges(changes);
-      expect(renderer.addClass).toHaveBeenCalled();
-      expect(renderer.removeClass).toHaveBeenCalled();
-      expect(directive.getValue).toHaveBeenCalled();
+    it('ngOnInit() should call getValue() and renderer.addClass()', () => {
+        directive.displayValue = new String('Active');
+        spyOn(renderer, 'addClass').and.callThrough();
+        spyOn(directive, 'getValue').and.callThrough();
+        directive.ngOnInit();
+        expect(renderer.addClass).toHaveBeenCalledWith({ style: { backgroundColor: 'red' } }, 'Active');
+        expect(directive.getValue).toHaveBeenCalledWith(directive.displayValue);
     });
 
+    it('ngOnChanges() should call renderer.removeClass()', () => {
+        spyOn(renderer, 'removeClass').and.callThrough();
+        directive.ngOnChanges(displayValueDirectiveChanges);
+        expect(renderer.removeClass).toHaveBeenCalledWith({ style: { backgroundColor: 'red' } }, 'placeholder');
+    });
+
+    it('ngOnChanges() should call getValue() and renderer.removeClass()', () => {
+        spyOn(renderer, 'removeClass').and.callThrough();
+        spyOn(directive, 'getValue').and.callThrough();
+        displayValueDirectiveChanges.displayValue['previousValue'] = 'testingPreviousValue';
+        directive.ngOnChanges(displayValueDirectiveChanges);
+        expect(renderer.removeClass).toHaveBeenCalledWith({ style: { backgroundColor: 'red' } }, 'testingPreviousValue');
+        expect(directive.getValue).toHaveBeenCalledWith(displayValueDirectiveChanges.displayValue['previousValue']);
+    });
+
+    it('ngOnChanges() should call getValue() and renderer.addClass()', () => {
+        spyOn(renderer, 'addClass').and.callThrough();
+        spyOn(directive, 'getValue').and.callThrough();
+        directive.ngOnChanges(displayValueDirectiveChanges);
+        expect(renderer.addClass).toHaveBeenCalledWith({ style: { backgroundColor: 'red' } }, displayValueDirectiveChanges.displayValue['currentValue']);
+        expect(directive.getValue).toHaveBeenCalledWith(displayValueDirectiveChanges.displayValue['currentValue']);
+    });
+
+    it('ngOnChanges() should call renderer.addClass()', () => {
+        spyOn(renderer, 'addClass').and.callThrough();
+        displayValueDirectiveChanges.displayValue['currentValue'] = undefined;
+        directive.ngOnChanges(displayValueDirectiveChanges);
+        expect(renderer.addClass).toHaveBeenCalledWith({ style: { backgroundColor: 'red' } }, 'placeholder');
+    });
+
+    it('getValue() should update the string and return it', () => {
+        expect(directive.getValue('test getValue')).toEqual('testgetValue');
+    });
+
+    it('getValue() should not update the val and return it', () => {
+        const val = { 'test': 'getValue' };
+        expect(directive.getValue(val)).toEqual(val);
+    });
 });
