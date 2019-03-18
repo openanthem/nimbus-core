@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.ReservedKeywordRegistry;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Execution.DetourConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ExecutionConfig;
@@ -27,7 +28,7 @@ public class ExecutionConfigOrderTest {
 
 	@Test
 	public void t00() {
-		ExecutionConfigFactory factory = new ExecutionConfigFactory();
+		ExecutionConfigFactory factory = new ExecutionConfigFactory(new ReservedKeywordRegistry());
 		
 		ReflectionUtils.doWithFields(TestContainer.class, f -> {
 			ExecutionConfig execCfg = factory.build(f);
@@ -38,7 +39,7 @@ public class ExecutionConfigOrderTest {
 	
 	@Test
 	public void t01() {
-		ExecutionConfigFactory factory = new ExecutionConfigFactory();
+		ExecutionConfigFactory factory = new ExecutionConfigFactory(new ReservedKeywordRegistry());
 		
 		ReflectionUtils.doWithFields(TestContainer.class, f -> {
 			if(f.getName().contains("fieldWithBothConfigs")) {

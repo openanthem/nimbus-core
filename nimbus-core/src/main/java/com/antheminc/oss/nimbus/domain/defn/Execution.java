@@ -24,10 +24,10 @@ import java.lang.annotation.Target;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.Executions.Configs;
 import com.antheminc.oss.nimbus.domain.defn.Executions.DetourConfigs;
-import com.antheminc.oss.nimbus.InvalidConfigException;
 
 /**
  * @author Soham Chakravarti
@@ -108,4 +108,40 @@ public @interface Execution {
 		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 
+	/**
+	 * <p>Annotation which indicates that a command template variable should
+	 * be bound to a provided value. Supported for {@link Config} annotated
+	 * fields during the execution step.
+	 *
+	 * <p>The command template variable must not match any reserved template
+	 * variables.
+	 * 
+	 * @author Tony Lopez
+	 * @since 1.3
+	 * @see com.antheminc.oss.nimbus.domain.cmd.exec.ConfigPlaceholderResolver
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@Repeatable(ConfigPlaceholders.class)
+	@Execution
+	public @interface ConfigPlaceholder {
+
+		/**
+		 * <p>The name of the placeholder that should be used as an identifier to
+		 * resolve in a config url.
+		 */
+		String name();
+
+		/**
+		 * <p>The value to use in place of {@link #name()} when this config placeholder is resolved.
+		 */
+		String value();
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@Execution
+	public @interface ConfigPlaceholders {
+		ConfigPlaceholder[] value();
+	}
 }

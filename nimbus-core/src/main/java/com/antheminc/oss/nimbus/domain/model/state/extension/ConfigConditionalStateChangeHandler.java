@@ -16,8 +16,6 @@
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
 
-import java.util.Arrays;
-
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
@@ -28,8 +26,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.extension.ConfigConditional;
-import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
-import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
+import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultExecutionConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
@@ -82,7 +79,10 @@ public class ConfigConditionalStateChangeHandler extends EvalExprWithCrudActions
 		Command rootCmd = onChangeParam.getRootExecution().getRootCommand();
 		ExecutionContext eCtx = getContextLoader().load(rootCmd);
 		
-		getCommandGateway().executeConfig(eCtx, onChangeParam, Arrays.asList(configs));
+		DefaultExecutionConfig executionConfig = new DefaultExecutionConfig();
+		executionConfig.addAll(configs);
+		executionConfig.setContext(onChangeParam.getConfig().getExecutionConfig().getContext());
+		getCommandGateway().executeConfig(eCtx, onChangeParam, executionConfig);
 	}
 	
 //	@Override

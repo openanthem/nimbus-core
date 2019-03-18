@@ -15,12 +15,12 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.model.config.ExecutionConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 /**
@@ -34,6 +34,6 @@ public interface CommandExecutorGateway {
 	
 	MultiOutput execute(CommandMessage cmdMsg);
 	
-	List<MultiOutput> executeConfig(ExecutionContext eCtx, Param<?> cmdParam, List<Annotation> execConfigs);
+	List<MultiOutput> executeConfig(ExecutionContext eCtx, Param<?> cmdParam, ExecutionConfig exectionConfig);
 	
 }

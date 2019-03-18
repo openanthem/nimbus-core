@@ -17,7 +17,6 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -55,6 +54,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ParamPathExpressionParser;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ConfigPlaceholderResolver;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
@@ -62,6 +62,7 @@ import com.antheminc.oss.nimbus.domain.defn.builder.internal.ExecutionConfigBuil
 import com.antheminc.oss.nimbus.domain.model.config.ExecutionConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.builder.ExecutionConfigProvider;
+import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultExecutionConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
@@ -94,6 +95,8 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	
 	private CommandPathVariableResolver pathVariableResolver;
 	
+	private ConfigPlaceholderResolver configPlaceholderResolver;
+	
 	private ExecutionContextPathVariableResolver eCtxPathVariableResolver;
 	
 	private ExecutionContextLoader loader;
@@ -120,6 +123,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		this.domainConfigBuilder = getBeanResolver().get(DomainConfigBuilder.class);
 		this.cmdHandler = getBeanResolver().get(ChangeLogCommandEventHandler.class);
 		this.expressionEvaluator = getBeanResolver().get(ExpressionEvaluator.class);
+		this.configPlaceholderResolver = getBeanResolver().get(ConfigPlaceholderResolver.class);
 	}
 
 	
@@ -217,7 +221,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		ExecutionConfig executionConfig = cmdParam != null ? cmdParam.getConfig().getExecutionConfig() : null;
 		
 		if(cmdMsg.getCommand().getAction() == Action._get && executionConfig != null && CollectionUtils.isNotEmpty(executionConfig.get())) {
-               List<MultiOutput> execConfigOutputs = executeConfig(eCtx, cmdParam, executionConfig.get());
+               List<MultiOutput> execConfigOutputs = executeConfig(eCtx, cmdParam, executionConfig);
                execConfigOutputs.stream().forEach(mOut->addMultiOutput(mOutput, mOut));
         }
 		else {// otherwise, execute self
@@ -237,12 +241,12 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<MultiOutput> executeConfig(ExecutionContext eCtx, Param<?> cmdParam, List<Annotation> execConfigs) {
+	public List<MultiOutput> executeConfig(ExecutionContext eCtx, Param<?> cmdParam, ExecutionConfig executionConfig) {
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
 		boolean isPayloadUsed = false;
 		
 		final List<MultiOutput> configExecOutputs = new ArrayList<>();
-		execConfigs.stream().forEach(ec-> {
+		executionConfig.get().stream().forEach(ec-> {
 			final ExecutionConfigProvider<Annotation> execConfigProvider = getBeanResolver().get(ExecutionConfigProvider.class, ec.annotationType());
 			Config config = execConfigProvider.getMain(ec);
 			try {
@@ -251,14 +255,15 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 					return;
 				
 				if(StringUtils.isNotBlank(config.col())) {
-					buildAndExecuteColExecConfig(eCtx, cmdParam, config);
+					buildAndExecuteColExecConfig(eCtx, cmdParam, executionConfig, config);
 				}
 				else {
-					String completeConfigUri = eCtx.getCommandMessage().getCommand().getRelativeUri(config.url());
-					String eCtxResolvedConfigUri = getECtxPathVariableResolver().resolve(eCtx, cmdParam, completeConfigUri);
-					String resolvedConfigUri = getPathVariableResolver().resolve(cmdParam, eCtxResolvedConfigUri);
+					String resolvedURL0 = eCtx.getCommandMessage().getCommand().getRelativeUri(config.url());
+					String resolvedURL1 = getECtxPathVariableResolver().resolve(eCtx, cmdParam, resolvedURL0);
+					String resolvedURL2 = getConfigPlaceholderResolver().resolve(executionConfig.getContext(), resolvedURL1);
+					String resolvedURL3 = getPathVariableResolver().resolve(cmdParam, resolvedURL2);
 						
-					Command configExecCmd = CommandBuilder.withUri(resolvedConfigUri).getCommand();
+					Command configExecCmd = CommandBuilder.withUri(resolvedURL3).getCommand();
 					CommandMessage configCmdMsg = new CommandMessage(configExecCmd, resolvePayload(cmdMsg, configExecCmd, isPayloadUsed));
 					
 					// execute & add output to mOutput
@@ -272,7 +277,11 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 					throw ex; 
 				
 				logit.error(() -> "Failed to execute main config "+ config +" on param "+ cmdParam +" , executing the onException config", ex);
-				executeConfig(eCtx, cmdParam, Arrays.asList(exceptionConfig));
+				
+				DefaultExecutionConfig exceptionExecutionConfig = new DefaultExecutionConfig();
+				exceptionExecutionConfig.add(exceptionConfig);
+				exceptionExecutionConfig.setContext(executionConfig.getContext());
+				executeConfig(eCtx, cmdParam, exceptionExecutionConfig);
 			}
 		});	
 		return configExecOutputs;
@@ -313,7 +322,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		}
 	}	
 	
-	private void buildAndExecuteColExecConfig(ExecutionContext eCtx, Param<?> cmdParam, Config ec) {
+	private void buildAndExecuteColExecConfig(ExecutionContext eCtx, Param<?> cmdParam, ExecutionConfig executionConfig, Config ec) {
 		List<Annotation> colExecConfigs = new ArrayList<>();
 		String colPath = ParamPathExpressionParser.stripPrefixSuffix(ec.col());
 		
@@ -324,8 +333,9 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			
 		if(p.isCollection()) {
 			for(int i=0; i < p.findIfCollection().size(); i++) {
-				String url = StringUtils.replace(ec.url(),Constants.MARKER_COL_PARAM.code,colPath+Constants.SEPARATOR_URI.code+i);
-				colExecConfigs.add(ExecutionConfigBuilder.buildExecConfig(url, ec.order()));
+				String resolvedURL1 = getConfigPlaceholderResolver().resolve(executionConfig.getContext(), ec.url());
+				String resolvedURL2 = StringUtils.replace(resolvedURL1,Constants.MARKER_COL_PARAM.code,colPath+Constants.SEPARATOR_URI.code+i);
+				colExecConfigs.add(ExecutionConfigBuilder.buildExecConfig(resolvedURL2, ec.order()));
 			}
 		}
 		else if(p.getConfig().getType().isArray()) {
@@ -336,12 +346,15 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			
 			int size = ArrayUtils.getLength(arrayParamState);
 			for(int i=0; i < size; i++) {
-				String url = StringUtils.replace(ec.url(), Constants.MARKER_COL_PARAM_EXPR.code, String.valueOf(arrayParamState[i]));
-				colExecConfigs.add(ExecutionConfigBuilder.buildExecConfig(url, ec.order()));
+				String resolvedURL1 = getConfigPlaceholderResolver().resolve(executionConfig.getContext(), ec.url());
+				String resolvedURL2 = StringUtils.replace(resolvedURL1, Constants.MARKER_COL_PARAM_EXPR.code, String.valueOf(arrayParamState[i]));
+				colExecConfigs.add(ExecutionConfigBuilder.buildExecConfig(resolvedURL2, ec.order()));
 			}
 		}
 		
-		executeConfig(eCtx, cmdParam, colExecConfigs);
+		DefaultExecutionConfig colExecutionConfig = new DefaultExecutionConfig();
+		colExecConfigs.forEach(colExecutionConfig::add);
+		executeConfig(eCtx, cmdParam, colExecutionConfig);
 		
 	}
 

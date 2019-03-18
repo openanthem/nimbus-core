@@ -24,8 +24,10 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandTransactionInterceptor;
+import com.antheminc.oss.nimbus.domain.cmd.exec.DefaultConfigPlaceholderResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextPathVariableResolver;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ConfigPlaceholderResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorConfig;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorDelete;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorGet;
@@ -41,6 +43,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultCommandPathVaria
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.HierarchyMatchBasedBeanFinder;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.ReservedKeywordRegistry;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 import com.antheminc.oss.nimbus.support.expr.SpelExpressionEvaluator;
 
@@ -74,6 +77,11 @@ public class DefaultCoreExecutorConfig {
 	@Bean
 	public ExecutionContextPathVariableResolver defaultExecutionContextPathVariableResolver(BeanResolverStrategy beanResolver) {
 		return new DefaultExecutionContextPathVariableResolver(beanResolver);
+	}
+	
+	@Bean
+	public ConfigPlaceholderResolver paramPathPlaceholderResolver(ReservedKeywordRegistry reservedKeywordRegistry) {
+		return new DefaultConfigPlaceholderResolver(reservedKeywordRegistry);
 	}
 	
 	@Bean(name="default.ExecutionContextLoader", destroyMethod="clear") 
