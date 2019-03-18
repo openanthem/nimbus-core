@@ -383,6 +383,9 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_get")))
 			.andRespond(withSuccess(jsonresp, MediaType.APPLICATION_JSON));
 		
+		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(), requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_update")))
+		.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
+		
 		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_delete")))
 			.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
 		
@@ -407,6 +410,9 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		String jsonresp  = mockSingleGenericExecuteResponse_GetNewSearch();
 		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_get")))
 			.andRespond(withSuccess(jsonresp, MediaType.APPLICATION_JSON));
+		
+		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(), requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_update")))
+		.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
 		
 		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_update")))
 			.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
