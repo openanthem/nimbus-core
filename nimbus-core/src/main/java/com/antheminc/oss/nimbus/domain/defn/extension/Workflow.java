@@ -31,8 +31,8 @@ import com.antheminc.oss.nimbus.domain.defn.event.EventType;
 @Retention(RUNTIME)
 @Target({TYPE})
 @Event
-public @interface Lifecycle {
+public @interface Workflow {
 	String name();
-	EventType[] eventType() default {EventType.OnStateLoad,EventType.OnStateLoadNew};
+	EventType[] eventType() default {EventType.OnStateLoad};
 	
 }

@@ -22,7 +22,7 @@ import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.bpm.ProcessRepository;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
-import com.antheminc.oss.nimbus.domain.defn.extension.Lifecycle;
+import com.antheminc.oss.nimbus.domain.defn.extension.Workflow;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -40,7 +40,7 @@ import lombok.Getter;
  *
  */
 @Getter
-public class LifecycleEventHandler extends AbstractEventHandlerSupport<Lifecycle> {
+public class WorkflowEventHandler extends AbstractEventHandlerSupport<Workflow> {
 
 	private JustLogit logit = new JustLogit(getClass());
 	private DomainConfigBuilder domainConfigBuilder;
@@ -49,7 +49,7 @@ public class LifecycleEventHandler extends AbstractEventHandlerSupport<Lifecycle
 	private ProcessRepository processRepo;
 
 	
-	public LifecycleEventHandler(BeanResolverStrategy beanResolver) {
+	public WorkflowEventHandler(BeanResolverStrategy beanResolver) {
 		this.domainConfigBuilder = beanResolver.find(DomainConfigBuilder.class);
 		this.bpmGateway = beanResolver.find(BPMGateway.class);
 		this.javaBeanHandler = beanResolver.find(JavaBeanHandler.class);
@@ -57,12 +57,7 @@ public class LifecycleEventHandler extends AbstractEventHandlerSupport<Lifecycle
 	}
 	
 	@Override
-	public void onStateLoad(Lifecycle configuredAnnotation, Param<?> param) {
-		loadProcessState(configuredAnnotation,param);
-	}
-	
-	@Override
-	public void onStateLoadNew(Lifecycle configuredAnnotation, Param<?> param) {
+	public void onStateLoad(Workflow configuredAnnotation, Param<?> param) {
 		loadProcessState(configuredAnnotation,param);
 	}
 	
@@ -72,7 +67,7 @@ public class LifecycleEventHandler extends AbstractEventHandlerSupport<Lifecycle
 		return refId;
 	}
 	
-	private void loadProcessState(Lifecycle configuredAnnotation, Param<?> param) {
+	private void loadProcessState(Workflow configuredAnnotation, Param<?> param) {
 		ExecutionEntity<?,?> e = (ExecutionEntity<?,?>)param.getRootExecution().getState();
 		ProcessFlow processFlow = e.getFlow();
 		if(processFlow != null)

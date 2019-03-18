@@ -36,7 +36,7 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.DobToAgeConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.EnableConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ExpressionConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.LabelConditionalStateEventHandler;
-import com.antheminc.oss.nimbus.domain.model.state.extension.LifecycleEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.WorkflowEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.MessageConditionalHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ModalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEventHandler;
@@ -179,8 +179,8 @@ public class DefaultFrameworkExtensionsConfig {
 	}
 	
 	@Bean
-	public LifecycleEventHandler extensionLifecycleStateLoadHandler(BeanResolverStrategy beanResolver) {
-		return new LifecycleEventHandler(beanResolver);
+	public WorkflowEventHandler extensionLifecycleStateLoadHandler(BeanResolverStrategy beanResolver) {
+		return new WorkflowEventHandler(beanResolver);
 	}
 	
 	

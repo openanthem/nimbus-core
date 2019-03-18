@@ -22,7 +22,7 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewRoot;
-import com.antheminc.oss.nimbus.domain.defn.extension.Lifecycle;
+import com.antheminc.oss.nimbus.domain.defn.extension.Workflow;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,7 +36,7 @@ import lombok.Setter;
 @Repo(value=Database.rep_none, cache=Cache.rep_device)
 @ViewRoot(layout = "caseoverviewlayout")
 @Getter @Setter
-@Lifecycle(name="ctvsubscriberviewmodel")
+@Workflow(name="ctvsubscriberviewmodel")
 public class VRCTVSubscriberTestModel {
 	private String viewParameter;
 	private String viewResultParameter;
