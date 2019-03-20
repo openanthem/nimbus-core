@@ -559,7 +559,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     export() {
-        let exportDt = this.dt;
+        let exportDt: Table = Object.create(this.dt);
         let dtCols = this.params.filter(col => (col.type != null && ParamUtils.isKnownDateType(col.type.name) != null))
         if (dtCols != null && dtCols.length > 0) {
             let tblData: any[] = exportDt.filteredValue || exportDt.value;
