@@ -124,22 +124,12 @@ export class Accordion extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
-        this.updatePositionWithNoLabel();     
     }
 
     /** Handling model changes to Accordions **/
     ngOnChanges(changes: SimpleChanges) {
         const model: SimpleChange = changes.model;
-        console.log('here .. ' + model);
     }
-
-    ngAfterViewInit() {
-        console.log('here ngAfterViewInit .. ');
-    }
-
-    // ngDoCheck() {
-    //     console.log('here ngAfterViewChecked .. ');
-    // }
 
     /**
      * Expand Multiple Tabs?

@@ -33,7 +33,7 @@ import { BaseLabel } from '../base-label.component';
         <H4 *ngIf="size=='H4'" [className]="cssClass">{{label}}</H4>
         <H5 *ngIf="size=='H5'" [className]="cssClass">{{label}}</H5>
         <H6 *ngIf="size=='H6'" [className]="cssClass">{{label}}</H6>
-        <span *ngIf="size== undefined" [className]="cssClass">{{label}}</span>
+        <span *ngIf="!size" [className]="cssClass">{{label}}</span>
         <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
     `,
 })

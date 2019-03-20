@@ -47,8 +47,6 @@ export class CardDetailsGrid extends BaseElement {
     ngOnInit() {
         super.ngOnInit();
 
-        this.labelSize = this.getHeaderSize(this.position);
-
         if (this.element.config.uiStyles.attributes.onLoad === true) {
             this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET');
         }
