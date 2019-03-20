@@ -387,13 +387,6 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         }
         item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath, elemIds);
 
-        // postButtonUrl is deprecated in @Grid Config from 1.1.11
-        // TODO - remove this when the annotation attribute is removed completely in ViewConfig.
-        if (this.element.config.uiStyles.attributes.postButtonUrl) {
-            console.warn('Use of postButtonUrl attribute in @Grid is deprecated. Consider using postButtonUri');
-            this.pageSvc.processEvent(this.element.config.uiStyles.attributes.postButtonUrl, null, item, 'POST');
-            return;
-        }
         const postButtonUri = this.element.config.uiStyles.attributes.postButtonUri;
         if (postButtonUri) {
             const resolvedPostButtonUri = ParamUtils.resolveParamUri(this.element.path, postButtonUri);

@@ -707,7 +707,6 @@ export const accordionElementWithForm: any = {
                                                   "browserBack": false,
                                                   "showAsLink": false,
                                                   "rowSelection": false,
-                                                  "postButtonUrl": "",
                                                   "pagination": true,
                                                   "dataEntryField": true,
                                                   "postButtonTargetPath": "",
