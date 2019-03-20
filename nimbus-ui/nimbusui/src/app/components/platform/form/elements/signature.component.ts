@@ -305,6 +305,10 @@ export class Signature extends BaseControl<string> {
         }
     }
 
+    getUpdatedDataUrl (updatedDataUrl){
+        
+    }
+
     getUpdatedSignature() {
          const callExternalFn = eval(this.element.config.uiStyles.attributes.scriptName);
          callExternalFn(this.canvasEl.toDataURL(), this.getUpdatedDataUrl);
