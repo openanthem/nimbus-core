@@ -15,14 +15,18 @@
  */
 package com.antheminc.oss.nimbus.converter;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import com.antheminc.oss.nimbus.domain.cmd.Command;
+
 /**
- * <p>A bean registry for holding file importer objects.
+ * <p>A command gateway for handling file upload requests.
  * 
  * @author Sandeep Mantha
  * @author Tony Lopez
  *
  */
-public interface FileImportGateway {
+public interface FileUploadGateway {
 
-	Importer getFileImporter(String extension);
+	boolean upload(Command command, MultipartFile file);
 }

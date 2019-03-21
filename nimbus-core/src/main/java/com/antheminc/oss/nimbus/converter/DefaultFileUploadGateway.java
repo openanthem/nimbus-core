@@ -17,7 +17,12 @@ package com.antheminc.oss.nimbus.converter;
 
 import java.util.Collection;
 
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.cmd.Command;
 
 import lombok.Getter;
 
@@ -27,15 +32,14 @@ import lombok.Getter;
  *
  */
 @Getter
-public class DefaultFileImportGateway implements FileImportGateway {
+public class DefaultFileUploadGateway implements FileUploadGateway {
 
 	private final Collection<Importer> fileImporters;
 	
-	public DefaultFileImportGateway(BeanResolverStrategy beanResolver) {
+	public DefaultFileUploadGateway(BeanResolverStrategy beanResolver) {
 		this.fileImporters = beanResolver.getMultiple(Importer.class);
 	}
 
-	@Override
 	public Importer getFileImporter(String extension) {
 		for(Importer fileImporter: getFileImporters()) {
 			if (fileImporter.supports(extension)) {
@@ -43,5 +47,22 @@ public class DefaultFileImportGateway implements FileImportGateway {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public boolean upload(Command command, MultipartFile file) {
+		try {
+			String ext = FilenameUtils.getExtension(file.getName());
+			Importer importer = getFileImporter(ext);
+			if (null == importer) {
+				throw new UnsupportedOperationException("Upload for file types of \"" + ext +"\" is not supported.");
+			}
+
+			//TODO - add an entry to db when the file starts to process
+			importer.doImport(command, file.getInputStream());
+			return true;
+		} catch (Exception e) {
+			throw new FrameworkRuntimeException("Failed to upload file.", e);
+		}
 	}
 }

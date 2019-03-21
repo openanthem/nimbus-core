@@ -20,14 +20,11 @@ package com.antheminc.oss.nimbus.channel.web;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.converter.DefaultFileImportGateway;
-import com.antheminc.oss.nimbus.converter.FileImportGateway;
-import com.antheminc.oss.nimbus.converter.Importer;
+import com.antheminc.oss.nimbus.converter.DefaultFileUploadGateway;
+import com.antheminc.oss.nimbus.converter.FileUploadGateway;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
@@ -51,12 +48,12 @@ public class WebCommandDispatcher {
 
 	private final CommandExecutorGateway gateway;
 	
-	private final FileImportGateway fileImportGateway;
+	private final FileUploadGateway fileUploadGateway;
 
 	public WebCommandDispatcher(BeanResolverStrategy beanResolver) {
 		this.builder = beanResolver.get(WebCommandBuilder.class);
 		this.gateway = beanResolver.get(CommandExecutorGateway.class);
-		this.fileImportGateway = beanResolver.get(DefaultFileImportGateway.class);
+		this.fileUploadGateway = beanResolver.get(DefaultFileUploadGateway.class);
 		
 	}
 	
@@ -78,23 +75,12 @@ public class WebCommandDispatcher {
 		if (file.isEmpty()) {
 			return false;
 		}
-
-		try {
-			String ext = FilenameUtils.getExtension(file.getName());
-			Importer importer = getFileImportGateway().getFileImporter(ext);
-			if (null == importer) {
-				throw new UnsupportedOperationException("Upload for file types of \"" + ext +"\" is not supported.");
-			}
-			
-			Command command = getBuilder().build(httpReq);
-			Command uploadCommand = CommandBuilder.withPlatformRelativePath(command, Type.PlatformMarker, "/" + domain).getCommand();
-			uploadCommand.setRequestParams(command.getRequestParams());
-			uploadCommand.setAction(Action._new);
-			//TODO - add an entry to db when the file starts to process
-			importer.doImport(uploadCommand, file.getInputStream());
-			return true;
-		} catch (Exception e) {
-			throw new FrameworkRuntimeException("Failed to upload file.", e);
-		}
+		
+		Command command = getBuilder().build(httpReq);
+		Command uploadCommand = CommandBuilder.withPlatformRelativePath(command, Type.PlatformMarker, "/" + domain).getCommand();
+		uploadCommand.setRequestParams(command.getRequestParams());
+		uploadCommand.setAction(Action._new);
+		
+		return getFileUploadGateway().upload(uploadCommand, file);
 	}
 }
