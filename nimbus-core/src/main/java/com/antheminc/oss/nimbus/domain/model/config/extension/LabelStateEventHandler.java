@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
@@ -34,14 +33,17 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * @author Soham Chakravarti
- *
+ * @author Swetha Vemuri
+ * @author Tony Lopez
  */
+@RequiredArgsConstructor
 public class LabelStateEventHandler extends AbstractConfigEventHandler implements OnStateLoadHandler<Label> {
 
-	@Autowired
-	CommandPathVariableResolver cmdPathResolver;
+	private final CommandPathVariableResolver cmdPathResolver;
 
 	/**
 	 * <p>Add the label from {@code configuredAnnotation} to the label state of
@@ -112,9 +114,7 @@ public class LabelStateEventHandler extends AbstractConfigEventHandler implement
 	 * <p>Add {@code labelState} to the label state of {@code targetParam}.
 	 * <p>The argument {@code contextParam} is used to provide the "context"
 	 * from which to retrieve pathing details when resolving any framework or
-	 * placeholders within the previously provided {@link Label}. If this level
-	 * of control is not needed, consider using
-	 * {@link #validateAndAdd(LabelState, Param)}.
+	 * placeholders within the previously provided {@link Label}.
 	 * @param labelState the label state to add
 	 * @param contextParam the "context" from which any param path information
 	 *            should be retrieved
@@ -139,23 +139,6 @@ public class LabelStateEventHandler extends AbstractConfigEventHandler implement
 		Set<LabelState> labels = new HashSet<>();
 		if (!CollectionUtils.isEmpty(targetParam.getLabels()))
 			labels.addAll(targetParam.getLabels());
-
-		if (targetParam.isCollection()) {
-			Map<String, Set<LabelState>> elemLabels = new HashMap<>();
-			ParamConfig<?> p = targetParam.getConfig().getType().findIfCollection().getElementConfig();
-			
-			if (!p.isLeaf()) {
-				for(ParamConfig<?> paramConfig : p.getType().findIfNested().getModelConfig().getParamConfigs()) {
-					if (CollectionUtils.isNotEmpty(paramConfig.getLabels())) {
-						Set<LabelState> listParamLabels = new HashSet<>();
-						paramConfig.getLabels().forEach((label) -> listParamLabels.add(convert(label, contextParam)));
-						elemLabels.put(paramConfig.getId(), listParamLabels);
-					}
-				}
-			}
-
-			targetParam.findIfCollection().setElemLabels(elemLabels);
-		}
 
 		labels.add(labelState);
 		targetParam.setLabels(labels);

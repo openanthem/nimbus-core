@@ -85,6 +85,9 @@ public class Sample_View_Label_Entity {
 	@Path("/attr1")
 	private String label_replace;
 	
+	@Grid
+	private List<Sample_View_Entity_2> collectionNoParentLabel; 
+	
 	@Model @Getter @Setter
 	public static class Sample_View_Nested_Label {
 		
