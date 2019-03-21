@@ -19,6 +19,7 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
@@ -125,10 +126,16 @@ public class DefaultProcessConfig {
 	public FunctionHandler<?, ?> queryFunctionHandler(){
 		return new DefaultSearchFunctionHandlerQuery<>();
 	}
-
+	
 	@Bean(name="default._process$execute?fn=_eval")
 	public EvalFunctionHandler<?,?> evalFunctionHandler(ExpressionManager expressionManager){
 		return new EvalFunctionHandler(expressionManager);
 	}
 
+	@Bean(name = "multipartResolver")
+    public CommonsMultipartResolver multipartResolver() {
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        multipartResolver.setMaxUploadSize(-1);
+        return multipartResolver;
+    }
 }

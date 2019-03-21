@@ -22,7 +22,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.converter.DefaultFileImportGateway;
+import com.antheminc.oss.nimbus.converter.tabular.TabularDataFileImporter;
+import com.antheminc.oss.nimbus.converter.tabular.UnivocityCsvParser;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
+import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
 import com.antheminc.oss.nimbus.domain.model.config.extension.GridStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.config.extension.LabelStateEventHandler;
@@ -50,6 +55,8 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.VisibleConditionalS
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.ChildrenValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Soham Chakravarti
@@ -174,6 +181,21 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean
 	public StaticCodeValueBasedCodeToLabelConverter staticCodeValueBasedCodeToLabelConverter(BeanResolverStrategy beanResolver) {
 		return new StaticCodeValueBasedCodeToLabelConverter(beanResolver);
+	}
+	
+	@Bean
+	public UnivocityCsvParser univocityCsvParser(DomainConfigBuilder domainConfigBuilder) {
+		return new UnivocityCsvParser(domainConfigBuilder);
+	}
+	
+	@Bean
+	public TabularDataFileImporter tabularDataFileImporter(DomainConfigBuilder domainConfigBuilder, CommandExecutorGateway commandGateway, ObjectMapper om, UnivocityCsvParser univocityCsvParser,  ModelRepositoryFactory modelRepositoryFactory) {
+		return new TabularDataFileImporter(commandGateway, domainConfigBuilder, om, univocityCsvParser, modelRepositoryFactory);
+	}
+	
+	@Bean
+	public DefaultFileImportGateway defaultFileImportGateway(BeanResolverStrategy beanResolver) {
+		return new DefaultFileImportGateway(beanResolver);
 	}
 	
 }

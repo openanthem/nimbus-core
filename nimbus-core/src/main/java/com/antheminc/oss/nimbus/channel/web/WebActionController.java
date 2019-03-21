@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
@@ -190,6 +192,11 @@ public class WebActionController {
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 	
+	@RequestMapping(value=URI_PATTERN_P+"/event/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,  produces="application/json", method=RequestMethod.POST)
+	public Object handleUpload(HttpServletRequest req, @RequestParam("pfu") MultipartFile file, @RequestParam("domain") String domain) {
+		Boolean result = dispatcher.handleUpload(req, file, domain);
+		return new Holder<>(result);
+	}
 	
 	protected Object handleInternal(HttpServletRequest req, RequestMethod httpMethod, String v, String json) {
 		Object obj = dispatcher.handle(req, json);
