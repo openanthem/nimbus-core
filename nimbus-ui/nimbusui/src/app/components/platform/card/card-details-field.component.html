@@ -3,7 +3,7 @@
 <div *ngIf="element.config.uiStyles.attributes.type==componentTypes.field.toString()">
     <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc && element?.visible == true">
         <ng-template [ngIf]="element.config.uiStyles.attributes.inplaceEdit">
-            <inplace-editor [element]="element"></inplace-editor>
+            <inplace-editor id="{{element.config?.code}}" [element]="element"></inplace-editor>
         </ng-template>
         
         <ng-template [ngIf]="isDate(element.config.type.name)">

@@ -54,15 +54,15 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             </ng-template>
 
             <ng-template [ngIf]="!element.type?.model?.params?.length || element.config?.type?.collection">
-                <nm-element [position]="position+1" id="{{id}}" [element]="element" [form]="form"></nm-element>
+                <nm-element id="{{element.config?.code}}" [position]="position+1" id="{{id}}" [element]="element" [form]="form"></nm-element>
             </ng-template>
 
             <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias === viewComponent.picklist.toString()">
-               <nm-element [position]="position+1" id="{{id}}" [element]="element" [form]="form"></nm-element>
+               <nm-element id="{{element.config?.code}}" [position]="position+1" id="{{id}}" [element]="element" [form]="form"></nm-element>
             </ng-template>
             
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.button.toString()">
-                <nm-button [form]="form" [element]="element"> </nm-button>
+                <nm-button id="{{element.config?.code}}" [form]="form" [element]="element"> </nm-button>
             </ng-template>
 
             <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias ===  viewComponent.formGridFiller.toString()">   
@@ -70,15 +70,15 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             </ng-template>
 
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.link.toString()">
-                <nm-link [element] = "element"> </nm-link>
+                <nm-link id="{{element.config?.code}}" [element] = "element"> </nm-link>
             </ng-template>
 
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.paragraph.toString()">
-                <nm-paragraph [element]="element" [ngClass]="element.config.uiStyles.attributes.cssClass" [hidden]="!element.visible"></nm-paragraph>
+                <nm-paragraph id="{{element.config?.code}}" [element]="element" [ngClass]="element.config.uiStyles.attributes.cssClass" [hidden]="!element.visible"></nm-paragraph>
             </ng-template>
 
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.header.toString()">
-                <nm-header [element]="element" ></nm-header>
+                <nm-header id="{{element.config?.code}}" [element]="element" ></nm-header>
             </ng-template> 
             
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.buttongroup.toString()">

@@ -32,11 +32,11 @@
         [lazy]=element.config?.uiStyles?.attributes?.lazyLoad
         (onLazyLoad)="loadDataLazy($event)">
 
-        <ng-template pTemplate="header" let-columns>
+        <ng-template pTemplate="header" let-columns >
             <tr>
                 <th style="width: 2.25em" *ngIf="element.config?.uiStyles?.attributes?.rowSelection">
                     <!-- <p-tableHeaderCheckbox></p-tableHeaderCheckbox> -->
-                    <nm-header-checkbox [dt] = 'dt' [element] = 'element'></nm-header-checkbox>
+                    <nm-header-checkbox id="{{element.config?.code}}" [dt] = 'dt' [element] = 'element'></nm-header-checkbox>
                 </th>
                 <th style="width: 2.25em" *ngIf="element?.config?.uiStyles?.attributes?.expandableRows"></th>
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
@@ -86,7 +86,7 @@
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex" let-expanded="expanded">
              <tr [pSelectableRow]="rowData"  [ngClass]="rowIndex % 2 === 0 ? 'even' : 'odd'" > 
                 <td *ngIf="element.config?.uiStyles?.attributes?.rowSelection">
-                    <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                    <p-tableCheckbox id="tableCheckbox{{rowIndex}}" [value]="rowData"></p-tableCheckbox>
                 </td>
 
                 <td *ngIf="element.config?.uiStyles?.attributes?.expandableRows">
@@ -102,22 +102,27 @@
                         </span>
                         <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.link.toString()">
                             <nm-link
+                                id="{{getViewParam(col, rowData['elemId']).config?.code}}" 
                                 [element] = "getViewParam(col, rowData['elemId'])"
                                 [rowData]="rowData">                                
                             </nm-link>
                         </span>
                         <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true">
                             <nm-link
+                                id="{{getViewParam(col, rowData['elemId']).config?.code}}"  
                                 [element] = "getViewParam(col, rowData['elemId'])">
                             </nm-link>
                         </span>
                         <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.button.toString()">
                             <nm-button
+                                id="{{getViewParam(col, rowData['elemId']).config?.code}}" 
                                 [element] = "getViewParam(col, rowData['elemId'])">
                             </nm-button>
                         </span>
                         <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.linkMenu.toString()">
-                            <nm-action-dropdown #dropDown [element]="getViewParam(col, rowData['elemId'])" 
+                            <nm-action-dropdown #dropDown 
+                                id="{{getViewParam(col, rowData['elemId']).config?.code}}{{rowIndex}}" 
+                                [element]="getViewParam(col, rowData['elemId'])" 
                                 [params]="col?.type?.model?.paramConfigs" 
                                 [rowData]="rowData" 
                                 [elementPath]="getRowPath(col, rowData)" 
