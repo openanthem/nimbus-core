@@ -44,7 +44,7 @@ import { HostListener } from '@angular/core';
         [class]="showTray ? null : 'displayNone'">
 
             <ng-template ngFor let-actionTrayItem [ngForOf]="element?.type?.model?.params">
-                <nm-button #actionButton [element]="actionTrayItem" [actionTray]=true (elementChange)="isTrayVisible()"> </nm-button> 
+                <nm-button #actionButton id="{{actionTrayItem?.config?.code}}" [element]="actionTrayItem" [actionTray]=true (elementChange)="isTrayVisible()"> </nm-button> 
             </ng-template>
 
      </div>

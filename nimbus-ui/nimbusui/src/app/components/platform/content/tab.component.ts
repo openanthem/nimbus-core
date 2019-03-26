@@ -38,18 +38,18 @@ import { ViewComponent } from './../../../shared/param-annotations.enum';
                         [closable]="tabPanel?.config?.uiStyles?.attributes?.closable" [selected]="tabIndex == 0">
                         
                             <ng-template  pTemplate="header" > 
-                                <nm-label [element]="tabPanel"></nm-label>
+                                <nm-label id="{{tabPanel.config?.code}}" [element]="tabPanel"></nm-label>
                             </ng-template>
                             
                             <ng-template pTemplate="content"> 
                                 <ng-template ngFor let-tabContent [ngForOf]="tabPanel?.type?.model?.params">
                                         <ng-template [ngIf]="tabContent.alias == viewComponent.section.toString() ">
-                                        <nm-section [element]="tabContent"></nm-section>
+                                        <nm-section id="{{tabContent.config?.code}}" [element]="tabContent"></nm-section>
                                         </ng-template>
                                 </ng-template>  
                                 <ng-template ngFor let-tabContent [ngForOf]="tabPanel?.type?.model?.params">
                                         <ng-template [ngIf]="tabContent.alias == componentTypes.tab.toString() && tabContent?.visible">
-                                            <nm-tab [element]="tabContent"></nm-tab>
+                                            <nm-tab id="{{tabContent.config?.code}}" [element]="tabContent"></nm-tab>
                                         </ng-template>
                                 </ng-template>             
                             </ng-template> 

@@ -51,6 +51,7 @@ import { ComponentTypes } from '../../../../shared/param-annotations.enum';
             attr.aria-hidden="{{isHidden}}">
             <ng-template [ngIf]="rowData">
                 <nm-action-link
+                    id="{{element?.type?.model?.params[i]?.config?.code}}" 
                     [elementPath]="elementPath" 
                     [rowData]="rowData"
                     [element]="element?.type?.model?.params[i]"
@@ -60,7 +61,7 @@ import { ComponentTypes } from '../../../../shared/param-annotations.enum';
             <ng-template [ngIf]="!rowData">
                 <ng-template ngFor let-ele [ngForOf]="element?.type?.model?.params">
                     <ng-template [ngIf]="ele.alias == 'Link'">
-                        <nm-link [element] = "ele"> </nm-link>
+                        <nm-link id="{{ele?.config?.code}}" [element] = "ele"> </nm-link>
                     </ng-template>
                  </ng-template>
            </ng-template>

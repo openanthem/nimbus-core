@@ -67,11 +67,12 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                     </ng-template>
                     <!-- Link -->
                     <ng-template [ngIf]="tabElement.alias == componentTypes.link.toString()">
-                        <nm-link [element] = "tabElement"> </nm-link>                                                                  
+                        <nm-link id="{{tabElement.config?.code}}" [element] = "tabElement"> </nm-link>                                                                  
                     </ng-template>
                     <!-- Grid Param -->
                     <ng-template [ngIf]="tabElement.alias == componentTypes.grid.toString()">
                         <nm-table
+                            id="{{tabElement.config?.code}}" 
                             [element]="tabElement" 
                             [params]="tabElement?.config?.type?.elementConfig?.type?.model?.paramConfigs"
                             (onScrollEvent)="onScrollEvent()"
@@ -81,18 +82,20 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                     </ng-template>
                     <!-- Card Content -->
                     <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetail.toString()">
-                        <nm-card-details [element]="tabElement" 
+                        <nm-card-details 
+                            id="{{tabElement.config?.code}}"
+                            [element]="tabElement" 
                             [position]="position+1" 
                             [nmPrint]="tabElement"
                             [ngClass]="tabElement.config.uiStyles.attributes.cssClass"></nm-card-details>
                     </ng-template>
                     <!-- Card Detaisl Grid -->
                     <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetailsGrid.toString()">
-                        <nm-card-details-grid [position]="position+1" [element]="tabElement" [nmPrint]="tabElement"></nm-card-details-grid>
+                        <nm-card-details-grid id="{{tabElement.config?.code}}" [position]="position+1" [element]="tabElement" [nmPrint]="tabElement"></nm-card-details-grid>
                     </ng-template>
                     <!-- Form Param -->
                     <ng-template [ngIf]="tabElement.alias == viewComponent.form.toString()">
-                        <nm-form [position]="position+1" [element]="tabElement" [model]="tabElement.type?.model" [nmPrint]="tabElement"></nm-form>
+                        <nm-form id="{{tabElement.config?.code}}" [position]="position+1" [element]="tabElement" [model]="tabElement.type?.model" [nmPrint]="tabElement"></nm-form>
                     </ng-template>
                 </ng-template>
             </ng-template>
