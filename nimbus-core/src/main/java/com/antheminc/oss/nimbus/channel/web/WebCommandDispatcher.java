@@ -20,15 +20,8 @@ package com.antheminc.oss.nimbus.channel.web;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.converter.DefaultFileUploadGateway;
-import com.antheminc.oss.nimbus.converter.FileUploadGateway;
-import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
-import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
-import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
@@ -47,13 +40,10 @@ public class WebCommandDispatcher {
 	private final WebCommandBuilder builder;
 
 	private final CommandExecutorGateway gateway;
-	
-	private final FileUploadGateway fileUploadGateway;
 
 	public WebCommandDispatcher(BeanResolverStrategy beanResolver) {
 		this.builder = beanResolver.get(WebCommandBuilder.class);
 		this.gateway = beanResolver.get(CommandExecutorGateway.class);
-		this.fileUploadGateway = beanResolver.get(DefaultFileUploadGateway.class);
 		
 	}
 	
@@ -69,18 +59,5 @@ public class WebCommandDispatcher {
 
 	public MultiOutput handle(Command cmd, String payload) {
 		return getGateway().execute(cmd, payload);
-	}
-
-	public boolean handleUpload(HttpServletRequest httpReq, MultipartFile file, String domain) {
-		if (file.isEmpty()) {
-			return false;
-		}
-		
-		Command command = getBuilder().build(httpReq);
-		Command uploadCommand = CommandBuilder.withPlatformRelativePath(command, Type.PlatformMarker, "/" + domain).getCommand();
-		uploadCommand.setRequestParams(command.getRequestParams());
-		uploadCommand.setAction(Action._new);
-		
-		return getFileUploadGateway().upload(uploadCommand, file);
 	}
 }

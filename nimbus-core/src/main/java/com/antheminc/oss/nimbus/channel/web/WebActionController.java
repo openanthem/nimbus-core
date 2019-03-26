@@ -15,12 +15,14 @@
  */
 package com.antheminc.oss.nimbus.channel.web;
 
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,9 +35,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.converter.Importer;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
@@ -106,6 +112,10 @@ public class WebActionController {
 	
 	@Autowired ExecutionContextLoader ctxLoader;
 	
+	@Autowired WebCommandBuilder builder;
+	
+	private Collection<Importer> fileImporters;
+	
 	@RequestMapping(value=URI_PATTERN_P+"/clear", produces="application/json", method=RequestMethod.GET)
 	public void clear() {
 		ctxLoader.clear();
@@ -121,6 +131,15 @@ public class WebActionController {
 	@RequestMapping(value=URI_PATTERN_P+"/loglevel", produces="application/json", method=RequestMethod.GET)
 	public Output<String> updateLogLevel(@RequestParam(value="level") String level, @RequestParam(value="package") String packageName) {
 		return LoggingLevelService.setLoggingLevel(level, packageName);
+	}
+	
+	public Importer getFileImporter(String extension) {
+		for(Importer fileImporter: this.fileImporters) {
+			if (fileImporter.supports(extension)) {
+				return fileImporter;
+			}
+		}
+		return null;
 	}
 	
 	@RequestMapping(value=URI_PATTERN_P_OPEN, produces="application/json", method=RequestMethod.GET)
@@ -194,13 +213,38 @@ public class WebActionController {
 	
 	@RequestMapping(value=URI_PATTERN_P+"/event/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,  produces="application/json", method=RequestMethod.POST)
 	public Object handleUpload(HttpServletRequest req, @RequestParam("pfu") MultipartFile file, @RequestParam("domain") String domain) {
-		Boolean result = dispatcher.handleUpload(req, file, domain);
-		return new Holder<>(result);
+		if (file.isEmpty()) {
+			return new Holder<>(false);
+		}
+		
+		Command command = this.builder.build(req);
+		Command uploadCommand = CommandBuilder.withPlatformRelativePath(command, Type.PlatformMarker, "/" + domain).getCommand();
+		uploadCommand.setRequestParams(command.getRequestParams());
+		uploadCommand.setAction(Action._new);
+		
+		try {
+			String ext = FilenameUtils.getExtension(file.getName());
+			Importer importer = getFileImporter(ext);
+			if (null == importer) {
+				throw new UnsupportedOperationException("Upload for file types of \"" + ext +"\" is not supported.");
+			}
+
+			//TODO - add an entry to db when the file starts to process
+			importer.doImport(uploadCommand, file.getInputStream());
+			return new Holder<>(true);
+		} catch (Exception e) {
+			throw new FrameworkRuntimeException("Failed to upload file.", e);
+		}
 	}
 	
 	protected Object handleInternal(HttpServletRequest req, RequestMethod httpMethod, String v, String json) {
 		Object obj = dispatcher.handle(req, json);
 		Holder<Object> output = new Holder<>(obj);
 		return output;
+	}
+	
+	@Autowired
+	public void setFileImporters(BeanResolverStrategy beanResolver) {
+		this.fileImporters = beanResolver.getMultiple(Importer.class);
 	}
 }
