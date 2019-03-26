@@ -19,7 +19,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, FormControl } from '@angular/forms';
 import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, 
     DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, 
-    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule } from 'primeng/primeng';
+    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, TooltipModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { HttpModule } from '@angular/http';
@@ -195,6 +195,7 @@ const imports = [   FormsModule, ReactiveFormsModule,
     DropdownModule,
     FileUploadModule,
     PickListModule,
+    TooltipModule,
     ListboxModule,
     CheckboxModule,
     RadioButtonModule,

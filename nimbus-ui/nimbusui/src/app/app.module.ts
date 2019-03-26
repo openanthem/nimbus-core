@@ -43,7 +43,7 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, TabViewModule,
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, InputMaskModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, TooltipModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { EditorModule } from 'primeng/editor';
 import { KeyFilterModule } from 'primeng/keyfilter';
@@ -193,6 +193,7 @@ export function init_app(appinitservice: AppInitService) {
         DataTableModule,
         TableModule,
         TreeTableModule,
+        TooltipModule,
         OverlayPanelModule,
         PickListModule,
         DragDropModule,

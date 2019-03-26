@@ -26,6 +26,7 @@ import { Subject } from 'rxjs';
 import { JL } from 'jsnlog';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { ChartModule } from 'primeng/chart';
+import { TooltipModule } from 'primeng/primeng';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoggerService } from './../../../services/logger.service';
@@ -63,7 +64,7 @@ class MockWebContentSvc {
 
 let fixture, hostComponent, pageService;
 const declarations = [ NmChart, InputLabel, TooltipComponent ];
-const imports = [ChartModule];
+const imports = [ChartModule, TooltipModule];
 const providers = [
    CustomHttpClient,
    {provide: PageService, useClass: MockPageService},

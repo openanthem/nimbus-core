@@ -50,6 +50,10 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
     @Input('value') _value='';
     private fieldClass: string = 'col-sm-3'; // occupies 1 col of 4
     componentTypes = ComponentTypes;
+    
+    private toolTipText: string;
+    private toolTipPosition: string;
+    private tooltipStyleClass: string;
 
     constructor(private _wcs: WebContentSvc) {
         super(_wcs);
@@ -57,6 +61,14 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
 
     ngOnInit() {
         super.ngOnInit();
+        this.element.config.uiNatures.forEach(nature =>{
+            if(nature.name === 'ViewConfig.ToolTip'){
+                this.toolTipText = nature.attributes.value;
+                this.tooltipStyleClass = nature.attributes.tooltipStyleClass;
+                this.toolTipPosition = nature.attributes.toolTipPosition;
+            }
+
+        });
     }
 
     onChange: any = () => { };

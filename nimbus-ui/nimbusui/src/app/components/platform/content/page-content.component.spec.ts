@@ -20,7 +20,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule} from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule, TooltipModule} from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing'
 import { HttpClientModule } from '@angular/common/http';
@@ -261,6 +261,7 @@ const declarations = [
   GrowlModule,
   DialogModule,
   FormsModule,
+  TooltipModule,
   DropdownModule,
   DataTableModule,
   AccordionModule,
