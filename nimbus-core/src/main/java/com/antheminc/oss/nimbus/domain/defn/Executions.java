@@ -22,6 +22,7 @@ import java.lang.annotation.Target;
 
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Execution.DetourConfig;
+import com.antheminc.oss.nimbus.domain.defn.Execution.Let;
 
 /**
  * @author Soham Chakravarti
@@ -45,4 +46,10 @@ public class Executions {
 		
 	}
 	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@Execution
+	public @interface LetMany {
+		Let[] value();
+	}
 }

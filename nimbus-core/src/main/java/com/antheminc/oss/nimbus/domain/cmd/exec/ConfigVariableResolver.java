@@ -15,23 +15,21 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec;
 
-import com.antheminc.oss.nimbus.domain.model.config.ExecutionConfig.Context;
-
 /**
  * @author Tony Lopez
  * @since 1.3
  *
  */
-public interface ConfigPlaceholderResolver {
+public interface ConfigVariableResolver {
 
 	/**
-	 * <p>Resolve any config placeholders that are present in the the provided
+	 * <p>Resolve any config variables that are present in the the provided
 	 * path and return the resolved result.
 	 * @param context the context object from which to retrieve config
-	 *            placeholders
+	 *            variables
 	 * @param pathToResolve the path to resolve against
 	 * @return the resolved path
 	 */
-	String resolve(Context context, String pathToResolve);
+	String resolve(ExecutionContext eCtx, String pathToResolve);
 
 }

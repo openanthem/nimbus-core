@@ -30,9 +30,11 @@ import com.antheminc.oss.nimbus.domain.bpm.activiti.CommandExecutorTaskDelegate;
 import com.antheminc.oss.nimbus.domain.bpm.activiti.DefaultMongoProcessRepository;
 import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultParamFunctionHandler;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.ReservedKeywordRegistry;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav.DefaultActionNewInitEntityFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav.PageIdEchoNavHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.AddFunctionHandler;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.ConfigVariableFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.EvalFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.SetByRuleFunctionalHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.SetFunctionHandler;
@@ -139,4 +141,8 @@ public class DefaultProcessConfig {
 		return new EvalFunctionHandler(expressionManager);
 	}
 
+	@Bean(name="default._process$execute?fn=_setConfigVariable")
+	public FunctionHandler<?, Object> configVariableFunctionHandler(ReservedKeywordRegistry reservedKeywordRegistry){
+		return new ConfigVariableFunctionHandler<>(reservedKeywordRegistry);
+	}
 }

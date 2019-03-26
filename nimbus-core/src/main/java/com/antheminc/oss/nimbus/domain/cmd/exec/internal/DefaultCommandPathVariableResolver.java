@@ -63,8 +63,8 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 
 	public class ElemIdResolver extends Resolver {
 			
-		public ElemIdResolver(String keyword) {
-			super(keyword);
+		public ElemIdResolver() {
+			super(Constants.MARKER_ELEM_ID.code);
 		}
 
 		@Override
@@ -86,10 +86,22 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 		}
 	}
 	
+	public class PassthroughResolver extends Resolver {
+
+		public PassthroughResolver(String keyword) {
+			super(keyword);
+		}
+
+		@Override
+		String resolve(Param<?> param, String pathToResolve) {
+			return Constants.MARKER_PLATFROM_EXPR_PREFIX.code + pathToResolve + Constants.MARKER_PLATFROM_EXPR_SUFFIX.code;
+		}
+	}
+	
 	public class EnvResolver extends Resolver {
 
-		public EnvResolver(String keyword) {
-			super(keyword);
+		public EnvResolver() {
+			super(Constants.MARKER_ENV.code);
 		}
 		
 		@Override
@@ -97,31 +109,30 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			String property = pathToResolve.replace(Constants.MARKER_ENV.code+".", "");
 			return environment.getProperty(property);
 		}
-		
 	}
+	
 	public class PlatformMarkerResolver extends Resolver {
 		
-		public PlatformMarkerResolver(String keyword) {
-			super(keyword);
+		public PlatformMarkerResolver() {
+			super(Constants.SEGMENT_PLATFORM_MARKER.code);
 		}
 		
 		@Override
 		public String resolve(Param<?> param, String pathToResolve) {
 			return String.valueOf(mapCrossDomain(param, pathToResolve));
 		}
-		
 	}
+	
 	public class RefIdResolver extends Resolver {
 		
-		public RefIdResolver(String keyword) {
-			super(keyword);
+		public RefIdResolver() {
+			super(Constants.MARKER_REF_ID.code);
 		}
 		
 		@Override
 		public String resolve(Param<?> param, String pathToResolve) {
 			return String.valueOf(param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias));
 		}
-		
 	}
 	
 	@RequiredArgsConstructor
@@ -139,8 +150,8 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 	
 	public class SelfResolver extends Resolver {
 
-		public SelfResolver(String keyword) {
-			super(keyword);
+		public SelfResolver() {
+			super(Constants.MARKER_SESSION_SELF.code);
 		}
 		
 		@Override
@@ -154,20 +165,20 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			
 			return param.getRootExecution().getRootCommand().getElementSafely(Type.ClientAlias).getAlias();
 		}
-		
 	}
+	
 	public class ThisResolver extends Resolver {
 
-		public ThisResolver(String keyword) {
-			super(keyword);
+		public ThisResolver() {
+			super(Constants.MARKER_COMMAND_PARAM_CURRENT_SELF.code);
 		}
 		
 		@Override
 		public String resolve(Param<?> param, String pathToResolve) {
 			return StringUtils.removeStart(param.getPath(), param.getRootDomain().getPath());
 		}
-		
 	}
+
 	private static final String NULL_STRING = "null";
 	private static final String NULL_STRING_REGEX = "\\s*\"null\"\\s*";
 	private static final Pattern NULL_STRING_PATTERN = Pattern.compile(NULL_STRING_REGEX);
@@ -194,12 +205,13 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 	}
 	
 	public void registerDefaultResolvers() {
-		registerResolver(new SelfResolver(Constants.MARKER_SESSION_SELF.code));
-		registerResolver(new EnvResolver(Constants.MARKER_ENV.code));
-		registerResolver(new ThisResolver(Constants.MARKER_COMMAND_PARAM_CURRENT_SELF.code));
-		registerResolver(new RefIdResolver(Constants.MARKER_REF_ID.code));
-		registerResolver(new ElemIdResolver(Constants.MARKER_ELEM_ID.code));
-		registerResolver(new PlatformMarkerResolver(Constants.SEGMENT_PLATFORM_MARKER.code));
+		registerResolver(new SelfResolver());
+		registerResolver(new EnvResolver());
+		registerResolver(new ThisResolver());
+		registerResolver(new RefIdResolver());
+		registerResolver(new ElemIdResolver());
+		registerResolver(new PlatformMarkerResolver());
+		registerResolver(new PassthroughResolver(Constants.MARKER_COL_PARAM.code));
 	}
 	
 	public void registerResolver(Resolver resolver) {

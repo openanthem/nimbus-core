@@ -45,6 +45,7 @@ import com.antheminc.oss.nimbus.domain.config.builder.attributes.ConstraintAnnot
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.model.config.EntityConfig.Scope;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
+import com.antheminc.oss.nimbus.domain.model.config.builder.internal.ConfigVariableExecutionConfigProvider;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultEntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultExecutionConfigProvider;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DetourExecutionConfigProvider;
@@ -143,6 +144,11 @@ public class DefaultCoreBuilderConfig {
 	@Bean 
 	public DetourExecutionConfigProvider detourExecutionConfigProvider(BeanResolverStrategy beanResolver) {
 		return new DetourExecutionConfigProvider();
+	}
+	
+	@Bean
+	public ConfigVariableExecutionConfigProvider configVariableExecutionConfigProvider() {
+		return new ConfigVariableExecutionConfigProvider();
 	}
 	
 	@Bean(name="default.annotationConfigBuilder")

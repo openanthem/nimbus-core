@@ -28,6 +28,7 @@ import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.Executions.Configs;
 import com.antheminc.oss.nimbus.domain.defn.Executions.DetourConfigs;
+import com.antheminc.oss.nimbus.domain.defn.Executions.LetMany;
 
 /**
  * @author Soham Chakravarti
@@ -93,6 +94,55 @@ public @interface Execution {
 	}
 
 	/**
+	 * <p>Annotation which indicates that a command template variable should be
+	 * bound to a provided value. Supported for {@link Config} annotated fields
+	 * during the execution step.
+	 *
+	 * <p>The command template variable must not match any reserved template
+	 * variables.
+	 * 
+	 * @author Tony Lopez
+	 * @since 1.3
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@Repeatable(LetMany.class)
+	@Execution
+	public @interface Let {
+
+		/**
+		 * <p>A {@link Config} execution to resolve and use in place of
+		 * {@link #name()} when an execution using this variable is resolved.
+		 */
+		Config[] config() default {};
+
+		/**
+		 * <p>The name of the placeholder that should be used as an identifier
+		 * to resolve in a config url.
+		 */
+		String name();
+
+		/**
+		 * <p>The order of execution this annotation should be executed in, with
+		 * respect to other conditional annotations that are also decorating
+		 * this param.
+		 */
+		int order() default Event.DEFAULT_ORDER_NUMBER;
+
+		/**
+		 * <p>A SpEL expression to resolve and use in place of {@link #name()}
+		 * when an execution using this variable is resolved.
+		 */
+		String spel() default "";
+
+		/**
+		 * <p>The static value to use in place of {@link #name()} when an
+		 * execution using this variable is resolved.
+		 */
+		String value() default "";
+	}
+	
+	/**
 	 * @author Rakesh Patel
 	 *
 	 */
@@ -106,42 +156,5 @@ public @interface Execution {
 		Config onException() default @Config(url = "");
 
 		int order() default Event.DEFAULT_ORDER_NUMBER;
-	}
-
-	/**
-	 * <p>Annotation which indicates that a command template variable should
-	 * be bound to a provided value. Supported for {@link Config} annotated
-	 * fields during the execution step.
-	 *
-	 * <p>The command template variable must not match any reserved template
-	 * variables.
-	 * 
-	 * @author Tony Lopez
-	 * @since 1.3
-	 * @see com.antheminc.oss.nimbus.domain.cmd.exec.ConfigPlaceholderResolver
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@Repeatable(ConfigPlaceholders.class)
-	@Execution
-	public @interface ConfigPlaceholder {
-
-		/**
-		 * <p>The name of the placeholder that should be used as an identifier to
-		 * resolve in a config url.
-		 */
-		String name();
-
-		/**
-		 * <p>The value to use in place of {@link #name()} when this config placeholder is resolved.
-		 */
-		String value();
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@Execution
-	public @interface ConfigPlaceholders {
-		ConfigPlaceholder[] value();
 	}
 }

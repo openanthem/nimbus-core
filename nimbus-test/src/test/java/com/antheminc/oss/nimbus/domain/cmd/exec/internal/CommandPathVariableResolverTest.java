@@ -18,21 +18,16 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.lang.annotation.Annotation;
-
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runners.MethodSorters;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
-import com.antheminc.oss.nimbus.domain.defn.Execution.ConfigPlaceholder;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
@@ -43,10 +38,7 @@ import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class CommandPathVariableResolverTest  extends AbstractFrameworkIngerationPersistableTests {
-	
-	@Autowired
-	private CommandExecutorGateway commandExecutorGateway;
+public class CommandPathVariableResolverTest extends AbstractFrameworkIngerationPersistableTests {
 	
 	@Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -110,7 +102,7 @@ public class CommandPathVariableResolverTest  extends AbstractFrameworkIngeratio
 		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
 				.addRefId(refId)
-				.addNested("/configPlaceholders/p1")
+				.addNested("/configVariables/p1")
 				.addAction(Action._get)
 				.getMock();
 		Holder<MultiOutput> resp = (Holder<MultiOutput>) controller.handleGet(req, null);
@@ -125,7 +117,7 @@ public class CommandPathVariableResolverTest  extends AbstractFrameworkIngeratio
 		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
 				.addRefId(refId)
-				.addNested("/configPlaceholders/p2")
+				.addNested("/configVariables/p2")
 				.addAction(Action._get)
 				.getMock();
 		Holder<MultiOutput> resp = (Holder<MultiOutput>) controller.handleGet(req, null);
@@ -142,7 +134,7 @@ public class CommandPathVariableResolverTest  extends AbstractFrameworkIngeratio
 		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
 				.addRefId(refId)
-				.addNested("/configPlaceholders/p3")
+				.addNested("/configVariables/p3")
 				.addAction(Action._get)
 				.getMock();
 		
@@ -155,13 +147,13 @@ public class CommandPathVariableResolverTest  extends AbstractFrameworkIngeratio
 		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
 				.addRefId(refId)
-				.addNested("/configPlaceholders/p4")
+				.addNested("/configVariables/p4")
 				.addAction(Action._get)
 				.getMock();
 		
 		Holder<MultiOutput> resp = (Holder<MultiOutput>) controller.handleGet(req, null);
 		// TODO Output not generated. Why?
-		Param<?> p0 = resp.getState().getContext().getQuadModel().getView().findParamByPath("/configPlaceholders/p0");
+		Param<?> p0 = resp.getState().getContext().getQuadModel().getView().findParamByPath("/configVariables/p0");
 		
 		assertEquals("p4-did-it", p0.getState());
 	}
@@ -172,7 +164,7 @@ public class CommandPathVariableResolverTest  extends AbstractFrameworkIngeratio
 		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
 				.addRefId(refId)
-				.addNested("/configPlaceholders/p5")
+				.addNested("/configVariables/p5")
 				.addAction(Action._get)
 				.getMock();
 		
@@ -191,13 +183,13 @@ public class CommandPathVariableResolverTest  extends AbstractFrameworkIngeratio
 		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
 				.addRefId(refId)
-				.addNested("/configPlaceholders/p8")
+				.addNested("/configVariables/p8")
 				.addAction(Action._get)
 				.getMock();
 		
 		Holder<MultiOutput> resp = (Holder<MultiOutput>) controller.handleGet(req, null);
 		// TODO Output not generated. Why?
-		Param<String> p0 = resp.getState().getContext().getQuadModel().getView().findParamByPath("/configPlaceholders/p0");
+		Param<String> p0 = resp.getState().getContext().getQuadModel().getView().findParamByPath("/configVariables/p0");
 
 		assertEquals("p8-did-it", p0.getState());
 	}
@@ -222,25 +214,5 @@ public class CommandPathVariableResolverTest  extends AbstractFrameworkIngeratio
 		final Object resp = controller.handleGet(req, null);
 		Param<?> p = ExtractResponseOutputUtils.extractOutput(resp);
 		return p;
-	}
-	
-	private static ConfigPlaceholder buildConfigPlaceholder(String name, String value) {
-		return new ConfigPlaceholder() {
-			
-			@Override
-			public Class<? extends Annotation> annotationType() {
-				return ConfigPlaceholder.class;
-			}
-			
-			@Override
-			public String value() {
-				return value;
-			}
-			
-			@Override
-			public String name() {
-				return name;
-			}
-		};
 	}
 }

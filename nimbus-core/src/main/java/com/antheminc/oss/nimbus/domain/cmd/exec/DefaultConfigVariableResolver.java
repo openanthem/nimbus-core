@@ -23,7 +23,6 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.ReservedKeywordRegistry;
-import com.antheminc.oss.nimbus.domain.model.config.ExecutionConfig.Context;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,17 +32,17 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @RequiredArgsConstructor
-public class DefaultConfigPlaceholderResolver implements ConfigPlaceholderResolver {
+public class DefaultConfigVariableResolver implements ConfigVariableResolver {
 
 	private final ReservedKeywordRegistry reservedKeywordRegistry;
 	
 	@Override
-	public String resolve(Context context, String pathToResolve) {
+	public String resolve(ExecutionContext eCtx, String pathToResolve) {
 		Map<Integer, String> entries = ParamPathExpressionParser.parse(pathToResolve);
 
 		// remove reserved placeholders -- those will be handled by another
 		// resolver
-		entries = entries.entrySet().stream().filter(x -> !this.reservedKeywordRegistry.exists(x.getValue()))
+		entries = entries.entrySet().stream().filter(x -> !this.reservedKeywordRegistry.exists(ParamPathExpressionParser.stripPrefixSuffix(x.getValue())))
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
 		if (MapUtils.isEmpty(entries)) {
@@ -52,9 +51,10 @@ public class DefaultConfigPlaceholderResolver implements ConfigPlaceholderResolv
 
 		String out = pathToResolve;
 		for (Entry<Integer, String> entry : entries.entrySet()) {
-			String placeholderName = ParamPathExpressionParser.stripPrefixSuffix(entry.getValue());
-			String placeholderValue = context.getPlaceholderMap().get(placeholderName);
-			out = StringUtils.replace(out, entry.getValue(), placeholderValue, 1);
+			String variableName = ParamPathExpressionParser.stripPrefixSuffix(entry.getValue());
+			Object variableValue = eCtx.getVariable(variableName);
+			String sVariableValue = variableValue != null ? variableValue.toString() : null;
+			out = StringUtils.replace(out, entry.getValue(), sVariableValue, 1);
 		}
 
 		return out;

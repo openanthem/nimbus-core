@@ -24,10 +24,10 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandTransactionInterceptor;
-import com.antheminc.oss.nimbus.domain.cmd.exec.DefaultConfigPlaceholderResolver;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ConfigVariableResolver;
+import com.antheminc.oss.nimbus.domain.cmd.exec.DefaultConfigVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextPathVariableResolver;
-import com.antheminc.oss.nimbus.domain.cmd.exec.ConfigPlaceholderResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorConfig;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorDelete;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorGet;
@@ -80,8 +80,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean
-	public ConfigPlaceholderResolver paramPathPlaceholderResolver(ReservedKeywordRegistry reservedKeywordRegistry) {
-		return new DefaultConfigPlaceholderResolver(reservedKeywordRegistry);
+	public ConfigVariableResolver configVariableResolver(ReservedKeywordRegistry reservedKeywordRegistry) {
+		return new DefaultConfigVariableResolver(reservedKeywordRegistry);
 	}
 	
 	@Bean(name="default.ExecutionContextLoader", destroyMethod="clear") 

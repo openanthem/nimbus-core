@@ -15,23 +15,31 @@
  */
 package com.antheminc.oss.nimbus.domain.model.config.builder.internal;
 
+import com.antheminc.oss.nimbus.domain.cmd.Action;
+import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
+import com.antheminc.oss.nimbus.domain.defn.Execution.Let;
+import com.antheminc.oss.nimbus.domain.defn.builder.internal.ExecutionConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.ExecutionConfigProvider;
 
 /**
- * @author Rakesh Patel
+ * @author Tony Lopez
  *
  */
-public class DefaultExecutionConfigProvider implements ExecutionConfigProvider<Config> {
+public class ConfigVariableExecutionConfigProvider implements ExecutionConfigProvider<Let> {
 
 	@Override
-	public Config getMain(Config configAnnotation, ExecutionContext eCtx) {
-		return configAnnotation;
+	public Config getMain(Let configAnnotation, ExecutionContext eCtx) {
+		final CommandMessage cmdMsg = eCtx.getCommandMessage();
+		// TODO review and clean up.
+		final String valueString = "value=" + configAnnotation.value();
+		String uri = "/p" + cmdMsg.getCommand().getAbsoluteDomainUri() + "/" + Action._process + "?fn=_setConfigVariable&name=" + configAnnotation.name() + "&" + valueString;
+		return ExecutionConfigBuilder.buildExecConfig(uri);
 	}
 
 	@Override
-	public Config getException(Config configAnnotation, ExecutionContext eCtx) {
+	public Config getException(Let configAnnotation, ExecutionContext eCtx) {
 		return null;
 	}
 

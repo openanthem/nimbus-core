@@ -15,11 +15,9 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s0.view;
 
-import java.util.List;
-
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
-import com.antheminc.oss.nimbus.domain.defn.Execution.ConfigPlaceholder;
 import com.antheminc.oss.nimbus.domain.defn.Execution.DetourConfig;
+import com.antheminc.oss.nimbus.domain.defn.Execution.Let;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.extension.ConfigConditional;
 
@@ -32,27 +30,27 @@ import lombok.Setter;
  */
 @Model
 @Getter @Setter
-public class SampleConfigPlaceholders {
+public class SampleConfigVariables {
 
 	private String p0;
 	
-	@ConfigPlaceholder(name = "foo", value = "<!#this!>/../p0")
+	@Let(name = "foo", value = "<!#this!>/../p0")
 	@Config(url = "<!foo!>/_process?fn=_set&value=p1-did-it")
 	private String p1;
 	
-	@ConfigPlaceholder(name = "bar", value = "<!#this!>/../p0")
-	@ConfigPlaceholder(name = "baz", value = "p2-did-it")
+	@Let(name = "bar", value = "<!#this!>/../p0")
+	@Let(name = "baz", value = "p2-did-it")
 	@Config(url = "<!bar!>/_process?fn=_set&value=<!baz!>")
 	private String p2;
 	
 	@Config(url = "<!foo!>/_process?fn=_set&value=p3-did-it")
 	private String p3;
 	
-	@ConfigPlaceholder(name = "foo", value = "<!#this!>/../p0")
+	@Let(name = "foo", value = "<!#this!>/../p0")
 	@DetourConfig(main = @Config(url = "break things"), onException = @Config(url = "<!foo!>/_process?fn=_set&value=p4-did-it"))
 	private String p4;
 	
-	@ConfigPlaceholder(name = "foo", value = "<!#this!>/../p0")
+	@Let(name = "foo", value = "<!#this!>/../p0")
 	@ConfigConditional(when = "true", config = {
 		@Config(url = "<!foo!>/_process?fn=_set&value=p5-did-it")
 	})
@@ -62,7 +60,7 @@ public class SampleConfigPlaceholders {
 	
 	private String[] p7;
 	
-	@ConfigPlaceholder(name = "foo", value = "<!#this!>/../p<!col!>")
+	@Let(name = "foo", value = "<!#this!>/../p<!col!>")
 	@Config(url = "<!#this!>/../p7/_replace?rawPayload=[\"0\"]")
 	@Config(url = "<!foo!>/_process?fn=_set&value=p8-did-it", col="<!/../p7!>")
 	private String p8;

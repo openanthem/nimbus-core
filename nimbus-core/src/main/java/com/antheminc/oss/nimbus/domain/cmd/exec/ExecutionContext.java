@@ -16,10 +16,13 @@
 package com.antheminc.oss.nimbus.domain.cmd.exec;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
@@ -40,17 +43,17 @@ public class ExecutionContext implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private final CommandMessage commandMessage;
-	
+	private final Map<String, Object> resolvedVariableMap = new HashMap<>();
 	private QuadModel<?, ?> quadModel;
 	
 	public ExecutionContext(Command command) {
 		this(new CommandMessage(command, null));
 	}
-	
+			
 	public ExecutionContext(CommandMessage commandMessage) {
 		this.commandMessage = commandMessage;
 	}
-		
+	
 	public ExecutionContext(CommandMessage commandMessage, QuadModel<?, ?> quadModel) {
 		this(commandMessage);
 		setQuadModel(quadModel);
@@ -58,6 +61,24 @@ public class ExecutionContext implements Serializable {
 	
 	public String getId() {
 		return getCommandMessage().getCommand().getRootDomainUri();
+	}
+	
+	/**
+	 * <p>Get the map of currently resolved variables.
+	 * @return the map of current resolved variables.
+	 */
+	public Map<String, Object> getResolvedVariableMap() {
+		return Collections.unmodifiableMap(this.resolvedVariableMap);
+	}
+	
+	/**
+	 * <p>Get the resolved variable value for a given variable name.
+	 * @param name the name of the variable to retrieve
+	 * @return the previous value associated with {@code name}, or
+	 *         {@code null} if there was no mapping for {@code name}.
+	 */
+	public Object getVariable(String name) {
+		return this.resolvedVariableMap.get(name);
 	}
 	
 	public boolean equalsId(Command cmd) {
@@ -75,7 +96,6 @@ public class ExecutionContext implements Serializable {
 	public <P> P findStateByPath(String path) {
 		return getRootModel().findStateByPath(path);
 	}
-	
 	
 	@Override
 	public boolean equals(Object other) {
@@ -97,6 +117,17 @@ public class ExecutionContext implements Serializable {
 		HashCodeBuilder builder = new HashCodeBuilder();
 		builder.append(getId());
 		return builder.hashCode();
+	}
+	
+	/**
+	 * <p>Set a resolve variable value into the resolved variable cache.
+	 * @param name the name to store the variable under
+	 * @param value the value to store
+	 * @return the previous value associated with {@code name}, or
+	 *         {@code null} if there was no mapping for {@code name}.
+	 */
+	public Object setVariable(String name, Object value) {
+		return this.resolvedVariableMap.put(name, value);
 	}
 	
 	@Override

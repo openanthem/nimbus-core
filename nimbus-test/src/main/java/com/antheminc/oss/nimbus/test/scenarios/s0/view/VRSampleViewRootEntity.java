@@ -63,5 +63,5 @@ public class VRSampleViewRootEntity {
 	
 	private SampleParamStateHolders paramStateHolders;
 	
-	private SampleConfigPlaceholders configPlaceholders;
+	private SampleConfigVariables configVariables;
 }

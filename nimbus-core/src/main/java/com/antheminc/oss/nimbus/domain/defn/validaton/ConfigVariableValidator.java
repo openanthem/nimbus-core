@@ -17,7 +17,7 @@ package com.antheminc.oss.nimbus.domain.defn.validaton;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.ReservedKeywordRegistry;
-import com.antheminc.oss.nimbus.domain.defn.Execution.ConfigPlaceholder;
+import com.antheminc.oss.nimbus.domain.defn.Execution.Let;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,16 +28,16 @@ import lombok.RequiredArgsConstructor;
  * @since 1.3
  */
 @RequiredArgsConstructor
-public class ConfigPlaceholderValidator {
+public class ConfigVariableValidator {
 
 	private final ReservedKeywordRegistry reservedKeywordRegistry;
 	
 	public boolean supports(Class<?> clazz) {
-		return ConfigPlaceholder.class.isAssignableFrom(clazz);
+		return Let.class.isAssignableFrom(clazz);
 	}
 
 	public void validate(Object target) {
-		ConfigPlaceholder obj = (ConfigPlaceholder) target;
+		Let obj = (Let) target;
 		if (this.reservedKeywordRegistry.exists(obj.name())) {
 			throw new InvalidConfigException("The placeholder \"" + obj.name()
 					+ "\" is a reserved keyword. Replacing reserved placeholders is not allowed.");
