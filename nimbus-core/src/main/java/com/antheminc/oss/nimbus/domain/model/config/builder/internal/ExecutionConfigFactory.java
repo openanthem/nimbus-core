@@ -21,7 +21,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.internal.ReservedKeywordRegistry
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Execution.DetourConfig;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Let;
-import com.antheminc.oss.nimbus.domain.defn.validaton.ConfigVariableValidator;
+import com.antheminc.oss.nimbus.domain.defn.validaton.LetValidator;
 import com.antheminc.oss.nimbus.domain.model.config.ExecutionConfig;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultExecutionConfig;
 
@@ -32,10 +32,10 @@ import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultExecutionCon
  */
 public class ExecutionConfigFactory {
 
-	private final ConfigVariableValidator configVariableValidator;
+	private final LetValidator configVariableValidator;
 
 	public ExecutionConfigFactory(ReservedKeywordRegistry reservedKeywordRegistry) {
-		this.configVariableValidator = new ConfigVariableValidator(reservedKeywordRegistry);
+		this.configVariableValidator = new LetValidator(reservedKeywordRegistry);
 	}
 
 	public ExecutionConfig build(AnnotatedElement aElem) {

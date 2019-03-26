@@ -28,6 +28,7 @@ import com.antheminc.oss.nimbus.domain.bpm.activiti.ActivitiBPMGateway;
 import com.antheminc.oss.nimbus.domain.bpm.activiti.ActivitiExpressionManager;
 import com.antheminc.oss.nimbus.domain.bpm.activiti.CommandExecutorTaskDelegate;
 import com.antheminc.oss.nimbus.domain.bpm.activiti.DefaultMongoProcessRepository;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultParamFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.ReservedKeywordRegistry;
@@ -141,8 +142,8 @@ public class DefaultProcessConfig {
 		return new EvalFunctionHandler(expressionManager);
 	}
 
-	@Bean(name="default._process$execute?fn=_setConfigVariable")
-	public FunctionHandler<?, Object> configVariableFunctionHandler(ReservedKeywordRegistry reservedKeywordRegistry){
-		return new ConfigVariableFunctionHandler<>(reservedKeywordRegistry);
+	@Bean(name="default._process$execute?fn=_setVariable")
+	public FunctionHandler<?, Object> configVariableFunctionHandler(ReservedKeywordRegistry reservedKeywordRegistry, SpelExpressionEvaluator expressionEvaluator, CommandExecutorGateway commandExecutorGateway) {
+		return new ConfigVariableFunctionHandler<>(reservedKeywordRegistry, expressionEvaluator, commandExecutorGateway);
 	}
 }

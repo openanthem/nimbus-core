@@ -22,13 +22,13 @@ import com.antheminc.oss.nimbus.domain.defn.Execution.Let;
 import lombok.RequiredArgsConstructor;
 
 /**
- * <p>Validator for {@link com.antheminc.oss.nimbus.domain.defn.Execution.ConfigPlaceholder}
+ * <p>Validator for {@link com.antheminc.oss.nimbus.domain.defn.Execution.Let}
  * 
  * @author Tony Lopez
  * @since 1.3
  */
 @RequiredArgsConstructor
-public class ConfigVariableValidator {
+public class LetValidator {
 
 	private final ReservedKeywordRegistry reservedKeywordRegistry;
 	

@@ -16,7 +16,6 @@
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import java.lang.annotation.Annotation;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -60,7 +59,6 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ParamPathExpressionParser;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
-import com.antheminc.oss.nimbus.domain.defn.Execution.Let;
 import com.antheminc.oss.nimbus.domain.defn.builder.internal.ExecutionConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.ExecutionConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
@@ -269,12 +267,10 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 					
 					// execute & add output to mOutput
 					MultiOutput configOutput = executeConfig(eCtx.getCommandMessage().getCommand(), configCmdMsg);
-					if (Let.class.isAssignableFrom(ec.annotationType())) {
-						SimpleEntry<String, Object> entry = (SimpleEntry<String, Object>) configOutput.getSingleResult();
-						eCtx.setVariable(entry.getKey(), entry.getValue());
-					} else {
-						configExecOutputs.add(configOutput);
+					if (null != configOutput.getContext()) {
+						eCtx.addVariables(configOutput.getContext().getResolvedVariableMap());
 					}
+					configExecOutputs.add(configOutput);
 				} 
 			} catch(Exception ex) {
 				Config exceptionConfig = execConfigProvider.getException(ec, eCtx);

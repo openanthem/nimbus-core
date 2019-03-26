@@ -59,6 +59,27 @@ public class ExecutionContext implements Serializable {
 		setQuadModel(quadModel);
 	}
 	
+	/**
+	 * <p>Add a resolved variable value into the resolved variable cache.
+	 * @param name the name to store the variable under
+	 * @param value the value to store
+	 * @return the previous value associated with {@code name}, or
+	 *         {@code null} if there was no mapping for {@code name}.
+	 */
+	public Object addVariable(String name, Object value) {
+		return this.resolvedVariableMap.put(name, value);
+	}
+	
+	/**
+	 * <p>Add resolved variables into the resolved variable cache.
+	 * @param resolvedVariableMap a map containing entries to add.
+	 * @return the previous value associated with {@code name}, or
+	 *         {@code null} if there was no mapping for {@code name}.
+	 */
+	public void addVariables(Map<String, Object> resolvedVariableMap) {
+		this.resolvedVariableMap.putAll(resolvedVariableMap);
+	}
+	
 	public String getId() {
 		return getCommandMessage().getCommand().getRootDomainUri();
 	}
@@ -119,15 +140,8 @@ public class ExecutionContext implements Serializable {
 		return builder.hashCode();
 	}
 	
-	/**
-	 * <p>Set a resolve variable value into the resolved variable cache.
-	 * @param name the name to store the variable under
-	 * @param value the value to store
-	 * @return the previous value associated with {@code name}, or
-	 *         {@code null} if there was no mapping for {@code name}.
-	 */
-	public Object setVariable(String name, Object value) {
-		return this.resolvedVariableMap.put(name, value);
+	public void reset() {
+		this.resolvedVariableMap.clear();
 	}
 	
 	@Override

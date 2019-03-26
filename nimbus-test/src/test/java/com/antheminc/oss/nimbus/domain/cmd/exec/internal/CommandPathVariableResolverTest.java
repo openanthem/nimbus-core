@@ -19,17 +19,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.FixMethodOrder;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runners.MethodSorters;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 
@@ -39,9 +35,6 @@ import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CommandPathVariableResolverTest extends AbstractFrameworkIngerationPersistableTests {
-	
-	@Rule
-    public ExpectedException thrown = ExpectedException.none();
 	
 	@Test
 	public void t0_nestedConfigPath() {
@@ -94,104 +87,6 @@ public class CommandPathVariableResolverTest extends AbstractFrameworkIngeration
 		assertEquals("key2", p.findStateByPath("/test_parameter2"));
 
 		
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testConfigPlaceholderSingle() {
-		Long refId = createOrGetDomainRoot_RefId();
-		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
-				.addRefId(refId)
-				.addNested("/configVariables/p1")
-				.addAction(Action._get)
-				.getMock();
-		Holder<MultiOutput> resp = (Holder<MultiOutput>) controller.handleGet(req, null);
-		Param<?> p0 = (Param<?>) resp.getState().findFirstParamOutputEndingWithPath("/p0").getValue();
-		
-		assertEquals("p1-did-it", p0.getState());
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testConfigPlaceholderMultiple() {
-		Long refId = createOrGetDomainRoot_RefId();
-		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
-				.addRefId(refId)
-				.addNested("/configVariables/p2")
-				.addAction(Action._get)
-				.getMock();
-		Holder<MultiOutput> resp = (Holder<MultiOutput>) controller.handleGet(req, null);
-		Param<?> p0 = (Param<?>) resp.getState().findFirstParamOutputEndingWithPath("/p0").getValue();
-		
-		assertEquals("p2-did-it", p0.getState());
-	}
-	
-	@Test
-	public void testConfigPlaceholderUndefined() {
-		thrown.expect(NumberFormatException.class);
-		thrown.expectMessage("For input string: \"1null\"");
-		
-		Long refId = createOrGetDomainRoot_RefId();
-		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
-				.addRefId(refId)
-				.addNested("/configVariables/p3")
-				.addAction(Action._get)
-				.getMock();
-		
-		controller.handleGet(req, null);
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testConfigPlaceholderWithDetourConfigs() {
-		Long refId = createOrGetDomainRoot_RefId();
-		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
-				.addRefId(refId)
-				.addNested("/configVariables/p4")
-				.addAction(Action._get)
-				.getMock();
-		
-		Holder<MultiOutput> resp = (Holder<MultiOutput>) controller.handleGet(req, null);
-		// TODO Output not generated. Why?
-		Param<?> p0 = resp.getState().getContext().getQuadModel().getView().findParamByPath("/configVariables/p0");
-		
-		assertEquals("p4-did-it", p0.getState());
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testConfigPlaceholderWithConfigConditional() {
-		Long refId = createOrGetDomainRoot_RefId();
-		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
-				.addRefId(refId)
-				.addNested("/configVariables/p5")
-				.addAction(Action._get)
-				.getMock();
-		
-		Holder<MultiOutput> resp = (Holder<MultiOutput>) controller.handleGet(req, null);
-		Param<String> p5 = (Param<String>) resp.getState().findFirstParamOutputEndingWithPath("/p5").getValue();
-		
-		p5.setState("changeit");
-		
-		Param<String> p0 = p5.findParamByPath("/../p0");
-		assertEquals("p5-did-it", p0.getState());
-	}
-
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testConfigPlaceholderWithCol() {
-		Long refId = createOrGetDomainRoot_RefId();
-		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
-				.addRefId(refId)
-				.addNested("/configVariables/p8")
-				.addAction(Action._get)
-				.getMock();
-		
-		Holder<MultiOutput> resp = (Holder<MultiOutput>) controller.handleGet(req, null);
-		// TODO Output not generated. Why?
-		Param<String> p0 = resp.getState().getContext().getQuadModel().getView().findParamByPath("/configVariables/p0");
-
-		assertEquals("p8-did-it", p0.getState());
 	}
 	
 	private void execGet(Long refId, String nestedPath) {

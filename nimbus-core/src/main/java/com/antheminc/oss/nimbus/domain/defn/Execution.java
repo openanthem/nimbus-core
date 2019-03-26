@@ -111,12 +111,6 @@ public @interface Execution {
 	public @interface Let {
 
 		/**
-		 * <p>A {@link Config} execution to resolve and use in place of
-		 * {@link #name()} when an execution using this variable is resolved.
-		 */
-		Config[] config() default {};
-
-		/**
 		 * <p>The name of the placeholder that should be used as an identifier
 		 * to resolve in a config url.
 		 */

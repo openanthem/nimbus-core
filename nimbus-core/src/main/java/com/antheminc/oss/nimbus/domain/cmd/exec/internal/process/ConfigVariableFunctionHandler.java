@@ -16,14 +16,17 @@
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal.process;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.stream.Stream;
 
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.ReservedKeywordRegistry;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.expr.SpelExpressionEvaluator;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -36,38 +39,43 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class ConfigVariableFunctionHandler<T> implements FunctionHandler<T, Object> {
 
-	public static final String ARG_CONFIG = "config";
 	public static final String ARG_NAME = "name";
 	public static final String ARG_SPEL = "spel";
 	public static final String ARG_VALUE = "value";
 
 	private final ReservedKeywordRegistry reservedKeywordRegistry;
-	
+	private final SpelExpressionEvaluator expressionEvaluator;
+	private final CommandExecutorGateway commandExecutorGateway;
+
 	@Override
 	public Object execute(ExecutionContext eCtx, Param<T> actionParameter) {
 		validate(eCtx, actionParameter);
 		String variableName = eCtx.getCommandMessage().getCommand().getFirstParameterValue(ARG_NAME);
 		Object variableValue = determineVariableValue(eCtx, actionParameter);
+		eCtx.addVariable(variableName, variableValue);
 		return new SimpleEntry<String, Object>(variableName, variableValue);
 	}
-	
+
 	private Object determineVariableValue(ExecutionContext eCtx, Param<T> actionParameter) {
-		String instruction = eCtx.getCommandMessage().getCommand().getFirstParameterValue(ARG_VALUE);
-		if (!StringUtils.isEmpty(instruction)) {
-			return instruction;
+		String valueProviderString = getValue(eCtx);
+		if (!StringUtils.isEmpty(valueProviderString)) {
+			return valueProviderString;
 		}
-		
-		instruction = eCtx.getCommandMessage().getCommand().getFirstParameterValue(ARG_SPEL);
-		if (!StringUtils.isEmpty(instruction)) {
-			// TODO
+
+		valueProviderString = getSpel(eCtx);
+		if (!StringUtils.isEmpty(valueProviderString)) {
+			return getExpressionEvaluator().getValue(valueProviderString, actionParameter);
 		}
-		
-		instruction = eCtx.getCommandMessage().getCommand().getFirstParameterValue(ARG_CONFIG);
-		if (!StringUtils.isEmpty(instruction)) {
-			// TODO
-		}
-		
-		return null;
+
+		throw new InvalidConfigException("Unable to determine variable value.");
+	}
+
+	private String getSpel(ExecutionContext eCtx) {
+		return eCtx.getCommandMessage().getCommand().getFirstParameterValue(ARG_SPEL);
+	}
+
+	private String getValue(ExecutionContext eCtx) {
+		return eCtx.getCommandMessage().getCommand().getFirstParameterValue(ARG_VALUE);
 	}
 
 	/**
@@ -85,19 +93,17 @@ public class ConfigVariableFunctionHandler<T> implements FunctionHandler<T, Obje
 		if (StringUtils.isEmpty(name)) {
 			throw new InvalidConfigException("The argument \"" + ARG_NAME + "\" is required.");
 		}
-		
+
 		if (getReservedKeywordRegistry().exists(name)) {
 			throw new InvalidConfigException("The placeholder \"" + name
 					+ "\" is a reserved keyword. Replacing reserved placeholders is not allowed.");
 		}
 
-		if (StringUtils.isEmpty(eCtx.getCommandMessage().getCommand().getFirstParameterValue(ARG_VALUE))) {
-			if (StringUtils.isEmpty(eCtx.getCommandMessage().getCommand().getFirstParameterValue(ARG_SPEL))) {
-				if (StringUtils.isEmpty(eCtx.getCommandMessage().getCommand().getFirstParameterValue(ARG_CONFIG))) {
-					throw new InvalidConfigException("At least one value is required for either: " + ARG_VALUE + ", "
-							+ ARG_SPEL + ", or " + ARG_CONFIG + ".");
-				}
-			}
+		long numProvidedValues = Stream.of(getValue(eCtx), getSpel(eCtx)).filter(StringUtils::isNotEmpty)
+				.count();
+		if (1 != numProvidedValues) {
+			throw new InvalidConfigException("One and only one value is required for either: " + ARG_VALUE + " or "
+					+ ARG_SPEL + ".");
 		}
 	}
 }

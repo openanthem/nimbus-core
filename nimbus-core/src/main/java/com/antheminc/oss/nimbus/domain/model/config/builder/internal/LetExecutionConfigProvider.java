@@ -15,9 +15,12 @@
  */
 package com.antheminc.oss.nimbus.domain.model.config.builder.internal;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Let;
 import com.antheminc.oss.nimbus.domain.defn.builder.internal.ExecutionConfigBuilder;
@@ -27,15 +30,24 @@ import com.antheminc.oss.nimbus.domain.model.config.builder.ExecutionConfigProvi
  * @author Tony Lopez
  *
  */
-public class ConfigVariableExecutionConfigProvider implements ExecutionConfigProvider<Let> {
+public class LetExecutionConfigProvider implements ExecutionConfigProvider<Let> {
 
 	@Override
 	public Config getMain(Let configAnnotation, ExecutionContext eCtx) {
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
-		// TODO review and clean up.
-		final String valueString = "value=" + configAnnotation.value();
-		String uri = "/p" + cmdMsg.getCommand().getAbsoluteDomainUri() + "/" + Action._process + "?fn=_setConfigVariable&name=" + configAnnotation.name() + "&" + valueString;
-		return ExecutionConfigBuilder.buildExecConfig(uri);
+		StringBuilder uri = new StringBuilder().append(Constants.SEPARATOR_URI_PLATFORM.code)
+				.append(cmdMsg.getCommand().getAbsoluteDomainUri()).append(Constants.SEPARATOR_URI.code)
+				.append(Action._process).append("?").append(Constants.KEY_FUNCTION.code).append("=_setVariable&name=")
+				.append(configAnnotation.name());
+
+		if (StringUtils.isNotEmpty(configAnnotation.value())) {
+			uri.append("&value=" + configAnnotation.value());
+		}
+		if (StringUtils.isNotEmpty(configAnnotation.spel())) {
+			uri.append("&spel=" + configAnnotation.spel());
+		}
+
+		return ExecutionConfigBuilder.buildExecConfig(uri.toString());
 	}
 
 	@Override

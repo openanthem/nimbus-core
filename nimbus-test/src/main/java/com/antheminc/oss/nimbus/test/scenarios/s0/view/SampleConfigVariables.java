@@ -64,4 +64,8 @@ public class SampleConfigVariables {
 	@Config(url = "<!#this!>/../p7/_replace?rawPayload=[\"0\"]")
 	@Config(url = "<!foo!>/_process?fn=_set&value=p8-did-it", col="<!/../p7!>")
 	private String p8;
+	
+	@Let(name = "foo", spel = "state")
+	@Config(url = "<!#this!>/../p<!foo!>/_process?fn=_set&value=p9-did-it")
+	private String p9;
 }
