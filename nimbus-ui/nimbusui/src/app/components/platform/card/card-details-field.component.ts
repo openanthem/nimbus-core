@@ -22,6 +22,10 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from './../base-element.component';
 import {DateTimeFormatPipe} from '../../../pipes/date.pipe';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
+import { ParamUtils } from './../../../shared/param-utils';
+import { ViewConfig } from './../../../shared/param-annotations.enum';
+
+
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -61,14 +65,13 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
 
     ngOnInit() {
         super.ngOnInit();
-        this.element.config.uiNatures.forEach(nature =>{
-            if(nature.name === 'ViewConfig.ToolTip'){
-                this.toolTipText = nature.attributes.value;
-                this.tooltipStyleClass = nature.attributes.tooltipStyleClass;
-                this.toolTipPosition = nature.attributes.toolTipPosition;
-            }
 
-        });
+        let toolTip = ParamUtils.getUiNature(this.element, ViewConfig.tooltip.toString());
+        if(toolTip){
+            this.toolTipText = toolTip.attributes.value;
+            this.tooltipStyleClass = toolTip.attributes.tooltipStyleClass;
+            this.toolTipPosition = toolTip.attributes.toolTipPosition;
+        }
     }
 
     onChange: any = () => { };

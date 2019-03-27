@@ -17,6 +17,7 @@ export class ViewConfig extends Enum<string> {
     public static readonly printConfig = new Enum('ViewConfig.PrintConfig');
     public static readonly fonts = new Enum('ViewConfig.Fonts');
     public static readonly headings = new Enum('ViewConfig.Headings');
+    public static readonly tooltip = new Enum('ViewConfig.ToolTip');
 
     static attributeList(): String[] {
       const keys = Object.keys(ViewConfig);

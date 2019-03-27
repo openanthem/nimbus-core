@@ -2147,7 +2147,6 @@ public class ViewConfig {
 	 * &#64;ToolTip(value="Additional information <!/.d/.m/toolTipValue!>", tooltipStyleClass="styleClass", toolTipPosition="bottom")
 	 * 
 	 * @since 1.2
-	 *
 	 */
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -2157,7 +2156,7 @@ public class ViewConfig {
 	public @interface ToolTip {
 
 		/**
-		 * <p> The Value of the toolTip we want displayed to the user.
+		 * <p> The value of the tooltip to display to the user..
 		 * <p> Html tags can be put inside value.  These will be parsed and rendered on the browser.
 		 * <p> Path can also be given for value property which will be resolved.
 		 */
