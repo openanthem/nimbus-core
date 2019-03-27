@@ -24,6 +24,8 @@ import {DateTimeFormatPipe} from '../../../pipes/date.pipe';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
 import { ParamUtils } from './../../../shared/param-utils';
 import { ViewConfig } from './../../../shared/param-annotations.enum';
+import { UiNature } from './../../../shared/param-config';
+
 
 
 
@@ -54,10 +56,7 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
     @Input('value') _value='';
     private fieldClass: string = 'col-sm-3'; // occupies 1 col of 4
     componentTypes = ComponentTypes;
-    
-    private toolTipText: string;
-    private toolTipPosition: string;
-    private tooltipStyleClass: string;
+    toolTip: UiNature;
 
     constructor(private _wcs: WebContentSvc) {
         super(_wcs);
@@ -65,14 +64,10 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
 
     ngOnInit() {
         super.ngOnInit();
-
-        let toolTip = ParamUtils.getUiNature(this.element, ViewConfig.tooltip.toString());
-        if(toolTip){
-            this.toolTipText = toolTip.attributes.value;
-            this.tooltipStyleClass = toolTip.attributes.tooltipStyleClass;
-            this.toolTipPosition = toolTip.attributes.toolTipPosition;
-        }
+        this.toolTip = ParamUtils.getUiNature(this.element, ViewConfig.tooltip.toString());      
     }
+
+   
 
     onChange: any = () => { };
     onTouched: any = () => { };

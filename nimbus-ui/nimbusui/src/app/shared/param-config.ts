@@ -238,6 +238,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     toolTipText: string;
     toolTipPosition: string;
     tooltipStyleClass: string;
+    escape: boolean;
 
     deserialize( inJson ) {
         let obj = this;

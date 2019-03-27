@@ -26,7 +26,7 @@
                 [element]="element" 
                 [required]="false">
             </nm-input-label>
-            <div class="textWrapBreakWord" pTooltip='{{toolTipText}}' [escape]=false  tooltipStyleClass='{{tooltipStyleClass}}'  tooltipPosition='{{toolTipPosition}}' [nmDisplayValue]='element.leafState' [config]='element.config'>
+            <div class="textWrapBreakWord" pTooltip='{{toolTip?.attributes?.value}}' [escape]=toolTip?.attributes?.escape tooltipStyleClass='{{toolTip?.attributes?.tooltipStyleClass}}'  tooltipPosition='{{toolTip?.attributes?.toolTipPosition}}' [nmDisplayValue]='element.leafState' [config]='element.config'>
                 <span class="fieldValue">{{value ? value : placeholder}}&nbsp;</span>
             </div>    
         </div>

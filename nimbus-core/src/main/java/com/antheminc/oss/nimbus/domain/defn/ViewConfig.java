@@ -2172,6 +2172,12 @@ public class ViewConfig {
 		 *     The styles for this class can be written in app_styles.css
 		 */	
 		String tooltipStyleClass() default "";
+		
+		
+		/**
+		 * <p> html tags will be parsed if escape value is false.
+		 */	
+		boolean escape() default true;
 
 	}
 
