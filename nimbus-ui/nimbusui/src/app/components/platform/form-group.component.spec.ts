@@ -20,7 +20,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, 
     DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule,
-    InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule } from 'primeng/primeng';
+    InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule, TooltipModule } from 'primeng/primeng';
     
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
@@ -205,6 +205,7 @@ const declarations = [
      AccordionModule,
      HttpModule,
      HttpClientModule,
+     TooltipModule,
      TableModule,
      KeyFilterModule,
      AngularSvgIconModule,

@@ -28,6 +28,10 @@ import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 
+
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.FieldValue;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ToolTip;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -682,6 +686,8 @@ public class ViewConfig {
 	 * <p>FieldValue will be rendered when annotating a field nested under one
 	 * of the following components: <ul> <li>{@link CardDetailHeader}</li>
 	 * <li>{@link CardDetailBody}</li> <li>{@link FieldValueGroup}</li> </ul>
+	 * 
+	 * <p>FieldValue can show additional information to the user by annotating with {@link ToolTip}
 	 * 
 	 * <p>FieldValue should decorate a field having a simple type.
 	 * 
@@ -2124,6 +2130,55 @@ public class ViewConfig {
 		}
 
 		Property value() default Property.DEFAULT;
+	}
+	
+	
+	/**
+	 * <p> Tooltip can be used to display additional information to the user.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>Tooltip will be rendered when annotating on one of
+	 * the following components: <ul> <li>{@link FieldValue}</li> </ul>
+	 * 
+	 * <p>
+	 *  Example config:
+	 * <pre>
+	 * &#64;ToolTip(value="Additional information <!/.d/.m/toolTipValue!>", tooltipStyleClass="styleClass", toolTipPosition="bottom")
+	 * 
+	 * @since 1.2
+	 */
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewParamBehavior
+	@OnStateLoad
+	public @interface ToolTip {
+
+		/**
+		 * <p> The value of the tooltip to display to the user..
+		 * <p> Html tags can be put inside value.  These will be parsed and rendered on the browser.
+		 * <p> Path can also be given for value property which will be resolved.
+		 */
+		String value() default "";
+
+		/**
+		 * <p> This determines the position of the tooltip. Valid options are right, left, top and bottom.
+		 */
+		String toolTipPosition() default "right";
+
+		/**
+		 * <p> Attaching a CSS Class to customise the style of the tooltip. 
+		 *     The styles for this class can be written in app_styles.css
+		 */	
+		String tooltipStyleClass() default "";
+		
+		
+		/**
+		 * <p> html tags will be parsed if escape value is false.
+		 */	
+		boolean escape() default true;
+
 	}
 
 	/**

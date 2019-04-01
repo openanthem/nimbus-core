@@ -19,7 +19,7 @@
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { DropdownModule } from 'primeng/primeng';
+import { DropdownModule, TooltipModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { By } from '@angular/platform-browser';
@@ -82,7 +82,7 @@ const declarations = [
   DisplayValueDirective,
   InputLabel
 ];
-const imports = [FormsModule, DropdownModule, HttpClientModule, HttpModule, StorageServiceModule];
+const imports = [FormsModule, DropdownModule, TooltipModule, HttpClientModule, HttpModule, StorageServiceModule];
 const providers = [
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE }, 
   { provide: 'JSNLOG', useValue: JL },

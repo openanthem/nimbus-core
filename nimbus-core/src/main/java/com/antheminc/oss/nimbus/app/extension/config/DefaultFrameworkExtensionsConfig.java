@@ -48,6 +48,7 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.VisibleConditionalS
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.ChildrenValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
+import com.antheminc.oss.nimbus.domain.model.config.extension.ToolTipStateEventHandler;
 
 /**
  * @author Soham Chakravarti
@@ -114,6 +115,11 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean
 	public LabelConditionalStateEventHandler extensionLabelConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
 		return new LabelConditionalStateEventHandler(beanResolver);
+	}
+	
+	@Bean
+	public ToolTipStateEventHandler extensionToolTipStateEventHandler() {
+		return new ToolTipStateEventHandler();
 	}
 	
 	@Bean

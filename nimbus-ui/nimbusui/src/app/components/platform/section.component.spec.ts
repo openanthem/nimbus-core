@@ -19,7 +19,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalendarModule, RadioButtonModule, CheckboxModule, ListboxModule, FileUploadModule, 
-  GrowlModule, DropdownModule, DataTableModule, AccordionModule, PickListModule, TreeTableModule, 
+  GrowlModule, DropdownModule, DataTableModule, AccordionModule, PickListModule, TreeTableModule, TooltipModule, 
   InputSwitchModule, InputMaskModule, TabViewModule, EditorModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
@@ -193,6 +193,7 @@ const imports = [
   AccordionModule,
   ReactiveFormsModule,
   GrowlModule,
+  TooltipModule,
   PickListModule,
   FileUploadModule,
   ListboxModule,
