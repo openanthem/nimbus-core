@@ -21,13 +21,14 @@ import { Component, ViewChild, forwardRef, ChangeDetectorRef, Input } from '@ang
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
-import { AutoCompleteService } from './../../../../services/autocomplete.service';
 import { AutoComplete } from 'primeng/primeng';
 import { Param } from './../../../../shared/param-state';
 import { PageService } from './../../../../services/page.service';
 import { ParamUtils } from './../../../../shared/param-utils';
 import { Subject } from 'rxjs';
+import { AutoCompleteService } from './../../../../services/autocomplete.service';
 import { LoggerService } from './../../../../services/logger.service';
+
 
 
 export const AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any = {
@@ -45,7 +46,7 @@ export const AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
     selector: 'nm-autocomplete',
-    providers: [AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers, AutoCompleteService],
+    providers: [AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
     template: `
   <ng-template [ngIf]="element?.visible == true">
         <nm-input-label *ngIf="!isLabelEmpty && this.showLabel"
@@ -77,9 +78,11 @@ export class NmAutocomplete extends BaseControl<any> {
     }
 
     ngOnInit() {
+        console.log("oninit called from tests");
         super.ngOnInit();
         this.searchService.search(this.searchTerm$, this.element.path)
             .subscribe(data => {
+                console.log("oninit data", data);
                 this.results = [];
                 this.suggestionObj = data;
                 data.forEach(obj => {
