@@ -126,6 +126,8 @@ import { LoggerService } from './services/logger.service';
 import { RouteService } from './services/route.service';
 import { MessageService } from 'primeng/api';
 import { PrintService } from './services/print.service';
+import { AutoCompleteService } from './services/autocomplete.service';
+
 
 //Utility Services
 import { GridUtils } from './shared/grid-utils';
@@ -249,6 +251,7 @@ export function init_app(appinitservice: AppInitService) {
          { provide: ErrorHandler, useClass: CustomErrorHandler },
          { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
          SessionStoreService,
+         AutoCompleteService,
          AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, NmMessageService,
          RouteService, MessageService, GridUtils, DateTimeFormatPipe, PrintService],
     bootstrap: [ AppComponent ]

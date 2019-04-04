@@ -1,5 +1,3 @@
-import { NmAutocomplete } from './autocomplete.component';
-import { SessionStoreService } from './../../../../services/session.store';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -21,10 +19,11 @@ import { SessionStoreService } from './../../../../services/session.store';
 import { TestBed, async } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { By } from '@angular/platform-browser';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { Subject } from 'rxjs';
+import { NmAutocomplete } from './autocomplete.component';
+import { SessionStoreService } from './../../../../services/session.store';
 import { of as observableOf, Observable } from 'rxjs';
 import {
     DataTableModule, TreeTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule,
@@ -32,7 +31,6 @@ import {
     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, InputMaskModule, TabViewModule, AutoCompleteModule
 } from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { componentFactoryName } from '@angular/compiler';
 import { tabElement } from './../../../../mockdata/tab.component.mockdata.spec';
 import { TreeGrid } from './../../tree-grid/tree-grid.component';
 import { Button } from './button.component';
@@ -93,18 +91,21 @@ import { TooltipComponent } from './../../tooltip/tooltip.component';
 import { Section } from './../../section.component';
 import { Label } from './../../content/label.component';
 import { Param } from './../../../../shared/param-state';
-import { setup} from './../../../../setup.spec';
+import { setup } from './../../../../setup.spec';
 import { configureTestSuite } from 'ng-bullet';
 import { AppInitService } from './../../../../services/app.init.service';
 import { CUSTOM_STORAGE } from './../../../../services/session.store';
 import { LoggerService } from './../../../../services/logger.service';
 import { ConfigService } from './../../../../services/config.service';
+import { AutoCompleteService } from './../../../../services/autocomplete.service';
+import { ControlSubscribers } from '../../../../services/control-subscribers.service';
+
 import { LoaderService } from './../../../../services/loader.service';
 import { CustomHttpClient } from './../../../../services/httpclient.service';
 import { BreadcrumbService } from './../../breadcrumb/breadcrumb.service';
-import { WebContentSvc } from './../../../../services/content-management.service';
 import { PageService } from './../../../../services/page.service';
 import { PageResolver } from './../../content/page-resolver.service';
+import { WebContentSvc } from '../../../../services/content-management.service';
 import { autocompleteElement } from './../../../../mockdata/autocomplete.component.mockdata.spec';
 
 
@@ -113,18 +114,32 @@ import { autocompleteElement } from './../../../../mockdata/autocomplete.compone
 
 
 
-let pageService;
+let pageService, autoCompleteService;
 
 class MockPageService {
     eventUpdate$: Subject<any>;
+    validationUpdate$: Subject<any>;
 
     constructor() {
         this.eventUpdate$ = new Subject();
+        this.validationUpdate$ = new Subject();
     }
     postOnChange(a, b, c) { }
     logError(a) {
         this.eventUpdate$.next(a);
     }
+}
+
+class MockAutoCompleteService {
+
+    constructor() {
+    }
+
+    search(a, b) {
+        let data = [{ code: "0", label: "label0" }, { code: "1", label: "label1" }]
+        return Observable.of(data);
+    }
+
 }
 
 const declarations = [
@@ -199,13 +214,17 @@ const imports = [
 const providers = [
     { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
     { provide: 'JSNLOG', useValue: JL },
+    { provide: AutoCompleteService, useClass: MockAutoCompleteService },
     { provide: PageService, useClass: MockPageService },
     CustomHttpClient,
     LoaderService,
     ConfigService,
     LoggerService,
     AppInitService,
-    SessionStoreService
+    SessionStoreService,
+    WebContentSvc,
+    ControlSubscribers
+
 ];
 let fixture, hostComponent;
 
@@ -219,12 +238,30 @@ describe('Autocomplete', () => {
         hostComponent = fixture.debugElement.componentInstance;
         hostComponent.element = autocompleteElement as Param;
         pageService = TestBed.get(PageService);
+        autoCompleteService = TestBed.get(AutoCompleteService);
     });
 
     it('should create the Autocomplete Component', async(() => {
         expect(hostComponent).toBeTruthy();
     }));
 
+    it('should not display the component when visible is set to false', async(() => {
+        hostComponent.element.visible = false;
+        fixture.detectChanges();
+        const autoCompleteInput = document.getElementsByTagName('p-autocomplete');
+        expect(autoCompleteInput.length).toBe(0);
+    }));
+
+    it('should set the list of results received from the server', async(() => {
+        fixture.detectChanges();
+        autoCompleteService.search("", "");
+        expect(hostComponent.results.length).toBe(2);
+    }));
+
 });
+
+
+
+
 
 
