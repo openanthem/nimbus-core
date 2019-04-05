@@ -182,26 +182,5 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean
 	public StaticCodeValueBasedCodeToLabelConverter staticCodeValueBasedCodeToLabelConverter(BeanResolverStrategy beanResolver) {
 		return new StaticCodeValueBasedCodeToLabelConverter(beanResolver);
-	}
-	
-	@Bean
-	public UnivocityExcelToCSVConverter excelToCsvConverter() {
-		return new UnivocityExcelToCSVConverter();
-	}
-	
-	@Bean
-	public ExcelFileImporter excelFileImporter(TabularDataFileImporter tabularDataFileImporter) {
-		return new ExcelFileImporter(excelToCsvConverter(), tabularDataFileImporter);
-	}
-	
-	@Bean
-	public UnivocityCsvParser univocityCsvParser(DomainConfigBuilder domainConfigBuilder) {
-		return new UnivocityCsvParser(domainConfigBuilder);
-	}
-	
-	@Bean
-	public TabularDataFileImporter tabularDataFileImporter(DomainConfigBuilder domainConfigBuilder, CommandExecutorGateway commandGateway, ObjectMapper om, UnivocityCsvParser univocityCsvParser,  ModelRepositoryFactory modelRepositoryFactory) {
-		return new TabularDataFileImporter(commandGateway, domainConfigBuilder, om, univocityCsvParser, modelRepositoryFactory);
-	}
-	
+	}	
 }

@@ -51,7 +51,7 @@ import lombok.Setter;
 @Setter
 public class TabularDataFileImporter implements Importer {
 
-	public static final JustLogit LOG = new JustLogit();
+	public static final JustLogit LOG = new JustLogit(TabularDataFileImporter.class);
 
 	public static final String ARG_ERROR_HANDLING = "errors";
 	public static final String ARG_PARALLEL = "parallel";

@@ -40,6 +40,9 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.univocity.parsers.csv.CsvWriter;
 import com.univocity.parsers.csv.CsvWriterSettings;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * <p>Uses Univocity to convert excel files to their .csv equivalent and stores
  * that file in the local filesystem's temporary storage.
@@ -47,19 +50,23 @@ import com.univocity.parsers.csv.CsvWriterSettings;
  * @author Tony Lopez
  * @author Sandeep Mantha
  */
+@RequiredArgsConstructor
+@Getter
 public class UnivocityExcelToCSVConverter implements ExcelToCsvConverter {
 
+	private final CsvWriterSettings csvWriterSettings;
+	
 	@Override
 	public List<File> convert(InputStream inputStream, ExcelParserSettings settings) throws IOException {
 		try (Workbook workbook = WorkbookFactory.create(inputStream)) {
 			return convert(workbook, settings);
 		} catch (EncryptedDocumentException | InvalidFormatException e) {
-			throw new FrameworkRuntimeException("An error occurred while conerting the Excel workbook object.", e);
+			throw new FrameworkRuntimeException(
+					"Failed to create an Excel workbook object from the provided input stream.", e);
 		}
 	}
 
-	private List<File> convert(Workbook workbook, ExcelParserSettings excelParserSettings)
-			throws IOException {
+	private List<File> convert(Workbook workbook, ExcelParserSettings excelParserSettings) throws IOException {
 		FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 		DataFormatter formatter = new DataFormatter(true);
 
@@ -67,32 +74,25 @@ public class UnivocityExcelToCSVConverter implements ExcelToCsvConverter {
 		if (excelParserSettings.isParseFirstSheetOnly()) {
 			sheetNumbers = new int[] { 0 };
 		} else if (excelParserSettings.isParseAllSheets()) {
-			sheetNumbers = ArrayUtils.toPrimitive(IntStream.rangeClosed(0, workbook.getNumberOfSheets() - 1)
-				    .boxed().toArray(Integer[]::new));
+			sheetNumbers = ArrayUtils.toPrimitive(
+					IntStream.rangeClosed(0, workbook.getNumberOfSheets() - 1).boxed().toArray(Integer[]::new));
 		}
-		
-		List <File> csvFiles = new ArrayList<>();
-		for(int sheetNumber : sheetNumbers) {
+
+		List<File> csvFiles = new ArrayList<>();
+		for (int sheetNumber : sheetNumbers) {
 			Sheet sheet = workbook.getSheetAt(sheetNumber);
 			File csvFile = parseSheet(sheet, formatter, evaluator);
 			csvFiles.add(csvFile);
 		}
 		return csvFiles;
 	}
-	
+
 	private File parseSheet(Sheet sheet, DataFormatter formatter, FormulaEvaluator evaluator) throws IOException {
 		Iterator<Row> rowIterator = sheet.iterator();
 
-		CsvWriterSettings settings = new CsvWriterSettings();
-		settings.setNullValue("?");
-		settings.getFormat().setComment('-');
-		settings.setEmptyValue("!");
-		settings.setHeaderWritingEnabled(true);
-		settings.setSkipEmptyLines(false);
-
 		File csvFile = File.createTempFile(RandomStringUtils.randomAlphanumeric(8), ".csv");
 
-		CsvWriter writer = new CsvWriter(csvFile, settings);
+		CsvWriter writer = new CsvWriter(csvFile, getCsvWriterSettings());
 		while (rowIterator.hasNext()) {
 			Row row = rowIterator.next();
 			List<String> rowCsv = convertRowToCSV(row, formatter, evaluator);

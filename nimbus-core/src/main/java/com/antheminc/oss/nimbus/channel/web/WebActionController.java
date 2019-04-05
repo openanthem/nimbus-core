@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.channel.web;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.converter.Importer;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -217,23 +219,27 @@ public class WebActionController {
 			return new Holder<>(false);
 		}
 		
+		// Build the upload command
 		Command command = this.builder.build(req);
 		Command uploadCommand = CommandBuilder.withPlatformRelativePath(command, Type.PlatformMarker, "/" + domain).getCommand();
 		uploadCommand.setRequestParams(command.getRequestParams());
 		uploadCommand.setAction(Action._new);
 		
-		try {
-			String ext = FilenameUtils.getExtension(file.getName());
-			Importer importer = getFileImporter(ext);
-			if (null == importer) {
-				throw new UnsupportedOperationException("Upload for file types of \"" + ext +"\" is not supported.");
-			}
+		// Determine the importer to use
+		String ext = FilenameUtils.getExtension(file.getName());
+		Importer importer = getFileImporter(ext);
+		if (null == importer) {
+			throw new InvalidConfigException("Upload for file types of \"" + ext +"\" is not supported.");
+		}
 
+		// Handle the import
+		try (InputStream inputStream = file.getInputStream()) {
 			//TODO - add an entry to db when the file starts to process
 			importer.doImport(uploadCommand, file.getInputStream());
 			return new Holder<>(true);
 		} catch (Exception e) {
-			throw new FrameworkRuntimeException("Failed to upload file.", e);
+			throw new FrameworkRuntimeException("Upload for " + file + " with command " + uploadCommand + " failed.",
+					e);
 		}
 	}
 	

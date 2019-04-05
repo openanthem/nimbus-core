@@ -17,6 +17,7 @@ package com.antheminc.oss.nimbus.converter.excel;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -29,6 +30,7 @@ import com.antheminc.oss.nimbus.converter.tabular.TabularDataFileImporter;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.support.CommandUtils;
+import com.antheminc.oss.nimbus.support.JustLogit;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -55,32 +57,53 @@ public class ExcelFileImporter implements Importer {
 	private final ExcelToCsvConverter toCsvConverter;
 	private final TabularDataFileImporter tabularDataFileImporter;
 
-	public final static String[] SUPPORTED_EXTENSIONS = new String[] { "xlsx" , "xls"};	
-	
+	public final static String[] SUPPORTED_EXTENSIONS = new String[] { "xlsx", "xls" };
+
+	public final static JustLogit LOG = new JustLogit(ExcelFileImporter.class);
+
 	@Override
 	public <T> void doImport(Command command, InputStream stream) {
 		List<File> csvFiles = null;
 		try {
-			csvFiles = getToCsvConverter().convert(stream, buildExcelParserSettings(command));
-			for(File csvFile: csvFiles) {
-				getTabularDataFileImporter().doImport(command, new FileInputStream(csvFile));
-				csvFile.delete();
+			try {
+				csvFiles = getToCsvConverter().convert(stream, buildExcelParserSettings(command));
+			} catch (IOException ioe) {
+				throw new FrameworkRuntimeException("Failed to convert the provided input stream to csv.", ioe);
 			}
-		} catch (IOException e) {
-			throw new FrameworkRuntimeException(e);
+
+			for (File csvFile : csvFiles) {
+				try {
+					getTabularDataFileImporter().doImport(command, new FileInputStream(csvFile));
+				} catch (FileNotFoundException e) {
+					throw new FrameworkRuntimeException(
+							"Import for " + csvFile + " as excel file with command " + command + " failed.", e);
+				}
+			}
 		} finally {
 			if (null != csvFiles && !csvFiles.isEmpty()) {
-				csvFiles.forEach(File::delete);
+				for (File csvFile : csvFiles) {
+					try {
+						boolean deleted = csvFile.delete();
+						if (!deleted) {
+							LOG.warn(() -> "Failed to delete file " + csvFile
+									+ " during the import process. File scheduled for deletion.");
+							csvFile.deleteOnExit();
+						}
+					} catch (Exception e) {
+						LOG.error(() -> "Encountered exception when attempting to delete file " + csvFile
+								+ " during the import process. Consider removing this file manually!", e);
+					}
+				}
 			}
 		}
 	}
 
 	private ExcelParserSettings buildExcelParserSettings(Command command) {
 		ExcelParserSettings settings = new ExcelParserSettings();
-		CommandUtils.copyRequestParams(settings, command);	
+		CommandUtils.copyRequestParams(settings, command);
 		return settings;
 	}
-	
+
 	@Override
 	public boolean supports(String extension) {
 		return ArrayUtils.contains(SUPPORTED_EXTENSIONS, extension);
