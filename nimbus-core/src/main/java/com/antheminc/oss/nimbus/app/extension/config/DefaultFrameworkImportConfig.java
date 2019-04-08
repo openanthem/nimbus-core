@@ -18,11 +18,13 @@ package com.antheminc.oss.nimbus.app.extension.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.converter.excel.ExcelFileImporter;
 import com.antheminc.oss.nimbus.converter.excel.UnivocityExcelToCSVConverter;
 import com.antheminc.oss.nimbus.converter.tabular.TabularDataFileImporter;
 import com.antheminc.oss.nimbus.converter.tabular.UnivocityCsvParser;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
+import com.antheminc.oss.nimbus.domain.cmd.exec.DefaultFileImportGateway;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +36,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Configuration
 public class DefaultFrameworkImportConfig {
 
+	@Bean
+	public DefaultFileImportGateway defaultFileImportGateway(BeanResolverStrategy beanResolver) {
+		return new DefaultFileImportGateway(beanResolver);
+	}
+	
 	@Bean
 	public ExcelFileImporter excelFileImporter(TabularDataFileImporter tabularDataFileImporter, UnivocityExcelToCSVConverter excelToCsvConverter) {
 		return new ExcelFileImporter(excelToCsvConverter, tabularDataFileImporter);
