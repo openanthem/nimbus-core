@@ -1212,6 +1212,10 @@ public class ViewConfig {
 		 * page of the table when the table is paginated.
 		 */
 		boolean headerCheckboxToggleAllPages() default false;
+		
+		boolean editableRows() default false;
+
+		boolean addRows() default false;
 	}
 
 	/**

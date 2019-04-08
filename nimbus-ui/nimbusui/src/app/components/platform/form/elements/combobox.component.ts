@@ -51,7 +51,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         [disabled]="disabled"
         (onChange)="emitValueChangedEvent(this,$event)"
         class="form-control" 
-        [autoWidth]="autoWidth"
         [placeholder]="placeholder">
     </p-dropdown>
    `
