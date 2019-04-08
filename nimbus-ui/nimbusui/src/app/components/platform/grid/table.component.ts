@@ -188,11 +188,10 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         }
         defObj['id'] = defObj.elemId;
         this.value.unshift(defObj);
-        console.log('this.value--189', this.value);
         this.cd.detectChanges();
         setTimeout(() => {
             $('#' + 'new_row').click();
-        });        
+        });
     }
 
     ngOnInit() {

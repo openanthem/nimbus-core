@@ -138,6 +138,7 @@
                                                 </span>
                                                 <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.linkMenu.toString()">
                                                     <nm-action-dropdown #dropDown 
+                                                        *ngIf = "rowData['elemId'] != '-1'"
                                                         id="{{getViewParam(col, rowData['elemId']).config?.code}}{{rowIndex}}" 
                                                         [element]="getViewParam(col, rowData['elemId'])" 
                                                         [params]="col?.type?.model?.paramConfigs" 
@@ -151,7 +152,7 @@
                     </td>
                 </ng-template>
 
-            <td style="text-align:center">
+            <td style="text-align:center" *ngIf="element.config?.uiStyles?.attributes?.editableRows">
                     <button *ngIf="!editing" pButton type="button" [attr.id]="rowData.rowId+'_row'" pInitEditableRow icon="pi pi-pencil" class="ui-button-info" (click)="onRowEditInitialize(rowData)"></button>
                     <button *ngIf="editing" pButton type="button" icon="pi pi-check" class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData)"></button>
                     <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times" class="ui-button-danger" (click)="onRowEditCancel(rowData, rowIndex)"></button>
