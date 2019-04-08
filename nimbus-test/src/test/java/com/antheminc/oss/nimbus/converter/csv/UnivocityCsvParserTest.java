@@ -22,12 +22,14 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.DefaultFileImportGateway;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.MyPojo;
@@ -38,6 +40,9 @@ import com.antheminc.oss.nimbus.test.scenarios.s0.core.MyPojo;
  */
 public class UnivocityCsvParserTest extends AbstractFrameworkIngerationPersistableTests {
 
+	@Autowired
+	private DefaultFileImportGateway fileImportGateway;
+	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testUploadOverrideCsvProperties() throws FileNotFoundException, IOException {
@@ -47,7 +52,7 @@ public class UnivocityCsvParserTest extends AbstractFrameworkIngerationPersistab
 				.getMock();
 		MockMultipartFile csvFile = new MockMultipartFile("sample-upload-data.csv",
 				new FileInputStream("src/test/resources/sample-upload-data.csv"));
-		this.controller.handleUpload(req, csvFile, "mypojo");
+		Assert.assertTrue(this.fileImportGateway.doImport(req, "mypojo", csvFile));
 
 		MockHttpServletRequest getReq = MockHttpRequestBuilder.withUri(PLATFORM_ROOT).addNested("/mypojo")
 				.addAction(Action._search).addParam("fn", "example").getMock();

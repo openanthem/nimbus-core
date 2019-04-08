@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
@@ -151,13 +149,6 @@ public class WebActionController {
 	@RequestMapping(value=URI_PATTERN_P_OPEN, produces="application/json", method=RequestMethod.PATCH)
 	public Object handlePatch(HttpServletRequest req, @RequestParam String v, @RequestBody String json) {  
 		return handleInternal(req, RequestMethod.PATCH, v, json);
-	}
-	
-	@RequestMapping(value=URI_PATTERN_P+"/event/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,  produces="application/json", method=RequestMethod.POST)
-	public Object handleUpload(HttpServletRequest req, @RequestParam("pfu") MultipartFile file, @RequestParam("domain") String domain) {
-		Object obj = fileImportGateway.doImport(req, domain, file);
-		Holder<Object> output = new Holder<>(obj);
-		return output;
 	}
 	
 	@RequestMapping(value=URI_PATTERN_P+"/event/notify", produces="application/json", method=RequestMethod.POST)

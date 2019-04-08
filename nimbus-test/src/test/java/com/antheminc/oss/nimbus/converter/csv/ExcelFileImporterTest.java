@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -30,6 +31,7 @@ import com.antheminc.oss.nimbus.converter.tabular.TabularDataFileImporter;
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.DefaultFileImportGateway;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.MyPojo;
@@ -41,6 +43,9 @@ import com.antheminc.oss.nimbus.test.scenarios.s0.core.MyPojo;
  */
 public class ExcelFileImporterTest extends AbstractFrameworkIngerationPersistableTests {
 
+	@Autowired
+	private DefaultFileImportGateway fileImportGateway;
+	
 	@Test
 	public void testUploadCommandDSL() throws FileNotFoundException, IOException {
 		uploadSampleExcel(WriteStrategy.COMMAND_DSL);
@@ -54,7 +59,7 @@ public class ExcelFileImporterTest extends AbstractFrameworkIngerationPersistabl
 				.addParam("parseAllSheets", true).getMock();
 		MockMultipartFile excelFile = new MockMultipartFile("sample-upload-data.xls",
 				new FileInputStream("src/test/resources/sample-upload-data.xls"));
-		this.controller.handleUpload(req, excelFile, "mypojo");
+		Assert.assertTrue(this.fileImportGateway.doImport(req, "mypojo", excelFile));
 
 		MockHttpServletRequest getReq = MockHttpRequestBuilder.withUri(PLATFORM_ROOT).addNested("/mypojo")
 				.addAction(Action._search).addParam("fn", "example").getMock();
@@ -83,7 +88,7 @@ public class ExcelFileImporterTest extends AbstractFrameworkIngerationPersistabl
 				.addParam("sheetNumbersToParse", "1, 2").getMock();
 		MockMultipartFile excelFile = new MockMultipartFile("sample-upload-data.xls",
 				new FileInputStream("src/test/resources/sample-upload-data.xls"));
-		this.controller.handleUpload(req, excelFile, "mypojo");
+		Assert.assertTrue(this.fileImportGateway.doImport(req, "mypojo", excelFile));
 
 		MockHttpServletRequest getReq = MockHttpRequestBuilder.withUri(PLATFORM_ROOT).addNested("/mypojo")
 				.addAction(Action._search).addParam("fn", "example").getMock();
@@ -103,7 +108,7 @@ public class ExcelFileImporterTest extends AbstractFrameworkIngerationPersistabl
 				.addParam(TabularDataFileImporter.ARG_WRITE_STRATEGY, writeStrategy.toString()).getMock();
 		MockMultipartFile excelFile = new MockMultipartFile("sample-upload-data.xls",
 				new FileInputStream("src/test/resources/sample-upload-data.xls"));
-		this.controller.handleUpload(req, excelFile, "mypojo");
+		Assert.assertTrue(this.fileImportGateway.doImport(req, "mypojo", excelFile));
 
 		MockHttpServletRequest getReq = MockHttpRequestBuilder.withUri(PLATFORM_ROOT).addNested("/mypojo")
 				.addAction(Action._search).addParam("fn", "example").getMock();

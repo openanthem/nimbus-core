@@ -36,6 +36,7 @@ import com.antheminc.oss.nimbus.converter.tabular.TabularDataFileImporter;
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.DefaultFileImportGateway;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.MyPojo;
@@ -50,8 +51,11 @@ public class TabularDataFileImporterTest extends AbstractFrameworkIngerationPers
 	public ExpectedException exception = ExpectedException.none();
 
 	@Autowired
+	private DefaultFileImportGateway fileImportGateway;
+	
+	@Autowired
 	private TabularDataFileImporter tabularDataFileImporter;
-
+	
 	@Test
 	public void testUploadCommandDSL() throws FileNotFoundException, IOException {
 		uploadSampleCsv(WriteStrategy.COMMAND_DSL);
@@ -89,7 +93,7 @@ public class TabularDataFileImporterTest extends AbstractFrameworkIngerationPers
 				.addParam(TabularDataFileImporter.ARG_WRITE_STRATEGY, writeStrategy.toString()).getMock();
 		MockMultipartFile csvFile = new MockMultipartFile("sample-upload-data.csv",
 				new FileInputStream("src/test/resources/sample-upload-data.csv"));
-		this.controller.handleUpload(req, csvFile, "mypojo");
+		Assert.assertTrue(this.fileImportGateway.doImport(req, "mypojo", csvFile));
 
 		MockHttpServletRequest getReq = MockHttpRequestBuilder.withUri(PLATFORM_ROOT).addNested("/mypojo")
 				.addAction(Action._search).addParam("fn", "example").getMock();
@@ -111,7 +115,7 @@ public class TabularDataFileImporterTest extends AbstractFrameworkIngerationPers
 				.addParam(TabularDataFileImporter.ARG_ERROR_HANDLING, errorHandling.toString()).getMock();
 		MockMultipartFile csvFile = new MockMultipartFile("sample-upload-data-mismatch.csv",
 				new FileInputStream("src/test/resources/sample-upload-data-mismatch.csv"));
-		this.controller.handleUpload(req, csvFile, "mypojo");
+		Assert.assertTrue(this.fileImportGateway.doImport(req, "mypojo", csvFile));
 
 		MockHttpServletRequest getReq = MockHttpRequestBuilder.withUri(PLATFORM_ROOT).addNested("/mypojo")
 				.addAction(Action._search).addParam("fn", "example").getMock();
