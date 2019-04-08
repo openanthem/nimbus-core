@@ -107,10 +107,10 @@
                             <p-cellEditor>
 
                                      <ng-template pTemplate="input">
-                                        <input class="test1" [title]="rowData[col.code]" *ngIf="showValue(col)" [value]="rowData[col.code]" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code" required>
-                                        <input class="test2" *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.link.toString()" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code" required>
-                                        <input class="test3" *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code" required>
-                                        <input class="test4" *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.button.toString()" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code" required>
+                                        <input [title]="rowData[col.code]" *ngIf="showValue(col)" [value]="rowData[col.code]" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code" required>
+                                        <input *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.link.toString()" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code" required>
+                                        <input *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code" required>
+                                        <input *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.button.toString()" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code" required>
                                     </ng-template>
 
                                     <ng-template pTemplate="output">
