@@ -1,4 +1,4 @@
-<div class="buttonGroup right clearfix" *ngIf="element.config?.uiStyles?.attributes?.addRows">
+<div class="buttonGroup right clearfix" *ngIf="element.config?.uiStyles?.attributes?.addRow">
     <button class="btn-plain fa fa-plus" (click)="addRow()">
         <span class="pl-2">add row</span>
     </button>
@@ -52,7 +52,7 @@
                         <p-sortIcon [field]="col" *ngIf="col?.uiStyles?.attributes?.alias === viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.sortable !== false"></p-sortIcon>
                     </th>
                 </ng-template>
-                <th style="width: 70px;" *ngIf="element.config?.uiStyles?.attributes?.editableRows">Edit</th>
+                <th style="width: 70px;" *ngIf="element.config?.uiStyles?.attributes?.editRow">Edit</th>
             </tr>
             <tr *ngIf="showFilters">
                 <th style="width: 2.25em" *ngIf="element.config?.uiStyles?.attributes?.rowSelection"></th>
@@ -152,7 +152,7 @@
                     </td>
                 </ng-template>
 
-            <td style="text-align:center" *ngIf="element.config?.uiStyles?.attributes?.editableRows">
+            <td style="text-align:center" *ngIf="element.config?.uiStyles?.attributes?.editRow">
                     <button *ngIf="!editing" pButton type="button" [attr.id]="rowData.rowId+'_row'" pInitEditableRow icon="pi pi-pencil" class="ui-button-info" (click)="onRowEditInitialize(rowData)"></button>
                     <button *ngIf="editing" pButton type="button" icon="pi pi-check" class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData)"></button>
                     <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times" class="ui-button-danger" (click)="onRowEditCancel(rowData, rowIndex)"></button>
@@ -163,7 +163,7 @@
 
         <ng-template pTemplate="rowexpansion" let-rowData>
             <tr class="ui-expanded-row-content">
-                <td [attr.colspan]="element.config?.uiStyles?.attributes?.editableRows ? columnsToShow+1 : columnsToShow">
+                <td [attr.colspan]="element.config?.uiStyles?.attributes?.editRow ? columnsToShow+1 : columnsToShow">
                     <nm-section *ngIf="rowData.nestedElement" [position]="position+1" [element]="rowData.nestedElement" [nmPrint]="rowData.nestedElement"></nm-section>
                 </td>
             </tr>
@@ -171,7 +171,7 @@
 
         <ng-template pTemplate="emptymessage" let-columns>
             <tr>
-                <td [attr.colspan]="element.config?.uiStyles?.attributes?.editableRows ? columnsToShow+1 : columnsToShow">
+                <td [attr.colspan]="element.config?.uiStyles?.attributes?.editRow ? columnsToShow+1 : columnsToShow">
                     No records found
                 </td>
             </tr>

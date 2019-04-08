@@ -77,7 +77,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     @ViewChild('editableRow') editableRow: any;
     componentTypes = ComponentTypes;
     viewComponent = ViewComponent;
-    
+
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
     
