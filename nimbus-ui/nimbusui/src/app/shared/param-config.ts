@@ -237,7 +237,11 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     toolbarFeatures: string[];
     editableRows: boolean;
     addRows: boolean;
-    
+    toolTipText: string;
+    toolTipPosition: string;
+    tooltipStyleClass: string;
+    escape: boolean;
+
     deserialize( inJson ) {
         let obj = this;
         obj = Converter.convert(inJson, obj, { includeArrays: true });

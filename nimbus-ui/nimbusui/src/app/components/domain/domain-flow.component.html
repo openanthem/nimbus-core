@@ -2,7 +2,7 @@
 <ng-template [ngIf]="hasLayout">
 	<div class="info-bar clearfix">
 	    <div [class]="p.config?.uiStyles?.attributes?.cssClass" *ngFor="let p of accordions, let index=index">
-	            <nm-accordion [element]="p" [nmPrint]="p"></nm-accordion>
+	            <nm-accordion id="{{p?.config?.code}}" [element]="p" [nmPrint]="p"></nm-accordion>
 	    </div>
 	</div>
 	
@@ -16,10 +16,10 @@
 		</div>
 	</nav>
 
-	<nm-actiontray *ngIf = "(actionTray !== undefined) && actionTray?.visible" [element]="actionTray"></nm-actiontray> 
+	<nm-actiontray id="{{actionTray?.config?.code}}" *ngIf = "(actionTray !== undefined) && actionTray?.visible" [element]="actionTray"></nm-actiontray> 
 
 	<ng-template ngFor let-modal [ngForOf]="modalItems">
-		<nm-modal [element]="modal"></nm-modal>
+		<nm-modal id="{{modal?.config?.code}}" [element]="modal"></nm-modal>
 	</ng-template>	
 
 </ng-template>

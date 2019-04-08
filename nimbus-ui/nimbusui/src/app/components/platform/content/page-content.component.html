@@ -6,8 +6,8 @@
         <!-- <h1 class="page-title {{imgSrc}} ">
             {{label}}
         </h1> -->
-        <nm-label *ngIf="!isLabelEmpty" [element]="element" [labelClass]="imgSrc + ' page-title'" [size]="labelSize"></nm-label>
+        <nm-label id="{{element.config?.code}}" *ngIf="!isLabelEmpty" [element]="element" [labelClass]="imgSrc + ' page-title'" [size]="labelSize"></nm-label>
     <!-- </ng-template> -->
 
-    <nm-tile [element]="tile" *ngFor="let tile of tilesList" [ngClass]="tile.config.uiStyles.attributes.size" [position]="position+1" [nmPrint]="tile"></nm-tile>
+    <nm-tile id="{{tile?.config?.code}}"  [element]="tile" *ngFor="let tile of tilesList" [ngClass]="tile.config.uiStyles.attributes.size" [position]="position+1" [nmPrint]="tile"></nm-tile>
 </ng-template>

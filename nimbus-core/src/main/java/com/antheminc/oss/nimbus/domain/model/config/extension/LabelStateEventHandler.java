@@ -23,7 +23,7 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
@@ -40,8 +40,7 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
  */
 public class LabelStateEventHandler extends AbstractConfigEventHandler implements OnStateLoadHandler<Label> {
 
-	@Autowired
-	CommandPathVariableResolver cmdPathResolver;
+
 
 	/**
 	 * <p>Add the label from {@code configuredAnnotation} to the label state of
@@ -103,10 +102,6 @@ public class LabelStateEventHandler extends AbstractConfigEventHandler implement
 		addLabelToState(configuredAnnotation, param);
 	}
 
-	protected String resolvePath(String text, Param<?> param) {
-		String resolvedPath = this.cmdPathResolver.resolve(param, text);
-		return resolvedPath;
-	}
 
 	/**
 	 * <p>Add {@code labelState} to the label state of {@code targetParam}.

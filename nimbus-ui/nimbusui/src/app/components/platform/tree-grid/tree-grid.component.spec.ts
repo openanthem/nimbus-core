@@ -19,7 +19,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, TooltipModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
@@ -204,7 +204,7 @@ const imports = [
      DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
      FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
      ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule,
-     AngularSvgIconModule,
+     AngularSvgIconModule,TooltipModule,
      HttpClientModule,
      StorageServiceModule,
      HttpModule, 

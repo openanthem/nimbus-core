@@ -47,7 +47,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     multi: true
 };
 
-declare var $:any;
+declare var $: any;
 
 /**
 * \@author Dinakar.Meda
@@ -162,11 +162,11 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
 
 
     isAdding (){
-        if (!this.value  || this.value.length == 0){
+        if (!this.value  || this.value.length === 0) {
             return false;
         }
-        for  (var i=0; i <this.value.length; i++){
-            if (this.value[i]['elemId'] === '-1'){
+        for  (let i = 0; i < this.value.length; i++) {
+            if (this.value[i]['elemId'] === '-1') {
                 return true;
             }
         }
@@ -175,23 +175,24 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     addRow() {
-        if (this.isAdding()){
+        if (this.isAdding()) {
            return ;
         }
-        let defObj = {
+        const defObj = {
             'elemId': '-1',
             'rowId': 'new'
         };
 
-        for (var i=0; i<this.params.length; i++){
-            defObj [this.params[i].code] = "";
+        for (let i = 0; i < this.params.length; i++) {
+            defObj [this.params[i].code] = '';
         }
         defObj['id'] = defObj.elemId;
         this.value.unshift(defObj);
         console.log('this.value--189', this.value);
+        this.cd.detectChanges();
         setTimeout(() => {
-            $("#"+this.id+"_new").click();
-        });
+            $('#' + 'new_row').click();
+        });        
     }
 
     ngOnInit() {
@@ -232,12 +233,6 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             this.dt.filterConstraints = customFilterConstraints;
         }
         this.updatePosition();
-        console.log('this.params', this.params);
-        setTimeout(() => {
-            console.log('this.value', this.value);    
-        }, 1000);
-        
-        console.log('this.element', this.element);
     }
 
     ngAfterViewInit() {

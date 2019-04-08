@@ -20,6 +20,9 @@ package com.antheminc.oss.nimbus.domain.model.config.extension;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 
 /**
@@ -27,11 +30,19 @@ import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
  *
  */
 public abstract class AbstractConfigEventHandler {
+	
+	@Autowired
+	CommandPathVariableResolver cmdPathResolver;
 
 	protected <T> T castOrEx(Class<T> type, ParamConfig<?> param) {
 		if(!type.isInstance(param))
 			throw new InvalidConfigException("Handler supports ParamConfig of type: "+type+" but found of type: "+param.getClass());
 		
 		return type.cast(param);
+	}
+	
+	protected String resolvePath(String text, Param<?> param) {
+		String resolvedPath = this.cmdPathResolver.resolve(param, text);
+		return resolvedPath;
 	}
 }

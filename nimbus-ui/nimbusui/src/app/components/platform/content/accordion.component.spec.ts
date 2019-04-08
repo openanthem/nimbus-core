@@ -27,7 +27,7 @@ import { JL } from 'jsnlog';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
   FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule } from 'primeng/primeng';
+  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, TooltipModule } from 'primeng/primeng';
   import { TableModule } from 'primeng/table';
   import { KeyFilterModule } from 'primeng/keyfilter';
   import { ToastModule } from 'primeng/toast';
@@ -243,6 +243,7 @@ const imports = [
   BrowserAnimationsModule,
   InputMaskModule,
   TabViewModule,
+  TooltipModule,
   EditorModule
 ];
 const providers = [

@@ -20,7 +20,7 @@ import { NmMessageService } from './../../../services/toastmessage.service';
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule, InputMaskModule, EditorModule  } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule, InputMaskModule, EditorModule, TooltipModule  } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, FormControl } from '@angular/forms';
@@ -270,6 +270,7 @@ const imports = [
    FileUploadModule,
    PickListModule,
    ListboxModule,
+   TooltipModule,
    CheckboxModule,
    RadioButtonModule,
    CalendarModule,
