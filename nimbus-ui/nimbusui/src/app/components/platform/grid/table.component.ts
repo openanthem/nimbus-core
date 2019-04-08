@@ -188,7 +188,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         }
         defObj['id'] = defObj.elemId;
         this.value.unshift(defObj);
-        this.cd.detectChanges();
+        // this.cd.detectChanges();
         setTimeout(() => {
             $('#' + 'new_row').click();
         });

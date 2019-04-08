@@ -1489,7 +1489,7 @@ describe('DataTable', () => {
 
     it('dateFilter() should call updatePageDetailsState() and dt.filter()', () => {
         const e = new Date();
-        const dt = new Table(elementRef, domHandler, objectUtils, null, tableService);
+        const dt = new Table(elementRef, null, tableService);
         const datePattern = 'MMDDYYYY';
         spyOn(hostComponent, 'updatePageDetailsState').and.callThrough();
         spyOn(dt, 'filter').and.callThrough();
