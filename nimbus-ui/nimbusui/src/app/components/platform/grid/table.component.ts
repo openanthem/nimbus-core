@@ -319,14 +319,6 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     getCellDisplayValue(rowData: any, col: ParamConfig) {
-
-        // if (col.code === 'firstName') {
-            // console.log('rowData', rowData);
-            // console.log('col', col);
-        // }
-
-        
-        
         let cellData = rowData[col.code];
         if (cellData) {
             if (super.isDate(col.type.name)) {
@@ -345,10 +337,6 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             return true;
         } 
         return false;
-    }
-
-    returnStringifyjson(col) {
-        return JSON.stringify(col);
     }
 
     showHeader(col: ParamConfig) {        
