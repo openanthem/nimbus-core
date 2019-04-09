@@ -34,7 +34,7 @@ import { ViewComponent } from '../../../../shared/param-annotations.enum';
         <div>
             <ng-template ngFor let-element [ngForOf]="buttonList">
                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.button.toString()">
-                    <nm-button [form]="form" [element]="element"></nm-button>
+                    <nm-button id="{{element.config?.code}}" [form]="form" [element]="element"></nm-button>
                 </ng-template>
             </ng-template>
         </div>
