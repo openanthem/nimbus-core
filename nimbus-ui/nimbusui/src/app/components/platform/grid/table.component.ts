@@ -47,6 +47,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     multi: true
 };
 
+declare var $: any;
+
 /**
 * \@author Dinakar.Meda
 * \@whatItDoes
@@ -72,9 +74,10 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     @ViewChild('dt') dt: Table;
     @ViewChild('op') overlayPanel: OverlayPanel;
     @ViewChildren('dropDown') dropDowns: QueryList<any>;
+    @ViewChild('editableRow') editableRow: any;
     componentTypes = ComponentTypes;
     viewComponent = ViewComponent;
-    
+
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
     
@@ -96,6 +99,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     numPattern: RegExp = /[\d\-\.]/;
     id: String = 'grid-control' + counter++;
     gridRowConfig: any[];
+    clonedRowData: any[] = [];
 
     get value() {
         return this._value;
@@ -132,6 +136,62 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         protected cd: ChangeDetectorRef) {
 
         super(_wcs, cd);
+    }
+
+    onRowEditInitialize(rowData) {
+        this.clonedRowData[rowData.id] = {...rowData};
+    }
+
+    onRowEditSave(rowData) {
+        // make a server call to updated rowdata and if elemId as -1 then it need to update grid data in serverside
+        // recieve the updated id and elemId and the current rowdata
+        this.dt.saveRowEdit(rowData, this.editableRow.nativeElement);
+        delete this.clonedRowData[rowData.id];
+    }
+
+    onRowEditCancel(rowData, index: number) {
+
+        if (rowData.elemId === '-1') {
+            delete this.clonedRowData[rowData.id];
+            this.value.splice(0, 1);
+            return;
+        }
+        this.value[index] = this.clonedRowData[rowData.id];
+        delete this.clonedRowData[rowData.id];
+    }
+
+
+    isAdding (){
+        if (!this.value  || this.value.length === 0) {
+            return false;
+        }
+        for  (let i = 0; i < this.value.length; i++) {
+            if (this.value[i]['elemId'] === '-1') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    addRow() {
+        if (this.isAdding()) {
+           return ;
+        }
+        const defObj = {
+            'elemId': '-1',
+            'rowId': 'new'
+        };
+
+        for (let i = 0; i < this.params.length; i++) {
+            defObj [this.params[i].code] = '';
+        }
+        defObj['id'] = defObj.elemId;
+        this.value.unshift(defObj);
+        // this.cd.detectChanges();
+        setTimeout(() => {
+            $('#' + 'new_row').click();
+        });
     }
 
     ngOnInit() {
@@ -279,7 +339,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         return false;
     }
 
-    showHeader(col: ParamConfig) {
+    showHeader(col: ParamConfig) {        
         if (col.uiStyles && col.uiStyles.attributes.hidden === false &&
             col.uiStyles.attributes.alias === ViewComponent.gridcolumn.toString()) {
             return true;

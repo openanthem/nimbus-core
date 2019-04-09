@@ -69,7 +69,7 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
         LARGE: { width: '900' }
     };
 
-    constructor(private wcsvc: WebContentSvc, public domHandler: DomHandler, private pageSvc: PageService, private zone: NgZone) {
+    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService, private zone: NgZone) {
         super(wcsvc);
     }
 
@@ -79,8 +79,8 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     ngAfterViewInit() {
         //override the primeng definition as the modal does not have scrollbar and also does not position correctly with grid data (pagesize = 50)
         this.modal.positionOverlay = () => {
-            let viewport = this.domHandler.getViewport();
-            if (this.domHandler.getOuterHeight(this.modal.container) > viewport.height) {
+            let viewport = DomHandler.getViewport();
+            if (DomHandler.getOuterHeight(this.modal.container) > viewport.height) {
                  this.modal.contentViewChild.nativeElement.style.height = (viewport.height * .75) + 'px';
             }
             
@@ -108,7 +108,7 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
         this.zone.runOutsideAngular(() => {
             setTimeout(() => {
                 if(this.modal.visible && this.modal.container) {
-                    let height = this.domHandler.getOuterHeight(this.modal.container);
+                    let height = DomHandler.getOuterHeight(this.modal.container);
 
                     if(height !== this.currentHeight) {
                         this.currentHeight = height;

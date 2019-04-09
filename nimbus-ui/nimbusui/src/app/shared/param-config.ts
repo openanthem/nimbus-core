@@ -235,6 +235,8 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     inlineStyle: string;
     formats: string;
     toolbarFeatures: string[];
+    editRow: boolean;
+    addRow: boolean;
     toolTipText: string;
     toolTipPosition: string;
     tooltipStyleClass: string;

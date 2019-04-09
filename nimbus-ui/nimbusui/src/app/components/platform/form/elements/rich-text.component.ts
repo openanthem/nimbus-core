@@ -170,7 +170,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                             (onChange)="onValuesDropdownSelection($event)"
                             [options]="element.values | selectItemPipe" 
                             [disabled]="!element?.enabled"
-                            [autoWidth]="false"
                             [placeholder]="'Please Select...'">
                             </p-dropdown>
                     </ng-template>
