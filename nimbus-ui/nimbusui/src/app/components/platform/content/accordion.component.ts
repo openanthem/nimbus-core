@@ -40,7 +40,7 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
         </div>
         <p-accordion #accordion [multiple]="multiple" [activeIndex]="index" *ngIf="element?.visible">
             <ng-template ngFor let-tab [ngForOf]="nestedParams">
-                <p-accordionTab  [selected]="tab?.config?.uiStyles?.attributes?.selected" *ngIf="tab?.visible">
+                <p-accordionTab id="{{tab?.config?.code}}" [selected]="tab?.config?.uiStyles?.attributes?.selected" *ngIf="tab?.visible">
                     <p-header>
                         <nm-label *ngIf="tab" [element]="tab" [size]="labelSize"></nm-label>
                         <span [ngClass]="getTabInfoClass(tab)" *ngIf="getInfoText(tab)">
