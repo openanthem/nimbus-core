@@ -902,6 +902,16 @@ public class ViewConfig {
 		String type() default ".pdf,.png";
 
 		String url() default "";
+		
+		Behavior behavior() default Behavior.UPLOAD;
+		
+		public enum WriteStrategy{
+			COMMAND, MODEL_REPSITORY
+		}
+		public enum Behavior {
+			CONVERSION,
+			UPLOAD
+		}
 
 	}
 

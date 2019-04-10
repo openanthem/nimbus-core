@@ -45,8 +45,8 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.entity.client.ExtClient;
+import com.antheminc.oss.nimbus.support.CommandUtils;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
-import com.antheminc.oss.nimbus.test.domain.support.utils.CommandUtils;
 
 /**
  * @author Rakesh Patel
