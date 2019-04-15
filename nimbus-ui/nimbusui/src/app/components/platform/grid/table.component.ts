@@ -47,8 +47,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     multi: true
 };
 
-declare var $: any;
-
 /**
 * \@author Dinakar.Meda
 * \@whatItDoes
@@ -139,38 +137,63 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     onRowEditInitialize(rowData) {
-        this.clonedRowData[rowData.id] = {...rowData};
+        this.clonedRowData[rowData.elemId] = {...rowData};
     }
 
     onRowEditSave(rowData) {
-        // make a server call to updated rowdata and if elemId as -1 then it need to update grid data in serverside
-        // recieve the updated id and elemId and the current rowdata
-        this.dt.saveRowEdit(rowData, this.editableRow.nativeElement);
-        delete this.clonedRowData[rowData.id];
+        let elemPath = `${this.element.path}/${rowData.elemId}`;
+        let relativeActionPath = this.element.config.uiStyles.attributes.onEdit;
+        if (this.isNewRecord(rowData)) {
+            elemPath = this.element.path;
+            relativeActionPath = this.element.config.uiStyles.attributes.onAdd;
+        }
+        this.postEditedRow(rowData, elemPath, relativeActionPath, () => {
+            this.dt.cancelRowEdit(rowData);
+            delete this.clonedRowData[rowData.elemId];
+        }, () => {
+            this.replaceRecordWithSavedValue(rowData);
+            delete this.clonedRowData[rowData.elemId];
+        });
     }
 
-    onRowEditCancel(rowData, index: number) {
+    postEditedRow(rowData: any, elemPath: string, relativeActionPath: string, onSuccess?: () => void, onFailure?: () => void) {
+        // TODO build URL from a standardized service method (not yet built at time of this change)
+        let url = `${ServiceConstants.PLATFORM_BASE_URL}${elemPath}/${relativeActionPath}/_get`;
+        return this.pageSvc.executeHttpPost(url, rowData, elemPath, onSuccess, onFailure);
+    }
 
-        if (rowData.elemId === '-1') {
-            delete this.clonedRowData[rowData.id];
+    onRowEditCancel(rowData: any) {
+        if (this.isNewRecord(rowData)) {
+            delete this.clonedRowData[rowData.elemId];
             this.value.splice(0, 1);
             return;
         }
-        this.value[index] = this.clonedRowData[rowData.id];
-        delete this.clonedRowData[rowData.id];
+       this.replaceRecordWithSavedValue(rowData);
+
     }
 
+    replaceRecordWithSavedValue(rowData: any) {
+        for (var i = 0; i < this.value.length; i++) {
+            if(this.value[i].elemId == rowData.elemId) {
+                this.value[i] =  this.clonedRowData[rowData.elemId]
+            }
+        }
+        delete this.clonedRowData[rowData.elemId];
+    }
+
+    isNewRecord(rowData: any): boolean {
+        return typeof rowData['elemId'] == 'undefined';
+    }
 
     isAdding (){
         if (!this.value  || this.value.length === 0) {
             return false;
         }
         for  (let i = 0; i < this.value.length; i++) {
-            if (this.value[i]['elemId'] === '-1') {
+            if (this.isNewRecord(this.value[i])) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -178,20 +201,14 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         if (this.isAdding()) {
            return ;
         }
-        const defObj = {
-            'elemId': '-1',
-            'rowId': 'new'
-        };
-
-        for (let i = 0; i < this.params.length; i++) {
-            defObj [this.params[i].code] = '';
+        if (!this.element.config.uiStyles.attributes.lazyLoad) {
+            this.dt.first = 0;
+        } else {
+            // TODO handle the pagination when server-side pagination is enabled
         }
-        defObj['id'] = defObj.elemId;
-        this.value.unshift(defObj);
-        // this.cd.detectChanges();
-        setTimeout(() => {
-            $('#' + 'new_row').click();
-        });
+        this.value.unshift({});
+        this.dt.initRowEdit(this.value[0]);
+        // TODO focus the first field
     }
 
     ngOnInit() {

@@ -107,12 +107,9 @@
                             <p-cellEditor>
 
                                      <ng-template pTemplate="input">
-                                        <input [title]="rowData[col.code]" *ngIf="showValue(col)" [value]="rowData[col.code]" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code" required>
-                                        <input *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.link.toString()" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code" required>
-                                        <input *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code" required>
-                                        <input *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.button.toString()" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code" required>
-                                    </ng-template>
-
+                                        <input [title]="rowData[col.code]" *ngIf="showValue(col)" [value]="rowData[col.code]" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code">
+                                        <input *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code">
+                                     </ng-template>
                                     <ng-template pTemplate="output">
                                             <span title="{{getCellDisplayValue(rowData, col)}}" *ngIf="showValue(col)" [nmDisplayValue]='getCellDisplayValue(rowData, col)' [config]='col'>
                                                     <span class="fieldValue {{col.code}} {{getCellStyle(rowData.elemId, col.code)}}">{{getCellDisplayValue(rowData, col)}}</span>
@@ -138,8 +135,8 @@
                                                 </span>
                                                 <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.linkMenu.toString()">
                                                     <nm-action-dropdown #dropDown 
-                                                        *ngIf = "rowData['elemId'] != '-1'"
-                                                        id="{{getViewParam(col, rowData['elemId']).config?.code}}{{rowIndex}}" 
+                                                        *ngIf = "rowData['elemId']"
+                                                        id="{{getViewParam(col, rowData['elemId'])?.config?.code}}{{rowIndex}}" 
                                                         [element]="getViewParam(col, rowData['elemId'])" 
                                                         [params]="col?.type?.model?.paramConfigs" 
                                                         [rowData]="rowData" 
@@ -153,9 +150,9 @@
                 </ng-template>
 
             <td style="text-align:center" *ngIf="element.config?.uiStyles?.attributes?.editRow">
-                    <button *ngIf="!editing" pButton type="button" [attr.id]="rowData.rowId+'_row'" pInitEditableRow icon="pi pi-pencil" class="ui-button-info" (click)="onRowEditInitialize(rowData)"></button>
+                    <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil" class="ui-button-info" (click)="onRowEditInitialize(rowData)"></button>
                     <button *ngIf="editing" pButton type="button" icon="pi pi-check" class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData)"></button>
-                    <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times" class="ui-button-danger" (click)="onRowEditCancel(rowData, rowIndex)"></button>
+                    <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times" class="ui-button-danger" (click)="onRowEditCancel(rowData)"></button>
             </td>
 
             </tr>

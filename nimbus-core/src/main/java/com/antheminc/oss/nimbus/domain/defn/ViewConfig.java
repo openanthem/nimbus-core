@@ -25,12 +25,10 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.Past;
 
 import com.antheminc.oss.nimbus.domain.Event;
+import com.antheminc.oss.nimbus.domain.cmd.Action;
+import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
-
-
-import com.antheminc.oss.nimbus.domain.defn.ViewConfig.FieldValue;
-import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ToolTip;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -1219,9 +1217,39 @@ public class ViewConfig {
 		 */
 		boolean headerCheckboxToggleAllPages() default false;
 		
-		boolean editableRows() default false;
+		/**
+		 * <p>Add an edit button to each record that allows for in-line editing.
+		 * @see #onEdit()
+		 */
+		boolean editRow() default false;
 
-		boolean addRows() default false;
+		/**
+		 * <p>Add an add row button to that allows for adding a new element to
+		 * be added to this decorated parameter using the in-line editing
+		 * feature.
+		 * @see #onAdd()
+		 */
+		boolean addRow() default false;
+		
+		/**
+		 * <p>A param path relative to the collection element param being edited
+		 * on which to invoke an {@link Action._get} call whenever a grid record
+		 * is edited. The {@link #editRow()} feature must be enabled for this
+		 * behavior to occur. <p>This mandates that a field having the same name
+		 * as {@code onEdit} must be defined in the generic type of the
+		 * decorated collection parameter.
+		 */
+		String onEdit() default "_action_onEdit";
+		
+		/**
+		 * <p>A param path relative to the Grid param created by this decorated
+		 * field, on which to invoke an {@link Action._get} call whenever a new
+		 * grid record is added. The {@link #addRow()} feature must be enabled
+		 * for this behavior to occur. <p>This mandates that a field having the
+		 * same value as {@code onAdd} must be defined as a sibling parameter to
+		 * this decorated field.
+		 */
+		String onAdd() default "../_action_onAdd";
 	}
 
 	/**
