@@ -86,7 +86,7 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
         this.pageSvc.gridValueUpdate$.subscribe((treeList: Param) => {
             if (this.element.path === treeList.path) {
                 this.tt.first = 0;
-                this.treeData = this.getTreeStructure(treeList.gridData.leafState);
+                this.treeData = this.getTreeStructure(treeList.gridData.values);
                 
             }
         });
@@ -154,11 +154,11 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
 
     getViewParam(col: ParamConfig, rowNode: any): Param {
         let nestedCollectionPath = this.getRowPath(col, rowNode);
-        return this.element.collectionParams.find(p => p.path === nestedCollectionPath);
+        return this.element.gridData.collectionParams.find(p => p.path === nestedCollectionPath);
     }
 
     getRowNodeParamConfigs(rowNode: any): ParamConfig[] {
-        return this.getNestedCollectionParamConfigs(this.element.collectionParams, this.element, RowNodeUtils.getBaseRowNode(rowNode));
+        return this.getNestedCollectionParamConfigs(this.element.gridData.collectionParams, this.element, RowNodeUtils.getBaseRowNode(rowNode));
     }
 
     getNestedCollectionParamConfigs(collectionParams: Param[], param: Param, rowNode: any): ParamConfig[] {

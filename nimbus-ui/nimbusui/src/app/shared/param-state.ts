@@ -23,8 +23,9 @@ import { Serializable } from './serializable';
 import { ParamConfig, LabelConfig } from './param-config';
 import { Message } from './message';
 import { ViewComponent } from './param-annotations.enum';
-import { TableComponentConstants } from '../components/platform/grid/table.component.constants';
 import { DataGroup } from './../components/platform/charts/chartdata';
+import { TableComponentConstants } from './../components/platform/grid/table.component.constants';
+
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -53,9 +54,7 @@ export class Param implements Serializable<Param, string> {
     gridData: GridData;
     style: StyleState;
 
-    // Move to Grid Data
     elemId: string;
-    collectionParams: Param[] = [];
 
     constructor(private configSvc: ConfigService) {}
 
@@ -68,74 +67,6 @@ export class Param implements Serializable<Param, string> {
             return this.config.uiStyles.attributes.alias;
         }
         return undefined;
-    }
-
-    private createRowData(param: Param) {
-        let rowData: any = {};
-        rowData = param.leafState;
-        if(param.type.model) {
-            let isTreeGrid = this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias == ViewComponent.treeGrid.toString();
-            rowData['nestedGridParam'] = [];
-            for(let p of param.type.model.params) {
-                if(p != null) {
-                    let config = this.configSvc.paramConfigs[p.configId];
-
-                    this.handleNestedGridParams(rowData, param, p, config);
-                    if (isTreeGrid && config.uiStyles && config.uiStyles.attributes.alias === ViewComponent.treeGridChild.toString()) {
-                        this.putNestedGridParam(rowData, param, p);
-                        this.handleRecursiveNestedGridParams(rowData, param, p);
-                    }
-    
-                    // handle dates
-                    if (ParamUtils.isKnownDateType(config.type.name)) {
-                        rowData[config.code] = ParamUtils.convertServerDateStringToDate(rowData[config.code], config.type.name);
-                    }
-                }
-            }
-        }
-
-        return rowData;
-    }
-
-    handleRecursiveNestedGridParams(rowData: any, baseParam: Param, param: Param) {
-        if (!param.type.model) {
-            return;
-        }
-        for(let collectionElements of param.type.model.params) {
-            if (!collectionElements.type.model) {
-                continue;
-            }
-            for(let p of collectionElements.type.model.params) {
-                if(p != null) {
-                    let config = this.configSvc.paramConfigs[p.configId];
-                    this.handleNestedGridParams(rowData, baseParam, p, config);
-                    if (config.uiStyles && config.uiStyles.attributes.alias === ViewComponent.treeGridChild.toString()) {
-                        this.putNestedGridParam(rowData, baseParam, p);
-                        this.handleRecursiveNestedGridParams(rowData, baseParam, p);
-                    }
-                }
-            }
-        }
-    }
-
-    handleNestedGridParams(rowData: any, param: Param, p: any, config: ParamConfig) {
-        if (config.uiStyles && (TableComponentConstants.allowedColumnStylesAlias.includes(config.uiStyles.attributes.alias)
-            || config.uiStyles.attributes.showAsLink === true)) {
-    
-            this.putNestedGridParam(rowData, param, p);
-        }
-    }
-
-    putNestedGridParam(rowData: any, param: Param, p: Param) {
-        let isDeserialized = false;
-        if (p instanceof Param) {
-            isDeserialized = true;
-        }
-        if(param.collectionElem) {
-            rowData['nestedGridParam'].push(isDeserialized ? p : new Param(this.configSvc).deserialize(p,this.path + '/' + param.elemId));
-        } else {
-            rowData['nestedGridParam'].push(isDeserialized ? p : new Param(this.configSvc).deserialize(p,this.path));
-        }
     }
 
     private constructPath(path, inJson) {
@@ -186,48 +117,12 @@ export class Param implements Serializable<Param, string> {
             this.type['name'] = 'string';
             this.type['collection'] = false;
         } 
-       if (this.config != null && this.config.uiStyles && 
-            (this.config.uiStyles.attributes.alias === ViewComponent.grid.toString() || this.config.uiStyles.attributes.alias == ViewComponent.treeGrid.toString())) {
+       if (ParamUtils.isTabularComponent(this)) {
             // deserialize Page
             if (inJson.page) {
                 this.page = new GridPage().deserialize(inJson.page);
             }
-            this.gridData = new GridData();
-            if (inJson.type && inJson.type.model && inJson.type.model.params) {
-                this.gridData.leafState = [];
-                this.gridData.stateMap = [];
-                //this.paramState = [];
-                if(this.path && typeof inJson.path == undefined)
-                    inJson.path = this.path;
-                for ( var p in inJson.type.model.params ) {
-                    if (!ParamUtils.isEmpty(inJson.type.model.params[p])) {
-                        //this.paramState.push(inJson.type.model.params[p].type.model.params); 
-                        //this.gridList.push(this.createRowData(inJson.type.model.params[p])); 
-                        let colElemParam = new Param(this.configSvc).deserialize(inJson.type.model.params[p], this.path)
-                        
-                        // TODO Refactor the following transformations for efficiency by 
-                        // combining this.createRowData and gridData.stateMap implementation
-                        // into single loop.
-                        
-                        // Update the gridData.leafState
-                        let lineItem = this.createRowData(colElemParam);
-                        if(lineItem.nestedGridParam)
-                          this.collectionParams = this.collectionParams.concat(lineItem.nestedGridParam); 
-                        delete lineItem.nestedGridParam; 
-                        this.gridData.leafState.push(lineItem);
-
-                        // Update the gridData.stateMap
-                        let rowStateData = {};
-                        for(var cellParam of colElemParam.type.model.params) {
-                            let cellParamCode = this.configSvc.getViewConfigById(cellParam.configId).code;
-                            rowStateData[cellParamCode] = {
-                                style: cellParam.style
-                            };
-                        }
-                        this.gridData.stateMap.push(rowStateData);
-                    }
-                }
-            }
+            this.gridData = GridData.buildGridData(this.configSvc, this);
         } else if(this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === ViewComponent.chart.toString()) {
             let data: DataGroup[] = [];
             if(inJson.leafState!=null) {
@@ -253,9 +148,6 @@ export class Param implements Serializable<Param, string> {
         }
         if ( inJson.style ) {
             this.style = new StyleState().deserialize(inJson.style);
-        }
-        if ( inJson.collectionElem && this.leafState) {
-            this.leafState = this.createRowData(this);
         }
         if (typeof inJson.visible !== 'undefined') {
             this.visible = inJson.visible;
@@ -439,10 +331,208 @@ export class StyleState implements Serializable<StyleState, string> {
     }
 }
 
-export class GridData {
+/**
+ * \@author Tony Lopez
+ */
+export abstract class GridData {
 
-    elemId: string;
     collectionParams: Param[] = [];
-    leafState: any[];
-    stateMap: any[];
+    values: any[] = undefined;
+    stateMap: any[] = [];
+
+    constructor(protected configSvc: ConfigService) {}
+
+    static buildGridData(configSvc: ConfigService, param: Param, colElemParamsJSON?: string[]): GridData {
+        switch(param.config.uiStyles.attributes.alias) {
+            case ViewComponent.grid.toString(): {
+                return new TableData(configSvc).from(param, colElemParamsJSON);
+            }
+            case ViewComponent.treeGrid.toString(): {
+                return new TreegridData(configSvc).from(param, colElemParamsJSON);
+            }
+            default: {
+                throw new Error(`Unsupported alias: ${param.config.uiStyles.attributes.alias}`);
+            }
+        }
+    }
+
+    /**
+     * Create grid data from the given parameters. The method attempts to find a "source" of data
+     * to transform into GridData using the following logic:
+     * 
+     * 1) If colElemParamsJSON is given (typically received as an update from the server), then
+     * the resulting grid data will be built from it, using gridParam for building context information.
+     * 2) If colElemParamsJSON is NOT given, then the resulting grid data will be built from params
+     * within gridParam.
+     * 3) If gridParam is not provided or no params are able to be found, an empty GridData object will
+     * be returned.
+     * @param gridParam the grid param, provides context information and/or the "source" of data to transform
+     * @param colElemParamsJSON the "source" of data to transform
+     */
+    from(gridParam: Param, colElemParamsJSON?: string[]): GridData {
+        if (!gridParam) {
+            return this;
+        }
+
+        // determine the "source" of data to collect GridData information from
+        let colElemParams: Param[];
+        if (colElemParamsJSON) {
+            // if JSON is given, deserialize the JSON into useable params
+            colElemParams = [];
+            for(let colElemParamJSON of colElemParamsJSON) {
+                colElemParams.push(new Param(this.configSvc).deserialize(colElemParamJSON, gridParam.path));
+            }
+        } else {
+            // if JSON is not given, try to use the gridParam params
+            if (!gridParam.type || !gridParam.type.model || !gridParam.type.model.params) {
+                return this;
+            } else {
+                colElemParams = gridParam.type.model.params;
+            }
+        }
+
+        // build the GridData object
+        this.values = [];
+        for(let colElemParam of colElemParams) {
+            if (!ParamUtils.isEmpty(colElemParam)) {
+                let rowData = this.buildRowData(colElemParam);
+                this.collectionParams = this.collectionParams.concat(rowData.nestedParams); 
+                if (rowData.values) {
+                    this.values = this.values.concat(rowData.values);
+                }
+                this.stateMap = this.stateMap.concat(rowData.stateMap);
+            }       
+        }
+        return this;
+    }
+
+    abstract buildRowData(colElemParam: Param): RowData;
+}
+
+/**
+ * \@author Tony Lopez
+ */
+export abstract class RowData {
+    values: any = undefined;
+    nestedParams: Param[] = [];
+    stateMap: any[] = [];
+
+    constructor(protected configSvc: ConfigService) {}
+
+    /**
+     * Create row data from the given collection element param.
+     * @param colElemParam the collection element param which provides the "source" of data to transform
+     */
+    from(colElemParam: Param): RowData {
+        if (!colElemParam) {
+            return this;
+        }
+        this.values = colElemParam.leafState;
+        if(!colElemParam.type || !colElemParam.type.model || !colElemParam.type.model.params) {
+            return this;
+        }
+        
+        let stateData = {};
+        for(let cellParam of colElemParam.type.model.params) {
+            // collect all nested params for the collection element row
+            this.collectNestedParams(colElemParam, cellParam, this.nestedParams);
+            
+            // collect all state data for the collection element row
+            let cellParamCode = this.configSvc.getViewConfigById(cellParam.configId).code;
+            stateData[cellParamCode] = {
+                style: cellParam.style
+            };
+
+            // apply any needed transformations
+            if (ParamUtils.isKnownDateType(cellParam.config.type.name)) {
+                this.values[cellParam.config.code] = ParamUtils.convertServerDateStringToDate(this.values[cellParam.config.code], cellParam.config.type.name);
+            }
+        }
+        if (Object.keys(stateData).length > 0) {
+            this.stateMap.push(stateData);
+        }
+
+        return this;
+    }
+
+    /**
+     * Recursively retrieve all nested params within a collection element param (relative to argument "param") and 
+     * store them into nestedParams.
+     * @param colElemParam the collection element param to start from
+     * @param param the base param (used recursively)
+     * @param nestedParams an array containing the added nested params
+     */
+    protected collectNestedParams(colElemParam: Param, param: Param, nestedParams: Param[]): void {
+        if (!param || !this.shouldCollect(param)) {
+            return;
+        }
+
+        // add the param to nestedParams
+        nestedParams.push(param);
+
+        // if nested, recursively perform the collection
+        if (param.type && param.type.model && param.type.model.params) {
+            for(let p of param.type.model.params) {
+                this.collectNestedParams(colElemParam, p, nestedParams);
+            }
+        }
+    }
+
+    abstract shouldCollect(param: Param): boolean;
+}
+
+/**
+ * \@author Tony Lopez
+ */
+export class TableData extends GridData {
+    
+    buildRowData(colElemParam: Param): RowData {
+        return new TableRowData(this.configSvc).from(colElemParam);
+    }
+}
+
+/**
+ * \@author Tony Lopez
+ */
+export class TableRowData extends RowData {
+
+    shouldCollect(param: Param): boolean {
+        return param.config.uiStyles && 
+            (TableComponentConstants.allowedColumnStylesAlias.includes(param.config.uiStyles.attributes.alias)
+                || param.config.uiStyles.attributes.showAsLink);   
+    }
+}
+
+/**
+ * \@author Tony Lopez
+ */
+export class TreegridData extends GridData {
+    
+    buildRowData(colElemParam: Param): RowData {
+        return new TreegridRowData(this.configSvc).from(colElemParam);
+    }
+}
+
+/**
+ * \@author Tony Lopez
+ */
+export class TreegridRowData extends RowData {
+
+    static readonly allowedNestedAliases = [
+        ViewComponent.button.toString(),
+        ViewComponent.link.toString(),
+        ViewComponent.linkMenu.toString(),
+        ViewComponent.treeGridChild.toString()
+    ];
+
+    shouldCollect(param: Param): boolean {
+        if (!param.config) {
+            // TODO investigate why param config is not loaded.
+            // until this is available, this is a workaround to include @TreeGridChild nested components
+            return param.collectionElem;
+        }
+        return param.config && param.config.uiStyles && 
+            (TreegridRowData.allowedNestedAliases.includes(param.config.uiStyles.attributes.alias)
+                || param.config.uiStyles.attributes.showAsLink);   
+    }
 }

@@ -1,4 +1,3 @@
-
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -29,7 +28,7 @@ import { CustomHttpClient } from './httpclient.service';
 import { Subject } from 'rxjs';
 import { GenericDomain } from '../model/generic-domain.model';
 import { RequestContainer } from '../shared/requestcontainer';
-import { ExecuteException, ExecuteResponse } from './../shared/app-config.interface';
+import { ExecuteResponse } from './../shared/app-config.interface';
 import { ParamUtils } from './../shared/param-utils';
 import { ParamAttribute } from './../shared/command.enum';
 import { ViewConfig } from './../shared/param-annotations.enum';
@@ -38,15 +37,13 @@ import { SessionStoreService } from './session.store';
 import { Location } from '@angular/common';
 import { ViewComponent } from '../shared/param-annotations.enum';
 import { GridData } from './../shared/param-state';
-import { Message } from './../shared/message';
-import { ComponentTypes } from './../shared/param-annotations.enum';
-import { DataGroup } from '../components/platform/charts/chartdata';
 import { NmMessageService } from './toastmessage.service';
 import { Observable } from 'rxjs/Observable';
 
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
+ * \@author Tony Lopez
  * \@whatItDoes 
  * 
  * \@howToUse 
@@ -669,47 +666,9 @@ export class PageService {
 
         /**
          * Loop through the Param State and build the Grid
-         *
          */
-        createGridData(gridElementParams: Param[], gridParam: Param): GridData {
-                let gridData = [];
-                let collectionParams = [];
-                // contains state data for the grid (other than leafState (e.g. style, etc.))
-                let gridStateMap = [];
-
-                if (gridElementParams) {
-                        gridElementParams.forEach(param => {
-                                let p = new Param(this.configService).deserialize(param, gridParam.path);
-                                if (p != null) {
-                                        // build the gridList data
-                                        if (p.leafState && p.leafState.nestedGridParam) {
-                                                collectionParams = collectionParams.concat(p.leafState.nestedGridParam);
-                                        }
-                                        // let leafState = p.leafState;
-                                        // delete leafState.nestedGridParam;
-                                        // gridData.push(leafState);
-                                        gridData.push(p.leafState);
-
-                                        // build the gridRowConfig data (other stateful data)
-                                        let rowStateData = {};
-                                        if (p.leafState) {
-                                                for (let cellParam of p.type.model.params) {
-                                                        let cellStateData = this.configService.getViewConfigById(cellParam.configId);
-                                                        rowStateData[cellStateData.code] = {
-                                                                style: cellParam.style
-                                                        };
-                                                }
-                                        }
-                                        gridStateMap.push(rowStateData);
-                                }       
-                        });
-                }
-                gridParam['collectionParams'] = collectionParams;
-                
-                return {
-                        leafState: gridData,
-                        stateMap: gridStateMap
-                } as GridData;
+        createGridData(colElemParamsJSON: string[], gridParam: Param): GridData {
+                return GridData.buildGridData(this.configService, gridParam, colElemParamsJSON);
         }
 
         /**
@@ -719,17 +678,17 @@ export class PageService {
          */
         processModelEvent(param: Param, eventModel: ModelEvent) {
                 // Grid updates
-                if (param.config.uiStyles != null && (param.config.uiStyles.attributes.alias === ViewComponent.grid.toString() || param.config.uiStyles.attributes.alias === ViewComponent.treeGrid.toString())) {
+                if (param.config.uiStyles != null && ParamUtils.isTabularComponent(param)) {
                         if (eventModel.value != null) {
                                 // Check if the update is for the Current Collection or a Nested Collection
                                 if (param.path == eventModel.value.path) {
                                         // Current Collection
                                         // Collection Element Check - update only the element
                                         if (eventModel.value.collectionElem) {
-                                                if (param.gridData.leafState == null) {
+                                                if (param.gridData.values == null) {
                                                         param.gridData = this.createGridData(eventModel.value.type.model.params, param);
                                                 } else {
-                                                        param.gridData.leafState.push(this.createGridData(eventModel.value.type.model.params, param).leafState);
+                                                        param.gridData.values.push(this.createGridData(eventModel.value.type.model.params, param).values);
                                                 }
                                                 this.gridValueUpdate.next(param);
                                         }
@@ -751,10 +710,10 @@ export class PageService {
                                 } else { // Nested Collection. Need to traverse to right location
                                         let nestedPath = eventModel.value.path.substr(param.path.length + 1);
                                         let elemIndex = nestedPath.substr(0, nestedPath.indexOf('/'));
-                                        if( param.gridData.leafState && eventModel.value.type && eventModel.value.type.model) {
-                                                for (var p = 0; p < param.gridData.leafState.length; p++) {
-                                                        if (param.gridData.leafState[p]['elemId'] == elemIndex) {
-                                                                let nestedElement = this.getNestedElementParam(param.gridData.leafState[p]['nestedElement'], nestedPath, eventModel.value.path);
+                                        if( param.gridData.values && eventModel.value.type && eventModel.value.type.model) {
+                                                for (var p = 0; p < param.gridData.values.length; p++) {
+                                                        if (param.gridData.values[p]['elemId'] == elemIndex) {
+                                                                let nestedElement = this.getNestedElementParam(param.gridData.values[p]['nestedElement'], nestedPath, eventModel.value.path);
                                                                 if (nestedElement && nestedElement.gridData) {
                                                                         nestedElement['gridData'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
                                                                         this.gridValueUpdate.next(nestedElement);
@@ -807,14 +766,14 @@ export class PageService {
                         // find's and return the element based on the nestedelement.config.code and index
                         if (this.matchNode(element, tree[index])) {
                                 let matchFoundOnGrid = false;
-                                if (element.gridData && element.gridData.leafState && element.gridData.leafState.length >0){
+                                if (element.gridData && element.gridData.values && element.gridData.values.length >0){
                                         // if there is a gridlist, match the elemntId
                                         // and look into nested element of the gridlist.
-                                        for(let  i = 0; i < element.gridData.leafState.length; i++){
-                                                if (this.matchElementId(element.gridData.leafState[i], tree[index+1])){
+                                        for(let  i = 0; i < element.gridData.values.length; i++){
+                                                if (this.matchElementId(element.gridData.values[i], tree[index+1])){
                                                                 matchFoundOnGrid = true;
                                                                 index += 2; // skip the elementID in the path and the curentElements cnfig.code
-                                                                return  this.traverseNestedPath(element.gridData.leafState[i].nestedElement, index + 1, tree, eventPath);
+                                                                return  this.traverseNestedPath(element.gridData.values[i].nestedElement, index + 1, tree, eventPath);
                                                 }
                                         }
                                 }

@@ -1,4 +1,3 @@
-import { Converter } from './object.conversion';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -21,6 +20,7 @@ import { ServiceConstants } from '../services/service.constants';
 import { Param } from './param-state';
 import { LabelConfig } from './param-config';
 import { UiNature } from './param-config';
+import { TableComponentConstants } from './../components/platform/grid/table.component.constants';
 
 /**
  * \@author Tony.Lopez
@@ -55,6 +55,13 @@ export class ParamUtils {
             }
         }
         return false;
+    }
+
+    static isTabularComponent(param: Param): boolean {
+        if (!param || !param.config || !param.config.uiStyles) {
+            return false;
+        }
+        return TableComponentConstants.tabularComponents.includes(param.config.uiStyles.attributes.alias);
     }
 
     /**
