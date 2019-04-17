@@ -28,7 +28,7 @@ import { ViewComponent } from "../../../shared/param-annotations.enum";
 
 export class TableComponentConstants {
 
-    public static readonly tabularComponents = [
+    public static readonly tableBasedComponents = [
         ViewComponent.grid.toString(),
         ViewComponent.treeGrid.toString()
     ]

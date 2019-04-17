@@ -61,7 +61,7 @@ export class ParamUtils {
         if (!param || !param.config || !param.config.uiStyles) {
             return false;
         }
-        return TableComponentConstants.tabularComponents.includes(param.config.uiStyles.attributes.alias);
+        return TableComponentConstants.tableBasedComponents.includes(param.config.uiStyles.attributes.alias);
     }
 
     /**
