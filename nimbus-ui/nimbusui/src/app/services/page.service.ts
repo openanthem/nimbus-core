@@ -36,7 +36,7 @@ import { LoggerService } from './logger.service';
 import { SessionStoreService } from './session.store';
 import { Location } from '@angular/common';
 import { ViewComponent } from '../shared/param-annotations.enum';
-import { GridData } from './../shared/param-state';
+import { TableBasedData } from './../shared/param-state';
 import { NmMessageService } from './toastmessage.service';
 import { Observable } from 'rxjs/Observable';
 
@@ -667,8 +667,8 @@ export class PageService {
         /**
          * Loop through the Param State and build the Grid
          */
-        createGridData(colElemParamsJSON: string[], gridParam: Param): GridData {
-                return GridData.buildGridData(this.configService, gridParam, colElemParamsJSON);
+        createTableBasedData(colElemParamsJSON: string[], gridParam: Param): TableBasedData {
+                return TableBasedData.from(this.configService, gridParam, colElemParamsJSON);
         }
 
         /**
@@ -678,17 +678,17 @@ export class PageService {
          */
         processModelEvent(param: Param, eventModel: ModelEvent) {
                 // Grid updates
-                if (param.config.uiStyles != null && ParamUtils.isTabularComponent(param)) {
+                if (param.config.uiStyles != null && ParamUtils.isTableBasedComponent(param)) {
                         if (eventModel.value != null) {
                                 // Check if the update is for the Current Collection or a Nested Collection
                                 if (param.path == eventModel.value.path) {
                                         // Current Collection
                                         // Collection Element Check - update only the element
                                         if (eventModel.value.collectionElem) {
-                                                if (param.gridData.values == null) {
-                                                        param.gridData = this.createGridData(eventModel.value.type.model.params, param);
+                                                if (param.tableBasedData.values == null) {
+                                                        param.tableBasedData = this.createTableBasedData(eventModel.value.type.model.params, param);
                                                 } else {
-                                                        param.gridData.values.push(this.createGridData(eventModel.value.type.model.params, param).values);
+                                                        param.tableBasedData.values.push(this.createTableBasedData(eventModel.value.type.model.params, param).values);
                                                 }
                                                 this.gridValueUpdate.next(param);
                                         }
@@ -698,7 +698,7 @@ export class PageService {
                                                         let page: GridPage = new GridPage().deserialize(eventModel.value.page);
                                                         param.page = page;
                                                 }
-                                                param.gridData = this.createGridData(eventModel.value.type.model.params, param);
+                                                param.tableBasedData = this.createTableBasedData(eventModel.value.type.model.params, param);
                                                 this.gridValueUpdate.next(param);
                                         }
                                         //handle visible, enabled, activatevalidationgroups - the state above will always run if visible is true or false
@@ -710,12 +710,12 @@ export class PageService {
                                 } else { // Nested Collection. Need to traverse to right location
                                         let nestedPath = eventModel.value.path.substr(param.path.length + 1);
                                         let elemIndex = nestedPath.substr(0, nestedPath.indexOf('/'));
-                                        if( param.gridData.values && eventModel.value.type && eventModel.value.type.model) {
-                                                for (var p = 0; p < param.gridData.values.length; p++) {
-                                                        if (param.gridData.values[p]['elemId'] == elemIndex) {
-                                                                let nestedElement = this.getNestedElementParam(param.gridData.values[p]['nestedElement'], nestedPath, eventModel.value.path);
-                                                                if (nestedElement && nestedElement.gridData) {
-                                                                        nestedElement['gridData'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
+                                        if( param.tableBasedData.values && eventModel.value.type && eventModel.value.type.model) {
+                                                for (var p = 0; p < param.tableBasedData.values.length; p++) {
+                                                        if (param.tableBasedData.values[p]['elemId'] == elemIndex) {
+                                                                let nestedElement = this.getNestedElementParam(param.tableBasedData.values[p]['nestedElement'], nestedPath, eventModel.value.path);
+                                                                if (nestedElement && nestedElement.tableBasedData) {
+                                                                        nestedElement['tableBasedData'] = this.createTableBasedData(eventModel.value.type.model.params, nestedElement);
                                                                         this.gridValueUpdate.next(nestedElement);
                                                                 }
                                                                 // if nestedElement is not present, we do not need to handle this scenario.
@@ -766,14 +766,14 @@ export class PageService {
                         // find's and return the element based on the nestedelement.config.code and index
                         if (this.matchNode(element, tree[index])) {
                                 let matchFoundOnGrid = false;
-                                if (element.gridData && element.gridData.values && element.gridData.values.length >0){
+                                if (element.tableBasedData && element.tableBasedData.values && element.tableBasedData.values.length >0){
                                         // if there is a gridlist, match the elemntId
                                         // and look into nested element of the gridlist.
-                                        for(let  i = 0; i < element.gridData.values.length; i++){
-                                                if (this.matchElementId(element.gridData.values[i], tree[index+1])){
+                                        for(let  i = 0; i < element.tableBasedData.values.length; i++){
+                                                if (this.matchElementId(element.tableBasedData.values[i], tree[index+1])){
                                                                 matchFoundOnGrid = true;
                                                                 index += 2; // skip the elementID in the path and the curentElements cnfig.code
-                                                                return  this.traverseNestedPath(element.gridData.values[i].nestedElement, index + 1, tree, eventPath);
+                                                                return  this.traverseNestedPath(element.tableBasedData.values[i].nestedElement, index + 1, tree, eventPath);
                                                 }
                                         }
                                 }

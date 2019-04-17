@@ -236,8 +236,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             this.columnsToShow ++;
         }
 
-        if (this.element.gridData.values != null && this.element.gridData.values.length > 0) {
-            this.value = this.element.gridData.values;
+        if (this.element.tableBasedData.values != null && this.element.tableBasedData.values.length > 0) {
+            this.value = this.element.tableBasedData.values;
             this.totalRecords = this.value.length;
             this.updatePageDetailsState();
         }
@@ -280,13 +280,13 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
 
         this.pageSvc.gridValueUpdate$.subscribe(event => {            
             if (event.path == this.element.path) {
-                this.value = event.gridData.values;
+                this.value = event.tableBasedData.values;
                 
                 // iterate over currently expanded rows and refresh the data
                 Object.keys(this.dt.expandedRowKeys).forEach(key => {
                     this.value.find((lineItem, index) => {
                         if (lineItem[this.element.elemId] == key) {
-                            this._putNestedElement(event.gridData.collectionParams, index, lineItem);
+                            this._putNestedElement(event.tableBasedData.collectionParams, index, lineItem);
                             return true;
                         }
                     });
@@ -419,7 +419,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     getViewParam(col: ParamConfig, rowIndex: number): Param {
-        return this.element.gridData.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code);
+        return this.element.tableBasedData.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code);
     }
 
     getRowPath(col: ParamConfig, item: any) {
@@ -495,7 +495,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     onRowExpand(event: any) {
-        this._putNestedElement(this.element.gridData.collectionParams, event.data.elemId, event.data)
+        this._putNestedElement(this.element.tableBasedData.collectionParams, event.data.elemId, event.data)
     }
 
     resetMultiSelection() {
@@ -733,7 +733,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     getCellStyle(rowIndex, code): string {
-        let elemStateMap = this.element.gridData.stateMap[rowIndex];
+        let elemStateMap = this.element.tableBasedData.stateMap[rowIndex];
         if (!elemStateMap) {
             return '';
         }

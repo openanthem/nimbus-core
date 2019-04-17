@@ -51,7 +51,7 @@ export class Param implements Serializable<Param, string> {
     _config: ParamConfig;
     labels: LabelConfig[];
     elemLabels: Map<string, LabelConfig[]>;
-    gridData: GridData;
+    tableBasedData: TableBasedData;
     style: StyleState;
 
     elemId: string;
@@ -117,12 +117,12 @@ export class Param implements Serializable<Param, string> {
             this.type['name'] = 'string';
             this.type['collection'] = false;
         } 
-       if (ParamUtils.isTabularComponent(this)) {
+       if (ParamUtils.isTableBasedComponent(this)) {
             // deserialize Page
             if (inJson.page) {
                 this.page = new GridPage().deserialize(inJson.page);
             }
-            this.gridData = GridData.buildGridData(this.configSvc, this);
+            this.tableBasedData = TableBasedData.from(this.configSvc, this);
         } else if(this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === ViewComponent.chart.toString()) {
             let data: DataGroup[] = [];
             if(inJson.leafState!=null) {
@@ -334,7 +334,7 @@ export class StyleState implements Serializable<StyleState, string> {
 /**
  * \@author Tony Lopez
  */
-export abstract class GridData {
+export abstract class TableBasedData {
 
     collectionParams: Param[] = [];
     values: any[] = undefined;
@@ -342,7 +342,14 @@ export abstract class GridData {
 
     constructor(protected configSvc: ConfigService) {}
 
-    static buildGridData(configSvc: ConfigService, param: Param, colElemParamsJSON?: string[]): GridData {
+    /**
+     * Factory method for building TableBasedData from a given param and/or provided collection element
+     * JSON.
+     * @param configSvc the config service to gather context information from
+     * @param param the table based param, provides context information and/or the "source" of data to transform
+     * @param colElemParamsJSON the "source" of data to transform
+     */
+    static from(configSvc: ConfigService, param: Param, colElemParamsJSON?: string[]): TableBasedData {
         switch(param.config.uiStyles.attributes.alias) {
             case ViewComponent.grid.toString(): {
                 return new TableData(configSvc).from(param, colElemParamsJSON);
@@ -357,41 +364,35 @@ export abstract class GridData {
     }
 
     /**
-     * Create grid data from the given parameters. The method attempts to find a "source" of data
-     * to transform into GridData using the following logic:
-     * 
-     * 1) If colElemParamsJSON is given (typically received as an update from the server), then
-     * the resulting grid data will be built from it, using gridParam for building context information.
-     * 2) If colElemParamsJSON is NOT given, then the resulting grid data will be built from params
-     * within gridParam.
-     * 3) If gridParam is not provided or no params are able to be found, an empty GridData object will
-     * be returned.
-     * @param gridParam the grid param, provides context information and/or the "source" of data to transform
+     * Create table data from the given parameters. The method attempts to find a "source" of data
+     * to transform into TableBasedData. If colElemParamsJSON is given then the resulting table data will 
+     * be built from it, otherwise it will be be built from params contained within baseParam.
+     * @param baseParam the table based param, provides context information and/or the "source" of data to transform
      * @param colElemParamsJSON the "source" of data to transform
      */
-    from(gridParam: Param, colElemParamsJSON?: string[]): GridData {
-        if (!gridParam) {
+    from(baseParam: Param, colElemParamsJSON?: string[]): TableBasedData {
+        if (!baseParam) {
             return this;
         }
 
-        // determine the "source" of data to collect GridData information from
+        // determine the "source" of data to collect TableBasedData information from
         let colElemParams: Param[];
         if (colElemParamsJSON) {
             // if JSON is given, deserialize the JSON into useable params
             colElemParams = [];
             for(let colElemParamJSON of colElemParamsJSON) {
-                colElemParams.push(new Param(this.configSvc).deserialize(colElemParamJSON, gridParam.path));
+                colElemParams.push(new Param(this.configSvc).deserialize(colElemParamJSON, baseParam.path));
             }
         } else {
             // if JSON is not given, try to use the gridParam params
-            if (!gridParam.type || !gridParam.type.model || !gridParam.type.model.params) {
+            if (!baseParam.type || !baseParam.type.model || !baseParam.type.model.params) {
                 return this;
             } else {
-                colElemParams = gridParam.type.model.params;
+                colElemParams = baseParam.type.model.params;
             }
         }
 
-        // build the GridData object
+        // build the TableBasedData object
         this.values = [];
         for(let colElemParam of colElemParams) {
             if (!ParamUtils.isEmpty(colElemParam)) {
@@ -484,7 +485,7 @@ export abstract class RowData {
 /**
  * \@author Tony Lopez
  */
-export class TableData extends GridData {
+export class TableData extends TableBasedData {
     
     buildRowData(colElemParam: Param): RowData {
         return new TableRowData(this.configSvc).from(colElemParam);
@@ -506,7 +507,7 @@ export class TableRowData extends RowData {
 /**
  * \@author Tony Lopez
  */
-export class TreegridData extends GridData {
+export class TreegridData extends TableBasedData {
     
     buildRowData(colElemParam: Param): RowData {
         return new TreegridRowData(this.configSvc).from(colElemParam);

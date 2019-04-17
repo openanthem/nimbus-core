@@ -57,7 +57,7 @@ export class ParamUtils {
         return false;
     }
 
-    static isTabularComponent(param: Param): boolean {
+    static isTableBasedComponent(param: Param): boolean {
         if (!param || !param.config || !param.config.uiStyles) {
             return false;
         }

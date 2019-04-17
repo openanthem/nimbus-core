@@ -81,7 +81,7 @@ import { LoaderService } from '../../../services/loader.service';
 import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
 import { GridService } from '../../../services/grid.service';
-import { Param, GridData } from '../../../shared/param-state';
+import { Param, TableBasedData } from '../../../shared/param-state';
 import { Subject } from 'rxjs';
 import { ParamConfig, ConfigType, UiStyle, UiAttribute } from '../../../shared/param-config';
 import { ParamUtils } from '../../../shared/param-utils';
