@@ -1134,8 +1134,10 @@ public class ViewConfig {
 	 * is treated as the definition for row item data in the final rendered
 	 * grid. This is referred to as the <i>collection element type</i>. The
 	 * following components may be used to decorate fields in the collection
-	 * element type: <ul> <li>{@link LinkMenu}</li> <li>{@link GridColumn}</li>
-	 * <li>{@link GridRowBody}</li> </ul>
+	 * element type: <ul> <li>{@link ComboBox}</li> <li>{@link GridColumn}</li>
+	 * <li>{@link GridRowBody}</li> <li>{@link LinkMenu}</li> <li>{@link Link}</li> </ul>
+	 * 
+	 * <p>The grid supports in-line editing. ComboBox and TextBox can also be displayed inside the GridLineItem. 
 	 * 
 	 * @since 1.0
 	 */

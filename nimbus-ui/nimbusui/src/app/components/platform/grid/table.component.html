@@ -1,4 +1,4 @@
-<div class="buttonGroup right clearfix" *ngIf="element.config?.uiStyles?.attributes?.addRow">
+<div class="buttonGroup tableHeaderButton clearfix" *ngIf="element.config?.uiStyles?.attributes?.addRow">
     <button class="btn-plain fa fa-plus" (click)="addRow()">
         <span class="pl-2">add row</span>
     </button>
@@ -106,9 +106,45 @@
                     <td *ngIf="showColumn(col)" [ngClass]="getColumnStyle(col)">
                             <p-cellEditor>
 
-                                     <ng-template pTemplate="input">
-                                        <input [title]="rowData[col.code]" *ngIf="showValue(col)" [value]="rowData[col.code]" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code">
-                                        <input *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code">
+                                     <ng-template pTemplate="input" [ngIf]="showValue(col)">
+                                         
+                                    <!-- update it to nm-input and nm-combobox -->
+                                    <!-- check if we can add radio  -->
+                                        <!-- <input [title]="rowData[col.code]" 
+                                        *ngIf="col?.uiStyles?.attributes?.alias === viewComponent.gridcolumn.toString()" 
+                                        [value]="rowData[col.code]" pInputText type="text" 
+                                        [(ngModel)]="rowData[col.code]" 
+                                        [name]="col.code"> -->
+
+
+
+                                        <!-- <nm-input-checkbox *ngIf="col?.uiStyles?.attributes?.alias == componentTypes.checkBoxGroup.toString()" 
+                                        [element]="getElement(col)" 
+                                        [(ngModel)]="rowData[col.code]"></nm-input-checkbox> -->
+
+
+                                        <!-- <p-dropdown *ngIf="col?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString()" 
+                                        [options]="getOptions(col) | selectItemPipe" 
+                                        [(ngModel)]="rowData[col.code]"></p-dropdown> -->
+
+                                        <!-- w -->
+                                        <!-- <nm-input *ngIf="col?.uiStyles?.attributes?.alias === componentTypes.textBox.toString() || col?.uiStyles?.attributes?.alias === viewComponent.gridcolumn.toString()"
+                                        [element]="getElement(col)" 
+                                        [(ngModel)]="rowData[col.code]"></nm-input>
+
+                                        <nm-comboBox *ngIf="col?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString()" 
+                                        [element]="getElement(col)" 
+                                        [(ngModel)]="rowData[col.code]"></nm-comboBox> -->
+
+                                        <nm-input 
+                                        *ngIf="getViewParam(col, rowData['elemId']) && (col?.uiStyles?.attributes?.alias === componentTypes.textBox.toString() || col?.uiStyles?.attributes?.alias === viewComponent.gridcolumn.toString())"
+                                        [element]="getViewParam(col, rowData['elemId'])" 
+                                        [(ngModel)]="rowData[col.code]"></nm-input>
+
+                                        <nm-comboBox *ngIf="col?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString()" 
+                                        [element]="getViewParam(col, rowData['elemId'])" 
+                                        [(ngModel)]="rowData[col.code]"></nm-comboBox>
+
                                      </ng-template>
                                     <ng-template pTemplate="output">
                                             <span title="{{getCellDisplayValue(rowData, col)}}" *ngIf="showValue(col)" [nmDisplayValue]='getCellDisplayValue(rowData, col)' [config]='col'>

@@ -25,6 +25,7 @@ import { Message } from './message';
 import { ViewComponent } from './param-annotations.enum';
 import { DataGroup } from './../components/platform/charts/chartdata';
 import { TableComponentConstants } from './../components/platform/grid/table.component.constants';
+import { TestBed } from '@angular/core/testing';
 
 /**
  * \@author Sandeep.Mantha
@@ -398,6 +399,7 @@ export abstract class TableBasedData {
             if (!ParamUtils.isEmpty(colElemParam)) {
                 let rowData = this.buildRowData(colElemParam);
                 this.collectionParams = this.collectionParams.concat(rowData.nestedParams); 
+                // this.collectionParams = rowData.nestedParams;
                 if (rowData.values) {
                     this.values = this.values.concat(rowData.values);
                 }
@@ -415,8 +417,11 @@ export abstract class TableBasedData {
  */
 export abstract class RowData {
     values: any = undefined;
-    nestedParams: Param[] = [];
+    nestedParams: any[] = [];
     stateMap: any[] = [];
+    rowIndex = 0;
+    test = {};
+    testArray = [];
 
     constructor(protected configSvc: ConfigService) {}
 
@@ -463,20 +468,47 @@ export abstract class RowData {
      * @param param the base param (used recursively)
      * @param nestedParams an array containing the added nested params
      */
-    protected collectNestedParams(colElemParam: Param, param: Param, nestedParams: Param[]): void {
+    protected collectNestedParams(colElemParam: Param, param: Param, nestedParams: any[]): void {
+        // console.log('colElemParam---467', colElemParam);
+        // console.log('param---468', param);
+        // console.log('nestedParams---469', nestedParams);
+
         if (!param || !this.shouldCollect(param)) {
             return;
         }
 
         // add the param to nestedParams
-        nestedParams.push(param);
+
+        const paramPath = parseInt(param.path.split('/').slice(-2, -1)[0]);
+        // parseInt(paramPath);
+        if (!nestedParams[paramPath]){
+            nestedParams[paramPath] = {};
+        }
+        nestedParams[paramPath][param.config.code] = param;
+        console.log('nestedParams', nestedParams);
+        
+
+        // working improper
+        // const paramPath = param.path.split('/').slice(-2, -1)[0];
+
+        // if (paramPath == this.rowIndex) {
+        //     this.test[param.config.code] = param;
+        // } else {
+        //     this.rowIndex++;
+        // }
+        // if (!nestedParams.includes(this.test)) {
+        //     nestedParams.push(this.test);
+        // }
+
+        // previous remove below code
+        // nestedParams.push(param);
 
         // if nested, recursively perform the collection
-        if (param.type && param.type.model && param.type.model.params) {
-            for(let p of param.type.model.params) {
-                this.collectNestedParams(colElemParam, p, nestedParams);
-            }
-        }
+        // if (param.type && param.type.model && param.type.model.params) {
+        //     for(let p of param.type.model.params) {
+        //         this.collectNestedParams(colElemParam, p, nestedParams);
+        //     }
+        // }
     }
 
     abstract shouldCollect(param: Param): boolean;
@@ -498,9 +530,12 @@ export class TableData extends TableBasedData {
 export class TableRowData extends RowData {
 
     shouldCollect(param: Param): boolean {
+        // console.log('param...shouldcollect', param);
+        
         return param.config.uiStyles && 
             (TableComponentConstants.allowedColumnStylesAlias.includes(param.config.uiStyles.attributes.alias)
-                || param.config.uiStyles.attributes.showAsLink);   
+                || param.config.uiStyles.attributes.showAsLink 
+                || TableComponentConstants.allowedInlineEditColumnStylesAlias.includes(param.config.uiStyles.attributes.alias));
     }
 }
 

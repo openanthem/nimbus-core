@@ -150,10 +150,60 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         this.postEditedRow(rowData, elemPath, relativeActionPath, () => {
             this.dt.cancelRowEdit(rowData);
             delete this.clonedRowData[rowData.elemId];
-        }, () => {
-            this.replaceRecordWithSavedValue(rowData);
-            delete this.clonedRowData[rowData.elemId];
+            console.log('rowData', rowData);
         });
+    }
+
+    getElement(col, rowData) {
+        console.log('col', col);
+        console.log('rowData', rowData);
+        
+        for (const param of this.element.tableBasedData.collectionParams) {
+            if (col.code === param.config.code) {
+                param.labels = [];
+                return param;
+            }
+        }
+        
+        // const p: Param = this.element.tableBasedData.collectionParams.filter(param => param.config.code === col.code);
+        // p.labels = [];
+        // console.log('p', p);
+        // return p;
+
+        // const p = 
+        // return this.element.tableBasedData.collectionParams.filter((param) => {
+        //     if (param.config.code === col.code) {
+        //         param.labels = [];
+        //         console.log('param', param);
+                
+        //         return param;
+        //     }
+        // });
+        // console.log('p', p);
+        // return p;
+        
+    }
+
+    getOptions(col) {
+        // use filter operotor
+// console.log(this.element.tableBasedData.collectionParams.filter(param => param.config.code === col.code).values);
+
+        const p: Param = this.element.tableBasedData.collectionParams.filter(param => param.config.code === col.code);
+        console.log('p', p);
+        
+        return p.values;
+
+        // return this.element.tableBasedData.collectionParams.filter((param) => {
+        //     if (param.config.code === col.code) {
+        //         return param.values;
+        //     }
+        // });
+
+        // for (const param of this.element.tableBasedData.collectionParams) {
+        //     if (col.code === param.config.code) {
+        //         return param.values;
+        //     }
+        // }
     }
 
     postEditedRow(rowData: any, elemPath: string, relativeActionPath: string, onSuccess?: () => void, onFailure?: () => void) {
@@ -168,17 +218,26 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             this.value.splice(0, 1);
             return;
         }
-       this.replaceRecordWithSavedValue(rowData);
-
+       this.revertEditChanges(rowData);
     }
 
-    replaceRecordWithSavedValue(rowData: any) {
-        for (var i = 0; i < this.value.length; i++) {
-            if(this.value[i].elemId == rowData.elemId) {
-                this.value[i] =  this.clonedRowData[rowData.elemId]
+    revertEditChanges(rowData: any) {
+        // let found = false;
+        // console.log ("this is cloned info ", this.clonedRowData);
+        // use find operotor
+        // this.value.find((row) => {
+        //     console.log('row', row);
+        //     if(row.elemId && row.elemId === rowData.elemId) {
+        //         row =  this.clonedRowData[rowData.elemId];
+        //         delete this.clonedRowData[rowData.elemId];
+        //     }
+        // });
+        for (let i = 0; i < this.value.length; i++) {
+            if(this.value[i].elemId && this.value[i].elemId === rowData.elemId) {
+                this.value[i] =  this.clonedRowData[rowData.elemId];
+                delete this.clonedRowData[rowData.elemId];
             }
         }
-        delete this.clonedRowData[rowData.elemId];
     }
 
     isNewRecord(rowData: any): boolean {
@@ -249,6 +308,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             this.dt.filterConstraints = customFilterConstraints;
         }
         this.updatePosition();
+        console.log('this.element', this.element);
+        
     }
 
     ngAfterViewInit() {
@@ -358,7 +419,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
 
     showHeader(col: ParamConfig) {        
         if (col.uiStyles && col.uiStyles.attributes.hidden === false &&
-            col.uiStyles.attributes.alias === ViewComponent.gridcolumn.toString()) {
+            (TableComponentConstants.allowedInlineEditColumnStylesAlias.includes(col.uiStyles.attributes.alias)) {
             return true;
         } 
         return false;
@@ -373,7 +434,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         let showValue = false;
         if (col.uiStyles && col.uiStyles.attributes ) {
             if (!TableComponentConstants.allowedColumnStylesAlias.includes(col.uiStyles.attributes.alias)) {
-                if (col.uiStyles.attributes.alias === ViewComponent.gridcolumn.toString()) {
+                if (TableComponentConstants.allowedInlineEditColumnStylesAlias.includes(col.uiStyles.attributes.alias)) {
                     if (col.uiStyles.attributes.showAsLink !== true) {
                         showValue = true;
                     }
@@ -419,7 +480,10 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     getViewParam(col: ParamConfig, rowIndex: number): Param {
-        return this.element.tableBasedData.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code);
+        // console.log('col---getViewParam', col, rowIndex, this.element);
+        
+        return this.element.tableBasedData.collectionParams[rowIndex][col.code];
+        // return this.element.tableBasedData.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code);
     }
 
     getRowPath(col: ParamConfig, item: any) {
