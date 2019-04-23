@@ -18,7 +18,7 @@
 export const MockActionDropdownLink = {
     "activeValidationGroups": [],
     "alias": "Link",
-    "collectionParams": [],
+    
     "config": {
         "active": false,
         "code": "edit",
@@ -93,7 +93,7 @@ export const actionDropDownRowData: any = {
             "enabled": true,
             "visible": true,
             "activeValidationGroups": [],
-            "collectionParams": [],
+            
             "configId": "583",
             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks",
             "type": {
@@ -103,7 +103,7 @@ export const actionDropDownRowData: any = {
                             "enabled": true,
                             "visible": true,
                             "activeValidationGroups": [],
-                            "collectionParams": [],
+                            
                             "configId": "585",
                             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/edit",
                             "type": {
@@ -125,7 +125,7 @@ export const actionDropDownRowData: any = {
                             "enabled": true,
                             "visible": true,
                             "activeValidationGroups": [],
-                            "collectionParams": [],
+                            
                             "configId": "586",
                             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/ownerInfo",
                             "type": {
@@ -196,7 +196,7 @@ export const actionDropDownElement: any = {
   "enabled": true,
   "visible": true,
   "activeValidationGroups": [],
-  "collectionParams": [],
+  
   "configId": "613",
   "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks",
   "type": {
@@ -243,7 +243,7 @@ export const actionDropDownElement: any = {
                   "enabled": true,
                   "visible": true,
                   "activeValidationGroups": [],
-                  "collectionParams": [],
+                  
                   "configId": "615",
                   "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/edit",
                   "type": {
@@ -302,7 +302,7 @@ export const actionDropDownElement: any = {
                   "enabled": true,
                   "visible": true,
                   "activeValidationGroups": [],
-                  "collectionParams": [],
+                  
                   "configId": "616",
                   "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/ownerInfo",
                   "type": {
@@ -446,7 +446,7 @@ export const ActionDropDownLinkElement: any = {
   "enabled": true,
   "visible": true,
   "activeValidationGroups": [],
-  "collectionParams": [],
+  
   "configId": "451",
   "path": "/home/vpHome/vsHomeHeader/testingLinkMenu/vlm1",
   "type": {
@@ -494,7 +494,7 @@ export const ActionDropDownLinkElement: any = {
                   "enabled": true,
                   "visible": true,
                   "activeValidationGroups": [],
-                  "collectionParams": [],
+                  
                   "configId": "453",
                   "path": "/home/vpHome/vsHomeHeader/testingLinkMenu/vlm1/delete1",
                   "type": {
@@ -525,7 +525,7 @@ export const actionDropDownLinkParams:any = [{
   "enabled": true,
   "visible": true,
   "activeValidationGroups": [],
-  "collectionParams": [],
+  
   "configId": "613",
   "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks",
   "type": {
@@ -535,7 +535,7 @@ export const actionDropDownLinkParams:any = [{
                   "enabled": true,
                   "visible": true,
                   "activeValidationGroups": [],
-                  "collectionParams": [],
+                  
                   "configId": "615",
                   "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/edit",
                   "type": {
@@ -557,7 +557,7 @@ export const actionDropDownLinkParams:any = [{
                   "enabled": true,
                   "visible": true,
                   "activeValidationGroups": [],
-                  "collectionParams": [],
+                  
                   "configId": "616",
                   "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/ownerInfo",
                   "type": {

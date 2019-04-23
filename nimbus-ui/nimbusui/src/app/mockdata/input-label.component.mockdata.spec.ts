@@ -56,7 +56,7 @@ export const labelElement: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "513",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/vcdgConcerns/0/vcdOwnerInfo/vcdbOwner/firstName",
     "type": {

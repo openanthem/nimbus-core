@@ -65,7 +65,7 @@ export const formGroupNmElementInputParam: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "57258",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/Testform/patientName1/petName_Accordion_tab1/question123",
     "type": {
@@ -142,7 +142,7 @@ export const formGroupNmElementInputParam: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "57265",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsHistory/vfForm/callSection/showHistory",
     "type": {
@@ -194,7 +194,7 @@ export const formGroupNmElementInputParam: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "57261",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsHistory/vfForm/headerCallSection",
     "type": {
@@ -252,7 +252,7 @@ export const formGroupNmElementInputParam: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "58336",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/Testform/patientName1/petName_Accordion_tab1/vbg1",
     "type": {
@@ -262,7 +262,7 @@ export const formGroupNmElementInputParam: any = {
                     "enabled": true,
                     "visible": true,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "58338",
                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/Testform/patientName1/petName_Accordion_tab1/vbg1/cancel",
                     "type": {
@@ -284,7 +284,7 @@ export const formGroupNmElementInputParam: any = {
                     "enabled": true,
                     "visible": true,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "58339",
                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/Testform/patientName1/petName_Accordion_tab1/vbg1/ok",
                     "type": {
@@ -352,7 +352,7 @@ export const formGroupNmElementInputParam: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "59337",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/Testform/patientName1/petName_Accordion_tab1/create",
     "type": {
@@ -405,7 +405,7 @@ export const formGroupNmElementInputParam: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "60522",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/Testform/patientName1/petName_Accordion_tab1/addOwnerHeader1",
     "type": {
@@ -465,7 +465,7 @@ export const formGroupNmElementInputParam: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "60775",
     "path": "/petview/vpAddEditPet/vtAddEditPet/vsAddEditPet/vfAddEditPet/category",
     "type": {
@@ -514,7 +514,7 @@ export const formGroupNmElementInputParam: any = {
                     "enabled": true,
                     "visible": true,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "60777",
                     "path": "/petview/vpAddEditPet/vtAddEditPet/vsAddEditPet/vfAddEditPet/category/selected",
                     "type": {},
@@ -740,7 +740,7 @@ export const formGroupNmElementInputParam: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "61632",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/Testform/formgridfiller",
     "type": {
@@ -796,7 +796,7 @@ export const formGroupNmElementInputParam: any = {
     "enabled": false,
     "visible": false,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "62036",
     "path": "/petcareassessmentview/vpMain/vtMain/vsPetGeneralAssessment/petCareForm/petCareAssessmentQuestionnaire/quetionnaire_Section1/section12",
     "type": {
@@ -852,7 +852,7 @@ export const formGroupNmElementInputParam: any = {
                     "enabled": false,
                     "visible": false,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "62038",
                     "path": "/petcareassessmentview/vpMain/vtMain/vsPetGeneralAssessment/petCareForm/petCareAssessmentQuestionnaire/quetionnaire_Section1/section12/question13",
                     "type": {
@@ -927,7 +927,7 @@ export const formGroupNmElementInputParam: any = {
                     "enabled": false,
                     "visible": false,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "62039",
                     "path": "/petcareassessmentview/vpMain/vtMain/vsPetGeneralAssessment/petCareForm/petCareAssessmentQuestionnaire/quetionnaire_Section1/section12/question14",
                     "type": {},
@@ -982,7 +982,7 @@ export const formGroupNmElementInputParam: any = {
                     "enabled": false,
                     "visible": false,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "62040",
                     "path": "/petcareassessmentview/vpMain/vtMain/vsPetGeneralAssessment/petCareForm/petCareAssessmentQuestionnaire/quetionnaire_Section1/section12/question15",
                     "type": {
@@ -1054,7 +1054,7 @@ export const formGroupNmElementInputParam: any = {
                     "enabled": false,
                     "visible": false,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "62041",
                     "path": "/petcareassessmentview/vpMain/vtMain/vsPetGeneralAssessment/petCareForm/petCareAssessmentQuestionnaire/quetionnaire_Section1/section12/section16",
                     "type": {

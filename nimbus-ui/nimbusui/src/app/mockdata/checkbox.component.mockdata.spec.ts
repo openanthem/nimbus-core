@@ -54,7 +54,7 @@ export const checkboxElement: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "561",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsHistory/vfForm/admin",
     "type": {},

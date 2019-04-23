@@ -54,7 +54,7 @@ export const inputLegendElement: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "591",
     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/Formelementgroup1",
     "type": {
@@ -64,7 +64,7 @@ export const inputLegendElement: any = {
                     "enabled": true,
                     "visible": true,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "593",
                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/Formelementgroup1/firstName",
                     "type": {

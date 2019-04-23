@@ -2194,7 +2194,7 @@ export const pageServiceProcessResponse: any = {
       "enabled": true,
       "visible": true,
       "activeValidationGroups": [],
-      "collectionParams": [],
+      
       "configId": "625",
       "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners",
       "type": {
@@ -2211,7 +2211,7 @@ export const pageServiceProcessResponse: any = {
           "first": true,
           "numberOfElements": 0
       },
-      "gridData": {
+      "tableBasedData": {
           "collectionParams": []
       },
       "message": [],
@@ -2346,7 +2346,7 @@ export const pageServiceProcessResponse: any = {
         "enabled": true,
         "visible": true,
         "activeValidationGroups": [],
-        "collectionParams": [],
+        
         "configId": "583",
         "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks",
         "type": {
@@ -2356,7 +2356,7 @@ export const pageServiceProcessResponse: any = {
                         "enabled": true,
                         "visible": true,
                         "activeValidationGroups": [],
-                        "collectionParams": [],
+                        
                         "configId": "585",
                         "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/edit",
                         "type": {
@@ -2378,7 +2378,7 @@ export const pageServiceProcessResponse: any = {
                         "enabled": true,
                         "visible": true,
                         "activeValidationGroups": [],
-                        "collectionParams": [],
+                        
                         "configId": "586",
                         "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/ownerInfo",
                         "type": {
@@ -2443,7 +2443,7 @@ export const pageServiceProcessResponse: any = {
             "enabled": true,
             "visible": true,
             "activeValidationGroups": [],
-            "collectionParams": [],
+            
             "configId": "587",
             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/expandedRowContent",
             "type": {
@@ -2453,7 +2453,7 @@ export const pageServiceProcessResponse: any = {
                             "enabled": true,
                             "visible": true,
                             "activeValidationGroups": [],
-                            "collectionParams": [],
+                            
                             "configId": "593",
                             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/expandedRowContent/pets",
                             "type": {
@@ -2470,7 +2470,7 @@ export const pageServiceProcessResponse: any = {
                                 "first": true,
                                 "numberOfElements": 0
                             },
-                            "gridData": {
+                            "tableBasedData": {
                                 "collectionParams": []
                             },
                             "message": [],
@@ -2532,7 +2532,7 @@ export const pageServiceProcessResponse: any = {
             "enabled": true,
             "visible": true,
             "activeValidationGroups": [],
-            "collectionParams": [],
+            
             "configId": "583",
             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks",
             "type": {
@@ -2542,7 +2542,7 @@ export const pageServiceProcessResponse: any = {
                             "enabled": true,
                             "visible": true,
                             "activeValidationGroups": [],
-                            "collectionParams": [],
+                            
                             "configId": "585",
                             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks/edit",
                             "type": {
@@ -2564,7 +2564,7 @@ export const pageServiceProcessResponse: any = {
                             "enabled": true,
                             "visible": true,
                             "activeValidationGroups": [],
-                            "collectionParams": [],
+                            
                             "configId": "586",
                             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks/ownerInfo",
                             "type": {
@@ -2629,7 +2629,7 @@ export const pageServiceProcessResponse: any = {
             "enabled": true,
             "visible": true,
             "activeValidationGroups": [],
-            "collectionParams": [],
+            
             "configId": "587",
             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/expandedRowContent",
             "type": {
@@ -2639,7 +2639,7 @@ export const pageServiceProcessResponse: any = {
                             "enabled": true,
                             "visible": true,
                             "activeValidationGroups": [],
-                            "collectionParams": [],
+                            
                             "configId": "593",
                             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/expandedRowContent/pets",
                             "type": {
@@ -2656,7 +2656,7 @@ export const pageServiceProcessResponse: any = {
                                 "first": true,
                                 "numberOfElements": 0
                             },
-                            "gridData": {
+                            "tableBasedData": {
                                 "collectionParams": []
                             },
                             "message": [],
@@ -2718,7 +2718,7 @@ export const pageServiceProcessResponse: any = {
             "enabled": true,
             "visible": true,
             "activeValidationGroups": [],
-            "collectionParams": [],
+            
             "configId": "583",
             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks",
             "type": {
@@ -2728,7 +2728,7 @@ export const pageServiceProcessResponse: any = {
                             "enabled": true,
                             "visible": true,
                             "activeValidationGroups": [],
-                            "collectionParams": [],
+                            
                             "configId": "585",
                             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks/edit",
                             "type": {
@@ -2750,7 +2750,7 @@ export const pageServiceProcessResponse: any = {
                             "enabled": true,
                             "visible": true,
                             "activeValidationGroups": [],
-                            "collectionParams": [],
+                            
                             "configId": "586",
                             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks/ownerInfo",
                             "type": {
@@ -2815,7 +2815,7 @@ export const pageServiceProcessResponse: any = {
             "enabled": true,
             "visible": true,
             "activeValidationGroups": [],
-            "collectionParams": [],
+            
             "configId": "587",
             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/expandedRowContent",
             "type": {
@@ -2825,7 +2825,7 @@ export const pageServiceProcessResponse: any = {
                             "enabled": true,
                             "visible": true,
                             "activeValidationGroups": [],
-                            "collectionParams": [],
+                            
                             "configId": "593",
                             "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/expandedRowContent/pets",
                             "type": {
@@ -2842,7 +2842,7 @@ export const pageServiceProcessResponse: any = {
                                 "first": true,
                                 "numberOfElements": 0
                             },
-                            "gridData": {
+                            "tableBasedData": {
                                 "collectionParams": []
                             },
                             "message": [],
@@ -2880,8 +2880,8 @@ export const pageServiceProcessResponse: any = {
         "first": true,
         "numberOfElements": 3
     },
-    "gridData": {
-        "collectionParams": [],
+    "tableBasedData": {
+        
         "leafState": [
             {
                 "id": 52,
@@ -3019,7 +3019,7 @@ export const pageServiceProcessResponse: any = {
                     "enabled": true,
                     "visible": true,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "548",
                     "path": "/ownerlandingview/vpOwners",
                     "type": {
@@ -3066,7 +3066,7 @@ export const pageServiceProcessResponse: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "550",
                                     "path": "/ownerlandingview/vpOwners/vtOwners",
                                     "type": {
@@ -3113,7 +3113,7 @@ export const pageServiceProcessResponse: any = {
                                                     "enabled": true,
                                                     "visible": true,
                                                     "activeValidationGroups": [],
-                                                    "collectionParams": [],
+                                                    
                                                     "configId": "552",
                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria",
                                                     "type": {
@@ -3164,7 +3164,7 @@ export const pageServiceProcessResponse: any = {
                                                                     "enabled": true,
                                                                     "visible": true,
                                                                     "activeValidationGroups": [],
-                                                                    "collectionParams": [],
+                                                                    
                                                                     "configId": "556",
                                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria",
                                                                     "type": {
@@ -3220,7 +3220,7 @@ export const pageServiceProcessResponse: any = {
                                                                                     "enabled": true,
                                                                                     "visible": true,
                                                                                     "activeValidationGroups": [],
-                                                                                    "collectionParams": [],
+                                                                                    
                                                                                     "configId": "558",
                                                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/firstName",
                                                                                     "type": {
@@ -3278,7 +3278,7 @@ export const pageServiceProcessResponse: any = {
                                                                                     "enabled": true,
                                                                                     "visible": true,
                                                                                     "activeValidationGroups": [],
-                                                                                    "collectionParams": [],
+                                                                                    
                                                                                     "configId": "559",
                                                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/lastName",
                                                                                     "type": {
@@ -3335,7 +3335,7 @@ export const pageServiceProcessResponse: any = {
                                                                                     "enabled": true,
                                                                                     "visible": true,
                                                                                     "activeValidationGroups": [],
-                                                                                    "collectionParams": [],
+                                                                                    
                                                                                     "configId": "560",
                                                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner",
                                                                                     "type": {
@@ -3345,7 +3345,7 @@ export const pageServiceProcessResponse: any = {
                                                                                                     "enabled": true,
                                                                                                     "visible": true,
                                                                                                     "activeValidationGroups": [],
-                                                                                                    "collectionParams": [],
+                                                                                                    
                                                                                                     "configId": "562",
                                                                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner/search",
                                                                                                     "type": {
@@ -3367,7 +3367,7 @@ export const pageServiceProcessResponse: any = {
                                                                                                     "enabled": true,
                                                                                                     "visible": true,
                                                                                                     "activeValidationGroups": [],
-                                                                                                    "collectionParams": [],
+                                                                                                    
                                                                                                     "configId": "563",
                                                                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner/addOwner",
                                                                                                     "type": {
@@ -3413,7 +3413,7 @@ export const pageServiceProcessResponse: any = {
                                                     "enabled": true,
                                                     "visible": true,
                                                     "activeValidationGroups": [],
-                                                    "collectionParams": [],
+                                                    
                                                     "configId": "564",
                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners",
                                                     "type": {
@@ -3423,7 +3423,7 @@ export const pageServiceProcessResponse: any = {
                                                                     "enabled": true,
                                                                     "visible": true,
                                                                     "activeValidationGroups": [],
-                                                                    "collectionParams": [],
+                                                                    
                                                                     "configId": "570",
                                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners",
                                                                     "type": {
@@ -3440,7 +3440,7 @@ export const pageServiceProcessResponse: any = {
                                                                         "first": true,
                                                                         "numberOfElements": 0
                                                                     },
-                                                                    "gridData": {
+                                                                    "tableBasedData": {
                                                                         "collectionParams": []
                                                                     },
                                                                     "message": [],
@@ -3532,7 +3532,7 @@ export const pageServiceProcessResponse: any = {
               "enabled": true,
               "visible": true,
               "activeValidationGroups": [],
-              "collectionParams": [],
+              
               "configId": "603",
               "path": "/ownerlandingview/vpOwners",
               "type": {
@@ -3542,7 +3542,7 @@ export const pageServiceProcessResponse: any = {
                               "enabled": true,
                               "visible": true,
                               "activeValidationGroups": [],
-                              "collectionParams": [],
+                              
                               "configId": "605",
                               "path": "/ownerlandingview/vpOwners/vtOwners",
                               "type": {
@@ -3552,7 +3552,7 @@ export const pageServiceProcessResponse: any = {
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "607",
                                               "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria",
                                               "type": {
@@ -3562,7 +3562,7 @@ export const pageServiceProcessResponse: any = {
                                                               "enabled": true,
                                                               "visible": true,
                                                               "activeValidationGroups": [],
-                                                              "collectionParams": [],
+                                                              
                                                               "configId": "611",
                                                               "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria",
                                                               "type": {
@@ -3572,7 +3572,7 @@ export const pageServiceProcessResponse: any = {
                                                                               "enabled": true,
                                                                               "visible": true,
                                                                               "activeValidationGroups": [],
-                                                                              "collectionParams": [],
+                                                                              
                                                                               "configId": "613",
                                                                               "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/firstName",
                                                                               "type": {
@@ -3594,7 +3594,7 @@ export const pageServiceProcessResponse: any = {
                                                                               "enabled": true,
                                                                               "visible": true,
                                                                               "activeValidationGroups": [],
-                                                                              "collectionParams": [],
+                                                                              
                                                                               "configId": "614",
                                                                               "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/lastName",
                                                                               "type": {
@@ -3616,7 +3616,7 @@ export const pageServiceProcessResponse: any = {
                                                                               "enabled": true,
                                                                               "visible": true,
                                                                               "activeValidationGroups": [],
-                                                                              "collectionParams": [],
+                                                                              
                                                                               "configId": "615",
                                                                               "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner",
                                                                               "type": {
@@ -3626,7 +3626,7 @@ export const pageServiceProcessResponse: any = {
                                                                                               "enabled": true,
                                                                                               "visible": true,
                                                                                               "activeValidationGroups": [],
-                                                                                              "collectionParams": [],
+                                                                                              
                                                                                               "configId": "617",
                                                                                               "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner/search",
                                                                                               "type": {
@@ -3648,7 +3648,7 @@ export const pageServiceProcessResponse: any = {
                                                                                               "enabled": true,
                                                                                               "visible": true,
                                                                                               "activeValidationGroups": [],
-                                                                                              "collectionParams": [],
+                                                                                              
                                                                                               "configId": "618",
                                                                                               "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner/addOwner",
                                                                                               "type": {
@@ -3694,7 +3694,7 @@ export const pageServiceProcessResponse: any = {
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "619",
                                               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners",
                                               "type": {
@@ -3704,7 +3704,7 @@ export const pageServiceProcessResponse: any = {
                                                               "enabled": true,
                                                               "visible": true,
                                                               "activeValidationGroups": [],
-                                                              "collectionParams": [],
+                                                              
                                                               "configId": "625",
                                                               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners",
                                                               "type": {
@@ -3721,7 +3721,7 @@ export const pageServiceProcessResponse: any = {
                                                                   "first": true,
                                                                   "numberOfElements": 0
                                                               },
-                                                              "gridData": {
+                                                              "tableBasedData": {
                                                                   "collectionParams": []
                                                               },
                                                               "message": [],
@@ -3808,7 +3808,7 @@ export const pageServiceProcessResponse: any = {
           "enabled": true,
           "visible": true,
           "activeValidationGroups": [],
-          "collectionParams": [],
+          
           "configId": "1886",
           "path": "/ownerlandingview",
           "type": {},
@@ -3863,7 +3863,7 @@ export const pageServiceProcessResponse: any = {
       "enabled": true,
       "visible": true,
       "activeValidationGroups": [],
-      "collectionParams": [],
+      
       "configId": "765",
       "path": "/petlayout/vp/vsHeader/vaBanner/vatBannerTab/vcdPetDetails/vcdbPetDetails/vfvgOwnerContact",
       "type": {
@@ -3873,7 +3873,7 @@ export const pageServiceProcessResponse: any = {
                       "enabled": true,
                       "visible": true,
                       "activeValidationGroups": [],
-                      "collectionParams": [],
+                      
                       "configId": "767",
                       "path": "/petlayout/vp/vsHeader/vaBanner/vatBannerTab/vcdPetDetails/vcdbPetDetails/vfvgOwnerContact/address",
                       "type": {
@@ -3897,7 +3897,7 @@ export const pageServiceProcessResponse: any = {
                       "enabled": true,
                       "visible": true,
                       "activeValidationGroups": [],
-                      "collectionParams": [],
+                      
                       "configId": "768",
                       "path": "/petlayout/vp/vsHeader/vaBanner/vatBannerTab/vcdPetDetails/vcdbPetDetails/vfvgOwnerContact/city",
                       "type": {
@@ -3921,7 +3921,7 @@ export const pageServiceProcessResponse: any = {
                       "enabled": true,
                       "visible": true,
                       "activeValidationGroups": [],
-                      "collectionParams": [],
+                      
                       "configId": "769",
                       "path": "/petlayout/vp/vsHeader/vaBanner/vatBannerTab/vcdPetDetails/vcdbPetDetails/vfvgOwnerContact/state",
                       "type": {
@@ -3945,7 +3945,7 @@ export const pageServiceProcessResponse: any = {
                       "enabled": true,
                       "visible": true,
                       "activeValidationGroups": [],
-                      "collectionParams": [],
+                      
                       "configId": "770",
                       "path": "/petlayout/vp/vsHeader/vaBanner/vatBannerTab/vcdPetDetails/vcdbPetDetails/vfvgOwnerContact/zip",
                       "type": {
@@ -3969,7 +3969,7 @@ export const pageServiceProcessResponse: any = {
                       "enabled": true,
                       "visible": true,
                       "activeValidationGroups": [],
-                      "collectionParams": [],
+                      
                       "configId": "771",
                       "path": "/petlayout/vp/vsHeader/vaBanner/vatBannerTab/vcdPetDetails/vcdbPetDetails/vfvgOwnerContact/telephone",
                       "type": {
@@ -4104,7 +4104,7 @@ export const pageServiceProcessResponse: any = {
       "enabled": true,
       "visible": true,
       "activeValidationGroups": [],
-      "collectionParams": [],
+      
       "configId": "765",
       "path": "/petlayout/vp/vsHeader/vaBanner/vatBannerTab/vcdPetDetails/vcdbPetDetails/vfvgOwnerContact",
       "type": {
@@ -4151,7 +4151,7 @@ export const pageServiceProcessResponse: any = {
                       "enabled": true,
                       "visible": true,
                       "activeValidationGroups": [],
-                      "collectionParams": [],
+                      
                       "configId": "767",
                       "path": "/petlayout/vp/vsHeader/vaBanner/vatBannerTab/vcdPetDetails/vcdbPetDetails/vfvgOwnerContact/address",
                       "type": {
@@ -4212,7 +4212,7 @@ export const pageServiceProcessResponse: any = {
                       "enabled": true,
                       "visible": true,
                       "activeValidationGroups": [],
-                      "collectionParams": [],
+                      
                       "configId": "768",
                       "path": "/petlayout/vp/vsHeader/vaBanner/vatBannerTab/vcdPetDetails/vcdbPetDetails/vfvgOwnerContact/city",
                       "type": {
@@ -4273,7 +4273,7 @@ export const pageServiceProcessResponse: any = {
                       "enabled": true,
                       "visible": true,
                       "activeValidationGroups": [],
-                      "collectionParams": [],
+                      
                       "configId": "769",
                       "path": "/petlayout/vp/vsHeader/vaBanner/vatBannerTab/vcdPetDetails/vcdbPetDetails/vfvgOwnerContact/state",
                       "type": {
@@ -4334,7 +4334,7 @@ export const pageServiceProcessResponse: any = {
                       "enabled": true,
                       "visible": true,
                       "activeValidationGroups": [],
-                      "collectionParams": [],
+                      
                       "configId": "770",
                       "path": "/petlayout/vp/vsHeader/vaBanner/vatBannerTab/vcdPetDetails/vcdbPetDetails/vfvgOwnerContact/zip",
                       "type": {
@@ -4395,7 +4395,7 @@ export const pageServiceProcessResponse: any = {
                       "enabled": true,
                       "visible": true,
                       "activeValidationGroups": [],
-                      "collectionParams": [],
+                      
                       "configId": "771",
                       "path": "/petlayout/vp/vsHeader/vaBanner/vatBannerTab/vcdPetDetails/vcdbPetDetails/vfvgOwnerContact/telephone",
                       "type": {
@@ -4662,7 +4662,7 @@ export const pageServiceProcessResponse: any = {
       "enabled": true,
       "visible": true,
       "activeValidationGroups": [],
-      "collectionParams": [],
+      
       "configId": "625",
       "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners",
       "type": {
@@ -4679,7 +4679,7 @@ export const pageServiceProcessResponse: any = {
           "first": true,
           "numberOfElements": 1
       },
-      "gridData": {
+      "tableBasedData": {
           "collectionParams": []
       },
       "message": [],
@@ -5839,7 +5839,7 @@ export const pageServiceProcessResponse: any = {
                       "enabled": true,
                       "visible": true,
                       "activeValidationGroups": [],
-                      "collectionParams": [],
+                      
                       "configId": "638",
                       "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/undefined/undefined",
                       "type": {
@@ -5849,7 +5849,7 @@ export const pageServiceProcessResponse: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "640",
                                       "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/undefined/undefined/undefined",
                                       "type": {
@@ -5871,7 +5871,7 @@ export const pageServiceProcessResponse: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "641",
                                       "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/undefined/undefined/undefined",
                                       "type": {
@@ -5901,7 +5901,7 @@ export const pageServiceProcessResponse: any = {
                       "enabled": true,
                       "visible": true,
                       "activeValidationGroups": [],
-                      "collectionParams": [],
+                      
                       "configId": "642",
                       "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/undefined/undefined",
                       "type": {
@@ -5911,7 +5911,7 @@ export const pageServiceProcessResponse: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "648",
                                       "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/undefined/undefined/undefined",
                                       "type": {
@@ -6068,7 +6068,7 @@ export const pageServiceProcessResponse: any = {
               "enabled": true,
               "visible": true,
               "activeValidationGroups": [],
-              "collectionParams": [],
+              
               "configId": "583",
               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks",
               "type": {
@@ -6078,7 +6078,7 @@ export const pageServiceProcessResponse: any = {
                               "enabled": true,
                               "visible": true,
                               "activeValidationGroups": [],
-                              "collectionParams": [],
+                              
                               "configId": "585",
                               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/edit",
                               "type": {
@@ -6100,7 +6100,7 @@ export const pageServiceProcessResponse: any = {
                               "enabled": true,
                               "visible": true,
                               "activeValidationGroups": [],
-                              "collectionParams": [],
+                              
                               "configId": "586",
                               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/ownerInfo",
                               "type": {
@@ -6165,7 +6165,7 @@ export const pageServiceProcessResponse: any = {
               "enabled": true,
               "visible": true,
               "activeValidationGroups": [],
-              "collectionParams": [],
+              
               "configId": "587",
               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/expandedRowContent",
               "type": {
@@ -6175,7 +6175,7 @@ export const pageServiceProcessResponse: any = {
                               "enabled": true,
                               "visible": true,
                               "activeValidationGroups": [],
-                              "collectionParams": [],
+                              
                               "configId": "593",
                               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/expandedRowContent/pets",
                               "type": {
@@ -6192,7 +6192,7 @@ export const pageServiceProcessResponse: any = {
                                   "first": true,
                                   "numberOfElements": 0
                               },
-                              "gridData": {
+                              "tableBasedData": {
                                   "collectionParams": []
                               },
                               "message": [],
@@ -6254,7 +6254,7 @@ export const pageServiceProcessResponse: any = {
               "enabled": true,
               "visible": true,
               "activeValidationGroups": [],
-              "collectionParams": [],
+              
               "configId": "583",
               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks",
               "type": {
@@ -6264,7 +6264,7 @@ export const pageServiceProcessResponse: any = {
                               "enabled": true,
                               "visible": true,
                               "activeValidationGroups": [],
-                              "collectionParams": [],
+                              
                               "configId": "585",
                               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks/edit",
                               "type": {
@@ -6286,7 +6286,7 @@ export const pageServiceProcessResponse: any = {
                               "enabled": true,
                               "visible": true,
                               "activeValidationGroups": [],
-                              "collectionParams": [],
+                              
                               "configId": "586",
                               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks/ownerInfo",
                               "type": {
@@ -6351,7 +6351,7 @@ export const pageServiceProcessResponse: any = {
               "enabled": true,
               "visible": true,
               "activeValidationGroups": [],
-              "collectionParams": [],
+              
               "configId": "587",
               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/expandedRowContent",
               "type": {
@@ -6361,7 +6361,7 @@ export const pageServiceProcessResponse: any = {
                               "enabled": true,
                               "visible": true,
                               "activeValidationGroups": [],
-                              "collectionParams": [],
+                              
                               "configId": "593",
                               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/expandedRowContent/pets",
                               "type": {
@@ -6378,7 +6378,7 @@ export const pageServiceProcessResponse: any = {
                                   "first": true,
                                   "numberOfElements": 0
                               },
-                              "gridData": {
+                              "tableBasedData": {
                                   "collectionParams": []
                               },
                               "message": [],
@@ -6440,7 +6440,7 @@ export const pageServiceProcessResponse: any = {
               "enabled": true,
               "visible": true,
               "activeValidationGroups": [],
-              "collectionParams": [],
+              
               "configId": "583",
               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks",
               "type": {
@@ -6450,7 +6450,7 @@ export const pageServiceProcessResponse: any = {
                               "enabled": true,
                               "visible": true,
                               "activeValidationGroups": [],
-                              "collectionParams": [],
+                              
                               "configId": "585",
                               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks/edit",
                               "type": {
@@ -6472,7 +6472,7 @@ export const pageServiceProcessResponse: any = {
                               "enabled": true,
                               "visible": true,
                               "activeValidationGroups": [],
-                              "collectionParams": [],
+                              
                               "configId": "586",
                               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks/ownerInfo",
                               "type": {
@@ -6537,7 +6537,7 @@ export const pageServiceProcessResponse: any = {
               "enabled": true,
               "visible": true,
               "activeValidationGroups": [],
-              "collectionParams": [],
+              
               "configId": "587",
               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/expandedRowContent",
               "type": {
@@ -6547,7 +6547,7 @@ export const pageServiceProcessResponse: any = {
                               "enabled": true,
                               "visible": true,
                               "activeValidationGroups": [],
-                              "collectionParams": [],
+                              
                               "configId": "593",
                               "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/expandedRowContent/pets",
                               "type": {
@@ -6564,7 +6564,7 @@ export const pageServiceProcessResponse: any = {
                                   "first": true,
                                   "numberOfElements": 0
                               },
-                              "gridData": {
+                              "tableBasedData": {
                                   "collectionParams": []
                               },
                               "message": [],
@@ -6632,7 +6632,7 @@ export const pageServiceProcessResponse: any = {
                       "enabled": true,
                       "visible": true,
                       "activeValidationGroups": [],
-                      "collectionParams": [],
+                      
                       "configId": "550",
                       "path": "/ownerlandingview/vpOwners/vtOwners",
                       "type": {
@@ -6679,7 +6679,7 @@ export const pageServiceProcessResponse: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "552",
                                       "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria",
                                       "type": {
@@ -6730,7 +6730,7 @@ export const pageServiceProcessResponse: any = {
                                                       "enabled": true,
                                                       "visible": true,
                                                       "activeValidationGroups": [],
-                                                      "collectionParams": [],
+                                                      
                                                       "configId": "556",
                                                       "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria",
                                                       "type": {
@@ -6786,7 +6786,7 @@ export const pageServiceProcessResponse: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "558",
                                                                       "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/firstName",
                                                                       "type": {
@@ -6844,7 +6844,7 @@ export const pageServiceProcessResponse: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "559",
                                                                       "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/lastName",
                                                                       "type": {
@@ -6901,7 +6901,7 @@ export const pageServiceProcessResponse: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "560",
                                                                       "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner",
                                                                       "type": {
@@ -6911,7 +6911,7 @@ export const pageServiceProcessResponse: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "562",
                                                                                       "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner/search",
                                                                                       "type": {
@@ -6933,7 +6933,7 @@ export const pageServiceProcessResponse: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "563",
                                                                                       "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner/addOwner",
                                                                                       "type": {
@@ -6974,8 +6974,8 @@ export const pageServiceProcessResponse: any = {
                                       "values": [],
                                       "labels": [],
                                       "elemLabels": {},
-                                      "gridData": {
-                                          "collectionParams": [],
+                                      "tableBasedData": {
+                                          
                                           "leafState": [
                                               {
                                                   "id": 52,
@@ -7062,7 +7062,7 @@ export const pageServiceProcessResponse: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "564",
                                       "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners",
                                       "type": {
@@ -7072,7 +7072,7 @@ export const pageServiceProcessResponse: any = {
                                                       "enabled": true,
                                                       "visible": true,
                                                       "activeValidationGroups": [],
-                                                      "collectionParams": [],
+                                                      
                                                       "configId": "570",
                                                       "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners",
                                                       "type": {
@@ -7089,7 +7089,7 @@ export const pageServiceProcessResponse: any = {
                                                           "first": true,
                                                           "numberOfElements": 0
                                                       },
-                                                      "gridData": {
+                                                      "tableBasedData": {
                                                           "collectionParams": []
                                                       },
                                                       "message": [],
@@ -7117,8 +7117,8 @@ export const pageServiceProcessResponse: any = {
                       "values": [],
                       "labels": [],
                       "elemLabels": {},
-                      "gridData": {
-                          "collectionParams": [],
+                      "tableBasedData": {
+                          
                           "leafState": [
                               {
                                   "id": 52,
@@ -7213,8 +7213,8 @@ export const pageServiceProcessResponse: any = {
           "first": true,
           "numberOfElements": 3
       },
-      "gridData": {
-          "collectionParams": [],
+      "tableBasedData": {
+          
           "leafState": [
               {
                   "id": 52,

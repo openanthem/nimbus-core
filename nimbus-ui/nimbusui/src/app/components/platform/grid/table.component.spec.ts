@@ -623,7 +623,7 @@ describe('DataTable', () => {
 
     it('nm-section should be created if nested row data is available', async(() => {
         hostComponent.element.config.uiStyles.attributes.expandableRows = true;
-        hostComponent.element.gridData.leafState[0]['nestedElement'] = true;
+        hostComponent.element.tableBasedData.values[0]['nestedElement'] = true;
         fixture.detectChanges();
         let debugElement = fixture.debugElement;
         const iEle = debugElement.query(By.css('.fa.fa-fw.fa-chevron-circle-right.ui-row-toggler'));
@@ -635,7 +635,7 @@ describe('DataTable', () => {
 
     it('New rows should be added in the table based on the gridValueUpdate$ subject', async(() => {
         hostComponent.element.config.uiStyles.attributes.expandableRows = true;
-        hostComponent.element.gridData.leafState[0]['nestedElement'] = true;
+        hostComponent.element.tableBasedData.values[0]['nestedElement'] = true;
         fixture.detectChanges();
         let debugElement = fixture.debugElement;
         const trEles = debugElement.queryAll(By.css('tr'));
@@ -649,7 +649,7 @@ describe('DataTable', () => {
 
     it('On updating the records the pagination should be updated', async(() => {
         hostComponent.element.config.uiStyles.attributes.expandableRows = true;
-        hostComponent.element.gridData.leafState[0]['nestedElement'] = true;
+        hostComponent.element.tableBasedData.values[0]['nestedElement'] = true;
         fixture.detectChanges();
         let debugElement = fixture.debugElement;
         pageService.emitGridValueUpdate(tableGridValueUpdate);
@@ -657,7 +657,7 @@ describe('DataTable', () => {
         const paginatorAnchorTags = debugElement.queryAll(By.css('a.ui-paginator-page.ui-paginator-element.ui-state-default.ui-corner-all'));
         expect(paginatorAnchorTags[0].nativeElement.innerText).toEqual('1');
         expect(paginatorAnchorTags[1].nativeElement.innerText).toEqual('2');
-        tableGridValueUpdate.gridData.leafState.push(tableGridValueUpdate.gridData.leafState[0]);
+        tableGridValueUpdate.tableBasedData.values.push(tableGridValueUpdate.tableBasedData.values[0]);
         pageService.emitGridValueUpdate(tableGridValueUpdate);
         fixture.detectChanges();
         const updatedPaginatorAnchorTags = debugElement.queryAll(By.css('a.ui-paginator-page.ui-paginator-element.ui-state-default.ui-corner-all'));
@@ -668,7 +668,7 @@ describe('DataTable', () => {
 
     it('On click of the nm-header-checkbox should add the ui-state-active class to all the checkboxes and update selectedRows', async(() => {
         hostComponent.element.config.uiStyles.attributes.expandableRows = true;
-        hostComponent.element.gridData.leafState[0]['nestedElement'] = true;
+        hostComponent.element.tableBasedData.values[0]['nestedElement'] = true;
         fixture.detectChanges();
         let debugElement = fixture.debugElement;
         const allCheckBoxEles = debugElement.queryAll(By.css('.ui-chkbox-box.ui-widget'));
@@ -678,12 +678,12 @@ describe('DataTable', () => {
             expect(allCheckBoxEles[i].nativeElement.classList[3] == 'ui-state-active').toBeTruthy();
             expect(allCheckBoxEles[i].nativeElement.classList.length == 4).toBeTruthy();
         }
-        expect(hostComponent.selectedRows).toEqual(hostComponent.element.gridData.leafState);
+        expect(hostComponent.selectedRows).toEqual(hostComponent.element.tableBasedData.values);
     }));
 
     it('nm-section should not be created if nested row data is not available', async(() => {
         hostComponent.element.config.uiStyles.attributes.expandableRows = true;
-        hostComponent.element.gridData.leafState[0]['nestedElement'] = false;
+        hostComponent.element.tableBasedData.values[0]['nestedElement'] = false;
         fixture.detectChanges();
         let debugElement = fixture.debugElement;
         const iEle = debugElement.query(By.css('.fa.fa-fw.fa-chevron-circle-right.ui-row-toggler'));
@@ -882,7 +882,7 @@ describe('DataTable', () => {
         fixture.whenStable().then(() => {
             const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
             hostComponent.element.path = 'test';
-            const eve = { gridData: { leafState: [] }, path: 'test', gridList: [], page: { totalElements: 100, first: true } };
+            const eve = { tableBasedData: { values: [] }, path: 'test', gridList: [], page: { totalElements: 100, first: true } };
             spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
             spyOn(hostComponent, 'updatePageDetailsState').and.callThrough();
             hostComponent.element.config.uiStyles.attributes.lazyLoad = true;
@@ -908,7 +908,7 @@ describe('DataTable', () => {
     it('ngAfterViewInit() should call updatePageDetailsState() and update the dt.first', () => {
         const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: false } } };
         hostComponent.element.path = 'test';
-        const eve = { gridData: { leafState: '' }, path: 'test', gridList: 'tGrid', page: { totalElements: 'telements', first: true } };
+        const eve = { tableBasedData: { values: '' }, path: 'test', gridList: 'tGrid', page: { totalElements: 'telements', first: true } };
         spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
         spyOn(hostComponent, 'updatePageDetailsState').and.callThrough();
         hostComponent.ngAfterViewInit();
@@ -921,7 +921,7 @@ describe('DataTable', () => {
         hostComponent.element = new Param(configService);
         const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
         hostComponent.element.path = 'test';
-        const eve = { gridData: { leafState: '' }, path: 'test', gridList: 'tGrid', page: { totalElements: 'telements', first: false } };
+        const eve = { tableBasedData: { values: '' }, path: 'test', gridList: 'tGrid', page: { totalElements: 'telements', first: false } };
         spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
         spyOn(hostComponent, 'updatePageDetailsState').and.callThrough();
         hostComponent.ngAfterViewInit();
@@ -1776,7 +1776,7 @@ describe('DataTable', () => {
 
     it('td with no records is found string should be created if data is not available', async(() => {
         hostComponent.element = tableElement as Param;
-        hostComponent.element.gridData = {
+        hostComponent.element.tableBasedData = {
             "collectionParams": []
         };
         fixture.detectChanges();
