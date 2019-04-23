@@ -701,34 +701,6 @@ describe('PageService', () => {
         expect(rootParam.tableBasedData.values).toEqual([]);
     }));
 
-    it('traverseNestedPath() should call traverseNestedPath()', async(() => {
-        spyOn(service, 'matchElementId').and.returnValue(true);
-        spyOn(service, 'traverseNestedPath').and.callThrough();
-        const rootParam = Object.assign({}, pageServiceRootParam1);
-        rootParam.type.model.params.push(configServiceFlowConfigs.ownerlandingview.model.params[0].type.model.params[0]);
-        rootParam.type.model.params[0].type.model.params[0].tableBasedData = rootParam.tableBasedData;
-        rootParam.type.model.params[0].tableBasedData = rootParam.tableBasedData;
-        service.traverseNestedPath(rootParam, 0, ['vtOwners', "vsSearchOwnerCriteria"], 'eventPath');
-        expect(service.traverseNestedPath).toHaveBeenCalledTimes(2);
-        expect(service.traverseNestedPath).toHaveBeenCalledWith(pageServiceTraverseNestedPathResult, 0, ['vtOwners', "vsSearchOwnerCriteria"], 'eventPath');
-        expect(service.traverseNestedPath).toHaveBeenCalledWith(undefined, 3, ['vtOwners', "vsSearchOwnerCriteria"], 'eventPath');
-    }));
-
-    it('processModelEvent() should call createTableBasedData() update gridValueUpdate subject with nestedElement', async(() => {
-        const rootParam = Object.assign({}, pageServiceRootParam1);
-        rootParam.tableBasedData.values[0]['elemId'] = '23';
-        rootParam.tableBasedData.values[0]['nestedElement'] = 'nestedElement';
-        const eventModel = new ModelEvent()
-        eventModel.value = { 'path': '/ownerlandingview/vpOwners/vtOwners/vsOwners/owners123/a/b/c/', 'collectionElem': true, 'type': { 'model': { 'params': [] } } }
-        spyOn(service.gridValueUpdate, 'next').and.callThrough();
-        spyOn(service, 'getNestedElementParam').and.returnValue(pageServiceRootParam1);
-        spyOn(service, 'createTableBasedData').and.returnValue({ 'leafState': 'testingleafstate' });
-        service.processModelEvent(rootParam, eventModel);
-        expect(service.getNestedElementParam).toHaveBeenCalledWith(rootParam.tableBasedData.values[0]['nestedElement'], "23/a/b/c/", eventModel.value.path);
-        expect(service.createTableBasedData).toHaveBeenCalledWith(eventModel.value.type.model.params, pageServiceRootParam1);
-        expect(service.gridValueUpdate.next).toHaveBeenCalledWith(pageServiceRootParam1);
-    }));
-
     it('traverseNestedPath() should call traverseNestedPath() with element which config.code is not found', async(() => {
         spyOn(service, 'matchElementId').and.returnValue(true);
         spyOn(service, 'traverseNestedPath').and.callThrough();
@@ -767,7 +739,7 @@ describe('PageService', () => {
         gridPage.totalPages = 1;
         eventModel.value = { 'path': '/ownerlandingview/vpOwners/vtOwners/vsOwners/owners', 'collectionElem': true, 'type': { 'model': { 'params': [] } }, 'page': gridPage };
         spyOn(service.gridValueUpdate, 'next').and.callThrough();
-        spyOn(service, 'createTableBasedData').and.returnValue({ 'leafState': 'testingleafstate' });
+        spyOn(service, 'createTableBasedData').and.returnValue({ 'values': 'testingleafstate' });
         service.processModelEvent(rootParam, eventModel);
         expect(service.createTableBasedData).toHaveBeenCalledWith(eventModel.value.type.model.params, rootParam);
         expect(service.gridValueUpdate.next).toHaveBeenCalledWith(rootParam);
@@ -781,7 +753,7 @@ describe('PageService', () => {
         const eventModel = new ModelEvent()
         eventModel.value = { 'path': '/ownerlandingview/vpOwners/vtOwners/vsOwners/owners', 'collectionElem': true, 'type': { 'model': { 'params': [] } } }
         spyOn(service.gridValueUpdate, 'next').and.callThrough();
-        spyOn(service, 'createTableBasedData').and.returnValue({ 'leafState': 'testingleafstate' });
+        spyOn(service, 'createTableBasedData').and.returnValue({ 'values': 'testingleafstate' });
         service.processModelEvent(rootParam, eventModel);
         expect(service.createTableBasedData).toHaveBeenCalledWith(eventModel.value.type.model.params, rootParam);
         expect(service.gridValueUpdate.next).toHaveBeenCalledWith(rootParam);
@@ -1033,15 +1005,6 @@ describe('PageService', () => {
         service.processResponse(response);
         expect(service.traverseOutput).not.toHaveBeenCalled();
         expect(service.logError).toHaveBeenCalled();
-    }));
-
-
-    it('createTableBasedData() should return empty tableBasedData', async(() => {
-        const rootParam = Object.assign({}, pageServiceTraverseParamPayload);
-        const param = Object.assign({}, pageServiceCreateGridDataParam);
-        const res = service.createTableBasedData(pageServiceCreateGridDataGridElementParams, param);
-        expect(param.tableBasedData.collectionParams.length).toEqual(2);
-        expect(res.leafState[0].nestedGridParam.length).toEqual(pageServiceCreateGridDataResult.leafState[0].nestedGridParam.length);
     }));
 
     it('traverseParam() should call updateParam()', async(() => {

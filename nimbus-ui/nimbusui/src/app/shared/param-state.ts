@@ -445,7 +445,7 @@ export abstract class RowData {
             };
 
             // apply any needed transformations
-            if (ParamUtils.isKnownDateType(cellParam.config.type.name)) {
+            if (cellParam.config && cellParam.config.type && ParamUtils.isKnownDateType(cellParam.config.type.name)) {
                 this.values[cellParam.config.code] = ParamUtils.convertServerDateStringToDate(this.values[cellParam.config.code], cellParam.config.type.name);
             }
         }

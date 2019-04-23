@@ -1257,7 +1257,7 @@ describe('DataTable', () => {
         const col = new ParamConfig(configService);
         col.code = '2';
         hostComponent.element.path = '/test';
-        hostComponent.element.collectionParams[0].path = '/test/1/2'
+        hostComponent.element.tableBasedData.collectionParams[0].path = '/test/1/2'
         expect(hostComponent.getViewParam(col, 1).path).toEqual('/test/1/2');
     });
 

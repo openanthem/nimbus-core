@@ -2304,566 +2304,6 @@ export const pageServiceProcessResponse: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [
-      {
-        "config": {
-            "active": false,
-            "required": false,
-            "id": "583",
-            "code": "vlmCaseItemLinks",
-            "validations": null,
-            "uiNatures": [],
-            "uiStyles": {
-                "isLink": true,
-                "isHidden": false,
-                "name": "ViewConfig.LinkMenu",
-                "attributes": {
-                    "hidden": false,
-                    "readOnly": false,
-                    "submitButton": true,
-                    "showName": true,
-                    "pageSize": 25,
-                    "browserBack": false,
-                    "showAsLink": false,
-                    "cssClass": "dropdownTrigger",
-                    "alias": "LinkMenu",
-                    "imgSrc": "",
-                    "imgType": "FA"
-                }
-            },
-            "type": {
-                "collection": false,
-                "nested": true,
-                "name": "OwnerLineItem.VLMCaseItemLinks",
-                "model": {
-                    "paramConfigIds": [
-                        "585",
-                        "586"
-                    ]
-                }
-            }
-        },
-        "enabled": true,
-        "visible": true,
-        "activeValidationGroups": [],
-        
-        "configId": "583",
-        "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks",
-        "type": {
-            "model": {
-                "params": [
-                    {
-                        "enabled": true,
-                        "visible": true,
-                        "activeValidationGroups": [],
-                        
-                        "configId": "585",
-                        "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/edit",
-                        "type": {
-                            "nested": false,
-                            "name": "string",
-                            "collection": false
-                        },
-                        "message": [],
-                        "values": [],
-                        "labels": [
-                            {
-                                "locale": "en-US",
-                                "text": "Edit"
-                            }
-                        ],
-                        "elemLabels": {}
-                    },
-                    {
-                        "enabled": true,
-                        "visible": true,
-                        "activeValidationGroups": [],
-                        
-                        "configId": "586",
-                        "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/ownerInfo",
-                        "type": {
-                            "nested": false,
-                            "name": "string",
-                            "collection": false
-                        },
-                        "message": [],
-                        "values": [],
-                        "labels": [
-                            {
-                                "locale": "en-US",
-                                "text": "Owner Info"
-                            }
-                        ],
-                        "elemLabels": {}
-                    }
-                ]
-            }
-        },
-        "message": [],
-        "values": [],
-        "labels": [],
-        "elemLabels": {}
-      },
-        {
-            "config": {
-              "active": false,
-              "required": false,
-              "id": "587",
-              "code": "expandedRowContent",
-              "validations": null,
-              "uiNatures": [],
-              "uiStyles": {
-                  "isLink": false,
-                  "isHidden": false,
-                  "name": "ViewConfig.GridRowBody",
-                  "attributes": {
-                      "hidden": false,
-                      "readOnly": false,
-                      "submitButton": true,
-                      "showName": true,
-                      "pageSize": 25,
-                      "browserBack": false,
-                      "showAsLink": false,
-                      "cssClass": "",
-                      "asynchronous": false,
-                      "alias": "GridRowBody"
-                  }
-              },
-              "type": {
-                  "collection": false,
-                  "nested": true,
-                  "name": "OwnerLineItem.ExpandedRowContent",
-                  "model": {
-                      "paramConfigIds": [
-                          "593"
-                      ]
-                  }
-              }
-          },
-            "enabled": true,
-            "visible": true,
-            "activeValidationGroups": [],
-            
-            "configId": "587",
-            "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/expandedRowContent",
-            "type": {
-                "model": {
-                    "params": [
-                        {
-                            "enabled": true,
-                            "visible": true,
-                            "activeValidationGroups": [],
-                            
-                            "configId": "593",
-                            "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/expandedRowContent/pets",
-                            "type": {
-                                "model": {
-                                    "params": []
-                                }
-                            },
-                            "page": {
-                                "last": true,
-                                "totalElements": 0,
-                                "totalPages": 1,
-                                "size": 0,
-                                "number": 0,
-                                "first": true,
-                                "numberOfElements": 0
-                            },
-                            "tableBasedData": {
-                                "collectionParams": []
-                            },
-                            "message": [],
-                            "values": [],
-                            "labels": [
-                                {
-                                    "locale": "en-US",
-                                    "text": "Pets"
-                                }
-                            ],
-                            "elemLabels": {}
-                        }
-                    ]
-                }
-            },
-            "message": [],
-            "values": [],
-            "labels": [],
-            "elemLabels": {}
-        },
-        {
-            "config": {
-              "active": false,
-              "required": false,
-              "id": "583",
-              "code": "vlmCaseItemLinks",
-              "validations": null,
-              "uiNatures": [],
-              "uiStyles": {
-                  "isLink": true,
-                  "isHidden": false,
-                  "name": "ViewConfig.LinkMenu",
-                  "attributes": {
-                      "hidden": false,
-                      "readOnly": false,
-                      "submitButton": true,
-                      "showName": true,
-                      "pageSize": 25,
-                      "browserBack": false,
-                      "showAsLink": false,
-                      "cssClass": "dropdownTrigger",
-                      "alias": "LinkMenu",
-                      "imgSrc": "",
-                      "imgType": "FA"
-                  }
-              },
-              "type": {
-                  "collection": false,
-                  "nested": true,
-                  "name": "OwnerLineItem.VLMCaseItemLinks",
-                  "model": {
-                      "paramConfigIds": [
-                          "585",
-                          "586"
-                      ]
-                  }
-              }
-          },
-            "enabled": true,
-            "visible": true,
-            "activeValidationGroups": [],
-            
-            "configId": "583",
-            "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks",
-            "type": {
-                "model": {
-                    "params": [
-                        {
-                            "enabled": true,
-                            "visible": true,
-                            "activeValidationGroups": [],
-                            
-                            "configId": "585",
-                            "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks/edit",
-                            "type": {
-                                "nested": false,
-                                "name": "string",
-                                "collection": false
-                            },
-                            "message": [],
-                            "values": [],
-                            "labels": [
-                                {
-                                    "locale": "en-US",
-                                    "text": "Edit"
-                                }
-                            ],
-                            "elemLabels": {}
-                        },
-                        {
-                            "enabled": true,
-                            "visible": true,
-                            "activeValidationGroups": [],
-                            
-                            "configId": "586",
-                            "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks/ownerInfo",
-                            "type": {
-                                "nested": false,
-                                "name": "string",
-                                "collection": false
-                            },
-                            "message": [],
-                            "values": [],
-                            "labels": [
-                                {
-                                    "locale": "en-US",
-                                    "text": "Owner Info"
-                                }
-                            ],
-                            "elemLabels": {}
-                        }
-                    ]
-                }
-            },
-            "message": [],
-            "values": [],
-            "labels": [],
-            "elemLabels": {}
-        },
-        {
-            "config":{
-              "active": false,
-              "required": false,
-              "id": "587",
-              "code": "expandedRowContent",
-              "validations": null,
-              "uiNatures": [],
-              "uiStyles": {
-                  "isLink": false,
-                  "isHidden": false,
-                  "name": "ViewConfig.GridRowBody",
-                  "attributes": {
-                      "hidden": false,
-                      "readOnly": false,
-                      "submitButton": true,
-                      "showName": true,
-                      "pageSize": 25,
-                      "browserBack": false,
-                      "showAsLink": false,
-                      "cssClass": "",
-                      "asynchronous": false,
-                      "alias": "GridRowBody"
-                  }
-              },
-              "type": {
-                  "collection": false,
-                  "nested": true,
-                  "name": "OwnerLineItem.ExpandedRowContent",
-                  "model": {
-                      "paramConfigIds": [
-                          "593"
-                      ]
-                  }
-              }
-          },
-            "enabled": true,
-            "visible": true,
-            "activeValidationGroups": [],
-            
-            "configId": "587",
-            "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/expandedRowContent",
-            "type": {
-                "model": {
-                    "params": [
-                        {
-                            "enabled": true,
-                            "visible": true,
-                            "activeValidationGroups": [],
-                            
-                            "configId": "593",
-                            "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/expandedRowContent/pets",
-                            "type": {
-                                "model": {
-                                    "params": []
-                                }
-                            },
-                            "page": {
-                                "last": true,
-                                "totalElements": 0,
-                                "totalPages": 1,
-                                "size": 0,
-                                "number": 0,
-                                "first": true,
-                                "numberOfElements": 0
-                            },
-                            "tableBasedData": {
-                                "collectionParams": []
-                            },
-                            "message": [],
-                            "values": [],
-                            "labels": [
-                                {
-                                    "locale": "en-US",
-                                    "text": "Pets"
-                                }
-                            ],
-                            "elemLabels": {}
-                        }
-                    ]
-                }
-            },
-            "message": [],
-            "values": [],
-            "labels": [],
-            "elemLabels": {}
-        },
-        {
-            "config": {
-              "active": false,
-              "required": false,
-              "id": "583",
-              "code": "vlmCaseItemLinks",
-              "validations": null,
-              "uiNatures": [],
-              "uiStyles": {
-                  "isLink": true,
-                  "isHidden": false,
-                  "name": "ViewConfig.LinkMenu",
-                  "attributes": {
-                      "hidden": false,
-                      "readOnly": false,
-                      "submitButton": true,
-                      "showName": true,
-                      "pageSize": 25,
-                      "browserBack": false,
-                      "showAsLink": false,
-                      "cssClass": "dropdownTrigger",
-                      "alias": "LinkMenu",
-                      "imgSrc": "",
-                      "imgType": "FA"
-                  }
-              },
-              "type": {
-                  "collection": false,
-                  "nested": true,
-                  "name": "OwnerLineItem.VLMCaseItemLinks",
-                  "model": {
-                      "paramConfigIds": [
-                          "585",
-                          "586"
-                      ]
-                  }
-              }
-          },
-            "enabled": true,
-            "visible": true,
-            "activeValidationGroups": [],
-            
-            "configId": "583",
-            "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks",
-            "type": {
-                "model": {
-                    "params": [
-                        {
-                            "enabled": true,
-                            "visible": true,
-                            "activeValidationGroups": [],
-                            
-                            "configId": "585",
-                            "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks/edit",
-                            "type": {
-                                "nested": false,
-                                "name": "string",
-                                "collection": false
-                            },
-                            "message": [],
-                            "values": [],
-                            "labels": [
-                                {
-                                    "locale": "en-US",
-                                    "text": "Edit"
-                                }
-                            ],
-                            "elemLabels": {}
-                        },
-                        {
-                            "enabled": true,
-                            "visible": true,
-                            "activeValidationGroups": [],
-                            
-                            "configId": "586",
-                            "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks/ownerInfo",
-                            "type": {
-                                "nested": false,
-                                "name": "string",
-                                "collection": false
-                            },
-                            "message": [],
-                            "values": [],
-                            "labels": [
-                                {
-                                    "locale": "en-US",
-                                    "text": "Owner Info"
-                                }
-                            ],
-                            "elemLabels": {}
-                        }
-                    ]
-                }
-            },
-            "message": [],
-            "values": [],
-            "labels": [],
-            "elemLabels": {}
-        },
-        {
-            "config": {
-              "active": false,
-              "required": false,
-              "id": "587",
-              "code": "expandedRowContent",
-              "validations": null,
-              "uiNatures": [],
-              "uiStyles": {
-                  "isLink": false,
-                  "isHidden": false,
-                  "name": "ViewConfig.GridRowBody",
-                  "attributes": {
-                      "hidden": false,
-                      "readOnly": false,
-                      "submitButton": true,
-                      "showName": true,
-                      "pageSize": 25,
-                      "browserBack": false,
-                      "showAsLink": false,
-                      "cssClass": "",
-                      "asynchronous": false,
-                      "alias": "GridRowBody"
-                  }
-              },
-              "type": {
-                  "collection": false,
-                  "nested": true,
-                  "name": "OwnerLineItem.ExpandedRowContent",
-                  "model": {
-                      "paramConfigIds": [
-                          "593"
-                      ]
-                  }
-              }
-          },
-            "enabled": true,
-            "visible": true,
-            "activeValidationGroups": [],
-            
-            "configId": "587",
-            "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/expandedRowContent",
-            "type": {
-                "model": {
-                    "params": [
-                        {
-                            "enabled": true,
-                            "visible": true,
-                            "activeValidationGroups": [],
-                            
-                            "configId": "593",
-                            "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/expandedRowContent/pets",
-                            "type": {
-                                "model": {
-                                    "params": []
-                                }
-                            },
-                            "page": {
-                                "last": true,
-                                "totalElements": 0,
-                                "totalPages": 1,
-                                "size": 0,
-                                "number": 0,
-                                "first": true,
-                                "numberOfElements": 0
-                            },
-                            "tableBasedData": {
-                                "collectionParams": []
-                            },
-                            "message": [],
-                            "values": [],
-                            "labels": [
-                                {
-                                    "locale": "en-US",
-                                    "text": "Pets"
-                                }
-                            ],
-                            "elemLabels": {}
-                        }
-                    ]
-                }
-            },
-            "message": [],
-            "values": [],
-            "labels": [],
-            "elemLabels": {}
-        }
-    ],
     "configId": "570",
     "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners",
     "type": {
@@ -2881,7 +2321,566 @@ export const pageServiceProcessResponse: any = {
         "numberOfElements": 3
     },
     "tableBasedData": {
-        
+        "collectionParams": [
+            {
+              "config": {
+                  "active": false,
+                  "required": false,
+                  "id": "583",
+                  "code": "vlmCaseItemLinks",
+                  "validations": null,
+                  "uiNatures": [],
+                  "uiStyles": {
+                      "isLink": true,
+                      "isHidden": false,
+                      "name": "ViewConfig.LinkMenu",
+                      "attributes": {
+                          "hidden": false,
+                          "readOnly": false,
+                          "submitButton": true,
+                          "showName": true,
+                          "pageSize": 25,
+                          "browserBack": false,
+                          "showAsLink": false,
+                          "cssClass": "dropdownTrigger",
+                          "alias": "LinkMenu",
+                          "imgSrc": "",
+                          "imgType": "FA"
+                      }
+                  },
+                  "type": {
+                      "collection": false,
+                      "nested": true,
+                      "name": "OwnerLineItem.VLMCaseItemLinks",
+                      "model": {
+                          "paramConfigIds": [
+                              "585",
+                              "586"
+                          ]
+                      }
+                  }
+              },
+              "enabled": true,
+              "visible": true,
+              "activeValidationGroups": [],
+              
+              "configId": "583",
+              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks",
+              "type": {
+                  "model": {
+                      "params": [
+                          {
+                              "enabled": true,
+                              "visible": true,
+                              "activeValidationGroups": [],
+                              
+                              "configId": "585",
+                              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/edit",
+                              "type": {
+                                  "nested": false,
+                                  "name": "string",
+                                  "collection": false
+                              },
+                              "message": [],
+                              "values": [],
+                              "labels": [
+                                  {
+                                      "locale": "en-US",
+                                      "text": "Edit"
+                                  }
+                              ],
+                              "elemLabels": {}
+                          },
+                          {
+                              "enabled": true,
+                              "visible": true,
+                              "activeValidationGroups": [],
+                              
+                              "configId": "586",
+                              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/ownerInfo",
+                              "type": {
+                                  "nested": false,
+                                  "name": "string",
+                                  "collection": false
+                              },
+                              "message": [],
+                              "values": [],
+                              "labels": [
+                                  {
+                                      "locale": "en-US",
+                                      "text": "Owner Info"
+                                  }
+                              ],
+                              "elemLabels": {}
+                          }
+                      ]
+                  }
+              },
+              "message": [],
+              "values": [],
+              "labels": [],
+              "elemLabels": {}
+            },
+              {
+                  "config": {
+                    "active": false,
+                    "required": false,
+                    "id": "587",
+                    "code": "expandedRowContent",
+                    "validations": null,
+                    "uiNatures": [],
+                    "uiStyles": {
+                        "isLink": false,
+                        "isHidden": false,
+                        "name": "ViewConfig.GridRowBody",
+                        "attributes": {
+                            "hidden": false,
+                            "readOnly": false,
+                            "submitButton": true,
+                            "showName": true,
+                            "pageSize": 25,
+                            "browserBack": false,
+                            "showAsLink": false,
+                            "cssClass": "",
+                            "asynchronous": false,
+                            "alias": "GridRowBody"
+                        }
+                    },
+                    "type": {
+                        "collection": false,
+                        "nested": true,
+                        "name": "OwnerLineItem.ExpandedRowContent",
+                        "model": {
+                            "paramConfigIds": [
+                                "593"
+                            ]
+                        }
+                    }
+                },
+                  "enabled": true,
+                  "visible": true,
+                  "activeValidationGroups": [],
+                  
+                  "configId": "587",
+                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/expandedRowContent",
+                  "type": {
+                      "model": {
+                          "params": [
+                              {
+                                  "enabled": true,
+                                  "visible": true,
+                                  "activeValidationGroups": [],
+                                  
+                                  "configId": "593",
+                                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/expandedRowContent/pets",
+                                  "type": {
+                                      "model": {
+                                          "params": []
+                                      }
+                                  },
+                                  "page": {
+                                      "last": true,
+                                      "totalElements": 0,
+                                      "totalPages": 1,
+                                      "size": 0,
+                                      "number": 0,
+                                      "first": true,
+                                      "numberOfElements": 0
+                                  },
+                                  "tableBasedData": {
+                                      "collectionParams": []
+                                  },
+                                  "message": [],
+                                  "values": [],
+                                  "labels": [
+                                      {
+                                          "locale": "en-US",
+                                          "text": "Pets"
+                                      }
+                                  ],
+                                  "elemLabels": {}
+                              }
+                          ]
+                      }
+                  },
+                  "message": [],
+                  "values": [],
+                  "labels": [],
+                  "elemLabels": {}
+              },
+              {
+                  "config": {
+                    "active": false,
+                    "required": false,
+                    "id": "583",
+                    "code": "vlmCaseItemLinks",
+                    "validations": null,
+                    "uiNatures": [],
+                    "uiStyles": {
+                        "isLink": true,
+                        "isHidden": false,
+                        "name": "ViewConfig.LinkMenu",
+                        "attributes": {
+                            "hidden": false,
+                            "readOnly": false,
+                            "submitButton": true,
+                            "showName": true,
+                            "pageSize": 25,
+                            "browserBack": false,
+                            "showAsLink": false,
+                            "cssClass": "dropdownTrigger",
+                            "alias": "LinkMenu",
+                            "imgSrc": "",
+                            "imgType": "FA"
+                        }
+                    },
+                    "type": {
+                        "collection": false,
+                        "nested": true,
+                        "name": "OwnerLineItem.VLMCaseItemLinks",
+                        "model": {
+                            "paramConfigIds": [
+                                "585",
+                                "586"
+                            ]
+                        }
+                    }
+                },
+                  "enabled": true,
+                  "visible": true,
+                  "activeValidationGroups": [],
+                  
+                  "configId": "583",
+                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks",
+                  "type": {
+                      "model": {
+                          "params": [
+                              {
+                                  "enabled": true,
+                                  "visible": true,
+                                  "activeValidationGroups": [],
+                                  
+                                  "configId": "585",
+                                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks/edit",
+                                  "type": {
+                                      "nested": false,
+                                      "name": "string",
+                                      "collection": false
+                                  },
+                                  "message": [],
+                                  "values": [],
+                                  "labels": [
+                                      {
+                                          "locale": "en-US",
+                                          "text": "Edit"
+                                      }
+                                  ],
+                                  "elemLabels": {}
+                              },
+                              {
+                                  "enabled": true,
+                                  "visible": true,
+                                  "activeValidationGroups": [],
+                                  
+                                  "configId": "586",
+                                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks/ownerInfo",
+                                  "type": {
+                                      "nested": false,
+                                      "name": "string",
+                                      "collection": false
+                                  },
+                                  "message": [],
+                                  "values": [],
+                                  "labels": [
+                                      {
+                                          "locale": "en-US",
+                                          "text": "Owner Info"
+                                      }
+                                  ],
+                                  "elemLabels": {}
+                              }
+                          ]
+                      }
+                  },
+                  "message": [],
+                  "values": [],
+                  "labels": [],
+                  "elemLabels": {}
+              },
+              {
+                  "config":{
+                    "active": false,
+                    "required": false,
+                    "id": "587",
+                    "code": "expandedRowContent",
+                    "validations": null,
+                    "uiNatures": [],
+                    "uiStyles": {
+                        "isLink": false,
+                        "isHidden": false,
+                        "name": "ViewConfig.GridRowBody",
+                        "attributes": {
+                            "hidden": false,
+                            "readOnly": false,
+                            "submitButton": true,
+                            "showName": true,
+                            "pageSize": 25,
+                            "browserBack": false,
+                            "showAsLink": false,
+                            "cssClass": "",
+                            "asynchronous": false,
+                            "alias": "GridRowBody"
+                        }
+                    },
+                    "type": {
+                        "collection": false,
+                        "nested": true,
+                        "name": "OwnerLineItem.ExpandedRowContent",
+                        "model": {
+                            "paramConfigIds": [
+                                "593"
+                            ]
+                        }
+                    }
+                },
+                  "enabled": true,
+                  "visible": true,
+                  "activeValidationGroups": [],
+                  
+                  "configId": "587",
+                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/expandedRowContent",
+                  "type": {
+                      "model": {
+                          "params": [
+                              {
+                                  "enabled": true,
+                                  "visible": true,
+                                  "activeValidationGroups": [],
+                                  
+                                  "configId": "593",
+                                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/expandedRowContent/pets",
+                                  "type": {
+                                      "model": {
+                                          "params": []
+                                      }
+                                  },
+                                  "page": {
+                                      "last": true,
+                                      "totalElements": 0,
+                                      "totalPages": 1,
+                                      "size": 0,
+                                      "number": 0,
+                                      "first": true,
+                                      "numberOfElements": 0
+                                  },
+                                  "tableBasedData": {
+                                      "collectionParams": []
+                                  },
+                                  "message": [],
+                                  "values": [],
+                                  "labels": [
+                                      {
+                                          "locale": "en-US",
+                                          "text": "Pets"
+                                      }
+                                  ],
+                                  "elemLabels": {}
+                              }
+                          ]
+                      }
+                  },
+                  "message": [],
+                  "values": [],
+                  "labels": [],
+                  "elemLabels": {}
+              },
+              {
+                  "config": {
+                    "active": false,
+                    "required": false,
+                    "id": "583",
+                    "code": "vlmCaseItemLinks",
+                    "validations": null,
+                    "uiNatures": [],
+                    "uiStyles": {
+                        "isLink": true,
+                        "isHidden": false,
+                        "name": "ViewConfig.LinkMenu",
+                        "attributes": {
+                            "hidden": false,
+                            "readOnly": false,
+                            "submitButton": true,
+                            "showName": true,
+                            "pageSize": 25,
+                            "browserBack": false,
+                            "showAsLink": false,
+                            "cssClass": "dropdownTrigger",
+                            "alias": "LinkMenu",
+                            "imgSrc": "",
+                            "imgType": "FA"
+                        }
+                    },
+                    "type": {
+                        "collection": false,
+                        "nested": true,
+                        "name": "OwnerLineItem.VLMCaseItemLinks",
+                        "model": {
+                            "paramConfigIds": [
+                                "585",
+                                "586"
+                            ]
+                        }
+                    }
+                },
+                  "enabled": true,
+                  "visible": true,
+                  "activeValidationGroups": [],
+                  
+                  "configId": "583",
+                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks",
+                  "type": {
+                      "model": {
+                          "params": [
+                              {
+                                  "enabled": true,
+                                  "visible": true,
+                                  "activeValidationGroups": [],
+                                  
+                                  "configId": "585",
+                                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks/edit",
+                                  "type": {
+                                      "nested": false,
+                                      "name": "string",
+                                      "collection": false
+                                  },
+                                  "message": [],
+                                  "values": [],
+                                  "labels": [
+                                      {
+                                          "locale": "en-US",
+                                          "text": "Edit"
+                                      }
+                                  ],
+                                  "elemLabels": {}
+                              },
+                              {
+                                  "enabled": true,
+                                  "visible": true,
+                                  "activeValidationGroups": [],
+                                  
+                                  "configId": "586",
+                                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks/ownerInfo",
+                                  "type": {
+                                      "nested": false,
+                                      "name": "string",
+                                      "collection": false
+                                  },
+                                  "message": [],
+                                  "values": [],
+                                  "labels": [
+                                      {
+                                          "locale": "en-US",
+                                          "text": "Owner Info"
+                                      }
+                                  ],
+                                  "elemLabels": {}
+                              }
+                          ]
+                      }
+                  },
+                  "message": [],
+                  "values": [],
+                  "labels": [],
+                  "elemLabels": {}
+              },
+              {
+                  "config": {
+                    "active": false,
+                    "required": false,
+                    "id": "587",
+                    "code": "expandedRowContent",
+                    "validations": null,
+                    "uiNatures": [],
+                    "uiStyles": {
+                        "isLink": false,
+                        "isHidden": false,
+                        "name": "ViewConfig.GridRowBody",
+                        "attributes": {
+                            "hidden": false,
+                            "readOnly": false,
+                            "submitButton": true,
+                            "showName": true,
+                            "pageSize": 25,
+                            "browserBack": false,
+                            "showAsLink": false,
+                            "cssClass": "",
+                            "asynchronous": false,
+                            "alias": "GridRowBody"
+                        }
+                    },
+                    "type": {
+                        "collection": false,
+                        "nested": true,
+                        "name": "OwnerLineItem.ExpandedRowContent",
+                        "model": {
+                            "paramConfigIds": [
+                                "593"
+                            ]
+                        }
+                    }
+                },
+                  "enabled": true,
+                  "visible": true,
+                  "activeValidationGroups": [],
+                  
+                  "configId": "587",
+                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/expandedRowContent",
+                  "type": {
+                      "model": {
+                          "params": [
+                              {
+                                  "enabled": true,
+                                  "visible": true,
+                                  "activeValidationGroups": [],
+                                  
+                                  "configId": "593",
+                                  "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/expandedRowContent/pets",
+                                  "type": {
+                                      "model": {
+                                          "params": []
+                                      }
+                                  },
+                                  "page": {
+                                      "last": true,
+                                      "totalElements": 0,
+                                      "totalPages": 1,
+                                      "size": 0,
+                                      "number": 0,
+                                      "first": true,
+                                      "numberOfElements": 0
+                                  },
+                                  "tableBasedData": {
+                                      "collectionParams": []
+                                  },
+                                  "message": [],
+                                  "values": [],
+                                  "labels": [
+                                      {
+                                          "locale": "en-US",
+                                          "text": "Pets"
+                                      }
+                                  ],
+                                  "elemLabels": {}
+                              }
+                          ]
+                      }
+                  },
+                  "message": [],
+                  "values": [],
+                  "labels": [],
+                  "elemLabels": {}
+              }
+          ],      
         "leafState": [
             {
                 "id": 52,
@@ -6026,566 +6025,6 @@ export const pageServiceProcessResponse: any = {
       "enabled": true,
       "visible": true,
       "activeValidationGroups": [],
-      "collectionParams": [
-          {
-              "config": {
-                  "active": false,
-                  "required": false,
-                  "id": "583",
-                  "code": "vlmCaseItemLinks",
-                  "validations": null,
-                  "uiNatures": [],
-                  "uiStyles": {
-                      "isLink": true,
-                      "isHidden": false,
-                      "name": "ViewConfig.LinkMenu",
-                      "attributes": {
-                          "hidden": false,
-                          "readOnly": false,
-                          "submitButton": true,
-                          "showName": true,
-                          "pageSize": 25,
-                          "browserBack": false,
-                          "showAsLink": false,
-                          "cssClass": "dropdownTrigger",
-                          "alias": "LinkMenu",
-                          "imgSrc": "",
-                          "imgType": "FA"
-                      }
-                  },
-                  "type": {
-                      "collection": false,
-                      "nested": true,
-                      "name": "OwnerLineItem.VLMCaseItemLinks",
-                      "model": {
-                          "paramConfigIds": [
-                              "585",
-                              "586"
-                          ]
-                      }
-                  }
-              },
-              "enabled": true,
-              "visible": true,
-              "activeValidationGroups": [],
-              
-              "configId": "583",
-              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks",
-              "type": {
-                  "model": {
-                      "params": [
-                          {
-                              "enabled": true,
-                              "visible": true,
-                              "activeValidationGroups": [],
-                              
-                              "configId": "585",
-                              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/edit",
-                              "type": {
-                                  "nested": false,
-                                  "name": "string",
-                                  "collection": false
-                              },
-                              "message": [],
-                              "values": [],
-                              "labels": [
-                                  {
-                                      "locale": "en-US",
-                                      "text": "Edit"
-                                  }
-                              ],
-                              "elemLabels": {}
-                          },
-                          {
-                              "enabled": true,
-                              "visible": true,
-                              "activeValidationGroups": [],
-                              
-                              "configId": "586",
-                              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/ownerInfo",
-                              "type": {
-                                  "nested": false,
-                                  "name": "string",
-                                  "collection": false
-                              },
-                              "message": [],
-                              "values": [],
-                              "labels": [
-                                  {
-                                      "locale": "en-US",
-                                      "text": "Owner Info"
-                                  }
-                              ],
-                              "elemLabels": {}
-                          }
-                      ]
-                  }
-              },
-              "message": [],
-              "values": [],
-              "labels": [],
-              "elemLabels": {}
-          },
-          {
-              "config": {
-                  "active": false,
-                  "required": false,
-                  "id": "587",
-                  "code": "expandedRowContent",
-                  "validations": null,
-                  "uiNatures": [],
-                  "uiStyles": {
-                      "isLink": false,
-                      "isHidden": false,
-                      "name": "ViewConfig.GridRowBody",
-                      "attributes": {
-                          "hidden": false,
-                          "readOnly": false,
-                          "submitButton": true,
-                          "showName": true,
-                          "pageSize": 25,
-                          "browserBack": false,
-                          "showAsLink": false,
-                          "cssClass": "",
-                          "asynchronous": false,
-                          "alias": "GridRowBody"
-                      }
-                  },
-                  "type": {
-                      "collection": false,
-                      "nested": true,
-                      "name": "OwnerLineItem.ExpandedRowContent",
-                      "model": {
-                          "paramConfigIds": [
-                              "593"
-                          ]
-                      }
-                  }
-              },
-              "enabled": true,
-              "visible": true,
-              "activeValidationGroups": [],
-              
-              "configId": "587",
-              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/expandedRowContent",
-              "type": {
-                  "model": {
-                      "params": [
-                          {
-                              "enabled": true,
-                              "visible": true,
-                              "activeValidationGroups": [],
-                              
-                              "configId": "593",
-                              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/expandedRowContent/pets",
-                              "type": {
-                                  "model": {
-                                      "params": []
-                                  }
-                              },
-                              "page": {
-                                  "last": true,
-                                  "totalElements": 0,
-                                  "totalPages": 1,
-                                  "size": 0,
-                                  "number": 0,
-                                  "first": true,
-                                  "numberOfElements": 0
-                              },
-                              "tableBasedData": {
-                                  "collectionParams": []
-                              },
-                              "message": [],
-                              "values": [],
-                              "labels": [
-                                  {
-                                      "locale": "en-US",
-                                      "text": "Pets"
-                                  }
-                              ],
-                              "elemLabels": {}
-                          }
-                      ]
-                  }
-              },
-              "message": [],
-              "values": [],
-              "labels": [],
-              "elemLabels": {}
-          },
-          {
-              "config": {
-                  "active": false,
-                  "required": false,
-                  "id": "583",
-                  "code": "vlmCaseItemLinks",
-                  "validations": null,
-                  "uiNatures": [],
-                  "uiStyles": {
-                      "isLink": true,
-                      "isHidden": false,
-                      "name": "ViewConfig.LinkMenu",
-                      "attributes": {
-                          "hidden": false,
-                          "readOnly": false,
-                          "submitButton": true,
-                          "showName": true,
-                          "pageSize": 25,
-                          "browserBack": false,
-                          "showAsLink": false,
-                          "cssClass": "dropdownTrigger",
-                          "alias": "LinkMenu",
-                          "imgSrc": "",
-                          "imgType": "FA"
-                      }
-                  },
-                  "type": {
-                      "collection": false,
-                      "nested": true,
-                      "name": "OwnerLineItem.VLMCaseItemLinks",
-                      "model": {
-                          "paramConfigIds": [
-                              "585",
-                              "586"
-                          ]
-                      }
-                  }
-              },
-              "enabled": true,
-              "visible": true,
-              "activeValidationGroups": [],
-              
-              "configId": "583",
-              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks",
-              "type": {
-                  "model": {
-                      "params": [
-                          {
-                              "enabled": true,
-                              "visible": true,
-                              "activeValidationGroups": [],
-                              
-                              "configId": "585",
-                              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks/edit",
-                              "type": {
-                                  "nested": false,
-                                  "name": "string",
-                                  "collection": false
-                              },
-                              "message": [],
-                              "values": [],
-                              "labels": [
-                                  {
-                                      "locale": "en-US",
-                                      "text": "Edit"
-                                  }
-                              ],
-                              "elemLabels": {}
-                          },
-                          {
-                              "enabled": true,
-                              "visible": true,
-                              "activeValidationGroups": [],
-                              
-                              "configId": "586",
-                              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks/ownerInfo",
-                              "type": {
-                                  "nested": false,
-                                  "name": "string",
-                                  "collection": false
-                              },
-                              "message": [],
-                              "values": [],
-                              "labels": [
-                                  {
-                                      "locale": "en-US",
-                                      "text": "Owner Info"
-                                  }
-                              ],
-                              "elemLabels": {}
-                          }
-                      ]
-                  }
-              },
-              "message": [],
-              "values": [],
-              "labels": [],
-              "elemLabels": {}
-          },
-          {
-              "config": {
-                  "active": false,
-                  "required": false,
-                  "id": "587",
-                  "code": "expandedRowContent",
-                  "validations": null,
-                  "uiNatures": [],
-                  "uiStyles": {
-                      "isLink": false,
-                      "isHidden": false,
-                      "name": "ViewConfig.GridRowBody",
-                      "attributes": {
-                          "hidden": false,
-                          "readOnly": false,
-                          "submitButton": true,
-                          "showName": true,
-                          "pageSize": 25,
-                          "browserBack": false,
-                          "showAsLink": false,
-                          "cssClass": "",
-                          "asynchronous": false,
-                          "alias": "GridRowBody"
-                      }
-                  },
-                  "type": {
-                      "collection": false,
-                      "nested": true,
-                      "name": "OwnerLineItem.ExpandedRowContent",
-                      "model": {
-                          "paramConfigIds": [
-                              "593"
-                          ]
-                      }
-                  }
-              },
-              "enabled": true,
-              "visible": true,
-              "activeValidationGroups": [],
-              
-              "configId": "587",
-              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/expandedRowContent",
-              "type": {
-                  "model": {
-                      "params": [
-                          {
-                              "enabled": true,
-                              "visible": true,
-                              "activeValidationGroups": [],
-                              
-                              "configId": "593",
-                              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/expandedRowContent/pets",
-                              "type": {
-                                  "model": {
-                                      "params": []
-                                  }
-                              },
-                              "page": {
-                                  "last": true,
-                                  "totalElements": 0,
-                                  "totalPages": 1,
-                                  "size": 0,
-                                  "number": 0,
-                                  "first": true,
-                                  "numberOfElements": 0
-                              },
-                              "tableBasedData": {
-                                  "collectionParams": []
-                              },
-                              "message": [],
-                              "values": [],
-                              "labels": [
-                                  {
-                                      "locale": "en-US",
-                                      "text": "Pets"
-                                  }
-                              ],
-                              "elemLabels": {}
-                          }
-                      ]
-                  }
-              },
-              "message": [],
-              "values": [],
-              "labels": [],
-              "elemLabels": {}
-          },
-          {
-              "config": {
-                  "active": false,
-                  "required": false,
-                  "id": "583",
-                  "code": "vlmCaseItemLinks",
-                  "validations": null,
-                  "uiNatures": [],
-                  "uiStyles": {
-                      "isLink": true,
-                      "isHidden": false,
-                      "name": "ViewConfig.LinkMenu",
-                      "attributes": {
-                          "hidden": false,
-                          "readOnly": false,
-                          "submitButton": true,
-                          "showName": true,
-                          "pageSize": 25,
-                          "browserBack": false,
-                          "showAsLink": false,
-                          "cssClass": "dropdownTrigger",
-                          "alias": "LinkMenu",
-                          "imgSrc": "",
-                          "imgType": "FA"
-                      }
-                  },
-                  "type": {
-                      "collection": false,
-                      "nested": true,
-                      "name": "OwnerLineItem.VLMCaseItemLinks",
-                      "model": {
-                          "paramConfigIds": [
-                              "585",
-                              "586"
-                          ]
-                      }
-                  }
-              },
-              "enabled": true,
-              "visible": true,
-              "activeValidationGroups": [],
-              
-              "configId": "583",
-              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks",
-              "type": {
-                  "model": {
-                      "params": [
-                          {
-                              "enabled": true,
-                              "visible": true,
-                              "activeValidationGroups": [],
-                              
-                              "configId": "585",
-                              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks/edit",
-                              "type": {
-                                  "nested": false,
-                                  "name": "string",
-                                  "collection": false
-                              },
-                              "message": [],
-                              "values": [],
-                              "labels": [
-                                  {
-                                      "locale": "en-US",
-                                      "text": "Edit"
-                                  }
-                              ],
-                              "elemLabels": {}
-                          },
-                          {
-                              "enabled": true,
-                              "visible": true,
-                              "activeValidationGroups": [],
-                              
-                              "configId": "586",
-                              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks/ownerInfo",
-                              "type": {
-                                  "nested": false,
-                                  "name": "string",
-                                  "collection": false
-                              },
-                              "message": [],
-                              "values": [],
-                              "labels": [
-                                  {
-                                      "locale": "en-US",
-                                      "text": "Owner Info"
-                                  }
-                              ],
-                              "elemLabels": {}
-                          }
-                      ]
-                  }
-              },
-              "message": [],
-              "values": [],
-              "labels": [],
-              "elemLabels": {}
-          },
-          {
-              "config": {
-                  "active": false,
-                  "required": false,
-                  "id": "587",
-                  "code": "expandedRowContent",
-                  "validations": null,
-                  "uiNatures": [],
-                  "uiStyles": {
-                      "isLink": false,
-                      "isHidden": false,
-                      "name": "ViewConfig.GridRowBody",
-                      "attributes": {
-                          "hidden": false,
-                          "readOnly": false,
-                          "submitButton": true,
-                          "showName": true,
-                          "pageSize": 25,
-                          "browserBack": false,
-                          "showAsLink": false,
-                          "cssClass": "",
-                          "asynchronous": false,
-                          "alias": "GridRowBody"
-                      }
-                  },
-                  "type": {
-                      "collection": false,
-                      "nested": true,
-                      "name": "OwnerLineItem.ExpandedRowContent",
-                      "model": {
-                          "paramConfigIds": [
-                              "593"
-                          ]
-                      }
-                  }
-              },
-              "enabled": true,
-              "visible": true,
-              "activeValidationGroups": [],
-              
-              "configId": "587",
-              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/expandedRowContent",
-              "type": {
-                  "model": {
-                      "params": [
-                          {
-                              "enabled": true,
-                              "visible": true,
-                              "activeValidationGroups": [],
-                              
-                              "configId": "593",
-                              "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/expandedRowContent/pets",
-                              "type": {
-                                  "model": {
-                                      "params": []
-                                  }
-                              },
-                              "page": {
-                                  "last": true,
-                                  "totalElements": 0,
-                                  "totalPages": 1,
-                                  "size": 0,
-                                  "number": 0,
-                                  "first": true,
-                                  "numberOfElements": 0
-                              },
-                              "tableBasedData": {
-                                  "collectionParams": []
-                              },
-                              "message": [],
-                              "values": [],
-                              "labels": [
-                                  {
-                                      "locale": "en-US",
-                                      "text": "Pets"
-                                  }
-                              ],
-                              "elemLabels": {}
-                          }
-                      ]
-                  }
-              },
-              "message": [],
-              "values": [],
-              "labels": [],
-              "elemLabels": {}
-          }
-      ],
       "configId": "570",
       "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners",
       "type": {
@@ -7214,7 +6653,566 @@ export const pageServiceProcessResponse: any = {
           "numberOfElements": 3
       },
       "tableBasedData": {
-          
+        "collectionParams": [
+            {
+                "config": {
+                    "active": false,
+                    "required": false,
+                    "id": "583",
+                    "code": "vlmCaseItemLinks",
+                    "validations": null,
+                    "uiNatures": [],
+                    "uiStyles": {
+                        "isLink": true,
+                        "isHidden": false,
+                        "name": "ViewConfig.LinkMenu",
+                        "attributes": {
+                            "hidden": false,
+                            "readOnly": false,
+                            "submitButton": true,
+                            "showName": true,
+                            "pageSize": 25,
+                            "browserBack": false,
+                            "showAsLink": false,
+                            "cssClass": "dropdownTrigger",
+                            "alias": "LinkMenu",
+                            "imgSrc": "",
+                            "imgType": "FA"
+                        }
+                    },
+                    "type": {
+                        "collection": false,
+                        "nested": true,
+                        "name": "OwnerLineItem.VLMCaseItemLinks",
+                        "model": {
+                            "paramConfigIds": [
+                                "585",
+                                "586"
+                            ]
+                        }
+                    }
+                },
+                "enabled": true,
+                "visible": true,
+                "activeValidationGroups": [],
+                
+                "configId": "583",
+                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks",
+                "type": {
+                    "model": {
+                        "params": [
+                            {
+                                "enabled": true,
+                                "visible": true,
+                                "activeValidationGroups": [],
+                                
+                                "configId": "585",
+                                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/edit",
+                                "type": {
+                                    "nested": false,
+                                    "name": "string",
+                                    "collection": false
+                                },
+                                "message": [],
+                                "values": [],
+                                "labels": [
+                                    {
+                                        "locale": "en-US",
+                                        "text": "Edit"
+                                    }
+                                ],
+                                "elemLabels": {}
+                            },
+                            {
+                                "enabled": true,
+                                "visible": true,
+                                "activeValidationGroups": [],
+                                
+                                "configId": "586",
+                                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/vlmCaseItemLinks/ownerInfo",
+                                "type": {
+                                    "nested": false,
+                                    "name": "string",
+                                    "collection": false
+                                },
+                                "message": [],
+                                "values": [],
+                                "labels": [
+                                    {
+                                        "locale": "en-US",
+                                        "text": "Owner Info"
+                                    }
+                                ],
+                                "elemLabels": {}
+                            }
+                        ]
+                    }
+                },
+                "message": [],
+                "values": [],
+                "labels": [],
+                "elemLabels": {}
+            },
+            {
+                "config": {
+                    "active": false,
+                    "required": false,
+                    "id": "587",
+                    "code": "expandedRowContent",
+                    "validations": null,
+                    "uiNatures": [],
+                    "uiStyles": {
+                        "isLink": false,
+                        "isHidden": false,
+                        "name": "ViewConfig.GridRowBody",
+                        "attributes": {
+                            "hidden": false,
+                            "readOnly": false,
+                            "submitButton": true,
+                            "showName": true,
+                            "pageSize": 25,
+                            "browserBack": false,
+                            "showAsLink": false,
+                            "cssClass": "",
+                            "asynchronous": false,
+                            "alias": "GridRowBody"
+                        }
+                    },
+                    "type": {
+                        "collection": false,
+                        "nested": true,
+                        "name": "OwnerLineItem.ExpandedRowContent",
+                        "model": {
+                            "paramConfigIds": [
+                                "593"
+                            ]
+                        }
+                    }
+                },
+                "enabled": true,
+                "visible": true,
+                "activeValidationGroups": [],
+                
+                "configId": "587",
+                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/expandedRowContent",
+                "type": {
+                    "model": {
+                        "params": [
+                            {
+                                "enabled": true,
+                                "visible": true,
+                                "activeValidationGroups": [],
+                                
+                                "configId": "593",
+                                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/expandedRowContent/pets",
+                                "type": {
+                                    "model": {
+                                        "params": []
+                                    }
+                                },
+                                "page": {
+                                    "last": true,
+                                    "totalElements": 0,
+                                    "totalPages": 1,
+                                    "size": 0,
+                                    "number": 0,
+                                    "first": true,
+                                    "numberOfElements": 0
+                                },
+                                "tableBasedData": {
+                                    "collectionParams": []
+                                },
+                                "message": [],
+                                "values": [],
+                                "labels": [
+                                    {
+                                        "locale": "en-US",
+                                        "text": "Pets"
+                                    }
+                                ],
+                                "elemLabels": {}
+                            }
+                        ]
+                    }
+                },
+                "message": [],
+                "values": [],
+                "labels": [],
+                "elemLabels": {}
+            },
+            {
+                "config": {
+                    "active": false,
+                    "required": false,
+                    "id": "583",
+                    "code": "vlmCaseItemLinks",
+                    "validations": null,
+                    "uiNatures": [],
+                    "uiStyles": {
+                        "isLink": true,
+                        "isHidden": false,
+                        "name": "ViewConfig.LinkMenu",
+                        "attributes": {
+                            "hidden": false,
+                            "readOnly": false,
+                            "submitButton": true,
+                            "showName": true,
+                            "pageSize": 25,
+                            "browserBack": false,
+                            "showAsLink": false,
+                            "cssClass": "dropdownTrigger",
+                            "alias": "LinkMenu",
+                            "imgSrc": "",
+                            "imgType": "FA"
+                        }
+                    },
+                    "type": {
+                        "collection": false,
+                        "nested": true,
+                        "name": "OwnerLineItem.VLMCaseItemLinks",
+                        "model": {
+                            "paramConfigIds": [
+                                "585",
+                                "586"
+                            ]
+                        }
+                    }
+                },
+                "enabled": true,
+                "visible": true,
+                "activeValidationGroups": [],
+                
+                "configId": "583",
+                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks",
+                "type": {
+                    "model": {
+                        "params": [
+                            {
+                                "enabled": true,
+                                "visible": true,
+                                "activeValidationGroups": [],
+                                
+                                "configId": "585",
+                                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks/edit",
+                                "type": {
+                                    "nested": false,
+                                    "name": "string",
+                                    "collection": false
+                                },
+                                "message": [],
+                                "values": [],
+                                "labels": [
+                                    {
+                                        "locale": "en-US",
+                                        "text": "Edit"
+                                    }
+                                ],
+                                "elemLabels": {}
+                            },
+                            {
+                                "enabled": true,
+                                "visible": true,
+                                "activeValidationGroups": [],
+                                
+                                "configId": "586",
+                                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/vlmCaseItemLinks/ownerInfo",
+                                "type": {
+                                    "nested": false,
+                                    "name": "string",
+                                    "collection": false
+                                },
+                                "message": [],
+                                "values": [],
+                                "labels": [
+                                    {
+                                        "locale": "en-US",
+                                        "text": "Owner Info"
+                                    }
+                                ],
+                                "elemLabels": {}
+                            }
+                        ]
+                    }
+                },
+                "message": [],
+                "values": [],
+                "labels": [],
+                "elemLabels": {}
+            },
+            {
+                "config": {
+                    "active": false,
+                    "required": false,
+                    "id": "587",
+                    "code": "expandedRowContent",
+                    "validations": null,
+                    "uiNatures": [],
+                    "uiStyles": {
+                        "isLink": false,
+                        "isHidden": false,
+                        "name": "ViewConfig.GridRowBody",
+                        "attributes": {
+                            "hidden": false,
+                            "readOnly": false,
+                            "submitButton": true,
+                            "showName": true,
+                            "pageSize": 25,
+                            "browserBack": false,
+                            "showAsLink": false,
+                            "cssClass": "",
+                            "asynchronous": false,
+                            "alias": "GridRowBody"
+                        }
+                    },
+                    "type": {
+                        "collection": false,
+                        "nested": true,
+                        "name": "OwnerLineItem.ExpandedRowContent",
+                        "model": {
+                            "paramConfigIds": [
+                                "593"
+                            ]
+                        }
+                    }
+                },
+                "enabled": true,
+                "visible": true,
+                "activeValidationGroups": [],
+                
+                "configId": "587",
+                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/expandedRowContent",
+                "type": {
+                    "model": {
+                        "params": [
+                            {
+                                "enabled": true,
+                                "visible": true,
+                                "activeValidationGroups": [],
+                                
+                                "configId": "593",
+                                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/1/expandedRowContent/pets",
+                                "type": {
+                                    "model": {
+                                        "params": []
+                                    }
+                                },
+                                "page": {
+                                    "last": true,
+                                    "totalElements": 0,
+                                    "totalPages": 1,
+                                    "size": 0,
+                                    "number": 0,
+                                    "first": true,
+                                    "numberOfElements": 0
+                                },
+                                "tableBasedData": {
+                                    "collectionParams": []
+                                },
+                                "message": [],
+                                "values": [],
+                                "labels": [
+                                    {
+                                        "locale": "en-US",
+                                        "text": "Pets"
+                                    }
+                                ],
+                                "elemLabels": {}
+                            }
+                        ]
+                    }
+                },
+                "message": [],
+                "values": [],
+                "labels": [],
+                "elemLabels": {}
+            },
+            {
+                "config": {
+                    "active": false,
+                    "required": false,
+                    "id": "583",
+                    "code": "vlmCaseItemLinks",
+                    "validations": null,
+                    "uiNatures": [],
+                    "uiStyles": {
+                        "isLink": true,
+                        "isHidden": false,
+                        "name": "ViewConfig.LinkMenu",
+                        "attributes": {
+                            "hidden": false,
+                            "readOnly": false,
+                            "submitButton": true,
+                            "showName": true,
+                            "pageSize": 25,
+                            "browserBack": false,
+                            "showAsLink": false,
+                            "cssClass": "dropdownTrigger",
+                            "alias": "LinkMenu",
+                            "imgSrc": "",
+                            "imgType": "FA"
+                        }
+                    },
+                    "type": {
+                        "collection": false,
+                        "nested": true,
+                        "name": "OwnerLineItem.VLMCaseItemLinks",
+                        "model": {
+                            "paramConfigIds": [
+                                "585",
+                                "586"
+                            ]
+                        }
+                    }
+                },
+                "enabled": true,
+                "visible": true,
+                "activeValidationGroups": [],
+                
+                "configId": "583",
+                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks",
+                "type": {
+                    "model": {
+                        "params": [
+                            {
+                                "enabled": true,
+                                "visible": true,
+                                "activeValidationGroups": [],
+                                
+                                "configId": "585",
+                                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks/edit",
+                                "type": {
+                                    "nested": false,
+                                    "name": "string",
+                                    "collection": false
+                                },
+                                "message": [],
+                                "values": [],
+                                "labels": [
+                                    {
+                                        "locale": "en-US",
+                                        "text": "Edit"
+                                    }
+                                ],
+                                "elemLabels": {}
+                            },
+                            {
+                                "enabled": true,
+                                "visible": true,
+                                "activeValidationGroups": [],
+                                
+                                "configId": "586",
+                                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/vlmCaseItemLinks/ownerInfo",
+                                "type": {
+                                    "nested": false,
+                                    "name": "string",
+                                    "collection": false
+                                },
+                                "message": [],
+                                "values": [],
+                                "labels": [
+                                    {
+                                        "locale": "en-US",
+                                        "text": "Owner Info"
+                                    }
+                                ],
+                                "elemLabels": {}
+                            }
+                        ]
+                    }
+                },
+                "message": [],
+                "values": [],
+                "labels": [],
+                "elemLabels": {}
+            },
+            {
+                "config": {
+                    "active": false,
+                    "required": false,
+                    "id": "587",
+                    "code": "expandedRowContent",
+                    "validations": null,
+                    "uiNatures": [],
+                    "uiStyles": {
+                        "isLink": false,
+                        "isHidden": false,
+                        "name": "ViewConfig.GridRowBody",
+                        "attributes": {
+                            "hidden": false,
+                            "readOnly": false,
+                            "submitButton": true,
+                            "showName": true,
+                            "pageSize": 25,
+                            "browserBack": false,
+                            "showAsLink": false,
+                            "cssClass": "",
+                            "asynchronous": false,
+                            "alias": "GridRowBody"
+                        }
+                    },
+                    "type": {
+                        "collection": false,
+                        "nested": true,
+                        "name": "OwnerLineItem.ExpandedRowContent",
+                        "model": {
+                            "paramConfigIds": [
+                                "593"
+                            ]
+                        }
+                    }
+                },
+                "enabled": true,
+                "visible": true,
+                "activeValidationGroups": [],
+                
+                "configId": "587",
+                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/expandedRowContent",
+                "type": {
+                    "model": {
+                        "params": [
+                            {
+                                "enabled": true,
+                                "visible": true,
+                                "activeValidationGroups": [],
+                                
+                                "configId": "593",
+                                "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/2/expandedRowContent/pets",
+                                "type": {
+                                    "model": {
+                                        "params": []
+                                    }
+                                },
+                                "page": {
+                                    "last": true,
+                                    "totalElements": 0,
+                                    "totalPages": 1,
+                                    "size": 0,
+                                    "number": 0,
+                                    "first": true,
+                                    "numberOfElements": 0
+                                },
+                                "tableBasedData": {
+                                    "collectionParams": []
+                                },
+                                "message": [],
+                                "values": [],
+                                "labels": [
+                                    {
+                                        "locale": "en-US",
+                                        "text": "Pets"
+                                    }
+                                ],
+                                "elemLabels": {}
+                            }
+                        ]
+                    }
+                },
+                "message": [],
+                "values": [],
+                "labels": [],
+                "elemLabels": {}
+            }
+        ],  
           "leafState": [
               {
                   "id": 52,
