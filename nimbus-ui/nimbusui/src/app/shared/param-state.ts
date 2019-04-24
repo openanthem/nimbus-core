@@ -25,7 +25,6 @@ import { Message } from './message';
 import { ViewComponent } from './param-annotations.enum';
 import { DataGroup } from './../components/platform/charts/chartdata';
 import { TableComponentConstants } from './../components/platform/grid/table.component.constants';
-import { TestBed } from '@angular/core/testing';
 
 /**
  * \@author Sandeep.Mantha
@@ -337,7 +336,7 @@ export class StyleState implements Serializable<StyleState, string> {
  */
 export abstract class TableBasedData {
 
-    collectionParams: Param[] = [];
+    collectionParams: any[] = [];
     values: any[] = undefined;
     stateMap: any[] = [];
 
@@ -397,7 +396,7 @@ export abstract class TableBasedData {
         this.values = [];
         for(let colElemParam of colElemParams) {
             if (!ParamUtils.isEmpty(colElemParam)) {
-                let rowData = this.buildRowData(colElemParam);
+                let rowData = this.buildRowData(colElemParam, baseParam);
                 this.collectionParams = this.collectionParams.concat(rowData.nestedParams); 
                 // this.collectionParams = rowData.nestedParams;
                 if (rowData.values) {
@@ -409,7 +408,7 @@ export abstract class TableBasedData {
         return this;
     }
 
-    abstract buildRowData(colElemParam: Param): RowData;
+    abstract buildRowData(colElemParam: Param, baseParam: Param): RowData;
 }
 
 /**
@@ -419,9 +418,6 @@ export abstract class RowData {
     values: any = undefined;
     nestedParams: any[] = [];
     stateMap: any[] = [];
-    rowIndex = 0;
-    test = {};
-    testArray = [];
 
     constructor(protected configSvc: ConfigService) {}
 
@@ -429,7 +425,7 @@ export abstract class RowData {
      * Create row data from the given collection element param.
      * @param colElemParam the collection element param which provides the "source" of data to transform
      */
-    from(colElemParam: Param): RowData {
+    from(colElemParam: Param, baseParam?: Param): RowData {
         if (!colElemParam) {
             return this;
         }
@@ -441,7 +437,7 @@ export abstract class RowData {
         let stateData = {};
         for(let cellParam of colElemParam.type.model.params) {
             // collect all nested params for the collection element row
-            this.collectNestedParams(colElemParam, cellParam, this.nestedParams);
+            this.collectNestedParams(colElemParam, cellParam, this.nestedParams, baseParam);
             
             // collect all state data for the collection element row
             let cellParamCode = this.configSvc.getViewConfigById(cellParam.configId).code;
@@ -468,50 +464,37 @@ export abstract class RowData {
      * @param param the base param (used recursively)
      * @param nestedParams an array containing the added nested params
      */
-    protected collectNestedParams(colElemParam: Param, param: Param, nestedParams: any[]): void {
-        // console.log('colElemParam---467', colElemParam);
-        // console.log('param---468', param);
-        // console.log('nestedParams---469', nestedParams);
+    protected collectNestedParams(colElemParam: Param, param: Param, nestedParams: any[], baseParam: Param): void {
 
-        if (!param || !this.shouldCollect(param)) {
+        if (!param || !this.shouldCollect(param, baseParam)) {
             return;
         }
 
-        // add the param to nestedParams
-
-        const paramPath = parseInt(param.path.split('/').slice(-2, -1)[0]);
-        // parseInt(paramPath);
-        if (!nestedParams[paramPath]){
-            nestedParams[paramPath] = {};
+        let row = null;
+        let index = parseInt(param.path.split('/').slice(-2, -1)[0]);
+        if (isNaN(index)) {
+            index = parseInt(param.path.split('/').slice(-3, -1)[0]);
         }
-        nestedParams[paramPath][param.config.code] = param;
-        console.log('nestedParams', nestedParams);
-        
-
-        // working improper
-        // const paramPath = param.path.split('/').slice(-2, -1)[0];
-
-        // if (paramPath == this.rowIndex) {
-        //     this.test[param.config.code] = param;
-        // } else {
-        //     this.rowIndex++;
-        // }
-        // if (!nestedParams.includes(this.test)) {
-        //     nestedParams.push(this.test);
-        // }
-
-        // previous remove below code
-        // nestedParams.push(param);
+        for (let i = 0; i < this.nestedParams.length; i++){
+            if (this.nestedParams[i].elemId === index){
+                row = this.nestedParams[i];
+            }
+        }
+        if(!row) {
+            row = {elemId: index};
+            this.nestedParams.push(row);
+        }
+        row [param.config.code] = param;
 
         // if nested, recursively perform the collection
-        // if (param.type && param.type.model && param.type.model.params) {
-        //     for(let p of param.type.model.params) {
-        //         this.collectNestedParams(colElemParam, p, nestedParams);
-        //     }
-        // }
+        if (param.type && param.type.model && param.type.model.params) {
+            for(let p of param.type.model.params) {
+                this.collectNestedParams(colElemParam, p, nestedParams, baseParam);
+            }
+        }
     }
 
-    abstract shouldCollect(param: Param): boolean;
+    abstract shouldCollect(param: Param, baseParam: Param): boolean;
 }
 
 /**
@@ -519,8 +502,8 @@ export abstract class RowData {
  */
 export class TableData extends TableBasedData {
     
-    buildRowData(colElemParam: Param): RowData {
-        return new TableRowData(this.configSvc).from(colElemParam);
+    buildRowData(colElemParam: Param, baseParam: Param): RowData {
+        return new TableRowData(this.configSvc).from(colElemParam, baseParam);
     }
 }
 
@@ -529,13 +512,12 @@ export class TableData extends TableBasedData {
  */
 export class TableRowData extends RowData {
 
-    shouldCollect(param: Param): boolean {
-        // console.log('param...shouldcollect', param);
-        
+    shouldCollect(param: Param, baseParam: Param): boolean {
+
         return param.config.uiStyles && 
             (TableComponentConstants.allowedColumnStylesAlias.includes(param.config.uiStyles.attributes.alias)
                 || param.config.uiStyles.attributes.showAsLink 
-                || TableComponentConstants.allowedInlineEditColumnStylesAlias.includes(param.config.uiStyles.attributes.alias));
+                || baseParam.config.uiStyles.attributes.editRow);
     }
 }
 
