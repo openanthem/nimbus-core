@@ -60,7 +60,6 @@ export const buttonGroupbuttonList: any = [
         "enabled": true,
         "visible": true,
         "activeValidationGroups": [],
-        "collectionParams": [],
         "configId": "50003",
         "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vbg1/cancel",
         "type": {

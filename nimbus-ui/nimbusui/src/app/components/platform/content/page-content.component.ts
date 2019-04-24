@@ -91,7 +91,7 @@ export class PageContent extends BaseElement{
     updateIntialPosition() {
         if (this.label && this.element.labels) {
             this.position = 1;
-            this.labelSize = this.getHeaderSize(this.position);
+            this.labelSize = this.determineLabelSize(this.position);
         }
     }
 

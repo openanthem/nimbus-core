@@ -56,7 +56,7 @@ export const cardDetailsFieldInputLabel = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "24003",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/caseStatusDate",
     "type": {},
@@ -114,7 +114,7 @@ export const cardDetailsFieldInputLabel = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "462",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/lastName",
     "type": {
@@ -176,7 +176,7 @@ export const cardDetailsFieldInputLabel = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "1329",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/firstName",
     "type": {
@@ -238,7 +238,7 @@ export const cardDetailsFieldInputLabel = {
       "enabled": true,
       "visible": true,
       "activeValidationGroups": [],
-      "collectionParams": [],
+      
       "configId": "7839",
       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/vcdgConcerns/0/vcdOwnerInfo/vcdbOwner/firstName",
       "type": {

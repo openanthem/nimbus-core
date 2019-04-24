@@ -25,10 +25,11 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.Past;
 
 import com.antheminc.oss.nimbus.domain.Event;
-import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
-import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Autocomplete;
+import com.antheminc.oss.nimbus.domain.cmd.Action;
+import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -657,7 +658,6 @@ public class ViewConfig {
 	 * 
 	 * @since 1.3
 	 */
-	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
@@ -730,6 +730,8 @@ public class ViewConfig {
 	 * <p>FieldValue will be rendered when annotating a field nested under one
 	 * of the following components: <ul> <li>{@link CardDetailHeader}</li>
 	 * <li>{@link CardDetailBody}</li> <li>{@link FieldValueGroup}</li> </ul>
+	 * 
+	 * <p>FieldValue can show additional information to the user by annotating with {@link ToolTip}
 	 * 
 	 * <p>FieldValue should decorate a field having a simple type.
 	 * 
@@ -903,6 +905,16 @@ public class ViewConfig {
 		String type() default ".pdf,.png";
 
 		String url() default "";
+		
+		Behavior behavior() default Behavior.UPLOAD;
+		
+		public enum WriteStrategy{
+			COMMAND, MODEL_REPSITORY
+		}
+		public enum Behavior {
+			CONVERSION,
+			UPLOAD
+		}
 
 	}
 
@@ -1117,32 +1129,6 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <p><b>Expected Field Structure</b>
-	 * 
-	 * <p>GlobalNavMenu will be rendered when annotating a field nested under
-	 * one of the following components: <ul> <li>Layout Domain</li> </ul>
-	 * 
-	 * @since 1.0
-	 * @deprecated As of 1.1.7 onwards, {@code GlobalNavMenu} will no longer be
-	 *             rendered in the UI. Use {@link MenuPanel} instead.
-	 */
-	@Deprecated
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface GlobalNavMenu {
-
-		String alias() default "Global-Nav-Menu";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "";
-	}
-
-	/**
 	 * <!--TODO Candidate for removal-->
 	 * 
 	 * @since 1.0
@@ -1172,6 +1158,12 @@ public class ViewConfig {
 	 * following components: <ul> <li>{@link Form}</li> <li>{@link Section}</li>
 	 * </ul>
 	 * 
+	 * <p><b>Labels</b>
+	 * 
+	 * <p>Any labels defined within the <i>collection element</i> configuration
+	 * will be assigned to the decorated param and available via
+	 * {@link ListParam#getElemLabels()}.
+	 * 
 	 * <p><b>Configuring Row Item Display</b>
 	 * 
 	 * <p>The class being used in the decorated collection's parameterized type
@@ -1186,6 +1178,7 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
+	@OnStateLoad
 	public @interface Grid {
 		String alias() default "Grid";
 
@@ -1199,14 +1192,6 @@ public class ViewConfig {
 		String cssClass() default "";
 
 		boolean dataEntryField() default true;
-
-		/**
-		 * <p>As of release 1.1.9, {@code dataKey} is no longer needed to
-		 * support grid row expansion. This attribute will be removed in the
-		 * future releases.
-		 */
-		@Deprecated
-		String dataKey() default "id";
 
 		boolean expandableRows() default false;
 
@@ -1231,14 +1216,6 @@ public class ViewConfig {
 		String postButtonTargetPath() default "";
 		
 		/**
-		 * @deprecated As of 1.1.11 onwards, {@code postButtonUrl} will no longer 
-		 * represent the absolute path to make a http call for rowselection from UI. 
-		 * Replaced with {@link postButtonUri} attribute instead.
-		 */
-		@Deprecated
-		String postButtonUrl() default "";
-		
-		/**
 		 * Represents the relative path of the postButton on a rowselection Grid. 
 		 * Can use similar notation as url attribute of @Config for relative path to param i.e, '../', <!#this!>
 		 */
@@ -1260,6 +1237,40 @@ public class ViewConfig {
 		 * page of the table when the table is paginated.
 		 */
 		boolean headerCheckboxToggleAllPages() default false;
+		
+		/**
+		 * <p>Add an edit button to each record that allows for in-line editing.
+		 * @see #onEdit()
+		 */
+		boolean editRow() default false;
+
+		/**
+		 * <p>Add an add row button to that allows for adding a new element to
+		 * be added to this decorated parameter using the in-line editing
+		 * feature.
+		 * @see #onAdd()
+		 */
+		boolean addRow() default false;
+		
+		/**
+		 * <p>A param path relative to the collection element param being edited
+		 * on which to invoke an {@link Action._get} call whenever a grid record
+		 * is edited. The {@link #editRow()} feature must be enabled for this
+		 * behavior to occur. <p>This mandates that a field having the same name
+		 * as {@code onEdit} must be defined in the generic type of the
+		 * decorated collection parameter.
+		 */
+		String onEdit() default "_action_onEdit";
+		
+		/**
+		 * <p>A param path relative to the Grid param created by this decorated
+		 * field, on which to invoke an {@link Action._get} call whenever a new
+		 * grid record is added. The {@link #addRow()} feature must be enabled
+		 * for this behavior to occur. <p>This mandates that a field having the
+		 * same value as {@code onAdd} must be defined as a sibling parameter to
+		 * this decorated field.
+		 */
+		String onAdd() default "../_action_onAdd";
 	}
 
 	/**
@@ -2172,6 +2183,55 @@ public class ViewConfig {
 		}
 
 		Property value() default Property.DEFAULT;
+	}
+	
+	
+	/**
+	 * <p> Tooltip can be used to display additional information to the user.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>Tooltip will be rendered when annotating on one of
+	 * the following components: <ul> <li>{@link FieldValue}</li> </ul>
+	 * 
+	 * <p>
+	 *  Example config:
+	 * <pre>
+	 * &#64;ToolTip(value="Additional information <!/.d/.m/toolTipValue!>", tooltipStyleClass="styleClass", toolTipPosition="bottom")
+	 * 
+	 * @since 1.2
+	 */
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewParamBehavior
+	@OnStateLoad
+	public @interface ToolTip {
+
+		/**
+		 * <p> The value of the tooltip to display to the user..
+		 * <p> Html tags can be put inside value.  These will be parsed and rendered on the browser.
+		 * <p> Path can also be given for value property which will be resolved.
+		 */
+		String value() default "";
+
+		/**
+		 * <p> This determines the position of the tooltip. Valid options are right, left, top and bottom.
+		 */
+		String toolTipPosition() default "right";
+
+		/**
+		 * <p> Attaching a CSS Class to customise the style of the tooltip. 
+		 *     The styles for this class can be written in app_styles.css
+		 */	
+		String tooltipStyleClass() default "";
+		
+		
+		/**
+		 * <p> html tags will be parsed if escape value is false.
+		 */	
+		boolean escape() default true;
+
 	}
 
 	/**

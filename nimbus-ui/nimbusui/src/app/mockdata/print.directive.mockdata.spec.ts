@@ -58,7 +58,7 @@ export const printDirectiveElement: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "603",
     "path": "/ownerlandingview/vpOwners",
     "type": {
@@ -68,7 +68,7 @@ export const printDirectiveElement: any = {
                     "enabled": true,
                     "visible": true,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "605",
                     "path": "/ownerlandingview/vpOwners/vtOwners",
                     "type": {
@@ -78,7 +78,7 @@ export const printDirectiveElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "607",
                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria",
                                     "type": {
@@ -88,7 +88,7 @@ export const printDirectiveElement: any = {
                                                     "enabled": true,
                                                     "visible": true,
                                                     "activeValidationGroups": [],
-                                                    "collectionParams": [],
+                                                    
                                                     "configId": "611",
                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria",
                                                     "type": {
@@ -98,7 +98,7 @@ export const printDirectiveElement: any = {
                                                                     "enabled": true,
                                                                     "visible": true,
                                                                     "activeValidationGroups": [],
-                                                                    "collectionParams": [],
+                                                                    
                                                                     "configId": "613",
                                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/firstName",
                                                                     "type": {
@@ -120,7 +120,7 @@ export const printDirectiveElement: any = {
                                                                     "enabled": true,
                                                                     "visible": true,
                                                                     "activeValidationGroups": [],
-                                                                    "collectionParams": [],
+                                                                    
                                                                     "configId": "614",
                                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/lastName",
                                                                     "type": {
@@ -142,7 +142,7 @@ export const printDirectiveElement: any = {
                                                                     "enabled": true,
                                                                     "visible": true,
                                                                     "activeValidationGroups": [],
-                                                                    "collectionParams": [],
+                                                                    
                                                                     "configId": "615",
                                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner",
                                                                     "type": {
@@ -152,7 +152,7 @@ export const printDirectiveElement: any = {
                                                                                     "enabled": true,
                                                                                     "visible": true,
                                                                                     "activeValidationGroups": [],
-                                                                                    "collectionParams": [],
+                                                                                    
                                                                                     "configId": "617",
                                                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner/search",
                                                                                     "type": {
@@ -174,7 +174,7 @@ export const printDirectiveElement: any = {
                                                                                     "enabled": true,
                                                                                     "visible": true,
                                                                                     "activeValidationGroups": [],
-                                                                                    "collectionParams": [],
+                                                                                    
                                                                                     "configId": "618",
                                                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner/addOwner",
                                                                                     "type": {
@@ -220,7 +220,7 @@ export const printDirectiveElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "619",
                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners",
                                     "type": {
@@ -230,7 +230,7 @@ export const printDirectiveElement: any = {
                                                     "enabled": true,
                                                     "visible": true,
                                                     "activeValidationGroups": [],
-                                                    "collectionParams": [],
+                                                    
                                                     "configId": "625",
                                                     "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners",
                                                     "type": {
@@ -247,7 +247,7 @@ export const printDirectiveElement: any = {
                                                         "first": true,
                                                         "numberOfElements": 0
                                                     },
-                                                    "gridData": {
+                                                    "tableBasedData": {
                                                         "collectionParams": []
                                                     },
                                                     "message": [],

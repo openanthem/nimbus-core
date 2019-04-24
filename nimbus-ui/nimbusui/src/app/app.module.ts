@@ -43,7 +43,7 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, TabViewModule,
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, InputMaskModule, AutoCompleteModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, TooltipModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { EditorModule } from 'primeng/editor';
 import { KeyFilterModule } from 'primeng/keyfilter';
@@ -126,6 +126,8 @@ import { LoggerService } from './services/logger.service';
 import { RouteService } from './services/route.service';
 import { MessageService } from 'primeng/api';
 import { PrintService } from './services/print.service';
+import { AutoCompleteService } from './services/autocomplete.service';
+
 
 //Utility Services
 import { GridUtils } from './shared/grid-utils';
@@ -195,6 +197,7 @@ export function init_app(appinitservice: AppInitService) {
         DataTableModule,
         TableModule,
         TreeTableModule,
+        TooltipModule,
         OverlayPanelModule,
         PickListModule,
         DragDropModule,
@@ -249,6 +252,7 @@ export function init_app(appinitservice: AppInitService) {
          { provide: ErrorHandler, useClass: CustomErrorHandler },
          { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
          SessionStoreService,
+         AutoCompleteService,
          AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, NmMessageService,
          RouteService, MessageService, GridUtils, DateTimeFormatPipe, PrintService],
     bootstrap: [ AppComponent ]

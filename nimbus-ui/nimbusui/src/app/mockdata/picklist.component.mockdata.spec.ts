@@ -58,7 +58,7 @@ export const pickListElement: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "785",
     "path": "/petview/vpAddEditPet/vtAddEditPet/vsAddEditPet/vfAddEditPet/category/selected",
     "type": {},
@@ -284,7 +284,7 @@ export const pickListElement: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "783",
     "path": "/petview/vpAddEditPet/vtAddEditPet/vsAddEditPet/vfAddEditPet/category",
     "type": {
@@ -294,7 +294,7 @@ export const pickListElement: any = {
                     "enabled": true,
                     "visible": true,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "785",
                     "path": "/petview/vpAddEditPet/vtAddEditPet/vsAddEditPet/vfAddEditPet/category/selected",
                     "type": {},

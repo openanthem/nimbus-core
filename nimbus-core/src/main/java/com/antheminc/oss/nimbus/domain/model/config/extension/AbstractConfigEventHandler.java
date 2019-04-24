@@ -19,19 +19,31 @@
 package com.antheminc.oss.nimbus.domain.model.config.extension;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+
+import lombok.RequiredArgsConstructor;
 
 
 /**
  * @author Soham Chakravarti
  *
  */
+@RequiredArgsConstructor
 public abstract class AbstractConfigEventHandler {
+	
+	protected final CommandPathVariableResolver cmdPathResolver;
 
 	protected <T> T castOrEx(Class<T> type, ParamConfig<?> param) {
 		if(!type.isInstance(param))
 			throw new InvalidConfigException("Handler supports ParamConfig of type: "+type+" but found of type: "+param.getClass());
 		
 		return type.cast(param);
+	}
+	
+	protected String resolvePath(String text, Param<?> param) {
+		String resolvedPath = this.cmdPathResolver.resolve(param, text);
+		return resolvedPath;
 	}
 }

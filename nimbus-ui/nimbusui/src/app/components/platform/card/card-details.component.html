@@ -19,11 +19,11 @@
                         </ng-template>
                         <!-- FieldValueGroup-->
                         <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValueGroup.toString()">
-                            <nm-card-details-field-group [element]="field"></nm-card-details-field-group>
+                            <nm-card-details-field-group id="{{field?.config?.code}}" [element]="field"></nm-card-details-field-group>
                         </ng-template>
                         <!-- FieldValue-->
                         <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
-                            <nm-card-details-field [element]="field" [(value)]="field.leafState" [ngClass]="field.config.uiStyles.attributes.cssClass" [hidden]="!field.visible"></nm-card-details-field>
+                            <nm-card-details-field id="{{field?.config?.code}}" [element]="field" [(value)]="field.leafState" [ngClass]="field.config.uiStyles.attributes.cssClass" [hidden]="!field.visible"></nm-card-details-field>
                         </ng-template>
                     </span>
                 </ng-template>
@@ -44,15 +44,15 @@
                         </ng-template>
                         <!-- FieldValueGroup-->
                         <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValueGroup.toString()">
-                            <nm-card-details-field-group [element]="field"></nm-card-details-field-group>
+                            <nm-card-details-field-group id="{{field?.config?.code}}" [element]="field"></nm-card-details-field-group>
                         </ng-template>
                         <!-- FieldValue-->
                         <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
-                            <nm-card-details-field [element]="field" [(value)]="field.leafState" [ngClass]="field.config.uiStyles.attributes.cssClass" [hidden]="!field.visible"></nm-card-details-field>
+                            <nm-card-details-field id="{{field.config?.code}}" [element]="field" [(value)]="field.leafState" [ngClass]="field.config.uiStyles.attributes.cssClass" [hidden]="!field.visible"></nm-card-details-field>
                         </ng-template>
                         <ng-template [ngIf]="field.config?.uiStyles?.isLink">
                             <div class="form-group">
-                                <nm-link [element]="field"></nm-link>
+                                <nm-link id="{{field.config?.code}}" [element]="field"></nm-link>
                             </div>
                         </ng-template>
                     </span>

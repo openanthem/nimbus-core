@@ -16,6 +16,7 @@
     </ng-template>
 
     <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+
         <tr>
             <!-- Render the first column with the toggler (if applicable) -->
             <td>
@@ -36,10 +37,11 @@
                     <td *ngIf="isRenderableComponent(col)" [ngClass]="gridUtils.getColumnStyle(col)">
 
                         <nm-button *ngIf="viewComponent.button.toString() === col.uiStyles.attributes.alias"
-                            [element] = "getViewParam(col, rowNode)">
+                        id="{{getViewParam(col, rowNode).config?.code}}" [element] = "getViewParam(col, rowNode)">
                         </nm-button>
 
                         <nm-action-dropdown #dropDown *ngIf="viewComponent.linkMenu.toString() === col.uiStyles.attributes.alias"
+                            id="{{getViewParam(col, rowNode).config?.code}}"
                             [element]="getViewParam(col, rowNode)"
                             [params]="col?.type?.model?.paramConfigs" 
                             [rowData]="rowData" 

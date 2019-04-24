@@ -27,7 +27,7 @@ import { JL } from 'jsnlog';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
   FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, AutoCompleteModule } from 'primeng/primeng';
+  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, TooltipModule, AutoCompleteModule } from 'primeng/primeng';
   import { TableModule } from 'primeng/table';
   import { KeyFilterModule } from 'primeng/keyfilter';
   import { ToastModule } from 'primeng/toast';
@@ -247,6 +247,7 @@ const imports = [
   InputMaskModule,
   TabViewModule,
   AutoCompleteModule,
+  TooltipModule,
   EditorModule
 ];
 const providers = [
@@ -356,7 +357,8 @@ describe('Accordion', () => {
 
   it('If element.type.model.params[0].type.model.params[i].leafState or element.type.model.params[0].type.model.params[i].config.uiStyles.attributes.info is valid then It should be displayed in pheader',async(() => {
       hostComponent.element.type.model.params[0].config.uiStyles.attributes.selected = true;
-    fixture.detectChanges();
+      hostComponent.element.type.model.params[0].labels = [];
+      fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const pHeaderEle = debugElement.query(By.css('p-header'));
     const infoTextEle = debugElement.query(By.css('.nm-accordion-headertext'));
@@ -589,13 +591,6 @@ describe('Accordion', () => {
     expect(hostComponent.getImageType(tab)).toEqual('testingType');
     expect(hostComponent.getTitle(tab)).toEqual('testingTitle');
     expect(hostComponent.getcssClass(tab)).toEqual('testingCssClass');
-  }));
-
-  it('ngOnInit() should call updatePositionWithNoLabel()', async(() => {
-    hostComponent.updatePositionWithNoLabel = () => {};
-    spyOn(hostComponent, 'updatePositionWithNoLabel').and.callThrough();
-    hostComponent.ngOnInit();
-    expect(hostComponent.updatePositionWithNoLabel).toHaveBeenCalled();    
   }));
 
   it('getInfoText() should return undefined', async(() => {

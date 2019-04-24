@@ -15,33 +15,31 @@
  */
 package com.antheminc.oss.nimbus.domain.model.config.extension;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
-import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 
 /**
  * @author Soham Chakravarti
- *
+ * @author Swetha Vemuri
+ * @author Tony Lopez
  */
 public class LabelStateEventHandler extends AbstractConfigEventHandler implements OnStateLoadHandler<Label> {
 
-	@Autowired
-	CommandPathVariableResolver cmdPathResolver;
+	public LabelStateEventHandler(CommandPathVariableResolver cmdPathResolver) {
+		super(cmdPathResolver);
+	}
 
 	/**
 	 * <p>Add the label from {@code configuredAnnotation} to the label state of
@@ -103,18 +101,12 @@ public class LabelStateEventHandler extends AbstractConfigEventHandler implement
 		addLabelToState(configuredAnnotation, param);
 	}
 
-	protected String resolvePath(String text, Param<?> param) {
-		String resolvedPath = this.cmdPathResolver.resolve(param, text);
-		return resolvedPath;
-	}
 
 	/**
 	 * <p>Add {@code labelState} to the label state of {@code targetParam}.
 	 * <p>The argument {@code contextParam} is used to provide the "context"
 	 * from which to retrieve pathing details when resolving any framework or
-	 * placeholders within the previously provided {@link Label}. If this level
-	 * of control is not needed, consider using
-	 * {@link #validateAndAdd(LabelState, Param)}.
+	 * placeholders within the previously provided {@link Label}.
 	 * @param labelState the label state to add
 	 * @param contextParam the "context" from which any param path information
 	 *            should be retrieved
@@ -139,23 +131,6 @@ public class LabelStateEventHandler extends AbstractConfigEventHandler implement
 		Set<LabelState> labels = new HashSet<>();
 		if (!CollectionUtils.isEmpty(targetParam.getLabels()))
 			labels.addAll(targetParam.getLabels());
-
-		if (targetParam.isCollection()) {
-			Map<String, Set<LabelState>> elemLabels = new HashMap<>();
-			ParamConfig<?> p = targetParam.getConfig().getType().findIfCollection().getElementConfig();
-			
-			if (!p.isLeaf()) {
-				for(ParamConfig<?> paramConfig : p.getType().findIfNested().getModelConfig().getParamConfigs()) {
-					if (CollectionUtils.isNotEmpty(paramConfig.getLabels())) {
-						Set<LabelState> listParamLabels = new HashSet<>();
-						paramConfig.getLabels().forEach((label) -> listParamLabels.add(convert(label, contextParam)));
-						elemLabels.put(paramConfig.getId(), listParamLabels);
-					}
-				}
-			}
-
-			targetParam.findIfCollection().setElemLabels(elemLabels);
-		}
 
 		labels.add(labelState);
 		targetParam.setLabels(labels);

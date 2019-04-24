@@ -54,8 +54,8 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput.CmdExecuteOutput.H
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput.GenericExecute;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.entity.client.ExtClient;
+import com.antheminc.oss.nimbus.support.CommandUtils;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
-import com.antheminc.oss.nimbus.test.domain.support.utils.CommandUtils;
 import com.antheminc.oss.nimbus.test.scenarios.repo.remote.core.SampleRemoteRepo;
 import com.antheminc.oss.nimbus.test.scenarios.repo.remote.core.SampleRemoteRepo.SampleRepoNested;
 import com.antheminc.oss.nimbus.test.scenarios.repo.remote.core.SampleRemoteRepo2;

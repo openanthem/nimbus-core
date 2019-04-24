@@ -68,7 +68,7 @@ export const inputMaskElement: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "570",
     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/testMask",
     "type": {

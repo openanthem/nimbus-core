@@ -40,11 +40,11 @@ import { WebContentSvc } from '../../../services/content-management.service';
                 <ng-template ngFor let-field [ngForOf]="element?.type?.model?.params">
                     <!-- FieldValue-->
                     <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
-                        <nm-card-details-field [element]="field" [(value)]="field.leafState" [ngClass]="field.config.uiStyles.attributes.cssClass" [hidden]="!field.visible"></nm-card-details-field>
+                        <nm-card-details-field id="{{field.config?.code}}" [element]="field" [(value)]="field.leafState" [ngClass]="field.config.uiStyles.attributes.cssClass" [hidden]="!field.visible"></nm-card-details-field>
                     </ng-template>
                     <!-- Paragraph -->
                     <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.paragraph.toString()">
-                        <nm-paragraph [element]="field" [ngClass]="field.config.uiStyles.attributes.cssClass" [hidden]="!field.visible"></nm-paragraph>
+                        <nm-paragraph id="{{field.config?.code}}" [element]="field" [ngClass]="field.config.uiStyles.attributes.cssClass" [hidden]="!field.visible"></nm-paragraph>
                     </ng-template>
                 </ng-template>
             </div>

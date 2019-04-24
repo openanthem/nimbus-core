@@ -62,7 +62,7 @@ export const calendarElement: any = {
     "enabled": false,
     "visible": false,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "889",
     "path": "/petassessmentview/vpMain/vtMain/vsPetGeneralAssessment/petForm/petFormBody/petAssessment_Accordion_tab/q1/q1_b",
     "type": {},

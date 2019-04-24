@@ -59,7 +59,7 @@ export const buttonPrimaryElement:any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "585",
     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner/search",
     "type": {
@@ -122,7 +122,7 @@ export const buttonPrimaryElement:any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "586",
     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner/addOwner",
     "type": {
@@ -185,7 +185,7 @@ export const buttonPrimaryElement:any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "587",
     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner/deleteOwner",
     "type": {
@@ -248,7 +248,7 @@ export const buttonPrimaryElement:any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "588",
     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner/validationButton",
     "type": {
@@ -311,7 +311,7 @@ export const buttonPrimaryElement:any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "589",
     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner/printButton",
     "type": {
@@ -374,7 +374,7 @@ export const buttonPrimaryElement:any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "590",
     "path": "/ownerlandingview/vpOwners/vtOwners/vsSearchOwnerCriteria/vfSearchOwnerCriteria/vbgSearchOwner/plainButton",
     "type": {

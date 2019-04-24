@@ -54,7 +54,7 @@ export const cardDetailsFieldGroupElement: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "3750",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/fgCardBodyCase1",
     "type": {
@@ -101,7 +101,7 @@ export const cardDetailsFieldGroupElement: any = {
                     "enabled": true,
                     "visible": true,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "3752",
                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/fgCardBodyCase1/id",
                     "type": {
@@ -170,7 +170,7 @@ export const cardDetailsFieldGroupElement: any = {
       "enabled": true,
       "visible": true,
       "activeValidationGroups": [],
-      "collectionParams": [],
+      
       "configId": "3752",
       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/fgCardBodyCase1/id",
       "type": {
