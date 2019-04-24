@@ -176,7 +176,7 @@ describe('FormElementsService', () => {
     it('_getTypeSafeLeafState() should return leafState if ParamUtils.isKnownDateType() returns false for gridParam', async(() => {
         spyOn(ParamUtils, 'isKnownDateType').and.returnValue(false);
         formBuilderServiceElements[0].alias = 'Grid';
-        formBuilderServiceElements[0].gridData = { leafState: [1] }
+        formBuilderServiceElements[0].tableBasedData = { values: [1] }
         expect(service._getTypeSafeLeafState(formBuilderServiceElements[0])).toEqual([1]);
     }));
 

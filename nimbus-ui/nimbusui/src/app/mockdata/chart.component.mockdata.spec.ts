@@ -68,7 +68,7 @@ export const chartMockParam: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "57258",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/barGraph",
     "type": {

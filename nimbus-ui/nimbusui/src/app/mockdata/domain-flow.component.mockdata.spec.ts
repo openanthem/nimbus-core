@@ -20,7 +20,7 @@ export const domainAccordions = [
         "enabled": true,
         "visible": false,
         "activeValidationGroups": [],
-        "collectionParams": [],
+        
         "configId": "14455",
         "path": "/home/vpHome/vmAddNote",
         "type": {
@@ -115,7 +115,7 @@ export const domainAccordions = [
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "14452",
     "path": "/home/vpHome/vsActionTray",
     "type": {
@@ -135,7 +135,7 @@ export const domainAccordions = [
         "enabled": true,
         "visible": false,
         "activeValidationGroups": [],
-        "collectionParams": [],
+        
         "configId": "14455",
         "path": "/home/vpHome/vmAddNote",
         "type": {
@@ -198,7 +198,7 @@ export const domainAccordions = [
               "enabled": true,
               "visible": true,
               "activeValidationGroups": [],
-              "collectionParams": [],
+              
               "configId": "1420",
               "path": "/home/vpHome",
               "type": {
@@ -247,7 +247,7 @@ export const domainAccordions = [
                               "enabled": true,
                               "visible": true,
                               "activeValidationGroups": [],
-                              "collectionParams": [],
+                              
                               "configId": "1422",
                               "path": "/home/vpHome/vsHomeHeader",
                               "type": {
@@ -321,7 +321,7 @@ export const domainAccordions = [
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "1424",
                                               "path": "/home/vpHome/vsHomeHeader/linkHomeLogo",
                                               "type": {
@@ -386,7 +386,7 @@ export const domainAccordions = [
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "1425",
                                               "path": "/home/vpHome/vsHomeHeader/title",
                                               "type": {
@@ -462,7 +462,7 @@ export const domainAccordions = [
                               "enabled": true,
                               "visible": true,
                               "activeValidationGroups": [],
-                              "collectionParams": [],
+                              
                               "configId": "1426",
                               "path": "/home/vpHome/vsHomeLeftBar",
                               "type": {
@@ -508,7 +508,7 @@ export const domainAccordions = [
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "1428",
                                               "path": "/home/vpHome/vsHomeLeftBar/home",
                                               "type": {
@@ -571,7 +571,7 @@ export const domainAccordions = [
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "1429",
                                               "path": "/home/vpHome/vsHomeLeftBar/vmpVisits",
                                               "type": {
@@ -617,7 +617,7 @@ export const domainAccordions = [
                                                               "enabled": true,
                                                               "visible": true,
                                                               "activeValidationGroups": [],
-                                                              "collectionParams": [],
+                                                              
                                                               "configId": "1431",
                                                               "path": "/home/vpHome/vsHomeLeftBar/vmpVisits/visits",
                                                               "type": {
@@ -675,7 +675,7 @@ export const domainAccordions = [
                                                               "enabled": true,
                                                               "visible": true,
                                                               "activeValidationGroups": [],
-                                                              "collectionParams": [],
+                                                              
                                                               "configId": "1432",
                                                               "path": "/home/vpHome/vsHomeLeftBar/vmpVisits/visitsBulkAction",
                                                               "type": {
@@ -746,7 +746,7 @@ export const domainAccordions = [
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "1433",
                                               "path": "/home/vpHome/vsHomeLeftBar/vets",
                                               "type": {
@@ -804,7 +804,7 @@ export const domainAccordions = [
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "1434",
                                               "path": "/home/vpHome/vsHomeLeftBar/owners",
                                               "type": {
@@ -862,7 +862,7 @@ export const domainAccordions = [
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "1435",
                                               "path": "/home/vpHome/vsHomeLeftBar/pets",
                                               "type": {
@@ -920,7 +920,7 @@ export const domainAccordions = [
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "1436",
                                               "path": "/home/vpHome/vsHomeLeftBar/notes",
                                               "type": {
@@ -978,7 +978,7 @@ export const domainAccordions = [
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "1437",
                                               "path": "/home/vpHome/vsHomeLeftBar/treegrid",
                                               "type": {

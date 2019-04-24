@@ -55,7 +55,7 @@ export const comboBoxElement: any = {
     "enabled": false,
     "visible": false,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "895",
     "path": "/petassessmentview/vpMain/vtMain/vsPetGeneralAssessment/petForm/petFormBody/petAssessment_Accordion_tab/q2/q2_b",
     "type": {

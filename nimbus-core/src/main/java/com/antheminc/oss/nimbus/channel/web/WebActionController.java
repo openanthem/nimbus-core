@@ -185,7 +185,7 @@ public class WebActionController {
 		return false;
 	}
 	
-	@RequestMapping({"/login/*"})
+	@RequestMapping(value = {"/login/*"}, method = RequestMethod.GET)
 	public ResponseEntity<?> login(){
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}

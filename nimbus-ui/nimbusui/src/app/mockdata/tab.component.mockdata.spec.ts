@@ -50,7 +50,7 @@ export const tabElement: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "564",
     "path": "/ownerlandingview/vpOwners/vtOwners/tab",
     "type": {
@@ -59,7 +59,7 @@ export const tabElement: any = {
                 "enabled": true,
                 "visible": true,
                 "activeValidationGroups": [],
-                "collectionParams": [],
+                
                 "configId": "568",
                 "path": "/ownerlandingview/vpOwners/vtOwners/tab/panel1",
                 "type": {
@@ -68,7 +68,7 @@ export const tabElement: any = {
                             "enabled": true,
                             "visible": true,
                             "activeValidationGroups": [],
-                            "collectionParams": [],
+                            
                             "configId": "572",
                             "path": "/ownerlandingview/vpOwners/vtOwners/tab/panel1/panel2",
                             "type": {
@@ -77,7 +77,7 @@ export const tabElement: any = {
                                         "enabled": true,
                                         "visible": true,
                                         "activeValidationGroups": [],
-                                        "collectionParams": [],
+                                        
                                         "configId": "576",
                                         "path": "/ownerlandingview/vpOwners/vtOwners/tab/panel1/panel2/panel3",
                                         "type": {
@@ -86,7 +86,7 @@ export const tabElement: any = {
                                                     "enabled": true,
                                                     "visible": true,
                                                     "activeValidationGroups": [],
-                                                    "collectionParams": [],
+                                                    
                                                     "configId": "582",
                                                     "path": "/ownerlandingview/vpOwners/vtOwners/tab/panel1/panel2/panel3/tabContent2",
                                                     "type": {
@@ -95,7 +95,7 @@ export const tabElement: any = {
                                                                 "enabled": true,
                                                                 "visible": true,
                                                                 "activeValidationGroups": [],
-                                                                "collectionParams": [],
+                                                                
                                                                 "configId": "581",
                                                                 "path": "/ownerlandingview/vpOwners/vtOwners/tab/panel1/panel2/panel3/tabContent2/testPara2",
                                                                 "type": {
@@ -148,7 +148,7 @@ export const tabElement: any = {
                 "enabled": true,
                 "visible": true,
                 "activeValidationGroups": [],
-                "collectionParams": [],
+                
                 "configId": "585",
                 "path": "/ownerlandingview/vpOwners/vtOwners/tab/panel2",
                 "type": {
@@ -157,7 +157,7 @@ export const tabElement: any = {
                             "enabled": true,
                             "visible": true,
                             "activeValidationGroups": [],
-                            "collectionParams": [],
+                            
                             "configId": "582",
                             "path": "/ownerlandingview/vpOwners/vtOwners/tab/panel2/tabContent2",
                             "type": {
@@ -166,7 +166,7 @@ export const tabElement: any = {
                                         "enabled": true,
                                         "visible": true,
                                         "activeValidationGroups": [],
-                                        "collectionParams": [],
+                                        
                                         "configId": "581",
                                         "path": "/ownerlandingview/vpOwners/vtOwners/tab/panel2/tabContent2/testPara2",
                                         "type": {

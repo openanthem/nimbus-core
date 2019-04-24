@@ -57,7 +57,7 @@ export const accordionElementWithForm: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "48264",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/Testform/patientName1",
     "type": {
@@ -114,7 +114,7 @@ export const accordionElementWithForm: any = {
                     "enabled": true,
                     "visible": true,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "48266",
                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/Testform/patientName1/petName_Accordion_tab1",
                     "type": {
@@ -155,7 +155,7 @@ export const accordionElementWithForm: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "48268",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/Testform/patientName1/petName_Accordion_tab1/testingTab",
                                     "type": {
@@ -226,7 +226,7 @@ export const accordionElementWithForm: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "48269",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/Testform/patientName1/petName_Accordion_tab1/question123",
                                     "type": {
@@ -284,7 +284,7 @@ export const accordionElementWithForm: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "48270",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/Testform/patientName1/petName_Accordion_tab1/txt1",
                                     "type": {
@@ -361,7 +361,7 @@ export const accordionElementWithForm: any = {
       "enabled": true,
       "visible": true,
       "activeValidationGroups": [],
-      "collectionParams": [],
+      
       "configId": "49992",
       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1",
       "type": {
@@ -417,7 +417,7 @@ export const accordionElementWithForm: any = {
                       "enabled": true,
                       "visible": true,
                       "activeValidationGroups": [],
-                      "collectionParams": [],
+                      
                       "configId": "49994",
                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1",
                       "type": {
@@ -427,7 +427,7 @@ export const accordionElementWithForm: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "49996",
                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/testingTab",
                                       "type": {
@@ -449,7 +449,7 @@ export const accordionElementWithForm: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "49997",
                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/question123",
                                       "type": {
@@ -471,7 +471,7 @@ export const accordionElementWithForm: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "49998",
                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/txt1",
                                       "type": {
@@ -488,7 +488,7 @@ export const accordionElementWithForm: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "49999",
                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/petForm_1a1",
                                       "type": {
@@ -510,7 +510,7 @@ export const accordionElementWithForm: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "50000",
                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/headerCallSection1",
                                       "type": {
@@ -568,7 +568,7 @@ export const accordionElementWithForm: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "50001",
                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vbg1",
                                       "type": {
@@ -578,7 +578,7 @@ export const accordionElementWithForm: any = {
                                                       "enabled": true,
                                                       "visible": true,
                                                       "activeValidationGroups": [],
-                                                      "collectionParams": [],
+                                                      
                                                       "configId": "50003",
                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vbg1/cancel",
                                                       "type": {
@@ -600,7 +600,7 @@ export const accordionElementWithForm: any = {
                                                       "enabled": true,
                                                       "visible": true,
                                                       "activeValidationGroups": [],
-                                                      "collectionParams": [],
+                                                      
                                                       "configId": "50004",
                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vbg1/ok",
                                                       "type": {
@@ -668,7 +668,7 @@ export const accordionElementWithForm: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "50005",
                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/create",
                                       "type": {
@@ -765,12 +765,13 @@ export const accordionElementWithForm: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [
+                                      "tableBasedData": {
+                                        "collectionParams": [
                                           {
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "50023",
                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/vlmCaseItemLinks",
                                               "type": {
@@ -780,7 +781,7 @@ export const accordionElementWithForm: any = {
                                                               "enabled": true,
                                                               "visible": true,
                                                               "activeValidationGroups": [],
-                                                              "collectionParams": [],
+                                                              
                                                               "configId": "50025",
                                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/vlmCaseItemLinks/edit",
                                                               "type": {
@@ -802,7 +803,7 @@ export const accordionElementWithForm: any = {
                                                               "enabled": true,
                                                               "visible": true,
                                                               "activeValidationGroups": [],
-                                                              "collectionParams": [],
+                                                              
                                                               "configId": "50026",
                                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/vlmCaseItemLinks/ownerInfo",
                                                               "type": {
@@ -832,7 +833,7 @@ export const accordionElementWithForm: any = {
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "50027",
                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/expandedRowContent",
                                               "type": {
@@ -842,7 +843,7 @@ export const accordionElementWithForm: any = {
                                                               "enabled": true,
                                                               "visible": true,
                                                               "activeValidationGroups": [],
-                                                              "collectionParams": [],
+                                                              
                                                               "configId": "50033",
                                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/expandedRowContent/pets",
                                                               "type": {
@@ -859,7 +860,7 @@ export const accordionElementWithForm: any = {
                                                                   "numberOfElements": 0,
                                                                   "first": true
                                                               },
-                                                              "gridData": {
+                                                              "tableBasedData": {
                                                                   "collectionParams": []
                                                               },
                                                               "message": [],
@@ -884,7 +885,7 @@ export const accordionElementWithForm: any = {
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "50023",
                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/vlmCaseItemLinks",
                                               "type": {
@@ -894,7 +895,7 @@ export const accordionElementWithForm: any = {
                                                               "enabled": true,
                                                               "visible": true,
                                                               "activeValidationGroups": [],
-                                                              "collectionParams": [],
+                                                              
                                                               "configId": "50025",
                                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/vlmCaseItemLinks/edit",
                                                               "type": {
@@ -916,7 +917,7 @@ export const accordionElementWithForm: any = {
                                                               "enabled": true,
                                                               "visible": true,
                                                               "activeValidationGroups": [],
-                                                              "collectionParams": [],
+                                                              
                                                               "configId": "50026",
                                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/vlmCaseItemLinks/ownerInfo",
                                                               "type": {
@@ -946,7 +947,7 @@ export const accordionElementWithForm: any = {
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "50027",
                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/expandedRowContent",
                                               "type": {
@@ -956,7 +957,7 @@ export const accordionElementWithForm: any = {
                                                               "enabled": true,
                                                               "visible": true,
                                                               "activeValidationGroups": [],
-                                                              "collectionParams": [],
+                                                              
                                                               "configId": "50033",
                                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/expandedRowContent/pets",
                                                               "type": {
@@ -973,7 +974,7 @@ export const accordionElementWithForm: any = {
                                                                   "numberOfElements": 0,
                                                                   "first": true
                                                               },
-                                                              "gridData": {
+                                                              "tableBasedData": {
                                                                   "collectionParams": []
                                                               },
                                                               "message": [],
@@ -998,7 +999,7 @@ export const accordionElementWithForm: any = {
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "50023",
                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/vlmCaseItemLinks",
                                               "type": {
@@ -1008,7 +1009,7 @@ export const accordionElementWithForm: any = {
                                                               "enabled": true,
                                                               "visible": true,
                                                               "activeValidationGroups": [],
-                                                              "collectionParams": [],
+                                                              
                                                               "configId": "50025",
                                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/vlmCaseItemLinks/edit",
                                                               "type": {
@@ -1030,7 +1031,7 @@ export const accordionElementWithForm: any = {
                                                               "enabled": true,
                                                               "visible": true,
                                                               "activeValidationGroups": [],
-                                                              "collectionParams": [],
+                                                              
                                                               "configId": "50026",
                                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/vlmCaseItemLinks/ownerInfo",
                                                               "type": {
@@ -1060,7 +1061,7 @@ export const accordionElementWithForm: any = {
                                               "enabled": true,
                                               "visible": true,
                                               "activeValidationGroups": [],
-                                              "collectionParams": [],
+                                              
                                               "configId": "50027",
                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/expandedRowContent",
                                               "type": {
@@ -1070,7 +1071,7 @@ export const accordionElementWithForm: any = {
                                                               "enabled": true,
                                                               "visible": true,
                                                               "activeValidationGroups": [],
-                                                              "collectionParams": [],
+                                                              
                                                               "configId": "50033",
                                                               "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/expandedRowContent/pets",
                                                               "type": {
@@ -1087,7 +1088,7 @@ export const accordionElementWithForm: any = {
                                                                   "numberOfElements": 0,
                                                                   "first": true
                                                               },
-                                                              "gridData": {
+                                                              "tableBasedData": {
                                                                   "collectionParams": []
                                                               },
                                                               "message": [],
@@ -1109,6 +1110,86 @@ export const accordionElementWithForm: any = {
                                               "elemLabels": {}
                                           }
                                       ],
+                                        "values": [
+                                            {
+                                                "id": 52,
+                                                "firstName": "test",
+                                                "lastName": "1",
+                                                "shouldUseNickname": false,
+                                                "ownerCity": "",
+                                                "telephone": "1231231231",
+                                                "vlmCaseItemLinks": {},
+                                                "expandedRowContent": {
+                                                    "pets": []
+                                                },
+                                                "elemId": "0"
+                                            },
+                                            {
+                                                "id": 51,
+                                                "firstName": "test",
+                                                "lastName": "1",
+                                                "shouldUseNickname": false,
+                                                "ownerCity": "",
+                                                "telephone": "1231231231",
+                                                "vlmCaseItemLinks": {},
+                                                "expandedRowContent": {
+                                                    "pets": []
+                                                },
+                                                "elemId": "1"
+                                            },
+                                            {
+                                                "id": 53,
+                                                "firstName": "test",
+                                                "lastName": "123",
+                                                "shouldUseNickname": false,
+                                                "ownerCity": "",
+                                                "telephone": "1231231231",
+                                                "vlmCaseItemLinks": {},
+                                                "expandedRowContent": {
+                                                    "pets": []
+                                                },
+                                                "elemId": "2"
+                                            }
+                                        ],
+                                        "stateMap": [
+                                            {
+                                                "id": {},
+                                                "firstName": {},
+                                                "lastName": {},
+                                                "nickname": {},
+                                                "shouldUseNickname": {},
+                                                "status": {},
+                                                "ownerCity": {},
+                                                "telephone": {},
+                                                "vlmCaseItemLinks": {},
+                                                "expandedRowContent": {}
+                                            },
+                                            {
+                                                "id": {},
+                                                "firstName": {},
+                                                "lastName": {},
+                                                "nickname": {},
+                                                "shouldUseNickname": {},
+                                                "status": {},
+                                                "ownerCity": {},
+                                                "telephone": {},
+                                                "vlmCaseItemLinks": {},
+                                                "expandedRowContent": {}
+                                            },
+                                            {
+                                                "id": {},
+                                                "firstName": {},
+                                                "lastName": {},
+                                                "nickname": {},
+                                                "shouldUseNickname": {},
+                                                "status": {},
+                                                "ownerCity": {},
+                                                "telephone": {},
+                                                "vlmCaseItemLinks": {},
+                                                "expandedRowContent": {}
+                                            }
+                                        ]
+                                      },
                                       "configId": "50010",
                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1",
                                       "type": {
@@ -1118,7 +1199,7 @@ export const accordionElementWithForm: any = {
                                                       "enabled": true,
                                                       "visible": true,
                                                       "activeValidationGroups": [],
-                                                      "collectionParams": [],
+                                                      
                                                       "configId": "50013",
                                                       "collectionElem": true,
                                                       "elemId": "0",
@@ -1130,7 +1211,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50015",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/id",
                                                                       "type": {},
@@ -1145,7 +1226,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50016",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/firstName",
                                                                       "type": {
@@ -1169,7 +1250,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50017",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/lastName",
                                                                       "type": {
@@ -1193,7 +1274,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50018",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/nickname",
                                                                       "type": {
@@ -1215,7 +1296,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50019",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/shouldUseNickname",
                                                                       "type": {},
@@ -1230,7 +1311,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50020",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/status",
                                                                       "type": {
@@ -1252,7 +1333,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50021",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/ownerCity",
                                                                       "type": {
@@ -1276,7 +1357,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50022",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/telephone",
                                                                       "type": {
@@ -1300,7 +1381,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50023",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/vlmCaseItemLinks",
                                                                       "type": {
@@ -1310,7 +1391,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50025",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/vlmCaseItemLinks/edit",
                                                                                       "type": {
@@ -1332,7 +1413,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50026",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/vlmCaseItemLinks/ownerInfo",
                                                                                       "type": {
@@ -1362,7 +1443,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50027",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/expandedRowContent",
                                                                       "type": {
@@ -1372,7 +1453,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50033",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/0/expandedRowContent/pets",
                                                                                       "type": {
@@ -1389,7 +1470,7 @@ export const accordionElementWithForm: any = {
                                                                                           "numberOfElements": 0,
                                                                                           "first": true
                                                                                       },
-                                                                                      "gridData": {
+                                                                                      "tableBasedData": {
                                                                                           "collectionParams": []
                                                                                       },
                                                                                       "message": [],
@@ -1448,7 +1529,7 @@ export const accordionElementWithForm: any = {
                                                       "enabled": true,
                                                       "visible": true,
                                                       "activeValidationGroups": [],
-                                                      "collectionParams": [],
+                                                      
                                                       "configId": "50013",
                                                       "collectionElem": true,
                                                       "elemId": "1",
@@ -1460,7 +1541,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50015",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/id",
                                                                       "type": {},
@@ -1475,7 +1556,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50016",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/firstName",
                                                                       "type": {
@@ -1499,7 +1580,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50017",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/lastName",
                                                                       "type": {
@@ -1523,7 +1604,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50018",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/nickname",
                                                                       "type": {
@@ -1545,7 +1626,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50019",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/shouldUseNickname",
                                                                       "type": {},
@@ -1560,7 +1641,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50020",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/status",
                                                                       "type": {
@@ -1582,7 +1663,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50021",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/ownerCity",
                                                                       "type": {
@@ -1606,7 +1687,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50022",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/telephone",
                                                                       "type": {
@@ -1630,7 +1711,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50023",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/vlmCaseItemLinks",
                                                                       "type": {
@@ -1640,7 +1721,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50025",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/vlmCaseItemLinks/edit",
                                                                                       "type": {
@@ -1662,7 +1743,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50026",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/vlmCaseItemLinks/ownerInfo",
                                                                                       "type": {
@@ -1692,7 +1773,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50027",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/expandedRowContent",
                                                                       "type": {
@@ -1702,7 +1783,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50033",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/1/expandedRowContent/pets",
                                                                                       "type": {
@@ -1719,7 +1800,7 @@ export const accordionElementWithForm: any = {
                                                                                           "numberOfElements": 0,
                                                                                           "first": true
                                                                                       },
-                                                                                      "gridData": {
+                                                                                      "tableBasedData": {
                                                                                           "collectionParams": []
                                                                                       },
                                                                                       "message": [],
@@ -1778,7 +1859,7 @@ export const accordionElementWithForm: any = {
                                                       "enabled": true,
                                                       "visible": true,
                                                       "activeValidationGroups": [],
-                                                      "collectionParams": [],
+                                                      
                                                       "configId": "50013",
                                                       "collectionElem": true,
                                                       "elemId": "2",
@@ -1790,7 +1871,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50015",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/id",
                                                                       "type": {},
@@ -1805,7 +1886,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50016",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/firstName",
                                                                       "type": {
@@ -1829,7 +1910,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50017",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/lastName",
                                                                       "type": {
@@ -1853,7 +1934,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50018",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/nickname",
                                                                       "type": {
@@ -1875,7 +1956,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50019",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/shouldUseNickname",
                                                                       "type": {},
@@ -1890,7 +1971,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50020",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/status",
                                                                       "type": {
@@ -1912,7 +1993,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50021",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/ownerCity",
                                                                       "type": {
@@ -1936,7 +2017,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50022",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/telephone",
                                                                       "type": {
@@ -1960,7 +2041,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50023",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/vlmCaseItemLinks",
                                                                       "type": {
@@ -1970,7 +2051,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50025",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/vlmCaseItemLinks/edit",
                                                                                       "type": {
@@ -1992,7 +2073,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50026",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/vlmCaseItemLinks/ownerInfo",
                                                                                       "type": {
@@ -2022,7 +2103,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50027",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/expandedRowContent",
                                                                       "type": {
@@ -2032,7 +2113,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50033",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/owners1/2/expandedRowContent/pets",
                                                                                       "type": {
@@ -2049,7 +2130,7 @@ export const accordionElementWithForm: any = {
                                                                                           "numberOfElements": 0,
                                                                                           "first": true
                                                                                       },
-                                                                                      "gridData": {
+                                                                                      "tableBasedData": {
                                                                                           "collectionParams": []
                                                                                       },
                                                                                       "message": [],
@@ -2116,88 +2197,6 @@ export const accordionElementWithForm: any = {
                                           "numberOfElements": 3,
                                           "first": true
                                       },
-                                      "gridData": {
-                                          "collectionParams": [],
-                                          "leafState": [
-                                              {
-                                                  "id": 52,
-                                                  "firstName": "test",
-                                                  "lastName": "1",
-                                                  "shouldUseNickname": false,
-                                                  "ownerCity": "",
-                                                  "telephone": "1231231231",
-                                                  "vlmCaseItemLinks": {},
-                                                  "expandedRowContent": {
-                                                      "pets": []
-                                                  },
-                                                  "elemId": "0"
-                                              },
-                                              {
-                                                  "id": 51,
-                                                  "firstName": "test",
-                                                  "lastName": "1",
-                                                  "shouldUseNickname": false,
-                                                  "ownerCity": "",
-                                                  "telephone": "1231231231",
-                                                  "vlmCaseItemLinks": {},
-                                                  "expandedRowContent": {
-                                                      "pets": []
-                                                  },
-                                                  "elemId": "1"
-                                              },
-                                              {
-                                                  "id": 53,
-                                                  "firstName": "test",
-                                                  "lastName": "123",
-                                                  "shouldUseNickname": false,
-                                                  "ownerCity": "",
-                                                  "telephone": "1231231231",
-                                                  "vlmCaseItemLinks": {},
-                                                  "expandedRowContent": {
-                                                      "pets": []
-                                                  },
-                                                  "elemId": "2"
-                                              }
-                                          ],
-                                          "stateMap": [
-                                              {
-                                                  "id": {},
-                                                  "firstName": {},
-                                                  "lastName": {},
-                                                  "nickname": {},
-                                                  "shouldUseNickname": {},
-                                                  "status": {},
-                                                  "ownerCity": {},
-                                                  "telephone": {},
-                                                  "vlmCaseItemLinks": {},
-                                                  "expandedRowContent": {}
-                                              },
-                                              {
-                                                  "id": {},
-                                                  "firstName": {},
-                                                  "lastName": {},
-                                                  "nickname": {},
-                                                  "shouldUseNickname": {},
-                                                  "status": {},
-                                                  "ownerCity": {},
-                                                  "telephone": {},
-                                                  "vlmCaseItemLinks": {},
-                                                  "expandedRowContent": {}
-                                              },
-                                              {
-                                                  "id": {},
-                                                  "firstName": {},
-                                                  "lastName": {},
-                                                  "nickname": {},
-                                                  "shouldUseNickname": {},
-                                                  "status": {},
-                                                  "ownerCity": {},
-                                                  "telephone": {},
-                                                  "vlmCaseItemLinks": {},
-                                                  "expandedRowContent": {}
-                                              }
-                                          ]
-                                      },
                                       "message": [],
                                       "values": [],
                                       "labels": [
@@ -2253,7 +2252,7 @@ export const accordionElementWithForm: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "50040",
                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdOwnerInfo1",
                                       "type": {
@@ -2263,7 +2262,7 @@ export const accordionElementWithForm: any = {
                                                       "enabled": true,
                                                       "visible": true,
                                                       "activeValidationGroups": [],
-                                                      "collectionParams": [],
+                                                      
                                                       "configId": "50042",
                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdOwnerInfo1/vcdbOwner",
                                                       "type": {
@@ -2273,7 +2272,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50044",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdOwnerInfo1/vcdbOwner/firstName",
                                                                       "type": {
@@ -2297,7 +2296,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50045",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdOwnerInfo1/vcdbOwner/lastName",
                                                                       "type": {
@@ -2321,7 +2320,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50046",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdOwnerInfo1/vcdbOwner/divider2",
                                                                       "type": {
@@ -2338,7 +2337,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50047",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdOwnerInfo1/vcdbOwner/addressGroup",
                                                                       "type": {
@@ -2348,7 +2347,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50049",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdOwnerInfo1/vcdbOwner/addressGroup/address",
                                                                                       "type": {
@@ -2372,7 +2371,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50050",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdOwnerInfo1/vcdbOwner/addressGroup/city",
                                                                                       "type": {
@@ -2396,7 +2395,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50051",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdOwnerInfo1/vcdbOwner/addressGroup/state",
                                                                                       "type": {
@@ -2420,7 +2419,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50052",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdOwnerInfo1/vcdbOwner/addressGroup/zip",
                                                                                       "type": {
@@ -2457,7 +2456,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50053",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdOwnerInfo1/vcdbOwner/telephone",
                                                                       "type": {
@@ -2552,7 +2551,7 @@ export const accordionElementWithForm: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "50058",
                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1",
                                       "type": {
@@ -2562,7 +2561,7 @@ export const accordionElementWithForm: any = {
                                                       "enabled": true,
                                                       "visible": true,
                                                       "activeValidationGroups": [],
-                                                      "collectionParams": [],
+                                                      
                                                       "configId": "50061",
                                                       "collectionElem": true,
                                                       "elemId": "0",
@@ -2574,7 +2573,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50063",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/0/vcdOwnerInfo",
                                                                       "type": {
@@ -2584,7 +2583,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50042",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/0/vcdOwnerInfo/vcdbOwner",
                                                                                       "type": {
@@ -2594,7 +2593,7 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
+                                                                                                      
                                                                                                       "configId": "50044",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/0/vcdOwnerInfo/vcdbOwner/firstName",
                                                                                                       "type": {
@@ -2618,7 +2617,7 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
+                                                                                                      
                                                                                                       "configId": "50045",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/0/vcdOwnerInfo/vcdbOwner/lastName",
                                                                                                       "type": {
@@ -2642,7 +2641,7 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
+                                                                                                      
                                                                                                       "configId": "50046",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/0/vcdOwnerInfo/vcdbOwner/divider2",
                                                                                                       "type": {
@@ -2659,7 +2658,7 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
+                                                                                                      
                                                                                                       "configId": "50047",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/0/vcdOwnerInfo/vcdbOwner/addressGroup",
                                                                                                       "type": {
@@ -2669,7 +2668,7 @@ export const accordionElementWithForm: any = {
                                                                                                                       "enabled": true,
                                                                                                                       "visible": true,
                                                                                                                       "activeValidationGroups": [],
-                                                                                                                      "collectionParams": [],
+                                                                                                                      
                                                                                                                       "configId": "50049",
                                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/0/vcdOwnerInfo/vcdbOwner/addressGroup/address",
                                                                                                                       "type": {
@@ -2693,7 +2692,7 @@ export const accordionElementWithForm: any = {
                                                                                                                       "enabled": true,
                                                                                                                       "visible": true,
                                                                                                                       "activeValidationGroups": [],
-                                                                                                                      "collectionParams": [],
+                                                                                                                      
                                                                                                                       "configId": "50050",
                                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/0/vcdOwnerInfo/vcdbOwner/addressGroup/city",
                                                                                                                       "type": {
@@ -2717,7 +2716,7 @@ export const accordionElementWithForm: any = {
                                                                                                                       "enabled": true,
                                                                                                                       "visible": true,
                                                                                                                       "activeValidationGroups": [],
-                                                                                                                      "collectionParams": [],
+                                                                                                                      
                                                                                                                       "configId": "50051",
                                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/0/vcdOwnerInfo/vcdbOwner/addressGroup/state",
                                                                                                                       "type": {
@@ -2741,7 +2740,7 @@ export const accordionElementWithForm: any = {
                                                                                                                       "enabled": true,
                                                                                                                       "visible": true,
                                                                                                                       "activeValidationGroups": [],
-                                                                                                                      "collectionParams": [],
+                                                                                                                      
                                                                                                                       "configId": "50052",
                                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/0/vcdOwnerInfo/vcdbOwner/addressGroup/zip",
                                                                                                                       "type": {
@@ -2778,7 +2777,7 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
+                                                                                                      
                                                                                                       "configId": "50053",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/0/vcdOwnerInfo/vcdbOwner/telephone",
                                                                                                       "type": {
@@ -2831,7 +2830,7 @@ export const accordionElementWithForm: any = {
                                                       "enabled": true,
                                                       "visible": true,
                                                       "activeValidationGroups": [],
-                                                      "collectionParams": [],
+                                                      
                                                       "configId": "50061",
                                                       "collectionElem": true,
                                                       "elemId": "1",
@@ -2843,7 +2842,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50063",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/1/vcdOwnerInfo",
                                                                       "type": {
@@ -2853,7 +2852,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50042",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/1/vcdOwnerInfo/vcdbOwner",
                                                                                       "type": {
@@ -2863,7 +2862,7 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
+                                                                                                      
                                                                                                       "configId": "50044",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/1/vcdOwnerInfo/vcdbOwner/firstName",
                                                                                                       "type": {
@@ -2887,7 +2886,6 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
                                                                                                       "configId": "50045",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/1/vcdOwnerInfo/vcdbOwner/lastName",
                                                                                                       "type": {
@@ -2911,7 +2909,7 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
+                                                                                                      
                                                                                                       "configId": "50046",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/1/vcdOwnerInfo/vcdbOwner/divider2",
                                                                                                       "type": {
@@ -2928,7 +2926,7 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
+                                                                                                      
                                                                                                       "configId": "50047",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/1/vcdOwnerInfo/vcdbOwner/addressGroup",
                                                                                                       "type": {
@@ -2938,7 +2936,7 @@ export const accordionElementWithForm: any = {
                                                                                                                       "enabled": true,
                                                                                                                       "visible": true,
                                                                                                                       "activeValidationGroups": [],
-                                                                                                                      "collectionParams": [],
+                                                                                                                      
                                                                                                                       "configId": "50049",
                                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/1/vcdOwnerInfo/vcdbOwner/addressGroup/address",
                                                                                                                       "type": {
@@ -2962,7 +2960,7 @@ export const accordionElementWithForm: any = {
                                                                                                                       "enabled": true,
                                                                                                                       "visible": true,
                                                                                                                       "activeValidationGroups": [],
-                                                                                                                      "collectionParams": [],
+                                                                                                                      
                                                                                                                       "configId": "50050",
                                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/1/vcdOwnerInfo/vcdbOwner/addressGroup/city",
                                                                                                                       "type": {
@@ -2986,7 +2984,7 @@ export const accordionElementWithForm: any = {
                                                                                                                       "enabled": true,
                                                                                                                       "visible": true,
                                                                                                                       "activeValidationGroups": [],
-                                                                                                                      "collectionParams": [],
+                                                                                                                      
                                                                                                                       "configId": "50051",
                                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/1/vcdOwnerInfo/vcdbOwner/addressGroup/state",
                                                                                                                       "type": {
@@ -3010,7 +3008,7 @@ export const accordionElementWithForm: any = {
                                                                                                                       "enabled": true,
                                                                                                                       "visible": true,
                                                                                                                       "activeValidationGroups": [],
-                                                                                                                      "collectionParams": [],
+                                                                                                                      
                                                                                                                       "configId": "50052",
                                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/1/vcdOwnerInfo/vcdbOwner/addressGroup/zip",
                                                                                                                       "type": {
@@ -3047,7 +3045,7 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
+                                                                                                      
                                                                                                       "configId": "50053",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/1/vcdOwnerInfo/vcdbOwner/telephone",
                                                                                                       "type": {
@@ -3100,7 +3098,7 @@ export const accordionElementWithForm: any = {
                                                       "enabled": true,
                                                       "visible": true,
                                                       "activeValidationGroups": [],
-                                                      "collectionParams": [],
+                                                      
                                                       "configId": "50061",
                                                       "collectionElem": true,
                                                       "elemId": "2",
@@ -3112,7 +3110,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50063",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/2/vcdOwnerInfo",
                                                                       "type": {
@@ -3122,7 +3120,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": true,
                                                                                       "visible": true,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50042",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/2/vcdOwnerInfo/vcdbOwner",
                                                                                       "type": {
@@ -3132,7 +3130,7 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
+                                                                                                      
                                                                                                       "configId": "50044",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/2/vcdOwnerInfo/vcdbOwner/firstName",
                                                                                                       "type": {
@@ -3156,7 +3154,7 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
+                                                                                                      
                                                                                                       "configId": "50045",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/2/vcdOwnerInfo/vcdbOwner/lastName",
                                                                                                       "type": {
@@ -3180,7 +3178,7 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
+                                                                                                      
                                                                                                       "configId": "50046",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/2/vcdOwnerInfo/vcdbOwner/divider2",
                                                                                                       "type": {
@@ -3197,7 +3195,7 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
+                                                                                                      
                                                                                                       "configId": "50047",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/2/vcdOwnerInfo/vcdbOwner/addressGroup",
                                                                                                       "type": {
@@ -3207,7 +3205,7 @@ export const accordionElementWithForm: any = {
                                                                                                                       "enabled": true,
                                                                                                                       "visible": true,
                                                                                                                       "activeValidationGroups": [],
-                                                                                                                      "collectionParams": [],
+                                                                                                                      
                                                                                                                       "configId": "50049",
                                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/2/vcdOwnerInfo/vcdbOwner/addressGroup/address",
                                                                                                                       "type": {
@@ -3231,7 +3229,7 @@ export const accordionElementWithForm: any = {
                                                                                                                       "enabled": true,
                                                                                                                       "visible": true,
                                                                                                                       "activeValidationGroups": [],
-                                                                                                                      "collectionParams": [],
+                                                                                                                      
                                                                                                                       "configId": "50050",
                                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/2/vcdOwnerInfo/vcdbOwner/addressGroup/city",
                                                                                                                       "type": {
@@ -3255,7 +3253,7 @@ export const accordionElementWithForm: any = {
                                                                                                                       "enabled": true,
                                                                                                                       "visible": true,
                                                                                                                       "activeValidationGroups": [],
-                                                                                                                      "collectionParams": [],
+                                                                                                                      
                                                                                                                       "configId": "50051",
                                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/2/vcdOwnerInfo/vcdbOwner/addressGroup/state",
                                                                                                                       "type": {
@@ -3279,7 +3277,7 @@ export const accordionElementWithForm: any = {
                                                                                                                       "enabled": true,
                                                                                                                       "visible": true,
                                                                                                                       "activeValidationGroups": [],
-                                                                                                                      "collectionParams": [],
+                                                                                                                      
                                                                                                                       "configId": "50052",
                                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/2/vcdOwnerInfo/vcdbOwner/addressGroup/zip",
                                                                                                                       "type": {
@@ -3316,7 +3314,7 @@ export const accordionElementWithForm: any = {
                                                                                                       "enabled": true,
                                                                                                       "visible": true,
                                                                                                       "activeValidationGroups": [],
-                                                                                                      "collectionParams": [],
+                                                                                                      
                                                                                                       "configId": "50053",
                                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vcdgConcerns1/2/vcdOwnerInfo/vcdbOwner/telephone",
                                                                                                       "type": {
@@ -3423,7 +3421,7 @@ export const accordionElementWithForm: any = {
                                       "enabled": true,
                                       "visible": true,
                                       "activeValidationGroups": [],
-                                      "collectionParams": [],
+                                      
                                       "configId": "50064",
                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vfForm1",
                                       "type": {
@@ -3433,7 +3431,7 @@ export const accordionElementWithForm: any = {
                                                       "enabled": true,
                                                       "visible": true,
                                                       "activeValidationGroups": [],
-                                                      "collectionParams": [],
+                                                      
                                                       "configId": "50066",
                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vfForm1/headerCallSection",
                                                       "type": {
@@ -3455,7 +3453,7 @@ export const accordionElementWithForm: any = {
                                                       "enabled": true,
                                                       "visible": true,
                                                       "activeValidationGroups": [],
-                                                      "collectionParams": [],
+                                                      
                                                       "configId": "50067",
                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vfForm1/callSection",
                                                       "type": {
@@ -3465,7 +3463,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50069",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vfForm1/callSection/gridVisibility",
                                                                       "type": {
@@ -3482,7 +3480,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": true,
                                                                       "visible": true,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50070",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vfForm1/callSection/showHistory",
                                                                       "type": {
@@ -3504,7 +3502,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": false,
                                                                       "visible": false,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50071",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vfForm1/callSection/hideHistory",
                                                                       "type": {
@@ -3526,7 +3524,7 @@ export const accordionElementWithForm: any = {
                                                                       "enabled": false,
                                                                       "visible": false,
                                                                       "activeValidationGroups": [],
-                                                                      "collectionParams": [],
+                                                                      
                                                                       "configId": "50072",
                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vfForm1/callSection/gridWrapper",
                                                                       "type": {
@@ -3536,7 +3534,7 @@ export const accordionElementWithForm: any = {
                                                                                       "enabled": false,
                                                                                       "visible": false,
                                                                                       "activeValidationGroups": [],
-                                                                                      "collectionParams": [],
+                                                                                      
                                                                                       "configId": "50074",
                                                                                       "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsPets/patientName1/petName_Accordion_tab1/vfForm1/callSection/gridWrapper/calls",
                                                                                       "type": {
@@ -3553,7 +3551,7 @@ export const accordionElementWithForm: any = {
                                                                                           "numberOfElements": 0,
                                                                                           "first": true
                                                                                       },
-                                                                                      "gridData": {
+                                                                                      "tableBasedData": {
                                                                                           "collectionParams": []
                                                                                       },
                                                                                       "message": [],

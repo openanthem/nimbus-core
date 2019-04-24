@@ -74,7 +74,6 @@ export const textAreaElement: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
     "configId": "786",
     "path": "/petview/vpAddEditPet/vtAddEditPet/vsAddEditPet/vfAddEditPet/noteDescription1",
     "type": {

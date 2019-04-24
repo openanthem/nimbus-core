@@ -104,7 +104,7 @@ export const Homelayout:any = {
                 "enabled": true,
                 "visible": true,
                 "activeValidationGroups": [],
-                "collectionParams": [],
+                
                 "configId": "3923",
                 "path": "/home/vpHome/vsHomeHeader/linkHomeLogo",
                 "type": {

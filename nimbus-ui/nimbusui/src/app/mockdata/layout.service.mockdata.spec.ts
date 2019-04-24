@@ -41,7 +41,7 @@ export const layoutServicePageParam: any = {
   "enabled": true,
   "visible": true,
   "activeValidationGroups": [],
-  "collectionParams": [],
+  
   "configId": "495",
   "path": "/home/vpHome",
   "type": {
@@ -58,7 +58,7 @@ export const layoutServicePageParam: any = {
                   "enabled": true,
                   "visible": true,
                   "activeValidationGroups": [],
-                  "collectionParams": [],
+                  
                   "configId": "497",
                   "path": "/home/vpHome/vsHomeHeader",
                   "type": {
@@ -83,7 +83,7 @@ export const layoutServicePageParam: any = {
                                   "enabled": true,
                                   "visible": true,
                                   "activeValidationGroups": [],
-                                  "collectionParams": [],
+                                  
                                   "configId": "499",
                                   "path": "/home/vpHome/vsHomeHeader/linkHomeLogo",
                                   "type": {

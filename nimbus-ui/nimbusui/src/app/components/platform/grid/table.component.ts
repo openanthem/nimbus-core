@@ -311,6 +311,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                     this.totalRecords = event.page.totalElements;
                     if (event.page.first) {
                         this.updatePageDetailsState();
+                        this.dt.first = 0;
                     }
                 } else {
                     // Client Pagination
