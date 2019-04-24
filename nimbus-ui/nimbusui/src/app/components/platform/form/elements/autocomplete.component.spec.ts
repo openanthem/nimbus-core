@@ -28,7 +28,7 @@ import { of as observableOf, Observable } from 'rxjs';
 import {
     DataTableModule, TreeTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule,
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule,
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, InputMaskModule, TabViewModule, AutoCompleteModule
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, InputMaskModule, TabViewModule, AutoCompleteModule, TooltipModule
 } from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { tabElement } from './../../../../mockdata/tab.component.mockdata.spec';
@@ -209,7 +209,7 @@ const imports = [
     FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule,
     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, TabViewModule, AutoCompleteModule, TreeTableModule,
     FormsModule, ReactiveFormsModule, InputMaskModule, ToastModule, ChartModule, DataTableModule, TableModule,
-    KeyFilterModule, InputSwitchModule, FileUploadModule, AngularSvgIconModule
+    KeyFilterModule, InputSwitchModule, FileUploadModule, AngularSvgIconModule, TooltipModule
 ];
 const providers = [
     { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
