@@ -78,8 +78,13 @@ export interface FooterConfig {
 export interface Layout {
     fixLayout: boolean;
     topBar: TopBarConfig;
-    menu: MenuItem[];
+    menuPanel: MenuPanel;
     footer: FooterConfig;
     actiontray: Param;
     modalList: Param[];
+}
+
+export interface MenuPanel {
+    align: string;
+    menuItems: MenuItem[];
 }

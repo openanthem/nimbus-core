@@ -23,14 +23,13 @@ import { Message } from 'stompjs';
 import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { LayoutService } from '../../services/layout.service';
-import { AppBranding, Layout, LinkConfig, FooterConfig } from '../../model/menu-meta.interface';
+import { AppBranding, Layout, LinkConfig, FooterConfig, MenuPanel } from '../../model/menu-meta.interface';
 import { ExecuteOutput, ModelEvent } from '../../shared/app-config.interface';
 import { Param } from '../../shared/param-state';
 import { AuthenticationService } from '../../services/authentication.service';
 // import { STOMPService } from '../../services/stomp.service';
 import { PageService } from '../../services/page.service';
 import { ServiceConstants } from '../../services/service.constants';
-import { MenuItem } from 'primeng/primeng';
 import { LoggerService } from '../../services/logger.service';
 import { WebContentSvc } from '../../services/content-management.service';
 import { LabelConfig } from './../../shared/param-config';
@@ -52,7 +51,7 @@ export class HomeLayoutCmp {
     public branding: AppBranding;
     public footer: FooterConfig;
     public userName: any;
-    items: MenuItem[];
+    public menuPanel: MenuPanel;
     
 
     public organizations: Param[];
@@ -169,7 +168,7 @@ export class HomeLayoutCmp {
                         }
                         this.topMenuItems = layout.topBar.headerMenus;
                     }
-                    this.items = layout.menu;
+                    this.menuPanel = layout.menuPanel;
                     this.footer = layout.footer;
                 }
                 //this._router.navigate([this.body['defaultFlow']], { relativeTo: this._route });
