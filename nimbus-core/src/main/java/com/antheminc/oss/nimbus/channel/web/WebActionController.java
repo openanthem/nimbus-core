@@ -103,8 +103,6 @@ public class WebActionController {
 	
 	@Autowired WebCommandDispatcher dispatcher;
 	
-	@Autowired FileImportGateway fileImportGateway;
-	
 	@Autowired ExecutionContextLoader ctxLoader;
 	
 	@Autowired WebCommandBuilder builder;

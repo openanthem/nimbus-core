@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
  * <p> A gateway implementation to handle data file uploads.
  * 
  * @author Tony Lopez
- * @since 2.0
+ * @since 1.3
  *
  */
 public interface FileImportGateway {

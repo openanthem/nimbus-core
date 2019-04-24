@@ -43,7 +43,7 @@ import lombok.Getter;
  * process the request with minimal configuration from the client application.
  * 
  * @author Tony Lopez
- * @since 2.0
+ * @since 1.3
  *
  */
 @Getter
