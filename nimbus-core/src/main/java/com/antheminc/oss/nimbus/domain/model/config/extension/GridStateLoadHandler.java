@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -29,17 +30,20 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
  * @author Tony Lopez
  *
  */
-@RequiredArgsConstructor
 @Getter
 public class GridStateLoadHandler extends AbstractConfigEventHandler implements OnStateLoadHandler<Grid> {
 
 	private final LabelStateEventHandler labelStateLoadHandler;
+	
+	public GridStateLoadHandler(CommandPathVariableResolver cmdPathResolver, LabelStateEventHandler labelStateLoadHandler) {
+		super(cmdPathResolver);
+		this.labelStateLoadHandler = labelStateLoadHandler;
+	}
 
 	public void onStateLoad(Grid configuredAnnotation, Param<?> param) {
 		// set the labels retrieved from collection elements

@@ -22,6 +22,12 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from './../base-element.component';
 import {DateTimeFormatPipe} from '../../../pipes/date.pipe';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
+import { ParamUtils } from './../../../shared/param-utils';
+import { ViewConfig } from './../../../shared/param-annotations.enum';
+import { UiNature } from './../../../shared/param-config';
+
+
+
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -50,6 +56,7 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
     @Input('value') _value='';
     private fieldClass: string = 'col-sm-3'; // occupies 1 col of 4
     componentTypes = ComponentTypes;
+    toolTip: UiNature;
 
     constructor(private _wcs: WebContentSvc) {
         super(_wcs);
@@ -57,7 +64,10 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
 
     ngOnInit() {
         super.ngOnInit();
+        this.toolTip = ParamUtils.getUiNature(this.element, ViewConfig.tooltip.toString());      
     }
+
+   
 
     onChange: any = () => { };
     onTouched: any = () => { };

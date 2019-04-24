@@ -30,7 +30,7 @@ import { HttpModule } from '@angular/http';
 import { Router, ActivatedRoute, Route, ActivatedRouteSnapshot, UrlSegment, Params, Data, ParamMap, PRIMARY_OUTLET } from '@angular/router';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
   FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, AutoCompleteModule, TabViewModule } from 'primeng/primeng';
+  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, AutoCompleteModule, TabViewModule, TooltipModule } from 'primeng/primeng';
 import { of as observableOf,  Observable } from 'rxjs';
 import { Subject } from 'rxjs';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
@@ -413,6 +413,7 @@ export class MockActivatedRoute implements ActivatedRoute {
      InputMaskModule,
      TabViewModule,
      AutoCompleteModule,
+     TooltipModule,
      ChartModule,
      EditorModule
  ];

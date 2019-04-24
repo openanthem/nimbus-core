@@ -47,19 +47,22 @@ export class CustomHttpClient {
   }
 
   get(url: string, searchParams?: URLSearchParams) {
-    let headers =  new HttpHeaders();
-    headers = headers.append('Content-Type','application/json');
-    headers = headers.append('Authorization',`Bearer ${this.sessionStore.get(ServiceConstants.AUTH_TOKEN_KEY)}` );
-    const options = {headers: headers};
-    return this.customHttpClient.get<ExecuteResponse>(url, options);
+    return this.customHttpClient.get<ExecuteResponse>(url, this.buildOptions());
   }
 
   post(url, data) {
+    return this.customHttpClient.post<ExecuteResponse>(url, data, this.buildOptions());
+  }
+
+  put(url, data) {
+    return this.customHttpClient.put<ExecuteResponse>(url, data, this.buildOptions());
+  }
+
+  buildOptions() {
     let headers =  new HttpHeaders();
     headers = headers.append('Content-Type','application/json');
     headers = headers.append('Authorization',`Bearer ${this.sessionStore.get(ServiceConstants.AUTH_TOKEN_KEY)}` );
-    const options = {headers: headers};
-    return this.customHttpClient.post<ExecuteResponse>(url, data, options);
+    return {headers: headers};
   }
 
   postFileData(url, data) {

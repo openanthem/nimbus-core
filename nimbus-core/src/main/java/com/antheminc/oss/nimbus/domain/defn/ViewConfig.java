@@ -25,6 +25,7 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.Past;
 
 import com.antheminc.oss.nimbus.domain.Event;
+import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
@@ -730,6 +731,8 @@ public class ViewConfig {
 	 * of the following components: <ul> <li>{@link CardDetailHeader}</li>
 	 * <li>{@link CardDetailBody}</li> <li>{@link FieldValueGroup}</li> </ul>
 	 * 
+	 * <p>FieldValue can show additional information to the user by annotating with {@link ToolTip}
+	 * 
 	 * <p>FieldValue should decorate a field having a simple type.
 	 * 
 	 * @since 1.0
@@ -1234,6 +1237,40 @@ public class ViewConfig {
 		 * page of the table when the table is paginated.
 		 */
 		boolean headerCheckboxToggleAllPages() default false;
+		
+		/**
+		 * <p>Add an edit button to each record that allows for in-line editing.
+		 * @see #onEdit()
+		 */
+		boolean editRow() default false;
+
+		/**
+		 * <p>Add an add row button to that allows for adding a new element to
+		 * be added to this decorated parameter using the in-line editing
+		 * feature.
+		 * @see #onAdd()
+		 */
+		boolean addRow() default false;
+		
+		/**
+		 * <p>A param path relative to the collection element param being edited
+		 * on which to invoke an {@link Action._get} call whenever a grid record
+		 * is edited. The {@link #editRow()} feature must be enabled for this
+		 * behavior to occur. <p>This mandates that a field having the same name
+		 * as {@code onEdit} must be defined in the generic type of the
+		 * decorated collection parameter.
+		 */
+		String onEdit() default "_action_onEdit";
+		
+		/**
+		 * <p>A param path relative to the Grid param created by this decorated
+		 * field, on which to invoke an {@link Action._get} call whenever a new
+		 * grid record is added. The {@link #addRow()} feature must be enabled
+		 * for this behavior to occur. <p>This mandates that a field having the
+		 * same value as {@code onAdd} must be defined as a sibling parameter to
+		 * this decorated field.
+		 */
+		String onAdd() default "../_action_onAdd";
 	}
 
 	/**
@@ -2146,6 +2183,55 @@ public class ViewConfig {
 		}
 
 		Property value() default Property.DEFAULT;
+	}
+	
+	
+	/**
+	 * <p> Tooltip can be used to display additional information to the user.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>Tooltip will be rendered when annotating on one of
+	 * the following components: <ul> <li>{@link FieldValue}</li> </ul>
+	 * 
+	 * <p>
+	 *  Example config:
+	 * <pre>
+	 * &#64;ToolTip(value="Additional information <!/.d/.m/toolTipValue!>", tooltipStyleClass="styleClass", toolTipPosition="bottom")
+	 * 
+	 * @since 1.2
+	 */
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewParamBehavior
+	@OnStateLoad
+	public @interface ToolTip {
+
+		/**
+		 * <p> The value of the tooltip to display to the user..
+		 * <p> Html tags can be put inside value.  These will be parsed and rendered on the browser.
+		 * <p> Path can also be given for value property which will be resolved.
+		 */
+		String value() default "";
+
+		/**
+		 * <p> This determines the position of the tooltip. Valid options are right, left, top and bottom.
+		 */
+		String toolTipPosition() default "right";
+
+		/**
+		 * <p> Attaching a CSS Class to customise the style of the tooltip. 
+		 *     The styles for this class can be written in app_styles.css
+		 */	
+		String tooltipStyleClass() default "";
+		
+		
+		/**
+		 * <p> html tags will be parsed if escape value is false.
+		 */	
+		boolean escape() default true;
+
 	}
 
 	/**

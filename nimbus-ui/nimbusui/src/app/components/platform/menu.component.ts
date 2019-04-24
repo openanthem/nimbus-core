@@ -35,7 +35,7 @@ import { Param } from '../../shared/param-state';
         </button> 
         <div class="navbar-collapse nav-block collapse in" id="navbarToggler" aria-expanded="false"> 
             <ng-template ngFor let-element [ngForOf]="element?.type?.model?.params">
-                <nm-link [element]="element" inClass="nav-link"></nm-link>
+                <nm-link id="{{element.config?.code}}" [element]="element" inClass="nav-link"></nm-link>
             </ng-template>
         </div>
     </nav>

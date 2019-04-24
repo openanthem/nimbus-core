@@ -73,6 +73,7 @@ export class BaseElement {
      * Initialization activities this Param
      */
     ngOnInit() {
+        this.labelSize = this.determineLabelSize(this.position);
         this.requiredCss = ValidationUtils.applyelementStyle(this.element);
     }
 
@@ -200,18 +201,15 @@ export class BaseElement {
     }
 
     updatePosition() {
-        if (!this.isLabelEmpty) {
-            this.labelSize = this.getHeaderSize(this.position);
-        } else {
+        if (this.isLabelEmpty) {
             this.position--;
         }
     }
 
-    updatePositionWithNoLabel() {
-        this.labelSize = this.getHeaderSize(this.position);
-    }
-
-    getHeaderSize(position) {
+    determineLabelSize(position) {
+        if (!position) {
+            return undefined;
+        }
         if (position > 6) {
             return 'H6';
         }

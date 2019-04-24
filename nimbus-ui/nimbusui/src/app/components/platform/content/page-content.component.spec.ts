@@ -20,7 +20,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule, AutoCompleteModule} from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule, TooltipModule, AutoCompleteModule} from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing'
 import { HttpClientModule } from '@angular/common/http';
@@ -263,6 +263,7 @@ const declarations = [
   GrowlModule,
   DialogModule,
   FormsModule,
+  TooltipModule,
   DropdownModule,
   DataTableModule,
   AccordionModule,
@@ -321,7 +322,6 @@ describe('PageContent', () => {
   });
 
   it('should create the Header',  async(() => {
-    console.log('this.printService..spec',printService);
     expect(hostComponent).toBeTruthy();
   }));
 

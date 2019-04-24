@@ -32,7 +32,7 @@ import { ViewConfig } from './../../../../shared/param-annotations.enum';
 import { UiNature } from './../../../../shared/param-config';
 import { SelectItemPipe } from './../../../../pipes/select-item.pipe';
 import { Dropdown } from 'primeng/primeng';
-
+import { DropdownModule } from 'primeng/primeng';
 /**
  * \@author Tony Lopez
  * \@whatItDoes 
@@ -42,8 +42,8 @@ import { Dropdown } from 'primeng/primeng';
  */
 
 let fixture, hostComponent, controlService;
-const declarations = [ RichText, TooltipComponent, InputLabel, SelectItemPipe, Dropdown ];
-const imports =  [ FormsModule, HttpClientTestingModule, HttpModule, StorageServiceModule, EditorModule ];
+const declarations = [ RichText, TooltipComponent, InputLabel, SelectItemPipe ];
+const imports =  [ FormsModule, HttpClientTestingModule, HttpModule, StorageServiceModule, EditorModule, DropdownModule ];
 
 describe('RichText', () => {
     configureTestSuite(() => {

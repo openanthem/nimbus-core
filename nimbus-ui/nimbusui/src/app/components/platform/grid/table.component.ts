@@ -72,9 +72,10 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     @ViewChild('dt') dt: Table;
     @ViewChild('op') overlayPanel: OverlayPanel;
     @ViewChildren('dropDown') dropDowns: QueryList<any>;
+    @ViewChild('editableRow') editableRow: any;
     componentTypes = ComponentTypes;
     viewComponent = ViewComponent;
-    
+
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
     
@@ -96,6 +97,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     numPattern: RegExp = /[\d\-\.]/;
     id: String = 'grid-control' + counter++;
     gridRowConfig: any[];
+    clonedRowData: any[] = [];
 
     get value() {
         return this._value;
@@ -134,6 +136,81 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         super(_wcs, cd);
     }
 
+    onRowEditInitialize(rowData) {
+        this.clonedRowData[rowData.elemId] = {...rowData};
+    }
+
+    onRowEditSave(rowData) {
+        let elemPath = `${this.element.path}/${rowData.elemId}`;
+        let relativeActionPath = this.element.config.uiStyles.attributes.onEdit;
+        if (this.isNewRecord(rowData)) {
+            elemPath = this.element.path;
+            relativeActionPath = this.element.config.uiStyles.attributes.onAdd;
+        }
+        this.postEditedRow(rowData, elemPath, relativeActionPath, () => {
+            this.dt.cancelRowEdit(rowData);
+            delete this.clonedRowData[rowData.elemId];
+        }, () => {
+            this.replaceRecordWithSavedValue(rowData);
+            delete this.clonedRowData[rowData.elemId];
+        });
+    }
+
+    postEditedRow(rowData: any, elemPath: string, relativeActionPath: string, onSuccess?: () => void, onFailure?: () => void) {
+        // TODO build URL from a standardized service method (not yet built at time of this change)
+        let url = `${ServiceConstants.PLATFORM_BASE_URL}${elemPath}/${relativeActionPath}/_get`;
+        return this.pageSvc.executeHttpPost(url, rowData, elemPath, onSuccess, onFailure);
+    }
+
+    onRowEditCancel(rowData: any) {
+        if (this.isNewRecord(rowData)) {
+            delete this.clonedRowData[rowData.elemId];
+            this.value.splice(0, 1);
+            return;
+        }
+       this.replaceRecordWithSavedValue(rowData);
+
+    }
+
+    replaceRecordWithSavedValue(rowData: any) {
+        for (var i = 0; i < this.value.length; i++) {
+            if(this.value[i].elemId == rowData.elemId) {
+                this.value[i] =  this.clonedRowData[rowData.elemId]
+            }
+        }
+        delete this.clonedRowData[rowData.elemId];
+    }
+
+    isNewRecord(rowData: any): boolean {
+        return typeof rowData['elemId'] == 'undefined';
+    }
+
+    isAdding (){
+        if (!this.value  || this.value.length === 0) {
+            return false;
+        }
+        for  (let i = 0; i < this.value.length; i++) {
+            if (this.isNewRecord(this.value[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    addRow() {
+        if (this.isAdding()) {
+           return ;
+        }
+        if (!this.element.config.uiStyles.attributes.lazyLoad) {
+            this.dt.first = 0;
+        } else {
+            // TODO handle the pagination when server-side pagination is enabled
+        }
+        this.value.unshift({});
+        this.dt.initRowEdit(this.value[0]);
+        // TODO focus the first field
+    }
+
     ngOnInit() {
         super.ngOnInit();
         // non-hidden columns
@@ -159,8 +236,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             this.columnsToShow ++;
         }
 
-        if (this.element.gridData.leafState != null && this.element.gridData.leafState.length > 0) {
-            this.value = this.element.gridData.leafState;
+        if (this.element.tableBasedData.values != null && this.element.tableBasedData.values.length > 0) {
+            this.value = this.element.tableBasedData.values;
             this.totalRecords = this.value.length;
             this.updatePageDetailsState();
         }
@@ -203,13 +280,13 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
 
         this.pageSvc.gridValueUpdate$.subscribe(event => {            
             if (event.path == this.element.path) {
-                this.value = event.gridData.leafState;
+                this.value = event.tableBasedData.values;
                 
                 // iterate over currently expanded rows and refresh the data
                 Object.keys(this.dt.expandedRowKeys).forEach(key => {
                     this.value.find((lineItem, index) => {
                         if (lineItem[this.element.elemId] == key) {
-                            this._putNestedElement(event.collectionParams, index, lineItem);
+                            this._putNestedElement(event.tableBasedData.collectionParams, index, lineItem);
                             return true;
                         }
                     });
@@ -225,6 +302,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                     this.totalRecords = event.page.totalElements;
                     if (event.page.first) {
                         this.updatePageDetailsState();
+                        this.dt.first = 0;
                     }
                 } else {
                     // Client Pagination
@@ -282,7 +360,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         return false;
     }
 
-    showHeader(col: ParamConfig) {
+    showHeader(col: ParamConfig) {        
         if (col.uiStyles && col.uiStyles.attributes.hidden === false &&
             col.uiStyles.attributes.alias === ViewComponent.gridcolumn.toString()) {
             return true;
@@ -345,7 +423,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     getViewParam(col: ParamConfig, rowIndex: number): Param {
-        return this.element.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code);
+        return this.element.tableBasedData.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code);
     }
 
     getRowPath(col: ParamConfig, item: any) {
@@ -414,7 +492,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     onRowExpand(event: any) {
-        this._putNestedElement(this.element.collectionParams, event.data.elemId, event.data)
+        this._putNestedElement(this.element.tableBasedData.collectionParams, event.data.elemId, event.data)
     }
 
     resetMultiSelection() {
@@ -652,7 +730,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     getCellStyle(rowIndex, code): string {
-        let elemStateMap = this.element.gridData.stateMap[rowIndex];
+        let elemStateMap = this.element.tableBasedData.stateMap[rowIndex];
         if (!elemStateMap) {
             return '';
         }

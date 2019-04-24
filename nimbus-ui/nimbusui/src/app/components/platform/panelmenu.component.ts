@@ -88,7 +88,7 @@ export class NmBasePanelMenuItem {
                                 [ngClass]="{'fa-caret-right':!child.expanded,'fa-caret-down':child.expanded}">
                             </span>
                             <nm-image class='nm-panelmenu-headerimage' *ngIf="child.icon" [name]="child.icon" [type]="child.imgType" [title]="" [cssClass]=""></nm-image>
-                            <span class="ui-menuitem-text">{{child.label}}</span>
+                            <span  id="SubPanelmenu-{{child.label}}" class="ui-menuitem-text">{{child.label}}</span>
                     </a>
 
                     <a *ngIf="child.type == componentTypes.external.toString()" 
@@ -137,7 +137,7 @@ export class NmPanelMenuSub extends NmBasePanelMenuItem {
                     
                     <!-- INTERNAL Menu Link -->
                     <a *ngIf="item.type == componentTypes.internal.toString()"
-                        id="Panelmenu-{{item.code}}"
+                        id="Panelmenu-{{item.label}}"
                         class="ui-panelmenu-header-link internal"
                         nmrouterLink="{{item.routerLink}}"
                         nmrouterLinkActive="ui-state-active"
@@ -158,7 +158,7 @@ export class NmPanelMenuSub extends NmBasePanelMenuItem {
 
                     <!-- EXTERNAL Panel Menu -->
                     <a *ngIf="item.type == componentTypes.external.toString()"
-                        id="Panelmenu-{{item.code}}"
+                        id="Panelmenu-{{item.label}}"
                         class="ui-panelmenu-header-link external"
                         href="{{item.url}}" 
                         target="{{item.target}}" 

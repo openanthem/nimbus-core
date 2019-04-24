@@ -306,7 +306,7 @@ export class Signature extends BaseControl<string> {
     }
 
     getUpdatedDataUrl (updatedDataUrl){
-        console.log('updatedDataUrl', updatedDataUrl);
+        
     }
 
     getUpdatedSignature() {

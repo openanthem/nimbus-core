@@ -22,16 +22,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.converter.excel.ExcelFileImporter;
-import com.antheminc.oss.nimbus.converter.excel.UnivocityExcelToCSVConverter;
-import com.antheminc.oss.nimbus.converter.tabular.TabularDataFileImporter;
-import com.antheminc.oss.nimbus.converter.tabular.UnivocityCsvParser;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
-import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
 import com.antheminc.oss.nimbus.domain.model.config.extension.GridStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.config.extension.LabelStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.config.extension.ToolTipStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AccessConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ActivateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AuditStateChangeHandler;
@@ -56,8 +51,6 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.VisibleConditionalS
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.ChildrenValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
-import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Soham Chakravarti
@@ -72,8 +65,8 @@ public class DefaultFrameworkExtensionsConfig {
 	}
 	
 	@Bean
-	public GridStateLoadHandler gridStateLoadHandler(LabelStateEventHandler labelStateLoadHandler) {
-		return new GridStateLoadHandler(labelStateLoadHandler);
+	public GridStateLoadHandler gridStateLoadHandler(CommandPathVariableResolver cmdPathResolver, LabelStateEventHandler labelStateLoadHandler) {
+		return new GridStateLoadHandler(cmdPathResolver, labelStateLoadHandler);
 	}
 	
 	@Bean
@@ -129,6 +122,11 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean
 	public LabelConditionalStateEventHandler extensionLabelConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
 		return new LabelConditionalStateEventHandler(beanResolver);
+	}
+	
+	@Bean
+	public ToolTipStateEventHandler extensionToolTipStateEventHandler(CommandPathVariableResolver cmdPathResolver) {
+		return new ToolTipStateEventHandler(cmdPathResolver);
 	}
 	
 	@Bean

@@ -59,7 +59,7 @@ export const cardDetailsBodyElement: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "3443",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo",
     "type": {
@@ -100,7 +100,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "3447",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/firstName",
                                     "type": {
@@ -124,7 +124,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "3448",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/lastName",
                                     "type": {
@@ -148,7 +148,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "3449",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/divider2",
                                     "type": {
@@ -165,7 +165,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "3450",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/address",
                                     "type": {
@@ -189,7 +189,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "3451",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/city",
                                     "type": {
@@ -213,7 +213,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "3452",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/telephone",
                                     "type": {
@@ -237,7 +237,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "3453",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/caseStatusDate",
                                     "type": {},
@@ -256,7 +256,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "3454",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/caseStatusDate1",
                                     "type": {},
@@ -288,7 +288,7 @@ export const cardDetailsBodyElement: any = {
                     "enabled": true,
                     "visible": true,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "3445",
                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner",
                     "type": {
@@ -328,7 +328,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "2478",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/test",
                                     "type": {
@@ -388,7 +388,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "3447",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/firstName",
                                     "type": {
@@ -441,7 +441,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "3640",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/headerCallSection1",
                                     "type": {
@@ -498,7 +498,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "1314",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/fgCardBodyCase1",
                                     "type": {
@@ -508,7 +508,7 @@ export const cardDetailsBodyElement: any = {
                                                     "enabled": true,
                                                     "visible": true,
                                                     "activeValidationGroups": [],
-                                                    "collectionParams": [],
+                                                    
                                                     "configId": "1316",
                                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/fgCardBodyCase1/id",
                                                     "type": {
@@ -575,7 +575,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "3448",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/lastName",
                                     "type": {
@@ -636,7 +636,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "5161",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner/delete",
                                     "type": {
@@ -720,7 +720,7 @@ export const cardDetailsBodyElement: any = {
     "enabled": true,
     "visible": true,
     "activeValidationGroups": [],
-    "collectionParams": [],
+    
     "configId": "1441",
     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo",
     "type": {
@@ -766,7 +766,7 @@ export const cardDetailsBodyElement: any = {
                     "enabled": true,
                     "visible": true,
                     "activeValidationGroups": [],
-                    "collectionParams": [],
+                    
                     "configId": "1443",
                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner1",
                     "type": {
@@ -811,7 +811,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "1445",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner1/vbgDefault1",
                                     "type": {
@@ -821,7 +821,7 @@ export const cardDetailsBodyElement: any = {
                                                     "enabled": true,
                                                     "visible": true,
                                                     "activeValidationGroups": [],
-                                                    "collectionParams": [],
+                                                    
                                                     "configId": "1447",
                                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner1/vbgDefault1/submit",
                                                     "type": {
@@ -843,7 +843,7 @@ export const cardDetailsBodyElement: any = {
                                                     "enabled": true,
                                                     "visible": true,
                                                     "activeValidationGroups": [],
-                                                    "collectionParams": [],
+                                                    
                                                     "configId": "1448",
                                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner1/vbgDefault1/back",
                                                     "type": {
@@ -902,7 +902,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "1449",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner1/headerCallSection11",
                                     "type": {
@@ -961,7 +961,7 @@ export const cardDetailsBodyElement: any = {
                                     "enabled": true,
                                     "visible": true,
                                     "activeValidationGroups": [],
-                                    "collectionParams": [],
+                                    
                                     "configId": "1450",
                                     "path": "/ownerview/vpOwnerInfo/vtOwnerInfo/vsOwnerInfo/vcdOwnerInfo/vcdbOwner1/firstName123",
                                     "type": {

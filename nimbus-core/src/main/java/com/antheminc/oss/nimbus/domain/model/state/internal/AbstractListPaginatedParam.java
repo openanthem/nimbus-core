@@ -127,7 +127,7 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 			}
 
 			if (p.size() != 0 && pageable.getPageSize() > p.size()) {
-				return new PageWrapper<T>(p, pageable, pageable.getOffset() + p.size());
+				return new PageWrapper<T>(p, pageable, ((long) pageable.getOffset()) + p.size());
 			}
 
 			return new PageWrapper<T>(p, pageable, totalSupplier.get());

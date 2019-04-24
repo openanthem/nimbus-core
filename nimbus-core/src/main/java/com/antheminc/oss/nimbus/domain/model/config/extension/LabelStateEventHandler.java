@@ -15,10 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.model.config.extension;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -28,22 +26,20 @@ import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
-import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * @author Soham Chakravarti
  * @author Swetha Vemuri
  * @author Tony Lopez
  */
-@RequiredArgsConstructor
 public class LabelStateEventHandler extends AbstractConfigEventHandler implements OnStateLoadHandler<Label> {
 
-	private final CommandPathVariableResolver cmdPathResolver;
+	public LabelStateEventHandler(CommandPathVariableResolver cmdPathResolver) {
+		super(cmdPathResolver);
+	}
 
 	/**
 	 * <p>Add the label from {@code configuredAnnotation} to the label state of
@@ -105,10 +101,6 @@ public class LabelStateEventHandler extends AbstractConfigEventHandler implement
 		addLabelToState(configuredAnnotation, param);
 	}
 
-	protected String resolvePath(String text, Param<?> param) {
-		String resolvedPath = this.cmdPathResolver.resolve(param, text);
-		return resolvedPath;
-	}
 
 	/**
 	 * <p>Add {@code labelState} to the label state of {@code targetParam}.

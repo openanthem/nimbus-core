@@ -237,6 +237,14 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     toolbarFeatures: string[];
     display: string;
     minLength: number;
+    editRow: boolean;
+    onEdit: string;
+    addRow: boolean;
+    onAdd: string;
+    toolTipText: string;
+    toolTipPosition: string;
+    tooltipStyleClass: string;
+    escape: boolean;
 
     deserialize( inJson ) {
         let obj = this;
