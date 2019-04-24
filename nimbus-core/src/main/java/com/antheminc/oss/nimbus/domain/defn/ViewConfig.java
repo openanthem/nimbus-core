@@ -1945,9 +1945,38 @@ public class ViewConfig {
 			 */
 			INTERNAL;
 		}
-
+		
+		/**
+		 * <p>Orientation properties for a {@link MenuPanel} instance.
+		 * @author Tony Lopez
+		 *
+		 */
+		public static enum Align {
+			
+			/**
+			 * <p>Let the parent component containing this {@link MenuPanel} decide the orientation.
+			 */
+			DEFAULT,
+			
+			/**
+			 * <p>Set the orientation for this {@link MenuPanel} from left to right.
+			 */
+			HORIZONTAL,
+			
+			/**
+			 * <p>Set the orientation for this {@link MenuPanel} from top to bottom.
+			 */
+			VERTICAL;
+		}
+		
+		
 		String alias() default "MenuPanel";
 
+		/**
+		 * <p>Control the orientation of the rendered menu items.
+		 */
+		Align align() default Align.DEFAULT;
+		
 		/**
 		 * <p>CSS classes added here will be added to a container element
 		 * surrounding this component. <p>This can be used to apply additional

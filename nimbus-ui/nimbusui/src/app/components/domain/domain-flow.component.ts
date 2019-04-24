@@ -20,7 +20,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Component, HostListener } from '@angular/core';
 import { LayoutService } from '../../services/layout.service';
 import { PageService } from '../../services/page.service';
-import { Layout, LinkConfig } from '../../model/menu-meta.interface';
+import { Layout, LinkConfig, MenuPanel } from '../../model/menu-meta.interface';
 import { Page } from '../../shared/app-config.interface';
 import { Param } from '../../shared/param-state';
 import { LoggerService } from '../../services/logger.service';
@@ -51,7 +51,7 @@ export class DomainFlowCmp {
     public modalItems: Param[];
     public _showActionTray: boolean;
     public messages: Message[];
-    items: MenuItem[];
+    menuPanel: MenuPanel;
     routeParams: any;
 
     constructor(private _pageSvc: PageService, private layoutSvc: LayoutService,
@@ -62,7 +62,7 @@ export class DomainFlowCmp {
                 let layout: Layout = data;
                 this.fixLayout = layout['fixLayout'];
                 this.accordions = layout.topBar.accordions;
-                this.items = layout.menu;
+                this.menuPanel = layout.menuPanel;
                 this.topMenuItems = layout.topBar.headerMenus;
                 this.actionTray = layout.actiontray;
                 this.modalItems = layout.modalList;
