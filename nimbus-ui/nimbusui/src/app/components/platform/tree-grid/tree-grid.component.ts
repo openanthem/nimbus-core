@@ -153,8 +153,7 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
     }
 
     getViewParam(col: ParamConfig, rowNode: any): Param {
-        let nestedCollectionPath = this.getRowPath(col, rowNode);
-        return this.element.tableBasedData.collectionParams.find(p => p.path === nestedCollectionPath);
+        return this.element.tableBasedData.collectionParams[rowNode.node.data.elemId][col.code];
     }
 
     getRowNodeParamConfigs(rowNode: any): ParamConfig[] {
