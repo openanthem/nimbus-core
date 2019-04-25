@@ -463,7 +463,7 @@ export abstract class RowData {
      * @param param the base param (used recursively)
      * @param nestedParams an array containing the added nested params
      */
-    protected collectNestedParams(colElemParam: Param, param: Param, nestedParams: any[], baseParam: Param): void {
+    protected collectNestedParams(colElemParam: Param, param: Param, nestedParams: any[], baseParam?: Param): void {
 
         if (!param || !this.shouldCollect(param, baseParam)) {
             return;
@@ -493,7 +493,7 @@ export abstract class RowData {
         }
     }
 
-    abstract shouldCollect(param: Param, baseParam: Param): boolean;
+    abstract shouldCollect(param: Param, baseParam?: Param): boolean;
 }
 
 /**
@@ -511,7 +511,7 @@ export class TableData extends TableBasedData {
  */
 export class TableRowData extends RowData {
 
-    shouldCollect(param: Param, baseParam: Param): boolean {
+    shouldCollect(param: Param, baseParam?: Param): boolean {
 
         return param.config.uiStyles && 
             (TableComponentConstants.allowedColumnStylesAlias.includes(param.config.uiStyles.attributes.alias)
