@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,20 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.repo;
+package com.antheminc.oss.nimbus.converter;
 
-import java.util.List;
+import java.io.InputStream;
 
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
-
+import com.antheminc.oss.nimbus.domain.cmd.Command;
 
 /**
- * @author Rakesh Patel
+ * <p>A common file parser object.
+ * 
+ * @author Sandeep Mantha
+ * @author Tony Lopez
  *
  */
-public interface ModelPersistenceHandler {
-	
-	public boolean handle(List<ModelEvent<Param<?>>> modelEvents);
-	
+public interface FileParser {
+
+	/**
+	 * <p>Parse the given resource from the using the provided {@link Command} as a context.
+	 * 
+	 * @param stream The resource to parse
+	 * @param context the {@link Command} to use as context.
+	 */
+	void parse(InputStream stream, Command context);
 }

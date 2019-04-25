@@ -44,6 +44,7 @@ public class WebCommandDispatcher {
 	public WebCommandDispatcher(BeanResolverStrategy beanResolver) {
 		this.builder = beanResolver.get(WebCommandBuilder.class);
 		this.gateway = beanResolver.get(CommandExecutorGateway.class);
+		
 	}
 	
 	public Object handle(HttpServletRequest httpReq, ModelEvent<String> event) {
@@ -59,5 +60,4 @@ public class WebCommandDispatcher {
 	public MultiOutput handle(Command cmd, String payload) {
 		return getGateway().execute(cmd, payload);
 	}
-
 }

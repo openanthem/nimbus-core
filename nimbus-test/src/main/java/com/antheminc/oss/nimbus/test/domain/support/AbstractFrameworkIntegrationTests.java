@@ -83,6 +83,6 @@ public abstract class AbstractFrameworkIntegrationTests {
 	 */
 	@After
 	public void tearDown() {
-		mt.getDb().dropDatabase();
+		mt.getDb().drop();
 	}
 }

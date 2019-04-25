@@ -20,7 +20,7 @@ import { NmMessageService } from './../../../services/toastmessage.service';
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule, InputMaskModule, EditorModule, TooltipModule  } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule, InputMaskModule, EditorModule, TooltipModule, AutoCompleteModule  } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, FormControl } from '@angular/forms';
@@ -109,10 +109,11 @@ import { ServiceConstants } from '../../../services/service.constants';
 import { WindowRefService } from '../../../services/window-ref.service';
 import { AppInitService } from '../../../services/app.init.service';
 import { PrintService } from '../../../services/print.service';
-import { tableParams, tableElement, tableGridValueUpdate } from 'mockdata';
+import { tableParams, tableElement, tableGridValueUpdate, tableGridValue } from 'mockdata';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { TableHeader } from './table-header.component';
 import { InputMaskComp } from './../form/elements/input-mask.component';
+import { NmAutocomplete } from './../form/elements/autocomplete.component';
 import { RichText } from '../form/elements/rich-text.component';
 
 let configService, pageService, elementRef, objectUtils, domHandler, tableService, cd, param, webContentSvc;
@@ -256,6 +257,7 @@ const declarations = [
   FormErrorMessage,
   PrintDirective,
   InputMaskComp,
+  NmAutocomplete,
   RichText
 ];
 const imports = [
@@ -285,6 +287,7 @@ const imports = [
    StorageServiceModule,
    BrowserAnimationsModule,
    InputMaskModule,
+   AutoCompleteModule,
    EditorModule
 ];
 const providers = [
@@ -550,6 +553,16 @@ describe('DataTable', () => {
         const debugElement = fixture.debugElement;
         const expenderIconEle = debugElement.query(By.css('.fa.fa-fw.fa-chevron-circle-right.ui-row-toggler'));
         expect(expenderIconEle).toBeFalsy();
+    }));
+
+    it('Expanded row expander icon should be reset after receiving gridValueUpdate', async(() => {
+        hostComponent.element.config.uiStyles.attributes.expandableRows = true;
+        fixture.detectChanges();
+        const debugElement = fixture.debugElement;
+        const expenderIconEle = debugElement.query(By.css('.fa.fa-fw.fa-chevron-circle-right.ui-row-toggler'));
+        expenderIconEle.nativeElement.click();
+        pageService.gridValueUpdate$.next(tableGridValue);
+        expect(expenderIconEle).toBeTruthy();
     }));
 
     it('td in body should be created if hidden attribute is configured as false and it is not a gridrowbody', async(() => {
@@ -1337,7 +1350,7 @@ describe('DataTable', () => {
 
     it('postGridData() should call the pageService.processEvent()', () => {
         fixture.whenStable().then(() => {
-            const eleConfig = { code: '', uiStyles: { attributes: { postButtonTargetPath: true, postButtonUrl: '/test' } } };
+            const eleConfig = { code: '', uiStyles: { attributes: { postButtonTargetPath: true } } };
             spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
             hostComponent.selectedRows = [{ elemId: 123 }];
             spyOn(pageService, 'processEvent').and.returnValue('');

@@ -1,3 +1,4 @@
+
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -29,6 +30,7 @@ import { BaseElement } from '../base-element.component';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { LoggerService } from './../../../services/logger.service';
 import { Message } from '../../../shared/message';
+import { ServiceConstants } from './../../../services/service.constants';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 	provide: NG_VALUE_ACCESSOR,
@@ -134,7 +136,7 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 					this.selectedFiles.push(file);
 					this.value = this.selectedFiles;
 
-					file['postUrl'] = this.element.config.uiStyles.attributes.url;
+					file['postUrl'] = this.element.config.uiStyles.attributes.url? this.element.config.uiStyles.attributes.url : ServiceConstants.PLATFORM_BASE_URL+ '/event/upload';
 
 				}
 			}

@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ToolTip;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -33,6 +34,10 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
  */
 public class ToolTipStateEventHandler extends AbstractConfigEventHandler implements OnStateLoadHandler<ToolTip> {
 
+	public ToolTipStateEventHandler(CommandPathVariableResolver cmdPathResolver) {
+		super(cmdPathResolver);
+	}
+
 	@Override
 	public void onStateLoad(ToolTip configuredAnnotation, Param<?> param) {
 
@@ -40,7 +45,7 @@ public class ToolTipStateEventHandler extends AbstractConfigEventHandler impleme
 				.filter(uiNature -> uiNature.getAnnotation().equals(configuredAnnotation)).collect(Collectors.toList());
 
 		if (annotationList.isEmpty() || annotationList.size() > 1) {
-			throw new InvalidConfigException("Expected to find only one config annotation for tooltip");
+			throw new InvalidConfigException("Expected to find one and only one config annotation for ToolTip");
 		}
 
 		annotationList.get(0).getAttributes().put("value",

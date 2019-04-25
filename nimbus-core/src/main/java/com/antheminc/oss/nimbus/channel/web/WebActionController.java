@@ -37,6 +37,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
+import com.antheminc.oss.nimbus.domain.cmd.exec.FileImportGateway;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.support.Holder;
@@ -103,6 +104,8 @@ public class WebActionController {
 	@Autowired WebCommandDispatcher dispatcher;
 	
 	@Autowired ExecutionContextLoader ctxLoader;
+	
+	@Autowired WebCommandBuilder builder;
 	
 	@RequestMapping(value=URI_PATTERN_P+"/clear", produces="application/json", method=RequestMethod.GET)
 	public void clear() {
@@ -189,7 +192,6 @@ public class WebActionController {
 	public ResponseEntity<?> login(){
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
-	
 	
 	protected Object handleInternal(HttpServletRequest req, RequestMethod httpMethod, String v, String json) {
 		Object obj = dispatcher.handle(req, json);

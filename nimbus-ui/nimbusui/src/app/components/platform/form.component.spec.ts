@@ -20,7 +20,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms';
 import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, 
     DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, 
-    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule, ChartModule, TooltipModule } from 'primeng/primeng';
+    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule, ChartModule, TooltipModule, AutoCompleteModule } from 'primeng/primeng';
 
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
@@ -107,6 +107,7 @@ import { Tab } from './content/tab.component';
 import { NmMessageService } from './../../services/toastmessage.service';
 import { NmChart } from './charts/chart.component';
 import { TableHeader } from './grid/table-header.component';
+import { NmAutocomplete } from './form/elements/autocomplete.component';
 
 class MockLoggerService {
   debug() { }
@@ -204,6 +205,7 @@ const declarations = [
   InputSwitch,
   FormGridFiller,
   DisplayValueDirective,
+  NmAutocomplete,
   InputLabel,
   Label,
   CardDetailsFieldGroupComponent,
@@ -244,6 +246,7 @@ const imports = [
    BrowserAnimationsModule,
    InputMaskModule,
    TabViewModule,
+   AutoCompleteModule,
    ChartModule,
    EditorModule
 ];

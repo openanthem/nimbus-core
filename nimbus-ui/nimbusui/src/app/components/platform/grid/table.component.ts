@@ -304,6 +304,9 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                     });
                 });
 
+                // reset the table state in the session after primeNG upgrade.
+                 this.dt.expandedRowKeys={};
+
                 let gridListSize = this.value ? this.value.length : 0;
                 // Check for Server Pagination Vs Client Pagination
                 if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.lazyLoad) {
@@ -480,13 +483,6 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         }
         item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath, elemIds);
 
-        // postButtonUrl is deprecated in @Grid Config from 1.1.11
-        // TODO - remove this when the annotation attribute is removed completely in ViewConfig.
-        if (this.element.config.uiStyles.attributes.postButtonUrl) {
-            console.warn('Use of postButtonUrl attribute in @Grid is deprecated. Consider using postButtonUri');
-            this.pageSvc.processEvent(this.element.config.uiStyles.attributes.postButtonUrl, null, item, 'POST');
-            return;
-        }
         const postButtonUri = this.element.config.uiStyles.attributes.postButtonUri;
         if (postButtonUri) {
             const resolvedPostButtonUri = ParamUtils.resolveParamUri(this.element.path, postButtonUri);
@@ -659,7 +655,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     export() {
-        let exportDt = this.dt;
+        let exportDt: Table = Object.create(this.dt);
         let dtCols = this.params.filter(col => (col.type != null && ParamUtils.isKnownDateType(col.type.name) != null))
         if (dtCols != null && dtCols.length > 0) {
             let tblData: any[] = exportDt.filteredValue || exportDt.value;

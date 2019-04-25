@@ -290,6 +290,16 @@ export const tableParams: any = [
                 "pageSize": 25,
                 "browserBack": false,
                 "showAsLink": false,
+                "headerCheckboxToggleAllPages": false,
+                "rowSelection": true,
+                "pagination": true,
+                "dataEntryField": true,
+                "postButtonTargetPath": "ids",
+                "postButtonUri": "../actionCancelVisits",
+                "expandableRows": true,
+                "showHeader": true,
+                "postEventOnChange": false,
+                "lazyLoad": false,
                 "b": "$execute",
                 "method": "GET",
                 "formReset": true,
@@ -8387,5 +8397,105 @@ export const tableGridValueUpdate: any = {
             "helpText": "testing tooltip"
         }
     ],
+    "elemLabels": {}
+};
+
+
+export const tableGridValue: any = {
+    "config":{
+   
+        "active": false,
+        "required": false,
+        "id": "650",
+        "code": "pets",
+        "validations": null,
+        "uiNatures": [],
+        "uiStyles": {
+            "isLink": false,
+            "isHidden": false,
+            "name": "ViewConfig.Grid",
+            "attributes": {
+                "hidden": false,
+                "readOnly": false,
+                "submitButton": true,
+                "showName": true,
+                "pageSize": 25,
+                "browserBack": false,
+                "showAsLink": false,
+                "headerCheckboxToggleAllPages": false,
+                "rowSelection": false,
+                "pagination": true,
+                "postButtonTargetPath": "",
+                "dataEntryField": true,
+                "postButtonUri": "",
+                "expandableRows": false,
+                "showHeader": true,
+                "postEventOnChange": false,
+                "lazyLoad": false,
+                "url": "",
+                "dataKey": "id",
+                "cssClass": "",
+                "clearAllFilters": false,
+                "postButtonLabel": "",
+                "alias": "Grid",
+                "onLoad": true,
+                "postButtonAlias": "",
+                "isTransient": false,
+                "postButton": false,
+                "export": false
+            }
+        },
+        "type": {
+            "collection": true,
+            "nested": true,
+            "name": "ArrayList",
+            "collectionType": "list",
+            "model": {
+                "paramConfigIds": []
+            },
+            "elementConfig": {
+                "id": "653",
+                "type": {
+                    "collection": false,
+                    "nested": true,
+                    "name": "PetLineItemOwnerLanding",
+                    "model": {
+                        "paramConfigIds": ["655", "656"]
+                    }
+                }
+            }
+        }
+    },
+    "enabled": true,
+    "visible": true,
+    "activeValidationGroups": [],
+    "collectionParams": [],
+    "configId": "650",
+    "path": "/ownerlandingview/vpOwners/vtOwners/vsOwners/owners/0/expandedRowContent/pets",
+    "type": {
+        "model": {
+            "params": []
+        }
+    },
+    "page": {
+        "pageable": "INSTANCE",
+        "last": true,
+        "totalPages": 1,
+        "totalElements": 0,
+        "size": 0,
+        "number": 0,
+        "numberOfElements": 0,
+        "first": true
+    },
+    "gridData": {
+        "leafState": [],
+        "stateMap": []
+    },
+    "message": [],
+    "values": [],
+    "labels": [{
+        "locale": "en-US",
+        "text": "Pets"
+    }],
     "elemLabels": {}
 };

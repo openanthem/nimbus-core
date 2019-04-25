@@ -16,35 +16,25 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
 
-import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository.Aggregation;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author Rakesh Patel
  *
  */
+@RequiredArgsConstructor
 @Getter
-public abstract class MongoDBSearch implements DBSearch {
-
+public abstract class MongoDBSearchOperation implements DBSearchOperation {
+	
 	private final MongoOperations mongoOps;
-	
 	private final DomainConfigBuilder domainConfigBuilder;
-	
-	private final BeanResolverStrategy beanResolver;
-	
-	public MongoDBSearch(BeanResolverStrategy beanResolver) {
-		this.beanResolver = beanResolver;
-		this.mongoOps = beanResolver.get(MongoOperations.class);
-		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
-	}
-	
 	
 	public <T> Class<?> findOutputClass(SearchCriteria<?> criteria, Class<T> referredClass) {
 		if(criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())) {

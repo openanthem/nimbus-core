@@ -91,6 +91,7 @@ public enum Constants {
 	CLIENT_USER_KEY("client-user-key"),
 	
 	REQUEST_PARAMETER_URL_MARKER("url"),
+	REQUEST_PARAMETER_VALUE_MARKER("value"),
 	REQUEST_PARAMETER_DELIMITER("&"),
 	PARAM_ASSIGNMENT_MARKER("="),
 	
@@ -99,6 +100,7 @@ public enum Constants {
 	SEARCH_REQ_PROJECT_MAPPING_MARKER("projection.mapsTo"),
 	
 	SEARCH_REQ_AGGREGATE_MARKER("aggregate"),
+	SEARCH_REQ_AGGREGATE_PIPELINE("pipeline"),
 	SEARCH_REQ_AGGREGATE_COUNT("count"),
 	
 	SEARCH_REQ_FETCH_MARKER("fetch"),
@@ -112,7 +114,9 @@ public enum Constants {
 	SEARCH_REQ_PAGINATION_SORT_PROPERTY("sortBy"),
 	
 	SEARCH_NAMED_QUERY_DELIMTER("~~"),
-	SEARCH_NAMED_QUERY_RESULT("result");
+	SEARCH_NAMED_QUERY_RESULT("result"),
+	
+	SERVER_AUTOSEARCH_MARKER("autocompletesearchvalue");
 	
 	
 	

@@ -20,7 +20,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, 
     DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule,
-    InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule, TooltipModule } from 'primeng/primeng';
+    InputSwitchModule, TreeTableModule, InputMaskModule, TabViewModule, EditorModule, TooltipModule, AutoCompleteModule } from 'primeng/primeng';
     
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
@@ -100,6 +100,7 @@ import { RichText } from './form/elements/rich-text.component';
 import { ChartModule } from 'primeng/chart';
 import { NmChart } from './charts/chart.component';
 import { NmMessageService } from './../../services/toastmessage.service';
+import { NmAutocomplete } from './form/elements/autocomplete.component';
 
 let param: Param;
 
@@ -178,6 +179,7 @@ const declarations = [
   TreeGrid,
   InputSwitch,
   FormGridFiller,
+  NmAutocomplete,
   DisplayValueDirective,
   InputLabel,
   Label,
@@ -215,6 +217,7 @@ const declarations = [
      StorageServiceModule,
      InputMaskModule,
      TabViewModule,
+     AutoCompleteModule,
      ChartModule,
      EditorModule
  ];

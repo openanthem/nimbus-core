@@ -79,7 +79,7 @@ public abstract class AbstractStateEventHandlerTests extends AbstractFrameworkIn
 		_q.getRoot().getExecutionRuntime().getEventDelegator().removeTxnScopedListener(_stateEventListener);
 		
 		// db cleanup
-		mt.getDb().dropDatabase();
+		mt.getDb().drop();
 	}
 	
 	protected void addListener() {

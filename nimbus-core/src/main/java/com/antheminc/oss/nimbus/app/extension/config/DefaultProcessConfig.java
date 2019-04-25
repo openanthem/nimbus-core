@@ -125,10 +125,9 @@ public class DefaultProcessConfig {
 	public FunctionHandler<?, ?> queryFunctionHandler(){
 		return new DefaultSearchFunctionHandlerQuery<>();
 	}
-
+	
 	@Bean(name="default._process$execute?fn=_eval")
 	public EvalFunctionHandler<?,?> evalFunctionHandler(ExpressionManager expressionManager){
 		return new EvalFunctionHandler(expressionManager);
 	}
-
 }

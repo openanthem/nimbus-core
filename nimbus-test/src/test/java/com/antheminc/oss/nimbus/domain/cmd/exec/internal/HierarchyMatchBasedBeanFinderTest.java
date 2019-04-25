@@ -26,8 +26,8 @@ import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.SetFunctionHandler;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
+import com.antheminc.oss.nimbus.support.CommandUtils;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
-import com.antheminc.oss.nimbus.test.domain.support.utils.CommandUtils;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HierarchyMatchBasedBeanFinderTest extends AbstractFrameworkIntegrationTests {

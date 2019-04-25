@@ -22,8 +22,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
+import com.antheminc.oss.nimbus.domain.model.config.extension.GridStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.config.extension.LabelStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.config.extension.ToolTipStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AccessConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ActivateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AuditStateChangeHandler;
@@ -48,7 +51,6 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.VisibleConditionalS
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.ChildrenValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
-import com.antheminc.oss.nimbus.domain.model.config.extension.ToolTipStateEventHandler;
 
 /**
  * @author Soham Chakravarti
@@ -58,8 +60,13 @@ import com.antheminc.oss.nimbus.domain.model.config.extension.ToolTipStateEventH
 public class DefaultFrameworkExtensionsConfig {
 	
 	@Bean
-	public LabelStateEventHandler labelConfigEventHandler() {
-		return new LabelStateEventHandler();
+	public LabelStateEventHandler labelConfigEventHandler(CommandPathVariableResolver cmdPathResolver) {
+		return new LabelStateEventHandler(cmdPathResolver);
+	}
+	
+	@Bean
+	public GridStateLoadHandler gridStateLoadHandler(CommandPathVariableResolver cmdPathResolver, LabelStateEventHandler labelStateLoadHandler) {
+		return new GridStateLoadHandler(cmdPathResolver, labelStateLoadHandler);
 	}
 	
 	@Bean
@@ -118,8 +125,8 @@ public class DefaultFrameworkExtensionsConfig {
 	}
 	
 	@Bean
-	public ToolTipStateEventHandler extensionToolTipStateEventHandler() {
-		return new ToolTipStateEventHandler();
+	public ToolTipStateEventHandler extensionToolTipStateEventHandler(CommandPathVariableResolver cmdPathResolver) {
+		return new ToolTipStateEventHandler(cmdPathResolver);
 	}
 	
 	@Bean
@@ -173,6 +180,5 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean
 	public StaticCodeValueBasedCodeToLabelConverter staticCodeValueBasedCodeToLabelConverter(BeanResolverStrategy beanResolver) {
 		return new StaticCodeValueBasedCodeToLabelConverter(beanResolver);
-	}
-	
+	}	
 }

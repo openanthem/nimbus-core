@@ -29,6 +29,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -637,6 +638,51 @@ public class ViewConfig {
 		boolean readOnly() default false;
 
 	}
+	
+	
+	/**
+	 * <p>Autocomplete is a text input component.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>Autocomplete will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Section}</li> <li>{@link Form}</li> </ul>
+	 * 
+	 * <p>
+	 *  Example config:
+	 * <pre>
+	 * &#64;Autocomplete(display="label", postEventOnChange = true, minLength = 2)
+	 * &#64;Config(url = "/p/owner/_search?fn=lookup&where=owner.firstName.containsIgnoreCase('<!autocompletesearchvalue!>')&projection.mapsTo=code:id,label:firstName")
+	 * </pre>
+	 * 
+	 * 
+	 * @since 1.3
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface Autocomplete {
+		
+		String alias() default "Autocomplete";
+				
+		/**
+		 * <p> display represents the projection variable in the mongo query, the values of which will be 
+		 * 	   displayed to the user as suggestions.
+		 * 
+		 */
+		String display() default "";
+		
+		/**
+		 * <p> The minimum number of characters user should type to activate
+		 * 	   the autocomplete feature.
+		 */
+		int minLength() default 1;
+
+		boolean postEventOnChange() default false;
+
+		boolean dataEntryField() default true;
+
+	}
 
 	/**
 	 * <!--TODO Write javadoc-->
@@ -859,6 +905,16 @@ public class ViewConfig {
 		String type() default ".pdf,.png";
 
 		String url() default "";
+		
+		Behavior behavior() default Behavior.UPLOAD;
+		
+		public enum WriteStrategy{
+			COMMAND, MODEL_REPSITORY
+		}
+		public enum Behavior {
+			CONVERSION,
+			UPLOAD
+		}
 
 	}
 
@@ -926,7 +982,7 @@ public class ViewConfig {
 	 * <li>{@link Paragraph}</li> <li>{@link PickList}</li>
 	 * <li>{@link Radio}</li> <li>{@link Signature}</li>
 	 * <li>{@link TextArea}</li> <li>{@link TextBox}</li>
-	 * <li>{@link InputMask}</li> </ul>
+	 * <li>{@link InputMask}</li> <li>{@link Autocomplete}</li> </ul>
 	 * <li>{@link Radio}</li>  <li>{@link RichText}</li> 
 	 * <li>{@link Signature}</li> <li>{@link TextArea}</li>
 	 * <li>{@link TextBox}</li> </ul>
@@ -1073,32 +1129,6 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <p><b>Expected Field Structure</b>
-	 * 
-	 * <p>GlobalNavMenu will be rendered when annotating a field nested under
-	 * one of the following components: <ul> <li>Layout Domain</li> </ul>
-	 * 
-	 * @since 1.0
-	 * @deprecated As of 1.1.7 onwards, {@code GlobalNavMenu} will no longer be
-	 *             rendered in the UI. Use {@link MenuPanel} instead.
-	 */
-	@Deprecated
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface GlobalNavMenu {
-
-		String alias() default "Global-Nav-Menu";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "";
-	}
-
-	/**
 	 * <!--TODO Candidate for removal-->
 	 * 
 	 * @since 1.0
@@ -1128,6 +1158,12 @@ public class ViewConfig {
 	 * following components: <ul> <li>{@link Form}</li> <li>{@link Section}</li>
 	 * </ul>
 	 * 
+	 * <p><b>Labels</b>
+	 * 
+	 * <p>Any labels defined within the <i>collection element</i> configuration
+	 * will be assigned to the decorated param and available via
+	 * {@link ListParam#getElemLabels()}.
+	 * 
 	 * <p><b>Configuring Row Item Display</b>
 	 * 
 	 * <p>The class being used in the decorated collection's parameterized type
@@ -1144,6 +1180,7 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
+	@OnStateLoad
 	public @interface Grid {
 		String alias() default "Grid";
 
@@ -1157,14 +1194,6 @@ public class ViewConfig {
 		String cssClass() default "";
 
 		boolean dataEntryField() default true;
-
-		/**
-		 * <p>As of release 1.1.9, {@code dataKey} is no longer needed to
-		 * support grid row expansion. This attribute will be removed in the
-		 * future releases.
-		 */
-		@Deprecated
-		String dataKey() default "id";
 
 		boolean expandableRows() default false;
 
@@ -1187,14 +1216,6 @@ public class ViewConfig {
 		String postButtonLabel() default "";
 
 		String postButtonTargetPath() default "";
-		
-		/**
-		 * @deprecated As of 1.1.11 onwards, {@code postButtonUrl} will no longer 
-		 * represent the absolute path to make a http call for rowselection from UI. 
-		 * Replaced with {@link postButtonUri} attribute instead.
-		 */
-		@Deprecated
-		String postButtonUrl() default "";
 		
 		/**
 		 * Represents the relative path of the postButton on a rowselection Grid. 
@@ -2597,7 +2618,7 @@ public class ViewConfig {
 	 * <li>{@link CardDetailsGrid}</li> <li>{@link Tab}</li> <li>{@link ComboBox}</li>
 	 * <li>{@link Form}</li> <li>{@link Grid}</li> <li>{@link Link}</li>
 	 * <li>{@link Menu}</li> <li>{@link Paragraph}</li><li>{@link Chart}</li>
-	 * <li>{@link StaticText}</li> <li>{@link TextBox}</li> </ul>
+	 * <li>{@link StaticText}</li> <li>{@link TextBox}</li> <li>{@link Autocomplete}</li> </ul>
 	 * 
 	 * @since 1.0
 	 */

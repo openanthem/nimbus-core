@@ -20,7 +20,7 @@
 import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule, InputMaskModule, EditorModule, TooltipModule } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule, AutoCompleteModule, InputMaskModule, EditorModule, TooltipModule  } from 'primeng/primeng';
 
 import { FormsModule, ReactiveFormsModule, ValidatorFn, Validators, FormGroup, FormControl } from '@angular/forms';
 import { HttpModule } from '@angular/http';
@@ -94,6 +94,7 @@ import { ChartModule } from 'primeng/chart';
 import { NmChart } from './../charts/chart.component';
 import { TableHeader } from './../grid/table-header.component';
 import { Param } from './../../../shared/param-state';
+import { NmAutocomplete } from '../form/elements/autocomplete.component';
 @Component({
     template: '<div></div>',
     selector: 'nm-button'
@@ -192,6 +193,7 @@ const declarations = [
     FormErrorMessage,
     PrintDirective,
     InputMaskComp,
+    NmAutocomplete,
     NmChart,
     RichText
    ];
@@ -220,6 +222,7 @@ const declarations = [
        InputSwitchModule,
        TreeTableModule,
        InputMaskModule,
+       AutoCompleteModule,
        ChartModule,
        EditorModule
    ];

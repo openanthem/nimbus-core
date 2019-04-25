@@ -19,8 +19,8 @@
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalendarModule, RadioButtonModule, CheckboxModule, ListboxModule, FileUploadModule, 
-  GrowlModule, DropdownModule, DataTableModule, AccordionModule, PickListModule, TreeTableModule, TooltipModule, 
-  InputSwitchModule, InputMaskModule, TabViewModule, EditorModule } from 'primeng/primeng';
+  GrowlModule, DropdownModule, DataTableModule, AccordionModule, PickListModule, TreeTableModule, TooltipModule,
+  InputSwitchModule, InputMaskModule, TabViewModule, EditorModule, AutoCompleteModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { TableModule } from 'primeng/table';
@@ -97,6 +97,7 @@ import { Tab } from './content/tab.component';
 import { NmChart } from './charts/chart.component';
 import { ChartModule } from 'primeng/chart';
 import { TableHeader } from './grid/table-header.component';
+import { NmAutocomplete } from './form/elements/autocomplete.component';
 @Component({
   template: '<div></div>',
   selector: 'nm-button'
@@ -182,6 +183,7 @@ const declarations = [
   FormErrorMessage,
   PrintDirective,
   InputMaskComp,
+  NmAutocomplete,
   Tab,
   NmChart,
   RichText
@@ -201,6 +203,7 @@ const imports = [
   RadioButtonModule,
   CalendarModule,
   HttpModule,
+  AutoCompleteModule,
   HttpClientModule,
   TableModule,
   KeyFilterModule,
