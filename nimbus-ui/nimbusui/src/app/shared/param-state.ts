@@ -396,14 +396,13 @@ export abstract class TableBasedData {
         this.values = [];
         for(let colElemParam of colElemParams) {
             if (!ParamUtils.isEmpty(colElemParam)) {
-                let rowData = this.buildRowData(colElemParam, baseParam);
+                const rowData = this.buildRowData(colElemParam, baseParam);
                 this.collectionParams = this.collectionParams.concat(rowData.nestedParams); 
-                // this.collectionParams = rowData.nestedParams;
                 if (rowData.values) {
                     this.values = this.values.concat(rowData.values);
                 }
                 this.stateMap = this.stateMap.concat(rowData.stateMap);
-            }       
+            }
         }
         return this;
     }
