@@ -17,6 +17,7 @@ package com.antheminc.oss.nimbus.support;
 
 import java.util.function.Supplier;
 
+import org.owasp.esapi.codecs.HTMLEntityCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +31,10 @@ import lombok.Getter;
 public class JustLogit {
 
 	private final Logger log;
+	
+	private static HTMLEntityCodec htmlCodec = new HTMLEntityCodec(); 
+	
+	final char[] IMMUNE_HTML = { ',', '.', '-', '_', ' ', '*','[',']', '(', ')', '$', '=', '+', '\n','/',':', '?', '&', '\"', '{','}', '#', '!', '@', '\'' };
 	
 	public JustLogit() {
 		this.log = LoggerFactory.getLogger(this.getClass());
@@ -95,11 +100,11 @@ public class JustLogit {
 	}
 	
 	private String nuetralizeLog(Supplier<String> msg) {
-//		if(msg.get() != null) {
-//			return SecurityUtils.scanObjectForSecureLogging(msg.get(), SecurityUtils.SECURE);
-//		}
+		if(msg.get() != null) {
+			return htmlCodec.encode( IMMUNE_HTML, msg.get());
+		}
 		
-		return msg.get();		                     
+		return null;	                     
 	}
 	
 }
