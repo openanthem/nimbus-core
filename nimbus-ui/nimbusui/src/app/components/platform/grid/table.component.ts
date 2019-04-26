@@ -35,7 +35,7 @@ import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { ServiceConstants } from './../../../services/service.constants';
 import { SortAs, GridColumnDataType } from './sortas.interface';
-import { Param, StyleState, nestedParams, CollectionParams } from '../../../shared/param-state';
+import { Param, StyleState, NestedParams, CollectionParams } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
 import { TableComponentConstants } from './table.component.constants';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
@@ -209,7 +209,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         this.value.unshift({});
         this.dt.initRowEdit(this.value[0]);
         // TODO focus the first field
-        const newRow: nestedParams = {};
+        const newRow: NestedParams = {};
         for (const paramconfig of this.params) {
             newRow[paramconfig.code] =  new Param(this.configService).deserialize({'configId': paramconfig.id}, this.element.path);
         }

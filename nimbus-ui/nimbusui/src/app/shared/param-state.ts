@@ -26,8 +26,8 @@ import { ViewComponent } from './param-annotations.enum';
 import { DataGroup } from './../components/platform/charts/chartdata';
 import { TableComponentConstants } from './../components/platform/grid/table.component.constants';
 
-export interface nestedParams {[id:string]: Param;};
-export interface CollectionParams { [id: number]: nestedParams};
+export interface NestedParams {[id:string]: Param;};
+export interface CollectionParams { [id: number]: NestedParams};
 
 /**
  * \@author Sandeep.Mantha
