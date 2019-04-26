@@ -29,7 +29,7 @@ import { ServiceConstants } from './service.constants';
 import { PageService } from './page.service';
 import { ConfigService } from './config.service';
 import { CustomHttpClient } from './httpclient.service';
-import { AppBranding, Layout, TopBarConfig, FooterConfig } from '../model/menu-meta.interface';
+import { AppBranding, Layout, TopBarConfig, FooterConfig, MenuPanel } from '../model/menu-meta.interface';
 import { GenericDomain } from '../model/generic-domain.model';
 import { ViewComponent } from './../shared/param-annotations.enum';
 import { LoggerService } from './logger.service';
@@ -112,12 +112,12 @@ export class LayoutService {
         const pageParam: Param = flowModel.params.find (p => ( p.config &&
                                     p.config.uiStyles && p.config.uiStyles.attributes && 
                                     p.config.uiStyles.attributes.alias === ViewComponent.page.toString()));
-        layout['fixLayout'] = pageParam.config.uiStyles.attributes.fixLayout;
-        layout['menu'] = this.getMenu(pageParam.type.model);
-        layout['topBar'] = this.getTopBar(pageParam.type.model);
-        layout['footer'] = this.getFooterItems(pageParam.type.model);
-        layout['modalList'] = this.getModalItems(pageParam.type.model);
-        layout['actiontray'] = this.getActionTrayItems(pageParam.type.model);
+        layout.fixLayout = pageParam.config.uiStyles.attributes.fixLayout;
+        layout.menuPanel = this.getMenu(pageParam.type.model);
+        layout.topBar = this.getTopBar(pageParam.type.model);
+        layout.footer = this.getFooterItems(pageParam.type.model);
+        layout.modalList = this.getModalItems(pageParam.type.model);
+        layout.actiontray = this.getActionTrayItems(pageParam.type.model);
         // Push the new menu into the Observable stream
         this.layout$.next(layout);
     }
@@ -228,15 +228,17 @@ export class LayoutService {
         });
     }
 
-    private getMenu(layoutConfig: Model) {
-        let menuItems : MenuItem[] = [];
-        layoutConfig.params.forEach(param => {
+    private getMenu(layoutConfig: Model): MenuPanel {
+        let menuPanel = {} as MenuPanel;
+        for (let param of layoutConfig.params) {
             if(param.config.uiStyles.attributes.alias === ViewComponent.menupanel.toString()) {
-                this.buildMenu(param, menuItems); 
+                menuPanel.align = param.config.uiStyles.attributes.align;
+                menuPanel.menuItems = [];
+                this.buildMenu(param, menuPanel.menuItems); 
             }
-        });
+        }
 
-        return menuItems;
+        return menuPanel;
     }
 
     private buildMenu(param: Param,  menuItems : MenuItem[]) {
