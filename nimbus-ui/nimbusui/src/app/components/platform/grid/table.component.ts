@@ -35,7 +35,7 @@ import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { ServiceConstants } from './../../../services/service.constants';
 import { SortAs, GridColumnDataType } from './sortas.interface';
-import { Param, StyleState } from '../../../shared/param-state';
+import { Param, StyleState, nestedParams, CollectionParams } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
 import { TableComponentConstants } from './table.component.constants';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
@@ -166,14 +166,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         if (this.isNewRecord(rowData)) {
             delete this.clonedRowData[rowData.elemId];
             this.value.splice(0, 1);
-
-            const collectionParams = this.element.tableBasedData.collectionParams;
-            for (const param of collectionParams) {
-                if (param.elemId === undefined) {
-                    collectionParams.splice(collectionParams.indexOf(param), 1);
-                }
-            }
-
+            delete this.element.tableBasedData.collectionParams['-1'];
             return;
         }
        this.revertEditChanges(rowData);
@@ -216,11 +209,11 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         this.value.unshift({});
         this.dt.initRowEdit(this.value[0]);
         // TODO focus the first field
-        const newRow = {};
+        const newRow: nestedParams = {};
         for (const paramconfig of this.params) {
             newRow[paramconfig.code] =  new Param(this.configService).deserialize({'configId': paramconfig.id}, this.element.path);
         }
-        this.element.tableBasedData.collectionParams.push(newRow);
+        this.element.tableBasedData.collectionParams['-1'] = newRow;
     }
 
     ngOnInit() {
@@ -435,13 +428,10 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     getViewParamInEditRow(col: ParamConfig, rowIndex: number): Param {
-        const collectionParams = this.element.tableBasedData.collectionParams;
-            if (!rowIndex) {
-                collectionParams[collectionParams.length - 1][col.code].labels = [];
-                return collectionParams[collectionParams.length - 1][col.code];
-            }
-            this.element.tableBasedData.collectionParams[rowIndex][col.code].labels = [];
-            return this.element.tableBasedData.collectionParams[rowIndex][col.code];
+        if (this.isAdding()) {
+            return this.element.tableBasedData.collectionParams['-1'][col.code];
+        }
+        return this.element.tableBasedData.collectionParams[rowIndex][col.code];
     }
 
     getRowPath(col: ParamConfig, item: any) {
@@ -773,7 +763,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
      * @param targetLineItem the object value of the table
      * @returns true if targetLineItem's nestedElement was set, false otherwise.
      */
-    private _putNestedElement(collectionParams: any[], index: number, targetLineItem: any): boolean {
+    private _putNestedElement(collectionParams: CollectionParams, index: number, targetLineItem: any): boolean {
 
         if (collectionParams[index]['expandedRowContent']['alias'] == ViewComponent.gridRowBody.toString() && 
         collectionParams[index]['expandedRowContent']['path'] == `${this.element.path}/${index}/${collectionParams[index]['expandedRowContent'].config.code}`) {

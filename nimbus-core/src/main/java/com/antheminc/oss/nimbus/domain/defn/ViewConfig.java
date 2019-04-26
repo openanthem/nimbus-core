@@ -1173,7 +1173,13 @@ public class ViewConfig {
 	 * element type: <ul> <li>{@link ComboBox}</li> <li>{@link GridColumn}</li>
 	 * <li>{@link GridRowBody}</li> <li>{@link LinkMenu}</li> <li>{@link Link}</li> </ul>
 	 * 
-	 * <p>The grid supports in-line editing. ComboBox and TextBox can also be displayed inside the GridLineItem. 
+	 * <p>Grid supports in-line editing. When in editable mode, {@link GridColumn} 
+	 * components will be rendered as {@link TextBox} components. Other supported 
+	 * components that need to use different UI components to capture editable 
+	 * information will use an appropriate UI component in editable mode. 
+	 * (e.g. a collection element field decorated with {@link ComboBox} will be 
+	 * rendered as a {@link GridColumn} in non-editable mode, but as a {@link ComboBox} 
+	 * when in editable mode.) 
 	 * 
 	 * @since 1.0
 	 */

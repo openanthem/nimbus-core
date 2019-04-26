@@ -40,6 +40,7 @@ import { ParamUtils } from './../../../../shared/param-utils';
 export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     @Input() element: Param;
     @Input() form: FormGroup;
+    @Input() hideLabel: boolean;
     
     protected abstract model: NgModel;
     protected _elementStyle: string;

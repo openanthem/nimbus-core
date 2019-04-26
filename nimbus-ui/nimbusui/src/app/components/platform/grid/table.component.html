@@ -106,20 +106,23 @@
                     <td *ngIf="showColumn(col)" [ngClass]="getColumnStyle(col)">
                             <p-cellEditor>
 
-                                     <ng-template pTemplate="input" [ngIf]="showValue(col) && element.config.uiStyles.attributes.editRow">
+                                     <ng-template pTemplate="input" [ngIf]="showValue(col) && element?.config?.uiStyles?.attributes?.editRow">
 
                                         <nm-input  
                                         *ngIf="isAdding() && TableComponentConstants.allowedInlineEditColumnStylesAlias.includes(col.uiStyles.attributes.alias)"
+                                        [hideLabel]=true
                                         [element]="getViewParamInEditRow(col, rowData['elemId'])" 
                                         [(ngModel)]="rowData[col.code]"></nm-input>
 
                                         <nm-input  
-                                        *ngIf="(col?.uiStyles?.attributes?.alias === componentTypes.textBox.toString() || col?.uiStyles?.attributes?.alias === viewComponent.gridcolumn.toString()) && !isAdding()"
+                                        *ngIf="!isAdding() && TableComponentConstants.allowedInlineEditNmInputComponents.includes(col.uiStyles.attributes.alias)"
+                                        [hideLabel]=true
                                         [element]="getViewParamInEditRow(col, rowData['elemId'])" 
                                         [(ngModel)]="rowData[col.code]"></nm-input>
 
                                         <nm-comboBox 
-                                        *ngIf="col?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString() && !isAdding()" 
+                                        *ngIf="!isAdding() && col?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString()" 
+                                        [hideLabel]=true
                                         [element]="getViewParamInEditRow(col, rowData['elemId'])" 
                                         [(ngModel)]="rowData[col.code]"></nm-comboBox>
 

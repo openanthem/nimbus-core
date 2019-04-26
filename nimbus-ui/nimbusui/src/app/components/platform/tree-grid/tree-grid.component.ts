@@ -24,7 +24,7 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { ParamConfig } from '../../../shared/param-config';
 import { PageService } from '../../../services/page.service';
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { Param, TreeGridDeserializer } from '../../../shared/param-state';
+import { Param, TreeGridDeserializer, CollectionParams } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
 import { ViewComponent } from '../../../shared/param-annotations.enum';
 import { GridUtils } from './../../../shared/grid-utils';
@@ -160,14 +160,22 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
         return this.getNestedCollectionParamConfigs(this.element.tableBasedData.collectionParams, this.element, RowNodeUtils.getBaseRowNode(rowNode));
     }
 
-    getNestedCollectionParamConfigs(collectionParams: Param[], param: Param, rowNode: any): ParamConfig[] {
+    getNestedCollectionParamConfigs(collectionParams: CollectionParams, param: Param, rowNode: any): ParamConfig[] {
         if (!rowNode.activeChild) {
             return param.config.type.elementConfig.type.model.paramConfigs;
         }
 
         // Find the first collection param, who is annotated with @TreeGridChild.
         // Continue this manner recursively until the last child is found.
-        let treegridChild: Param = collectionParams.find(p => this.viewComponent.treeGridChild.toString() === p.config.uiStyles.attributes.alias);
+        let treegridChild: Param;
+        for (const key in this.element.tableBasedData.collectionParams[rowNode.node.data.elemId]) {
+            if (this.element.tableBasedData.collectionParams[rowNode.node.data.elemId].hasOwnProperty(key)) {
+                const element = this.element.tableBasedData.collectionParams[rowNode.node.data.elemId][key];
+                if (element.config.uiStyles.attributes.alias === this.viewComponent.treeGridChild.toString()) {
+                    treegridChild = element;
+                }
+            }
+        } 
         if (!treegridChild) {
             return param.config.type.elementConfig.type.model.paramConfigs;
         }

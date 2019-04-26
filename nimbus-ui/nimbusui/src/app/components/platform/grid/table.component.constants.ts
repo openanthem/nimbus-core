@@ -45,5 +45,10 @@ export class TableComponentConstants {
         ComponentTypes.textBox.toString(),
         ComponentTypes.comboBox.toString()
     ];
+
+    public static readonly allowedInlineEditNmInputComponents: string[] = [
+        ViewComponent.gridcolumn.toString(),
+        ComponentTypes.textBox.toString()
+    ];
 }
 
