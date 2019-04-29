@@ -17,11 +17,13 @@ package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextLoader;
+import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
@@ -82,7 +84,16 @@ public class ParamStateAtomicPersistenceEventListener extends ParamStatePersiste
 			return true;
 		}
 		
-		modelRepo._update(rootModel.getConfig().getAlias(), coreStateId, rootModel.getBeanPath(), rootModel.getState());
+		String repoAlias = repo.alias();
+		if (StringUtils.isBlank(repoAlias)) {
+			repoAlias = rootModel.getConfig().getAlias();
+			if (StringUtils.isBlank(repoAlias)) {
+				throw new InvalidConfigException("Core Persistent entity must be configured with "
+						+ Domain.class.getSimpleName() + " annotation. Not found for root model: " + rootModel);
+			}
+		}
+		
+		modelRepo._update(repoAlias, coreStateId, rootModel.getBeanPath(), rootModel.getState());
 		return true;
 	}
 
