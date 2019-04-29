@@ -301,12 +301,12 @@ describe('LayoutService', () => {
     spyOn(service, 'buildMenu').and.returnValue('');
     const res = service.getMenu(layoutServicePageParam.type.model);
     expect(service.buildMenu).toHaveBeenCalledWith(layoutServicePageParam.type.model.params[0], []);
-    expect(res).toEqual([]);
+    expect(res.menuItems).toEqual([]);
   }));
 
   it('parseLayoutConfig() should call getTopBar(), getFooterItems(), getMenu(), getModalItems(), getActionTrayItems() and updaate layout$ subject', async(() => {
     const flowModel: any = { params: [layoutServicePageParam]};
-    const layout: any = {"fixLayout":false,"menu":5,"topBar":2,"footer":4,"modalList":5,"actiontray":5};
+    const layout: any = {"fixLayout":false,"menuPanel":5,"topBar":2,"footer":4,"modalList":5,"actiontray":5};
     spyOn(service, 'getTopBar').and.returnValue(2);
     spyOn(service, 'getFooterItems').and.returnValue(4);
     spyOn(service, 'getActionTrayItems').and.returnValue(5);
