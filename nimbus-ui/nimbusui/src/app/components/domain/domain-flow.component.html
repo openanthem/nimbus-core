@@ -1,28 +1,30 @@
-<nm-breadcrumb></nm-breadcrumb>
-<ng-template [ngIf]="hasLayout">
-	<div class="info-bar clearfix">
-	    <div [class]="p.config?.uiStyles?.attributes?.cssClass" *ngFor="let p of accordions, let index=index">
-	            <nm-accordion id="{{p?.config?.code}}" [element]="p" [nmPrint]="p"></nm-accordion>
-	    </div>
+<nm-nav *ngIf="hasLayout && menuPanel?.align === 'HORIZONTAL'" [cssClass]="'globalNav'" [menuPanel]="menuPanel"></nm-nav>
+
+<div class='wrapper'>
+	<div id="main-content" class="main-content" 
+		[class.withInfoBar]="hasLayout && accordions"
+		[class.withActionBar]="hasLayout && actionTray && actionTray?.visible">
+		<nm-breadcrumb></nm-breadcrumb>
+		<ng-template [ngIf]="hasLayout">
+			<div *ngIf="accordions" class="info-bar clearfix">
+				<div [class]="p.config?.uiStyles?.attributes?.cssClass" *ngFor="let p of accordions, let index=index">
+					<nm-accordion id="{{p?.config?.code}}" [element]="p" [nmPrint]="p"></nm-accordion>
+				</div>
+			</div>
+
+			<nm-nav *ngIf="menuPanel?.align !== 'HORIZONTAL'" [menuPanel]="menuPanel"></nm-nav>
+
+			<nm-actiontray id="{{actionTray?.config?.code}}" *ngIf="(actionTray !== undefined) && actionTray?.visible"
+				[element]="actionTray"></nm-actiontray>
+
+			<ng-template ngFor let-modal [ngForOf]="modalItems">
+				<nm-modal id="{{modal?.config?.code}}" [element]="modal"></nm-modal>
+			</ng-template>
+
+		</ng-template>
+		<div id="page-content" class="{{infoClass}}" (scroll)="onPageContentScroll($event)"
+			[class.no-sidebar]="menuPanel?.align == 'HORIZONTAL' || !menuPanel?.menuItems || menuPanel?.menuItems?.length == 0">
+			<router-outlet></router-outlet>
+		</div><!--  END Domain-content  -->
 	</div>
-	
-	<nav class="section-nav nav navbar navbar-expand-sm" [class.globalNav]="menuPanel?.align === 'HORIZONTAL'" role="navigation">
-        <button aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler collapsed"
-            data-target="#navbarToggler" data-toggle="collapse" type="button"> 
-            <span class="navbar-toggler-icon"></span> 
-        </button>
-        <div aria-expanded="false" class="navbar-collapse nav-block collapse" id="navbarToggler">
-			<nm-panelMenu [model]="menuPanel?.menuItems" [multiple]="false"></nm-panelMenu>
-		</div>
-	</nav>
-
-	<nm-actiontray id="{{actionTray?.config?.code}}" *ngIf = "(actionTray !== undefined) && actionTray?.visible" [element]="actionTray"></nm-actiontray> 
-
-	<ng-template ngFor let-modal [ngForOf]="modalItems">
-		<nm-modal id="{{modal?.config?.code}}" [element]="modal"></nm-modal>
-	</ng-template>	
-
-</ng-template>
-<div id="page-content" class="{{infoClass}}" (scroll)="onPageContentScroll($event)">
-    <router-outlet></router-outlet>
-</div><!--  END Domain-content  -->
+</div>
