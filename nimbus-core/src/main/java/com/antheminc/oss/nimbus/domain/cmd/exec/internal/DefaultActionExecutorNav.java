@@ -15,28 +15,55 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
+import org.drools.core.util.StringUtils;
+
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav.PageNavigationResponse;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav.PageNavigationResponse.Type;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Soham Chakravarti
+ * @author Tony Lopez
  *
  */
 @EnableLoggingInterceptor
-public class DefaultActionExecutorNav<T> extends AbstractCommandExecutor<String> {
-	
+public class DefaultActionExecutorNav<T> extends AbstractCommandExecutor<PageNavigationResponse> {
+
 	public DefaultActionExecutorNav(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}
 
 	@Override
-	protected Output<String> executeInternal(Input input) {
-		String pageId = input.getContext().getCommandMessage().getCommand().getFirstParameterValue(Constants.KEY_NAV_ARG_PAGE_ID.code);
-		return Output.instantiate(input, input.getContext(), pageId);		
+	protected Output<PageNavigationResponse> executeInternal(Input input) {
+		PageNavigationResponse response = buildResponse(input); 
+		if (null == response) {
+			throw new InvalidConfigException(
+					"Unable to determine a navigation strategy from the provided command message. Please ensure the correct parameters were sent: "
+							+ input.getContext().getCommandMessage());
+		}
+		
+		return Output.instantiate(input, input.getContext(), response);
 	}
 	
+	protected PageNavigationResponse buildResponse(Input input) {
+		String pageId = input.getContext().getCommandMessage().getCommand()
+				.getFirstParameterValue(Constants.KEY_NAV_ARG_PAGE_ID.code);
+		if (!StringUtils.isEmpty(pageId)) {
+			return PageNavigationResponse.builder().pageId(pageId).build();
+		}
+
+		String redirectUrl = input.getContext().getCommandMessage().getCommand()
+				.getFirstParameterValue(Constants.KEY_NAV_ARG_REDIRECT_URL.code);
+		if (!StringUtils.isEmpty(redirectUrl)) {
+			return PageNavigationResponse.builder().type(Type.EXTERNAL).redirectUrl(redirectUrl).build();
+		}
+		
+		return null;
+	}
 }
