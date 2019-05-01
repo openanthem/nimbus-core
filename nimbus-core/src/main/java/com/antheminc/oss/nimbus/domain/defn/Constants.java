@@ -74,6 +74,7 @@ public enum Constants {
 	KEY_FUNCTION("fn"),
 	KEY_FUNCTION_NAME("name"),
 	
+	KEY_NAV_ARG_REDIRECT_URL("redirectUrl"),
 	KEY_NAV_ARG_PAGE_ID("pageId"),
 	
 	KEY_FN_INITSTATE_ARG_TARGET_PATH("target"),
