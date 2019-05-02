@@ -16,7 +16,7 @@
  */
 'use strict';
 
-import { ViewComponent } from "../../../shared/param-annotations.enum";
+import { ViewComponent, ComponentTypes } from "../../../shared/param-annotations.enum";
 
 /**
 * \@author Swetha Vemuri
@@ -33,9 +33,22 @@ export class TableComponentConstants {
         ViewComponent.treeGrid.toString()
     ]
 
-    public static readonly allowedColumnStylesAlias: string[] = [ ViewComponent.button.toString(),
-                                                            ViewComponent.link.toString(),
-                                                            ViewComponent.linkMenu.toString(),
-                                                            ViewComponent.gridRowBody.toString() ];
+    public static readonly allowedColumnStylesAlias: string[] = [ 
+        ViewComponent.button.toString(),
+        ViewComponent.link.toString(),
+        ViewComponent.linkMenu.toString(),
+        ViewComponent.gridRowBody.toString() 
+    ];
+
+    public static readonly allowedInlineEditColumnStylesAlias: string[] = [
+        ViewComponent.gridcolumn.toString(),
+        ComponentTypes.textBox.toString(),
+        ComponentTypes.comboBox.toString()
+    ];
+
+    public static readonly allowedInlineEditNmInputComponents: string[] = [
+        ViewComponent.gridcolumn.toString(),
+        ComponentTypes.textBox.toString()
+    ];
 }
 

@@ -39,7 +39,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-comboBox',
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers ],
   template: `
-    <nm-input-label *ngIf="!isLabelEmpty && this.showLabel"
+    <nm-input-label *ngIf="!isLabelEmpty && this.showLabel && !this.hideLabel"
         [element]="element" 
         [for]="element.config?.code" 
         [required]="requiredCss">

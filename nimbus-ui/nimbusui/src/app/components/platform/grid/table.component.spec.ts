@@ -1266,14 +1266,6 @@ describe('DataTable', () => {
         expect(hostComponent.showLinkMenu(col)).toBeFalsy();
     });
 
-    it('getViewParam() should return element.collectionParams object', () => {
-        const col = new ParamConfig(configService);
-        col.code = '2';
-        hostComponent.element.path = '/test';
-        hostComponent.element.tableBasedData.collectionParams[0].path = '/test/1/2'
-        expect(hostComponent.getViewParam(col, 1).path).toEqual('/test/1/2');
-    });
-
     it('isClickedOnDropDown() should return true', () => {
         const dArray = new ActionDropdown(webContentSvc, pageService, elementRef);
         dArray['elementRef'].nativeElement.contains = () => { return true };

@@ -26,6 +26,9 @@ import { ViewComponent } from './param-annotations.enum';
 import { DataGroup } from './../components/platform/charts/chartdata';
 import { TableComponentConstants } from './../components/platform/grid/table.component.constants';
 
+export interface NestedParams {[id:string]: Param;};
+export interface CollectionParams { [id: number]: NestedParams};
+
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -336,7 +339,7 @@ export class StyleState implements Serializable<StyleState, string> {
  */
 export abstract class TableBasedData {
 
-    collectionParams: Param[] = [];
+    collectionParams: CollectionParams = {};
     values: any[] = undefined;
     stateMap: any[] = [];
 
@@ -370,7 +373,7 @@ export abstract class TableBasedData {
      * @param baseParam the table based param, provides context information and/or the "source" of data to transform
      * @param colElemParamsJSON the "source" of data to transform
      */
-    from(baseParam: Param, colElemParamsJSON?: string[]): TableBasedData {
+    from(baseParam: Param, colElemParamsJSON: string[]): TableBasedData {
         if (!baseParam) {
             return this;
         }
@@ -396,18 +399,18 @@ export abstract class TableBasedData {
         this.values = [];
         for(let colElemParam of colElemParams) {
             if (!ParamUtils.isEmpty(colElemParam)) {
-                let rowData = this.buildRowData(colElemParam);
-                this.collectionParams = this.collectionParams.concat(rowData.nestedParams); 
+                const rowData = this.buildRowData(colElemParam, baseParam);
+                this.collectionParams[colElemParam.elemId] = rowData.nestedParams; 
                 if (rowData.values) {
                     this.values = this.values.concat(rowData.values);
                 }
                 this.stateMap = this.stateMap.concat(rowData.stateMap);
-            }       
+            }
         }
         return this;
     }
 
-    abstract buildRowData(colElemParam: Param): RowData;
+    abstract buildRowData(colElemParam: Param, baseParam: Param): RowData;
 }
 
 /**
@@ -415,7 +418,7 @@ export abstract class TableBasedData {
  */
 export abstract class RowData {
     values: any = undefined;
-    nestedParams: Param[] = [];
+    nestedParams: CollectionParams = {};
     stateMap: any[] = [];
 
     constructor(protected configSvc: ConfigService) {}
@@ -424,7 +427,7 @@ export abstract class RowData {
      * Create row data from the given collection element param.
      * @param colElemParam the collection element param which provides the "source" of data to transform
      */
-    from(colElemParam: Param): RowData {
+    from(colElemParam: Param, baseParam: Param): RowData {
         if (!colElemParam) {
             return this;
         }
@@ -436,7 +439,7 @@ export abstract class RowData {
         let stateData = {};
         for(let cellParam of colElemParam.type.model.params) {
             // collect all nested params for the collection element row
-            this.collectNestedParams(colElemParam, cellParam, this.nestedParams);
+            this.collectNestedParams(colElemParam, cellParam, this.nestedParams, baseParam);
             
             // collect all state data for the collection element row
             let cellParamCode = this.configSvc.getViewConfigById(cellParam.configId).code;
@@ -463,23 +466,23 @@ export abstract class RowData {
      * @param param the base param (used recursively)
      * @param nestedParams an array containing the added nested params
      */
-    protected collectNestedParams(colElemParam: Param, param: Param, nestedParams: Param[]): void {
-        if (!param || !this.shouldCollect(param)) {
+    protected collectNestedParams(colElemParam: Param, param: Param, nestedParams: CollectionParams, baseParam: Param): void {
+
+        if (!param || !this.shouldCollect(param, baseParam)) {
             return;
         }
 
-        // add the param to nestedParams
-        nestedParams.push(param);
+    this.nestedParams[param.config.code] = param;
 
         // if nested, recursively perform the collection
         if (param.type && param.type.model && param.type.model.params) {
             for(let p of param.type.model.params) {
-                this.collectNestedParams(colElemParam, p, nestedParams);
+                this.collectNestedParams(colElemParam, p, nestedParams, baseParam);
             }
         }
     }
 
-    abstract shouldCollect(param: Param): boolean;
+    abstract shouldCollect(param: Param, baseParam: Param): boolean;
 }
 
 /**
@@ -487,8 +490,8 @@ export abstract class RowData {
  */
 export class TableData extends TableBasedData {
     
-    buildRowData(colElemParam: Param): RowData {
-        return new TableRowData(this.configSvc).from(colElemParam);
+    buildRowData(colElemParam: Param, baseParam: Param): RowData {
+        return new TableRowData(this.configSvc).from(colElemParam, baseParam);
     }
 }
 
@@ -497,10 +500,12 @@ export class TableData extends TableBasedData {
  */
 export class TableRowData extends RowData {
 
-    shouldCollect(param: Param): boolean {
+    shouldCollect(param: Param, baseParam: Param): boolean {
+
         return param.config.uiStyles && 
             (TableComponentConstants.allowedColumnStylesAlias.includes(param.config.uiStyles.attributes.alias)
-                || param.config.uiStyles.attributes.showAsLink);   
+                || param.config.uiStyles.attributes.showAsLink 
+                || baseParam.config.uiStyles.attributes.editRow);
     }
 }
 
@@ -510,7 +515,7 @@ export class TableRowData extends RowData {
 export class TreegridData extends TableBasedData {
     
     buildRowData(colElemParam: Param): RowData {
-        return new TreegridRowData(this.configSvc).from(colElemParam);
+        return new TreegridRowData(this.configSvc).from(colElemParam, undefined);
     }
 }
 
@@ -526,7 +531,7 @@ export class TreegridRowData extends RowData {
         ViewComponent.treeGridChild.toString()
     ];
 
-    shouldCollect(param: Param): boolean {
+    shouldCollect(param: Param, baseParam: Param): boolean {
         if (!param.config) {
             // TODO investigate why param config is not loaded.
             // until this is available, this is a workaround to include @TreeGridChild nested components
