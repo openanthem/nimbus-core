@@ -233,6 +233,7 @@ export class LayoutService {
         for (let param of layoutConfig.params) {
             if(param.config.uiStyles.attributes.alias === ViewComponent.menupanel.toString()) {
                 menuPanel.align = param.config.uiStyles.attributes.align;
+                menuPanel.code = param.config.code;
                 menuPanel.menuItems = [];
                 this.buildMenu(param, menuPanel.menuItems); 
             }

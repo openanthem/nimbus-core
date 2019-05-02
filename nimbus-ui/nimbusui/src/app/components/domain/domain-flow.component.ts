@@ -24,7 +24,6 @@ import { Layout, LinkConfig, MenuPanel } from '../../model/menu-meta.interface';
 import { Page } from '../../shared/app-config.interface';
 import { Param } from '../../shared/param-state';
 import { LoggerService } from '../../services/logger.service';
-import { MenuItem } from '../../shared/menuitem';
 import { Message } from './../../shared/message';
 import { ViewRoot } from './../../shared/app-config.interface';
 import { NmMessageService } from './../../services/toastmessage.service';
@@ -68,9 +67,6 @@ export class DomainFlowCmp {
                 this.modalItems = layout.modalList;
                
                 this._logger.debug('domain flow component received layout from layout$ subject');
-                if(this.hasLayout && this.accordions != null && this.accordions !== undefined) {
-                    this.getDocument().getElementById('main-content').classList.add('withInfoBar');
-                }
 
                 this.setLayoutScroll();
             }
@@ -144,7 +140,6 @@ export class DomainFlowCmp {
                 this.hasLayout = false;
                 this.fixLayout = false;
                 this.setLayoutScroll();
-                this.getDocument().getElementById('main-content').classList.remove('withInfoBar');
             }
         });
     }
