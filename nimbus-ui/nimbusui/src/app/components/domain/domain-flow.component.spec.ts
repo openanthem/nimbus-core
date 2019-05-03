@@ -110,10 +110,8 @@ import { TableHeader } from '../platform/grid/table-header.component';
 import { InputMaskComp } from './../platform/form/elements/input-mask.component';
 import { Tab } from './../platform/content/tab.component';
 import { NmAutocomplete } from './../platform/form/elements/autocomplete.component';
-
-
-
 import { RichText } from '../platform/form/elements/rich-text.component';
+import { NavigationComponent } from '../navigation/navigation.component';
 
 let layoutservice, pageservice, router, route;
 
@@ -378,7 +376,8 @@ export class MockActivatedRoute implements ActivatedRoute {
     Tab,
     NmAutocomplete,
     NmChart,
-    RichText
+    RichText,
+    NavigationComponent
  ];
  const imports =  [
      RouterTestingModule,
