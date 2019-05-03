@@ -52,6 +52,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     stateChangeSubscriber: Subscription;
     validationChangeSubscriber: Subscription;
     onChangeSubscriber: Subscription;
+    validationError: any;
 
     constructor(protected controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super();
@@ -66,13 +67,48 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     }
 
     emitValueChangedEvent(formControl:any,$event:any) {
+        console.log('formControl', formControl, $event);
+        console.log('this.form', this.form);
+        
+        this.validationError = "";
         if (this.inPlaceEditContext) {
             this.inPlaceEditContext.value = formControl.value;
         }
         if(this.form == null || (this.form.controls[this.element.config.code]!= null && this.form.controls[this.element.config.code].valid)) {
+           
             this.controlService.controlValueChanged.emit(formControl.element);
         }
+
+        if (!this.form){
+            this.doLocalValidation();
+        }
             
+    }
+
+    doConstraintValidation(constraint){
+
+        if (constraint.name == "NotNull"){
+            //not null.
+            if (!this.value){
+                this.validationError = constraint.attribute.message;
+            }
+        }
+       
+        
+    }
+    doLocalValidation(){
+        console.log('86...', this.element.config.validation);
+        // var validations = this.
+        if (!this.element.config.validation){
+            return ;
+        }
+
+        //for each tpe o vliation run .. 
+  for (var i=0; i<this.element.config.validation.constraints.length; i++){
+      this.doConstraintValidation (this.element.config.validation.constraints[i]);
+  }
+
+        
     }
 
     ngOnInit() {

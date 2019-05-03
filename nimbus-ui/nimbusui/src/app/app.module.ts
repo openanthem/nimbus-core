@@ -32,6 +32,7 @@ import { PageNotfoundComponent } from './components/platform/content/page-notfou
 import { PageContent } from './components/platform/content/page-content.component';
 import { GridService } from './services/grid.service';
 import { GridMouseEventDirective } from './directives/gridhover.directive';
+import { NmValidator } from './directives/validateInput.directive';
 import { PrintDirective } from './directives/print.directive';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -234,7 +235,7 @@ export function init_app(appinitservice: AppInitService) {
         DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
         Modal, ActionDropdown, ActionLink,
-        GridMouseEventDirective, DisplayValueDirective, PrintDirective,
+        GridMouseEventDirective, NmValidator,DisplayValueDirective, PrintDirective,
         HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, LoaderComponent, MessageComponent,

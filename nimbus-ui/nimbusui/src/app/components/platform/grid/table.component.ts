@@ -20,7 +20,7 @@ import {
     Component, Input, Output, forwardRef, ViewChild, EventEmitter,
     ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren, ViewRef
 } from '@angular/core';
-import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormGroup, NG_VALUE_ACCESSOR, ValidatorFn } from '@angular/forms';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
 import { OverlayPanel } from 'primeng/primeng';
 import { Table } from 'primeng/table';
@@ -41,6 +41,8 @@ import { TableComponentConstants } from './table.component.constants';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
 import { BaseTableElement } from './../base-table-element.component';
 import { ConfigService } from '../../../services/config.service';
+import { ValidationUtils } from '../validators/ValidationUtils';
+import { FormElementsService } from '../form-builder.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -60,7 +62,7 @@ var counter = 0;
 
 @Component({
     selector: 'nm-table',
-    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, DateTimeFormatPipe],
+    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, DateTimeFormatPipe, FormElementsService],
     encapsulation: ViewEncapsulation.None,
     templateUrl: './table.component.html'
 })
@@ -76,6 +78,31 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     @ViewChild('editableRow') editableRow: any;
     componentTypes = ComponentTypes;
     viewComponent = ViewComponent;
+    checks: ValidatorFn[] = [];
+    form1: FormGroup;
+    formElements1: Param[] = [];
+
+    cars2: any[] = [{
+        'vin': 'abcd',
+        'year': 1999,
+        'brand': 'audi',
+        'color': 'black'
+      }];
+    
+      brands: any[] = [
+        {label: 'Audi', value: 'Audi'},
+        {label: 'BMW', value: 'BMW'},
+        {label: 'Fiat', value: 'Fiat'},
+        {label: 'Ford', value: 'Ford'},
+        {label: 'Honda', value: 'Honda'},
+        {label: 'Jaguar', value: 'Jaguar'},
+        {label: 'Mercedes', value: 'Mercedes'},
+        {label: 'Renault', value: 'Renault'},
+        {label: 'VW', value: 'VW'},
+        {label: 'Volvo', value: 'Volvo'}
+    ];
+    
+      clonedCars: any = {};
 
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
@@ -134,16 +161,53 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         private gridService: GridService,
         private dtFormat: DateTimeFormatPipe,
         protected cd: ChangeDetectorRef,
-        private configService: ConfigService) {
+        private configService: ConfigService,
+        private service: FormElementsService) {
 
         super(_wcs, cd);
     }
 
+    onRowEditInit1(car: any) {
+        console.log('onRowEditInit is called...');
+    
+        this.clonedCars[car.vin] = {...car};
+    }
+    
+    onRowEditSave1(car: any) {
+        console.log('save1 is called...');
+        
+        // if (car.year > 0) {
+            delete this.clonedCars[car.vin];
+            // this.messageService.add({severity:'success', summary: 'Success', detail:'Car is updated'});
+        // }
+        // else {
+            // this.messageService.add({severity:'error', summary: 'Error', detail:'Year is required'});
+        // }
+    }
+    
+    onRowEditCancel1(car: any, index: number) {
+        this.cars2[index] = this.clonedCars[car.vin];
+        delete this.clonedCars[car.vin];
+    }
+
     onRowEditInitialize(rowData) {
+        // this.checks = [];
+        // this.formElements1 = [];
         this.clonedRowData[rowData.elemId] = {...rowData};
     }
 
     onRowEditSave(rowData) {
+
+        if (!rowData.status) {
+            return;
+        }
+        // if (this.form1 != null) {
+        //     console.log('this.form1.controls', this.form1.controls, this.checks, this.formElements1 );
+        //     console.log('this.form1.valid', this.form1.valid);
+            
+            
+        // }
+
         let elemPath = `${this.element.path}/${rowData.elemId}`;
         let relativeActionPath = this.element.config.uiStyles.attributes.onEdit;
         if (this.isNewRecord(rowData)) {
@@ -431,6 +495,15 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         if (this.isAdding()) {
             return this.element.tableBasedData.collectionParams['-1'][col.code];
         }
+        const elementChecks = ValidationUtils.buildStaticValidations(this.element.tableBasedData.collectionParams[rowIndex][col.code]);
+        if (elementChecks) {
+            for (let i = 0; i < elementChecks.length; i++) {
+                this.checks.push(elementChecks[i]);
+            }
+        }
+        this.formElements1.push(this.element.tableBasedData.collectionParams[rowIndex][col.code]);
+        this.form1 = this.service.toFormGroup(this.formElements1, this.checks);
+
         return this.element.tableBasedData.collectionParams[rowIndex][col.code];
     }
 
