@@ -22,9 +22,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.integration.mq.MQEvent;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 import lombok.Getter;
@@ -38,15 +40,18 @@ import lombok.Getter;
 public class WebCommandDispatcher {
 
 	private final WebCommandBuilder builder;
-
 	private final CommandExecutorGateway gateway;
 
 	public WebCommandDispatcher(BeanResolverStrategy beanResolver) {
 		this.builder = beanResolver.get(WebCommandBuilder.class);
 		this.gateway = beanResolver.get(CommandExecutorGateway.class);
-		
+
 	}
-	
+
+	public MultiOutput handle(Command cmd, String payload) {
+		return getGateway().execute(cmd, payload);
+	}
+
 	public Object handle(HttpServletRequest httpReq, ModelEvent<String> event) {
 		Command cmd = getBuilder().build(httpReq, event);
 		return handle(cmd, event.getPayload());
@@ -57,7 +62,8 @@ public class WebCommandDispatcher {
 		return handle(cmd, json);
 	}
 
-	public MultiOutput handle(Command cmd, String payload) {
-		return getGateway().execute(cmd, payload);
+	public MultiOutput handle(MQEvent event) {
+		Command cmd = CommandBuilder.withUri(event.getCommandUrl()).getCommand();
+		return getGateway().execute(cmd, event.getPayload());
 	}
 }

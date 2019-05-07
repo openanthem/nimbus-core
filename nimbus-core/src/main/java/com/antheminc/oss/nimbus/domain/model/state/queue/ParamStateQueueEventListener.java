@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,33 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.defn;
+package com.antheminc.oss.nimbus.domain.model.state.queue;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.AbstractStateAndConfigEventListener;
 
 /**
- * @author Soham Chakravarti
- *
+ * @author Sandeep Mantha
+ * 
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(value=ElementType.TYPE)
-@Model
-public @interface Domain {
+public abstract class ParamStateQueueEventListener extends AbstractStateAndConfigEventListener {
 
-	String value();
-	
-	String lifecycle() default "";
-	
-	ListenerType[] includeListeners() default { };
-	
-	public static enum ListenerType {
-		none,
-		websocket,
-		persistence,
-		update,
-		QUEUE
+	@Override
+	public boolean containsListener(ListenerType listenerType) {
+		return ListenerType.QUEUE == listenerType;
 	}
 }

@@ -28,11 +28,11 @@ import lombok.ToString;
 @Getter @Setter @ToString
 public abstract class AbstractEvent<T extends Serializable, P> {
 
-	private String type;
+	protected String type;
 	
-	private T id;
+	protected T id;
 	
-	private P payload;
+	protected P payload;
 
 	
 	public enum SuppressMode {
