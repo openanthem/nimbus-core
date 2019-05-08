@@ -15,11 +15,12 @@
  */
 package com.antheminc.oss.nimbus.integration.mq;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.app.extension.config.properties.ActiveMQConfigurationProperties;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,8 +40,8 @@ public class ActiveMQPublisher implements MQPublisher {
 	private final JmsTemplate jmsTemplate;
 	private final ObjectMapper om;
 
-	@Value(value = "${activemq.outbound.channel}")
-	private String queueName;
+	@Autowired
+	private ActiveMQConfigurationProperties config;
 
 	@Override
 	public void send(final Param<?> param) {
@@ -52,9 +53,9 @@ public class ActiveMQPublisher implements MQPublisher {
 		}
 		
 		try {
-			this.jmsTemplate.convertAndSend(queueName, sMessage);
+			this.jmsTemplate.convertAndSend(config.getOutbound().getName(), sMessage);
 		} catch(JmsException e) {
-			throw new FrameworkRuntimeException("Failed to write message to queue \"" + queueName + "\" with payoad: " + sMessage);
+			throw new FrameworkRuntimeException("Failed to write message to queue \"" + config.getOutbound().getName() + "\" with payoad: " + sMessage);
 		}
 	}
 }

@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.integration.mq;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
@@ -41,11 +40,8 @@ public class ActiveMQConsumer implements MQConsumer {
 	private final WebCommandDispatcher dispatcher;
 	private final ObjectMapper objectMapper;
 
-	@Value(value = "${activemq.inbound.channel}")
-	private String queueName;
-
 	@Override
-	@JmsListener(destination = "${activemq.inbound.channel}")
+	@JmsListener(destination = "${nimbus.activemq.inbound.name}")
 	public void receive(String message) {
 		LOG.debug(() -> "received message=" + message);
 		// TODO Create session?

@@ -15,8 +15,14 @@
  */
 package com.antheminc.oss.nimbus.app.extension.config;
 
+import java.util.Hashtable;
+
+import javax.jms.ConnectionFactory;
+import javax.naming.Context;
+import javax.naming.NamingException;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.qpid.jms.JmsConnectionFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +32,7 @@ import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
 
+import com.antheminc.oss.nimbus.app.extension.config.properties.ActiveMQConfigurationProperties;
 import com.antheminc.oss.nimbus.channel.web.WebCommandDispatcher;
 import com.antheminc.oss.nimbus.domain.model.state.queue.ParamStateMQEventListener;
 import com.antheminc.oss.nimbus.integration.mq.ActiveMQConsumer;
@@ -38,38 +45,51 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Configuration
 @EnableJms
-@ConditionalOnProperty(name = "spring.activemq.broker-url")
+@ConditionalOnProperty("nimbus.activemq.broker-url")
 public class DefaultActiveMQConfig {
-
-	@Value("${spring.activemq.broker-url}")
-	private String brokerUrl;
-
+	
 	@Bean
-	public ActiveMQConnectionFactory activeMQConnectionFactory() {
-		ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
-		activeMQConnectionFactory.setBrokerURL(brokerUrl);
-		return activeMQConnectionFactory;
+	public ConnectionFactory connectionFactory(ActiveMQConfigurationProperties properties) throws NamingException {
+		if (properties.getBrokerUrl().startsWith("amqp")) {
+			// Use JNDI to specify the AMQP endpoint
+	        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+	        env.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.qpid.jms.jndi.JmsInitialContextFactory");
+	        env.put("connectionfactory.factoryLookup", properties.getBrokerUrl());
+	        javax.naming.Context context = new javax.naming.InitialContext(env);
+
+	        // Create a connection factory.
+	        JmsConnectionFactory connectionFactory = (JmsConnectionFactory) context.lookup("factoryLookup");
+	        connectionFactory.setUsername(properties.getUser());
+	        connectionFactory.setPassword(properties.getPassword());
+	        return connectionFactory;
+		} else {
+			ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
+			activeMQConnectionFactory.setBrokerURL(properties.getBrokerUrl());
+			activeMQConnectionFactory.setUserName(properties.getUser());
+			activeMQConnectionFactory.setPassword(properties.getPassword());
+			return activeMQConnectionFactory;
+		}
 	}
 
 	@Bean
-	public CachingConnectionFactory cachingConnectionFactory() {
-		return new CachingConnectionFactory(activeMQConnectionFactory());
+	public CachingConnectionFactory cachingConnectionFactory(ConnectionFactory connectionFactory) {
+		return new CachingConnectionFactory(connectionFactory);
 	}
 
 	@Bean
-	public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
+	public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory connectionFactory) {
 		DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-		factory.setConnectionFactory(activeMQConnectionFactory());
+		factory.setConnectionFactory(connectionFactory);
 		return factory;
 	}
 
 	@Bean
-	public JmsTemplate jmsTemplate() {
-		return new JmsTemplate(cachingConnectionFactory());
+	public JmsTemplate jmsTemplate(CachingConnectionFactory cachingConnectionFactory) {
+		return new JmsTemplate(cachingConnectionFactory);
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "activemq.inbound.channel")
+	@ConditionalOnProperty(name = "nimbus.activemq.inbound.name")
 	public ActiveMQConsumer mqconsumer(WebCommandDispatcher dispatcher, ObjectMapper om) {
 		return new ActiveMQConsumer(dispatcher, om);
 	}
@@ -81,8 +101,8 @@ public class DefaultActiveMQConfig {
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "activemq.outbound.channel")
-	public ActiveMQPublisher publisher(ObjectMapper om) {
-		return new ActiveMQPublisher(jmsTemplate(), om);
+	@ConditionalOnProperty(name = "nimbus.activemq.outbound.name")
+	public ActiveMQPublisher publisher(JmsTemplate jmsTemplate, ObjectMapper om) {
+		return new ActiveMQPublisher(jmsTemplate, om);
 	}
 }

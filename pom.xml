@@ -488,6 +488,15 @@
       		<groupId>org.springframework.boot</groupId>
       		<artifactId>spring-boot-starter-activemq</artifactId>
     	</dependency>
+		<!-- <dependency>
+		    <groupId>org.apache.activemq</groupId>
+		    <artifactId>activemq-amqp</artifactId>
+		</dependency> -->
+		<dependency>
+		    <groupId>org.apache.qpid</groupId>
+		    <artifactId>qpid-jms-client</artifactId>
+		    <version>0.41.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.owasp.esapi</groupId>
     		<artifactId>esapi</artifactId>
