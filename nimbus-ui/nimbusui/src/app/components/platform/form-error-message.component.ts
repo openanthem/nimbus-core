@@ -1,4 +1,3 @@
-import { ChangeDetectorRef } from '@angular/core';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -22,6 +21,8 @@ import { FormControl } from '@angular/forms';
 import { Param } from './../../shared/param-state';
 import { ValidationUtils } from './validators/ValidationUtils';
 import { CounterMessageService } from './../../services/counter-message.service';
+import { Subscription } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -44,6 +45,7 @@ export class FormErrorMessage {
     totalCount: number = 0;
     totalMandtoryCount: number = 0;
     counterMessage: string;
+    subscription: Subscription;
     constructor(private counterMsgSvc: CounterMessageService, private cd: ChangeDetectorRef) {
     }
 
@@ -53,12 +55,18 @@ export class FormErrorMessage {
     ngAfterViewInit() {
         this.counterMessage = this.displayMessage();
         this.cd.detectChanges();
-        this.counterMsgSvc.counterMessageSubject$.subscribe(event => {
+        this.subscription = this.counterMsgSvc.counterMessageSubject$.subscribe(event => {
             if(event) {
                 this.counterMessage = this.displayMessage();
                 this.cd.detectChanges();
             }
         })
+    }
+
+    ngOnDestroy() {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 
     displayMessage() {
