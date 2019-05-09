@@ -221,7 +221,7 @@ export class Button extends BaseElement {
              else if (ctrl instanceof FormGroup) {
                  this.validate(ctrl);
              }
-             this.cms.sendFormMessages(this.element);
+             this.cms.evalFormParamMessages(this.element);
         });
              
      }

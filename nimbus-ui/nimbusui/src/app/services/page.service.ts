@@ -242,9 +242,7 @@ export class PageService {
                         }
                         index++;
                 }
-                this.counterMessageService.evalCounterMessage(true);
-                this.counterMessageService.sendFormMessages(rootParam);
-                
+                this.counterMessageService.evalCounterMessage(true);                
         }
 
         /**
@@ -901,6 +899,7 @@ export class PageService {
                         this.eventUpdate.next(sourceParam); 
                         this.validationUpdate.next(sourceParam);
                         this.updateNestedParameters(sourceParam,responseParam);
+                        this.counterMessageService.evalFormParamMessages(sourceParam);
                 } else {
                         this.logger.debug('Could not process the update from the server for ' + responseParam.path + ' because config is undefined.');
                 }

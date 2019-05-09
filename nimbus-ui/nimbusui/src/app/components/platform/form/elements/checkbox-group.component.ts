@@ -111,8 +111,10 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
 
         if(frmCtrl.valid && this.sendEvent) {
             this.counterMessageService.evalCounterMessage(true);
+            this.counterMessageService.evalFormParamMessages(this.element);
             this.sendEvent = false;
         } else if(frmCtrl.invalid) {
+            this.counterMessageService.evalFormParamMessages(this.element);
             Object.keys(frmCtrl.errors).map(val => {
                 if(val == 'required') {
                     this.sendEvent = true;

@@ -151,8 +151,10 @@ export class FormElement extends BaseElement {
     }
 
     ngAfterViewInit() {
+        this.getMessages();
         this.subscription = this.cms.formErrorMessages$.subscribe(eventParam => {
-            if(eventParam) {
+            if(eventParam.path == this.element.path || (eventParam.config.uiStyles != null && 
+                eventParam.config.uiStyles.attributes.style === this.componentTypes.validation.toString())) {
                this.getMessages();
             }
         })
