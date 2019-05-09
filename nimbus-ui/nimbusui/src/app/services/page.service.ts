@@ -243,6 +243,7 @@ export class PageService {
                         index++;
                 }
                 this.counterMessageService.evalCounterMessage(true);
+                this.counterMessageService.sendFormMessages(rootParam);
                 
         }
 
