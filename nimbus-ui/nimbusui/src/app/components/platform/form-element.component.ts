@@ -181,7 +181,9 @@ export class FormElement extends BaseElement {
                     let constraint: Constraint = this.element.config.validation.constraints.find(v => v.name == constraintName);
                     this.addErrorMessages(constraint.attribute.message ? constraint.attribute.message : ValidationUtils.getDefaultErrorMessage(key));
                     const index = this.componentClass.indexOf(this.errorStyles,0)
-                    this.counterMsgService.evalCounterMessage(true);
+                    if(constraint.name === 'NotNull') {
+                        this.counterMsgService.evalCounterMessage(true);
+                    }
                     if(index < 0) {
                         this.componentClass.push(this.getErrorStyles());
                     }
