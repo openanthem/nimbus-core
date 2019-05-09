@@ -27,6 +27,7 @@ import { ValidationUtils } from './validators/ValidationUtils';
 import { AbstractControl } from '@angular/forms/src/model';
 import { ConstraintMapping } from './../../shared/validationconstraints.enum';
 import { Constraint } from './../../shared/param-config';
+import { CounterMessageService } from './../../services/counter-message.service';
 
 var counter = 0;
 
@@ -53,6 +54,9 @@ export class FormElement extends BaseElement {
     componentStyle: string;
     componentTypes = ComponentTypes;
     viewComponent = ViewComponent;
+    componentClass: string[] = ['form-group'];
+    errorStyles = 'alert alert-danger';
+    fieldDirty: boolean = false;
 
     get isValid() {
         if (this.form.controls[this.element.config.code] != null) {
@@ -93,13 +97,13 @@ export class FormElement extends BaseElement {
         return (this.elemMessages != null && this.elemMessages.length > 0);
     }
 
-    constructor(private wcsv: WebContentSvc) { 
+    constructor(private wcsv: WebContentSvc, private counterMsgService: CounterMessageService) { 
         super(wcsv);
     }
 
     getErrorStyles() {
         if (this.showErrors) {
-            return 'alert alert-danger';
+            return this.errorStyles;
         } else {
             return '';
         }
@@ -110,8 +114,6 @@ export class FormElement extends BaseElement {
     }
 
     getComponentClass() {
-        let componentClass: string[] = [];
-        componentClass.push('form-group');
         let overrideClass: string = '';
         if (this.element.config.uiStyles && this.element.config.uiStyles.attributes &&
             this.element.config.uiStyles.attributes.cssClass && this.element.config.uiStyles.attributes.cssClass !== '') {
@@ -135,20 +137,18 @@ export class FormElement extends BaseElement {
             }
         } 
         if (overrideClass != '') {
-            componentClass.push(overrideClass);
-        } else {
-            componentClass.push(this.elementCss);
+            this.componentClass.push(overrideClass);
+        } else if(this.elementCss){
+            this.componentClass.push(this.elementCss);
         }
-
-        // Error Styles
-        componentClass.push(this.getErrorStyles());
-
-        return componentClass;
+        
+        return this.componentClass;
     }
 
     ngOnInit() {
         super.ngOnInit();
         this.updatePositionWithNoLabel();
+        this.getComponentClass();
     }
 
     getElementStyle() {
@@ -167,6 +167,12 @@ export class FormElement extends BaseElement {
      */
     updateErrorMessages() {
         var control: AbstractControl = this.form.controls[this.element.config.code];
+        if(control.dirty) {
+            if(!this.fieldDirty) {
+                this.counterMsgService.evalCounterMessage(true);
+                this.fieldDirty = control.dirty;
+            }
+        }
         let constraintNames = ValidationUtils.getAllValidationNames();
         if (control.invalid) {
             let errs: ValidationErrors = control.errors;
@@ -174,8 +180,23 @@ export class FormElement extends BaseElement {
                 let constraintName = ConstraintMapping.getConstraintValue(key);
                     let constraint: Constraint = this.element.config.validation.constraints.find(v => v.name == constraintName);
                     this.addErrorMessages(constraint.attribute.message ? constraint.attribute.message : ValidationUtils.getDefaultErrorMessage(key));
+                    const index = this.componentClass.indexOf(this.errorStyles,0)
+                    this.counterMsgService.evalCounterMessage(true);
+                    if(index < 0) {
+                        this.componentClass.push(this.getErrorStyles());
+                    }
             }   
+        } else {
+            const index = this.componentClass.indexOf(this.errorStyles,0)
+            if(index >=0) {
+                this.counterMsgService.evalCounterMessage(true);
+                this.componentClass.splice(index);
+            }
         }
+        //if(this.previousvalid !== this.isValid) {
+            // this.counterMsgService.evalCounterMessage(control);
+        //}
+        ///this.previousvalid = this.isValid;
     }
 
     addErrorMessages(errorText: string) {
