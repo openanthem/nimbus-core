@@ -13,30 +13,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.app.extension.config.properties;
+package com.antheminc.oss.nimbus.domain.model.state.messagequeue;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractEvent;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Tony Lopez
  *
  */
-@Configuration
-@Getter @Setter
-@ConfigurationProperties(prefix = "nimbus.activemq")
-public class ActiveMQConfigurationProperties {
-	private String brokerUrl;
-	private String user;
-	private String password;
-	private ChannelProperties inbound;
-	private ChannelProperties outbound;
-	
-	@Getter @Setter
-	public static class ChannelProperties {
-		private String name;
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class MessageQueueEvent extends AbstractEvent<String, String> {
+
+	public MessageQueueEvent(String commandUrl, String payload) {
+		super(null, commandUrl, payload);
+	}
+
+	public String getCommandUrl() {
+		return this.id;
+	}
+
+	@Override
+	@JsonSetter("commandUrl")
+	public void setId(String commandUrl) {
+		this.id = commandUrl;
 	}
 }

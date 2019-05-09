@@ -13,19 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.queue;
+package com.antheminc.oss.nimbus.domain.model.state.messagequeue;
 
-import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.AbstractStateAndConfigEventListener;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 /**
  * @author Sandeep Mantha
- * 
+ * @author Tony Lopez
+ *
  */
-public abstract class ParamStateQueueEventListener extends AbstractStateAndConfigEventListener {
+public interface MessageQueuePublisher {
 
-	@Override
-	public boolean containsListener(ListenerType listenerType) {
-		return ListenerType.QUEUE == listenerType;
-	}
+	boolean send(final Param<?> param);
 }

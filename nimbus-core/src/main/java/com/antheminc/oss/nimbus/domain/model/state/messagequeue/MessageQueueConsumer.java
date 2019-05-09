@@ -13,16 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.integration.mq;
-
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+package com.antheminc.oss.nimbus.domain.model.state.messagequeue;
 
 /**
  * @author Sandeep Mantha
  * @author Tony Lopez
  *
  */
-public interface MQPublisher {
+public interface MessageQueueConsumer {
 
-	void send(final Param<?> param);
+	void receive(String message);
 }

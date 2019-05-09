@@ -40,6 +40,6 @@ public @interface Domain {
 		websocket,
 		persistence,
 		update,
-		QUEUE
+		MESSAGE_QUEUE
 	}
 }

@@ -13,14 +13,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.integration.mq;
+package com.antheminc.oss.nimbus.channel;
+
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
+
+import lombok.Getter;
 
 /**
- * @author Sandeep Mantha
  * @author Tony Lopez
  *
  */
-public interface MQConsumer {
+@Getter
+public abstract class CommandDispatcher {
 
-	void receive(String message);
+	protected final CommandExecutorGateway gateway;
+	
+	public CommandDispatcher(BeanResolverStrategy beanResolver) {
+		this.gateway = beanResolver.get(CommandExecutorGateway.class);
+	}
+	
+	public MultiOutput handle(Command cmd, String payload) {
+		return getGateway().execute(cmd, payload);
+	}
 }

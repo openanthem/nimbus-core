@@ -13,15 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.integration.mq;
+package com.antheminc.oss.nimbus.domain.model.state.messagequeue.activemq;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.app.extension.config.properties.ActiveMQConfigurationProperties;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.messagequeue.MessageQueuePublisher;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,27 +36,27 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class ActiveMQPublisher implements MQPublisher {
+@EnableLoggingInterceptor
+public class ActiveMQPublisher implements MessageQueuePublisher {
 
 	private final JmsTemplate jmsTemplate;
-	private final ObjectMapper om;
-
-	@Autowired
-	private ActiveMQConfigurationProperties config;
+	private final ObjectMapper objectMapper;
+	private final ActiveMQConfigurationProperties config;
 
 	@Override
-	public void send(final Param<?> param) {
+	public boolean send(final Param<?> param) {
 		String sMessage;
 		try {
-			sMessage = this.om.writeValueAsString(param);
+			sMessage = getObjectMapper().writeValueAsString(param);
 		} catch (JsonProcessingException e) {
 			throw new FrameworkRuntimeException("Failed to convert message to string. Message: " + param);
 		}
 		
 		try {
-			this.jmsTemplate.convertAndSend(config.getOutbound().getName(), sMessage);
+			getJmsTemplate().convertAndSend(getConfig().getOutbound().getName(), sMessage);
+			return true;
 		} catch(JmsException e) {
-			throw new FrameworkRuntimeException("Failed to write message to queue \"" + config.getOutbound().getName() + "\" with payoad: " + sMessage);
+			throw new FrameworkRuntimeException("Failed to write message to queue \"" + getConfig().getOutbound().getName() + "\" with payoad: " + sMessage);
 		}
 	}
 }

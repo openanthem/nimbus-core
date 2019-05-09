@@ -13,35 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.integration.mq;
+package com.antheminc.oss.nimbus.domain.model.state.messagequeue;
 
-import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractEvent;
-import com.fasterxml.jackson.annotation.JsonSetter;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.AbstractStateAndConfigEventListener;
 
 /**
- * @author Tony Lopez
- *
+ * @author Sandeep Mantha
+ * 
  */
-@Data
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class MQEvent extends AbstractEvent<String, String> {
-
-	public MQEvent(String commandUrl, String payload) {
-		super("MQ-EVENT", commandUrl, payload);
-	}
-
-	public String getCommandUrl() {
-		return this.id;
-	}
+public abstract class MessageQueueParamStateEventListener extends AbstractStateAndConfigEventListener {
 
 	@Override
-	@JsonSetter("commandUrl")
-	public void setId(String commandUrl) {
-		this.id = commandUrl;
+	public boolean containsListener(ListenerType listenerType) {
+		return ListenerType.MESSAGE_QUEUE == listenerType;
 	}
 }

@@ -13,12 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.integration.mq;
+package com.antheminc.oss.nimbus.domain.model.state.messagequeue.activemq;
 
 import org.springframework.jms.annotation.JmsListener;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
-import com.antheminc.oss.nimbus.channel.web.WebCommandDispatcher;
+import com.antheminc.oss.nimbus.channel.messagequeue.MessageQueueCommandDispatcher;
+import com.antheminc.oss.nimbus.domain.model.state.messagequeue.MessageQueueConsumer;
+import com.antheminc.oss.nimbus.domain.model.state.messagequeue.MessageQueueEvent;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,20 +36,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class ActiveMQConsumer implements MQConsumer {
+@EnableLoggingInterceptor
+public class ActiveMQConsumer implements MessageQueueConsumer {
 
 	public static final JustLogit LOG = new JustLogit(ActiveMQConsumer.class);
 
-	private final WebCommandDispatcher dispatcher;
+	private final MessageQueueCommandDispatcher dispatcher;
 	private final ObjectMapper objectMapper;
 
 	@Override
 	@JmsListener(destination = "${nimbus.activemq.inbound.name}")
 	public void receive(String message) {
-		LOG.debug(() -> "received message=" + message);
 		// TODO Create session?
 		try {
-			getDispatcher().handle(getObjectMapper().readValue(message, MQEvent.class));
+			getDispatcher().handle(getObjectMapper().readValue(message, MessageQueueEvent.class));
 		} catch (Exception e) {
 			handleException(message, e);
 		}

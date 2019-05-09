@@ -13,12 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.queue;
+package com.antheminc.oss.nimbus.domain.model.state.messagequeue.activemq;
 
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.integration.mq.ActiveMQPublisher;
+import com.antheminc.oss.nimbus.domain.model.state.messagequeue.MessageQueueParamStateEventListener;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
  * 
  */
 @RequiredArgsConstructor
-public class ParamStateMQEventListener extends ParamStateQueueEventListener {
+public class ActiveMQParamStateEventListener extends MessageQueueParamStateEventListener {
 
 	private final ActiveMQPublisher mqPublisher;
 
@@ -39,7 +39,6 @@ public class ParamStateMQEventListener extends ParamStateQueueEventListener {
 	@Override
 	public boolean listen(ModelEvent<Param<?>> event) {
 		Param<?> p = (Param<?>) event.getPayload();
-		this.mqPublisher.send(p);
-		return true;
+		return this.mqPublisher.send(p);
 	}
 }
