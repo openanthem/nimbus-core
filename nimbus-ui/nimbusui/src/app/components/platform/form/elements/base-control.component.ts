@@ -108,10 +108,10 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
                 this.setState($event,this);
                 if(frmCtrl.valid && this.sendEvent) {
                     this.counterMessageService.evalCounterMessage(true);
-                    this.counterMessageService.sendFormMessages(this.element);
+                    this.counterMessageService.evalFormParamMessages(this.element);
                     this.sendEvent = false;
                 } else if(frmCtrl.invalid) {
-                    this.counterMessageService.sendFormMessages(this.element);
+                    this.counterMessageService.evalFormParamMessages(this.element);
                     Object.keys(frmCtrl.errors).map(val => {
                         if(val == 'required') {
                             this.sendEvent = true;

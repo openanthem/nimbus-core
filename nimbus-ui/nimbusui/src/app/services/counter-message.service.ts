@@ -31,11 +31,12 @@ export class CounterMessageService {
     private formErrorMessages = new Subject<Param>();
     formErrorMessages$ = this.formErrorMessages.asObservable();
 
+
     evalCounterMessage(val: boolean) {
         this.subject.next(val);
     }
 
-    sendFormMessages(param:Param) {
+    evalFormParamMessages(param:Param) {
         this.formErrorMessages.next(param);
     }
 
