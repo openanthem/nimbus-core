@@ -1,3 +1,4 @@
+import { ChangeDetectorRef } from '@angular/core';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -20,6 +21,7 @@ import { FormGroup } from '@angular/forms';
 import { FormControl } from '@angular/forms';
 import { Param } from './../../shared/param-state';
 import { ValidationUtils } from './validators/ValidationUtils';
+import { CounterMessageService } from './../../services/counter-message.service';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -31,7 +33,7 @@ import { ValidationUtils } from './validators/ValidationUtils';
     selector: 'nm-counter-message',
     template: `
         <div>
-            {{displayMessage()}}
+            {{counterMessage}}
         </div>
     `
 })
@@ -41,7 +43,22 @@ export class FormErrorMessage {
     mandatoryLeft: number = 0;
     totalCount: number = 0;
     totalMandtoryCount: number = 0;
-    constructor() {
+    counterMessage: string;
+    constructor(private counterMsgSvc: CounterMessageService, private cd: ChangeDetectorRef) {
+    }
+
+    ngOnInit() {
+    }
+
+    ngAfterViewInit() {
+        this.counterMessage = this.displayMessage();
+        this.cd.detectChanges();
+        this.counterMsgSvc.counterMessageSubject$.subscribe(event => {
+            if(event) {
+                this.counterMessage = this.displayMessage();
+                this.cd.detectChanges();
+            }
+        })
     }
 
     displayMessage() {

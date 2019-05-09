@@ -40,7 +40,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     selector: 'nm-frm-grp',
     providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc],
     template: `
-        <span [hidden]="!this.element.visible" [ngClass]="getCssClass()">
+        <span [hidden]="!this.element.visible" [ngClass]="formElementGroupCss?formElementGroupCss:''">
             <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias == viewComponent.formElementGroup.toString()">
                 <fieldset>
                     <nm-input-legend [element]="element"></nm-input-legend>
@@ -92,7 +92,7 @@ export class FrmGroupCmp extends BaseElement {
     @Input() form: FormGroup;
     @Input() elementCss : String;
     @Input() parentElement: Param;
-
+    formElementGroupCss: String = '';
     viewComponent = ViewComponent;
 
     constructor(private wcsv: WebContentSvc) {
@@ -102,6 +102,7 @@ export class FrmGroupCmp extends BaseElement {
     ngOnInit() {
         super.ngOnInit();
         this.updatePosition();
+        this.formElementGroupCss = this.getCssClass()
     }
 
     getCssClass() {
