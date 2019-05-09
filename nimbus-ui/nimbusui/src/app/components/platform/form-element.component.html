@@ -1,5 +1,5 @@
 
-<div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.dataEntryField" [hidden]="!element?.visible" [ngClass]="getComponentClass()">
+<div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.dataEntryField" [hidden]="!element?.visible" [ngClass]="componentClass">
    
     <nm-input id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.text.toString()" [element]="element" [form]="form"></nm-input>
     <nm-signature id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.signature.toString()" [element]="element" [form]="form"></nm-signature>
