@@ -37,6 +37,7 @@ import { SessionStoreService } from './session.store';
 import { Location } from '@angular/common';
 import { ViewComponent } from '../shared/param-annotations.enum';
 import { GridData } from './../shared/param-state';
+import { CounterMessageService } from './counter-message.service';
 
 /**
  * \@author Dinakar.Meda
@@ -71,7 +72,7 @@ export class PageService {
 
         private _entityId: number = 0;
         constructor(private http: CustomHttpClient, private loaderService: LoaderService, private configService: ConfigService, 
-                    private logger: LoggerService, private sessionStore: SessionStoreService, private location: Location) {
+                    private logger: LoggerService, private sessionStore: SessionStoreService, private location: Location, private counterMessageService: CounterMessageService) {
                 // initialize
                 this.flowRootDomainId = {};
                 // Create Observable Stream to output our data     
@@ -241,6 +242,7 @@ export class PageService {
                         }
                         index++;
                 }
+                this.counterMessageService.evalCounterMessage(true);                
         }
 
         /**
@@ -897,6 +899,7 @@ export class PageService {
                         this.eventUpdate.next(sourceParam); 
                         this.validationUpdate.next(sourceParam);
                         this.updateNestedParameters(sourceParam,responseParam);
+                        this.counterMessageService.evalFormParamMessages(sourceParam);
                 } else {
                         this.logger.debug('Could not process the update from the server for ' + responseParam.path + ' because config is undefined.');
                 }

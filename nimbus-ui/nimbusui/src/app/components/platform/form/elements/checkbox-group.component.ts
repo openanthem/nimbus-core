@@ -1,3 +1,4 @@
+import { AbstractControl } from '@angular/forms';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -25,6 +26,7 @@ import { ServiceConstants } from '../../../../services/service.constants';
 import { BaseElement } from './../../base-element.component';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { ValidationUtils } from '../../validators/ValidationUtils';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -61,8 +63,9 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
     @Input() form: FormGroup;
     @Input('value') _value;
     @Output() controlValueChanged =new EventEmitter();
-    
-    constructor(private pageService: PageService, private _wcs: WebContentSvc, private cd: ChangeDetectorRef) {
+    sendEvent: boolean = true;
+
+    constructor(private pageService: PageService, private _wcs: WebContentSvc, private cd: ChangeDetectorRef, private counterMessageService:CounterMessageService) {
         super(_wcs);    
     }
 
@@ -98,6 +101,19 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
     }
 
     emitValueChangedEvent(formControl:any,$event:any) {
+        let frmCtrl: AbstractControl;
+        if(this.form) {
+            frmCtrl = this.form.controls[this.element.config.code];
+            if(frmCtrl.valid && this.sendEvent) {
+                this.counterMessageService.evalCounterMessage(true);
+                this.counterMessageService.evalFormParamMessages(this.element);
+                this.sendEvent = false;
+            } else if(frmCtrl.invalid) {
+                this.counterMessageService.evalFormParamMessages(this.element);
+                this.sendEvent = true;
+                this.counterMessageService.evalCounterMessage(true);
+            }
+        }
         if(this.form == null || (this.form.controls[this.element.config.code]!= null && this.form.controls[this.element.config.code].valid)) {
             this.controlValueChanged.emit(formControl.element);
         }

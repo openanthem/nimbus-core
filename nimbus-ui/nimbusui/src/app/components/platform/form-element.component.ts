@@ -27,6 +27,8 @@ import { ValidationUtils } from './validators/ValidationUtils';
 import { AbstractControl } from '@angular/forms/src/model';
 import { ConstraintMapping } from './../../shared/validationconstraints.enum';
 import { Constraint } from './../../shared/param-config';
+import { CounterMessageService } from './../../services/counter-message.service';
+import { Subscription } from 'rxjs';
 
 var counter = 0;
 
@@ -53,6 +55,9 @@ export class FormElement extends BaseElement {
     componentStyle: string;
     componentTypes = ComponentTypes;
     viewComponent = ViewComponent;
+    componentClass: string[] = ['form-group'];
+    errorStyles = 'alert alert-danger';
+    subscription: Subscription; 
 
     get isValid() {
         if (this.form.controls[this.element.config.code] != null) {
@@ -75,9 +80,7 @@ export class FormElement extends BaseElement {
             return true;
         }
     }
-    get elementMessages() {
-        return this.getMessages();
-    }
+    
     getMessages() {
         this.elemMessages = [];
             if (this.element.message != null && this.element.message.length > 0) {
@@ -93,13 +96,13 @@ export class FormElement extends BaseElement {
         return (this.elemMessages != null && this.elemMessages.length > 0);
     }
 
-    constructor(private wcsv: WebContentSvc) { 
+    constructor(private wcsv: WebContentSvc, private cms: CounterMessageService) { 
         super(wcsv);
     }
 
     getErrorStyles() {
         if (this.showErrors) {
-            return 'alert alert-danger';
+            return this.errorStyles;
         } else {
             return '';
         }
@@ -110,8 +113,6 @@ export class FormElement extends BaseElement {
     }
 
     getComponentClass() {
-        let componentClass: string[] = [];
-        componentClass.push('form-group');
         let overrideClass: string = '';
         if (this.element.config.uiStyles && this.element.config.uiStyles.attributes &&
             this.element.config.uiStyles.attributes.cssClass && this.element.config.uiStyles.attributes.cssClass !== '') {
@@ -135,20 +136,35 @@ export class FormElement extends BaseElement {
             }
         } 
         if (overrideClass != '') {
-            componentClass.push(overrideClass);
-        } else {
-            componentClass.push(this.elementCss);
+            this.componentClass.push(overrideClass);
+        } else if(this.elementCss){
+            this.componentClass.push(this.elementCss);
         }
-
-        // Error Styles
-        componentClass.push(this.getErrorStyles());
-
-        return componentClass;
+        
+        return this.componentClass;
     }
 
     ngOnInit() {
         super.ngOnInit();
         this.updatePositionWithNoLabel();
+        this.getComponentClass();
+    }
+
+    ngAfterViewInit() {
+        this.getMessages();
+        this.subscription = this.cms.formErrorMessages$.subscribe(eventParam => {
+            if(eventParam.path == this.element.path || (eventParam.config.uiStyles != null && 
+                eventParam.config.uiStyles.attributes.style === this.componentTypes.validation.toString())) {
+               this.getMessages();
+            }
+        })
+    }
+
+
+    ngOnDestroy() {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 
     getElementStyle() {
@@ -174,7 +190,16 @@ export class FormElement extends BaseElement {
                 let constraintName = ConstraintMapping.getConstraintValue(key);
                     let constraint: Constraint = this.element.config.validation.constraints.find(v => v.name == constraintName);
                     this.addErrorMessages(constraint.attribute.message ? constraint.attribute.message : ValidationUtils.getDefaultErrorMessage(key));
+                    const index = this.componentClass.indexOf(this.errorStyles,0)
+                    if(index < 0) {
+                        this.componentClass.push(this.getErrorStyles());
+                    }
             }   
+        } else {
+            const index = this.componentClass.indexOf(this.errorStyles,0)
+            if(index >=0) {
+                this.componentClass.splice(index);
+            }
         }
     }
 

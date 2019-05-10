@@ -20,6 +20,8 @@ import { Component, ViewChild, forwardRef, ChangeDetectorRef } from '@angular/co
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
+import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -52,11 +54,11 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         [rows]="element.config?.uiStyles?.attributes?.rows"    
         (focusout)="emitValueChangedEvent(this,value)"
         [disabled]="disabled"
-        [maxlength]="getMaxLength()"
+        [maxlength]="maxlength"
         [id]="element.config?.code" class="form-control textarea-input" 
         *ngIf="element.config?.uiStyles?.attributes?.readOnly==false"></textarea>
     
-    <span class="charCount" *ngIf="getMaxLength()>0">{{getMaxLength()-value.length}} Characters left</span>
+    <span class="charCount" *ngIf="maxlength>0">{{maxlength-value.length}} Characters left</span>
     <pre class="print-only" *ngIf="element.config?.uiStyles?.attributes?.readOnly==false">{{this.value}}</pre>
     <p style="margin-bottom:0rem;" *ngIf="element.config?.uiStyles?.attributes?.readOnly==true">{{element.leafState}}</p>
     </div>
@@ -65,9 +67,26 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 export class TextArea extends BaseControl<String> {
 
   @ViewChild(NgModel) model: NgModel;
+  maxlength: number;
 
-  constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef) {
-    super(controlService, wcs, cd);
+  constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef, cms: CounterMessageService) {
+    super(controlService, wcs, cd, cms);
   }
 
+  ngOnInit() {
+    super.ngOnInit();
+    this.maxlength = this.getMaxLength();
+  }
+   
+  /**
+   * Get Max length of the attribute
+   */
+  public getMaxLength():number {
+    let constraint = this.getConstraint(ValidationConstraint._max.value);
+    if (constraint) {
+          return constraint.attribute.value;
+    } else {
+        return;
+    }
+  }
 }

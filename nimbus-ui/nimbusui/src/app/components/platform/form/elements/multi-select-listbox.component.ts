@@ -26,6 +26,8 @@ import { BaseElement } from './../../base-element.component';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { ValidationUtils } from '../../validators/ValidationUtils';
 import { HttpMethod } from './../../../../shared/command.enum';
+import { CounterMessageService } from './../../../../services/counter-message.service';
+
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -63,8 +65,9 @@ export class MultiSelectListBox extends BaseElement{
     public helpText : string;
     optionsList: SelectItem[];
     private targetList: any[];
+    sendEvent: boolean = true;
 
-    constructor(private _wcs: WebContentSvc, private pageService: PageService, private cd: ChangeDetectorRef) {
+    constructor(private _wcs: WebContentSvc, private pageService: PageService, private cd: ChangeDetectorRef, private counterMessageService: CounterMessageService) {
        super(_wcs);
     }
 
@@ -92,6 +95,15 @@ export class MultiSelectListBox extends BaseElement{
             this.form.controls[this.element.config.code].valueChanges.subscribe(
                 ($event) => { 
                     this.setState($event,this); 
+                    if( this.form.controls[this.element.config.code].valid && this.sendEvent) {
+                        this.counterMessageService.evalCounterMessage(true);
+                        this.counterMessageService.evalFormParamMessages(this.element);
+                        this.sendEvent = false;
+                    } else if(this.form.controls[this.element.config.code].invalid) {
+                        this.counterMessageService.evalFormParamMessages(this.element);
+                        this.sendEvent = true;
+                        this.counterMessageService.evalCounterMessage(true);
+                    }
                 });
         }
         this.controlValueChanged.subscribe(($event) => {
