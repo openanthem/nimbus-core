@@ -215,6 +215,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         this.gridService.eventUpdate$.subscribe(data => {
             this.summaryData = data;
         });
+        this.evaluateErrorMessages();
 
         this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
@@ -229,7 +230,6 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                         }
                     });
                 });
-                this.evaluateErrorMessages();
                 let gridListSize = this.value ? this.value.length : 0;
                 // Check for Server Pagination Vs Client Pagination
                 if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.lazyLoad) {
