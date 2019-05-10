@@ -88,7 +88,6 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
                 this.treeData = this.getTreeStructure(treeList.gridData.leafState);
             }
         });
-        this.evaluateErrorMessages();
         // For convenience        
         this.collectionAlias = this.element.config.type.elementConfig.type.model.paramConfigs.find((config) =>
                 config.uiStyles.attributes.alias === this.viewComponent.treeGridChild.toString()).code;
@@ -105,6 +104,10 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
         
     }
 
+    ngAfterViewInit() {
+        this.evaluateErrorMessages();
+    }
+    
     evaluateErrorMessages() {
         if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
             let frmCtrl = this.form.controls[this.element.config.code];
