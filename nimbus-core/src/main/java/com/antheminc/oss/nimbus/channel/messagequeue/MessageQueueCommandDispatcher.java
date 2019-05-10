@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,43 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- *
- */
-package com.antheminc.oss.nimbus.channel.web;
-
-import javax.servlet.http.HttpServletRequest;
+package com.antheminc.oss.nimbus.channel.messagequeue;
 
 import com.antheminc.oss.nimbus.channel.CommandDispatcher;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
-import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
+import com.antheminc.oss.nimbus.domain.model.state.messagequeue.MessageQueueEvent;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 import lombok.Getter;
 
 /**
- * @author Soham Chakravarti
+ * @author Tony Lopez
  *
  */
 @Getter
 @EnableLoggingInterceptor
-public class WebCommandDispatcher extends CommandDispatcher {
+public class MessageQueueCommandDispatcher extends CommandDispatcher {
 
-	private final WebCommandBuilder builder;
-
-	public WebCommandDispatcher(BeanResolverStrategy beanResolver) {
+	public MessageQueueCommandDispatcher(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
-		this.builder = beanResolver.get(WebCommandBuilder.class);
 	}
 
-	public Object handle(HttpServletRequest httpReq, ModelEvent<String> event) {
-		Command cmd = getBuilder().build(httpReq, event);
+	public Object handle(MessageQueueEvent event) {
+		Command cmd = CommandBuilder.withUri(event.getCommandUrl()).getCommand();
 		return handle(cmd, event.getPayload());
-	}
-
-	public Object handle(HttpServletRequest httpReq, String json) {
-		Command cmd = getBuilder().build(httpReq);
-		return handle(cmd, json);
 	}
 }

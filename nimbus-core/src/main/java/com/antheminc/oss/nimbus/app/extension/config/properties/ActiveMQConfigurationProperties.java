@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,46 +13,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.internal;
+package com.antheminc.oss.nimbus.app.extension.config.properties;
 
-import java.io.Serializable;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
- * @author Soham Chakravarti
+ * @author Tony Lopez
  *
  */
-@Getter @Setter @ToString
-public abstract class AbstractEvent<T extends Serializable, P> {
-
-	protected String type;
+@Configuration
+@Getter @Setter
+@ConfigurationProperties(prefix = "nimbus.activemq")
+public class ActiveMQConfigurationProperties {
+	private String brokerUrl;
+	private String user;
+	private String password;
+	private ChannelProperties inbound;
+	private ChannelProperties outbound;
 	
-	protected T id;
-	
-	protected P payload;
-
-	
-	public enum SuppressMode {
-
-		ECHO
+	@Getter @Setter
+	public static class ChannelProperties {
+		private String name;
 	}
-	
-	public enum PersistenceMode {
-
-		ATOMIC,
-		BATCH
-	}
-  
-	
-    public AbstractEvent() {}
-	
-	public AbstractEvent(String type, T id, P payload) {
-		this.type = type;
-		this.id = id;
-		this.payload = payload;
-	}
-	
 }
