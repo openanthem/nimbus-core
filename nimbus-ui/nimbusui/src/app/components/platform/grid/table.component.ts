@@ -40,6 +40,7 @@ import { HttpMethod } from './../../../shared/command.enum';
 import { TableComponentConstants } from './table.component.constants';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
 import { BaseTableElement } from './../base-table-element.component';
+import { CounterMessageService } from './../../../services/counter-message.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -96,6 +97,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     numPattern: RegExp = /[\d\-\.]/;
     id: String = 'grid-control' + counter++;
     gridRowConfig: any[];
+    sendEvent: boolean = true;
 
     get value() {
         return this._value;
@@ -129,7 +131,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         protected _wcs: WebContentSvc,
         private gridService: GridService,
         private dtFormat: DateTimeFormatPipe,
-        protected cd: ChangeDetectorRef) {
+        protected cd: ChangeDetectorRef,
+        private counterMessageService: CounterMessageService) {
 
         super(_wcs, cd);
     }
@@ -226,7 +229,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                         }
                     });
                 });
-
+                this.evaluateErrorMessages();
                 let gridListSize = this.value ? this.value.length : 0;
                 // Check for Server Pagination Vs Client Pagination
                 if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.lazyLoad) {
@@ -260,6 +263,25 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         }
 
     }
+
+    evaluateErrorMessages() {
+        if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
+            let frmCtrl = this.form.controls[this.element.config.code];
+            frmCtrl.valueChanges.subscribe(($event) => 
+            {
+                if(frmCtrl.valid && this.sendEvent) {
+                    this.counterMessageService.evalCounterMessage(true);
+                    this.counterMessageService.evalFormParamMessages(this.element);
+                    this.sendEvent = false;
+                } else if(frmCtrl.invalid) {
+                    this.counterMessageService.evalFormParamMessages(this.element);
+                    this.counterMessageService.evalCounterMessage(true);
+                    this.sendEvent = true;
+                }
+            });
+        }
+    }
+
     isRowExpanderHidden(rowData: any): boolean {
         if(this.rowExpanderKey == '')
             return true;
