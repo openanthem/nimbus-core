@@ -29,7 +29,7 @@ import { HttpMethod } from './../../../shared/command.enum';
 import { ViewComponent} from '../../../shared/param-annotations.enum';
 import { GridUtils } from './../../../shared/grid-utils';
 import { ChangeDetectorRef } from '@angular/core';
-
+import { CounterMessageService } from './../../../services/counter-message.service';
 
 /**
  * \@author Vivek Kamineni
@@ -48,6 +48,7 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
     firstColumn: ParamConfig;
     viewComponent = ViewComponent;
     treeData: any;
+    sendEvent: boolean = true;
 
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
@@ -73,7 +74,8 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
         protected _wcs: WebContentSvc, 
         private pageSvc: PageService, 
         private gridUtils: GridUtils,
-        protected cd: ChangeDetectorRef) {
+        protected cd: ChangeDetectorRef, 
+        private counterMessageService: CounterMessageService) {
         super(_wcs, cd);
     }
 
@@ -86,7 +88,7 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
                 this.treeData = this.getTreeStructure(treeList.gridData.leafState);
             }
         });
-
+        this.evaluateErrorMessages();
         // For convenience        
         this.collectionAlias = this.element.config.type.elementConfig.type.model.paramConfigs.find((config) =>
                 config.uiStyles.attributes.alias === this.viewComponent.treeGridChild.toString()).code;
@@ -101,6 +103,24 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
             this.firstColumn = this.params.find((param) => param.uiStyles && param.uiStyles.attributes.hidden === false);
         }
         
+    }
+
+    evaluateErrorMessages() {
+        if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
+            let frmCtrl = this.form.controls[this.element.config.code];
+            frmCtrl.valueChanges.subscribe(($event) => 
+            {
+                if(frmCtrl.valid && this.sendEvent) {
+                    this.counterMessageService.evalCounterMessage(true);
+                    this.counterMessageService.evalFormParamMessages(this.element);
+                    this.sendEvent = false;
+                } else if(frmCtrl.invalid) {
+                    this.counterMessageService.evalFormParamMessages(this.element);
+                    this.counterMessageService.evalCounterMessage(true);
+                    this.sendEvent = true;
+                }
+            });
+        }
     }
 
     getTreeStructure(gridList: any[]) {
