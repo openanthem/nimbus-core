@@ -104,23 +104,18 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
         let frmCtrl: AbstractControl;
         if(this.form) {
             frmCtrl = this.form.controls[this.element.config.code];
+            if(frmCtrl.valid && this.sendEvent) {
+                this.counterMessageService.evalCounterMessage(true);
+                this.counterMessageService.evalFormParamMessages(this.element);
+                this.sendEvent = false;
+            } else if(frmCtrl.invalid) {
+                this.counterMessageService.evalFormParamMessages(this.element);
+                this.sendEvent = true;
+                this.counterMessageService.evalCounterMessage(true);
+            }
         }
-        if(this.form == null || (frmCtrl!= null && frmCtrl.valid)) {
+        if(this.form == null || (this.form.controls[this.element.config.code]!= null && this.form.controls[this.element.config.code].valid)) {
             this.controlValueChanged.emit(formControl.element);
-        }
-
-        if(frmCtrl.valid && this.sendEvent) {
-            this.counterMessageService.evalCounterMessage(true);
-            this.counterMessageService.evalFormParamMessages(this.element);
-            this.sendEvent = false;
-        } else if(frmCtrl.invalid) {
-            this.counterMessageService.evalFormParamMessages(this.element);
-            Object.keys(frmCtrl.errors).map(val => {
-                if(val == 'required') {
-                    this.sendEvent = true;
-                    this.counterMessageService.evalCounterMessage(true);
-                }
-            });
         }
         
     }
