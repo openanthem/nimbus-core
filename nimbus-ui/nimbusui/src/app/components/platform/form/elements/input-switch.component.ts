@@ -20,6 +20,8 @@ import { NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { BaseControl } from './base-control.component';
+import { CounterMessageService } from './../../../../services/counter-message.service';
+
  /**
  * \@author Rajesh Bandarupalli
  * \@whatItDoes 
@@ -69,9 +71,9 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 export class InputSwitch extends BaseControl<boolean> {
 
      @ViewChild(NgModel) model: NgModel;
-     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef) {
-         super(controlService, wcs, cd);
-     }
+     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef, cms: CounterMessageService) {
+        super(controlService,wcs,cd, cms);
+      }
      get orientation(): string {
          let style = this.element.config.uiStyles.attributes.orientation;
 

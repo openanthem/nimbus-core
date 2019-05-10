@@ -21,6 +21,7 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { ValidationConstraint } from '../../../../shared/validationconstraints.enum';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 /**
  * \@author Sandeep Mantha
@@ -73,8 +74,8 @@ export class Calendar extends BaseControl<Date> {
     maxDate : Date;
     @ViewChild(NgModel) model: NgModel;
 
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
-        super(controlService,wcs,cd);
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef, cms: CounterMessageService) {
+        super(controlService,wcs,cd,cms);
     }
 
     ngOnInit() {

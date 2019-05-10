@@ -1,4 +1,3 @@
-import { ChangeDetectorRef } from '@angular/core';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -22,6 +21,8 @@ import { FormControl } from '@angular/forms';
 import { Param } from './../../shared/param-state';
 import { ValidationUtils } from './validators/ValidationUtils';
 import { CounterMessageService } from './../../services/counter-message.service';
+import { Subscription } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -33,7 +34,7 @@ import { CounterMessageService } from './../../services/counter-message.service'
     selector: 'nm-counter-message',
     template: `
         <div>
-            {{counterMessage}}
+            Required: {{totalMandtoryCount - mandatoryLeft}} of {{totalMandtoryCount}}
         </div>
     `
 })
@@ -43,7 +44,7 @@ export class FormErrorMessage {
     mandatoryLeft: number = 0;
     totalCount: number = 0;
     totalMandtoryCount: number = 0;
-    counterMessage: string;
+    subscription: Subscription;
     constructor(private counterMsgSvc: CounterMessageService, private cd: ChangeDetectorRef) {
     }
 
@@ -51,14 +52,20 @@ export class FormErrorMessage {
     }
 
     ngAfterViewInit() {
-        this.counterMessage = this.displayMessage();
+        this.displayMessage();
         this.cd.detectChanges();
-        this.counterMsgSvc.counterMessageSubject$.subscribe(event => {
+        this.subscription = this.counterMsgSvc.counterMessageSubject$.subscribe(event => {
             if(event) {
-                this.counterMessage = this.displayMessage();
+                this.displayMessage();
                 this.cd.detectChanges();
             }
         })
+    }
+
+    ngOnDestroy() {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 
     displayMessage() {
@@ -66,8 +73,7 @@ export class FormErrorMessage {
         this.totalCount = 0;
         this.totalMandtoryCount = 0;
         this.calculateFieldCount(this.element);
-        return 'Required: '+ (this.totalMandtoryCount - this.mandatoryLeft) +' of '+ this.totalMandtoryCount;
-    }
+        }
 
     calculateFieldCount(param: Param) {
         if(param.type.model) {

@@ -17,6 +17,8 @@
 'use strict';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { Param } from './../shared/param-state';
+
 /**
  * \@author Sandeep.Mantha
  * 
@@ -26,8 +28,16 @@ export class CounterMessageService {
     private subject = new Subject<boolean>();
     counterMessageSubject$ = this.subject.asObservable();
 
+    private formErrorMessages = new Subject<Param>();
+    formErrorMessages$ = this.formErrorMessages.asObservable();
+
+
     evalCounterMessage(val: boolean) {
         this.subject.next(val);
+    }
+
+    evalFormParamMessages(param:Param) {
+        this.formErrorMessages.next(param);
     }
 
 }

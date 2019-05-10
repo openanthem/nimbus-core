@@ -1,4 +1,3 @@
-import { ValidationUtils } from './../../validators/ValidationUtils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -28,6 +27,8 @@ import { BaseElement } from '../../base-element.component';
 import { MAX_LENGTH_VALIDATOR } from '@angular/forms/src/directives/validators';
 import { BaseControl } from './base-control.component';
 import { GenericDomain } from '../../../../model/generic-domain.model';
+import { ValidationUtils } from './../../validators/ValidationUtils';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -97,6 +98,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
     private _disabled: boolean;
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
+    sendEvent: boolean = true;
     @Output() controlValueChanged =new EventEmitter();
 
     @Input()
@@ -104,7 +106,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
 
     set disabled(value) { this._disabled = value; }
 
-    constructor(private _wcs: WebContentSvc, private pageService: PageService) {
+    constructor(private _wcs: WebContentSvc, private pageService: PageService, private counterMessageService: CounterMessageService) {
         super(_wcs);
     }
 
@@ -138,6 +140,18 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
                         this.setState($event, this);
                         // setting parent Picklist value manually since 
                         parentCtrl.setValue(this.updateParentValue($event));
+                        let frmCtrl = this.form.controls[$event.config.code];
+                        if(frmCtrl) {
+                            if(frmCtrl.valid && this.sendEvent) {
+                                this.counterMessageService.evalCounterMessage(true);
+                                this.counterMessageService.evalFormParamMessages(this.element);
+                                this.sendEvent = false;
+                            } else if(frmCtrl.invalid) {
+                                this.counterMessageService.evalFormParamMessages(this.element);
+                                this.counterMessageService.evalCounterMessage(true);
+                                this.sendEvent = true;
+                            }
+                        }
                     });
 
                 this.pageService.eventUpdate$.subscribe(event => {
