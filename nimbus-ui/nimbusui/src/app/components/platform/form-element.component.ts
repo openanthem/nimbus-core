@@ -57,7 +57,6 @@ export class FormElement extends BaseElement {
     viewComponent = ViewComponent;
     componentClass: string[] = ['form-group'];
     errorStyles = 'alert alert-danger';
-    subscription: Subscription; 
 
     get isValid() {
         if (this.form.controls[this.element.config.code] != null) {
@@ -152,19 +151,12 @@ export class FormElement extends BaseElement {
 
     ngAfterViewInit() {
         this.getMessages();
-        this.subscription = this.cms.formErrorMessages$.subscribe(eventParam => {
+        this.subscribers.push(this.cms.formErrorMessages$.subscribe(eventParam => {
             if(eventParam.path == this.element.path || (eventParam.config.uiStyles != null && 
                 eventParam.config.uiStyles.attributes.style === this.componentTypes.validation.toString())) {
                this.getMessages();
             }
-        })
-    }
-
-
-    ngOnDestroy() {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
-        }
+        }));
     }
 
     getElementStyle() {

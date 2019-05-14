@@ -131,9 +131,9 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
             this.value = this.element.leafState;
         }
         if( this.form.controls[this.element.config.code]!= null) {
-            this.form.controls[this.element.config.code].valueChanges.subscribe(($event) => this.setState($event,this));
+            this.subscribers.push(this.form.controls[this.element.config.code].valueChanges.subscribe(($event) => this.setState($event,this)));
             
-            this.pageService.eventUpdate$.subscribe(event => {
+            this.subscribers.push(this.pageService.eventUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
                 if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
                     if(event.leafState!=null)
@@ -141,8 +141,8 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
                     else
                         frmCtrl.reset();
                 }
-            });
-            this.pageService.validationUpdate$.subscribe(event => {
+            }));
+            this.subscribers.push(this.pageService.validationUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
                 if(frmCtrl!=null) {
                     if(event.path === this.element.path) {
@@ -158,12 +158,12 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
                         ValidationUtils.assessControlValidation(event,frmCtrl);
                     }
                 }
-            });
+            }));
         }
-        this.controlValueChanged.subscribe(($event) => {
+        this.subscribers.push(this.controlValueChanged.subscribe(($event) => {
              if ($event.config.uiStyles.attributes.postEventOnChange) {
                 this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
              }
-         });
+        }));
     }
 }

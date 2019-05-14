@@ -141,12 +141,12 @@ export class MultiselectCard  extends BaseElement implements ControlValueAccesso
                 }
             });
             
-            this.pageService.eventUpdate$.subscribe(event => {
+            this.subscribers.push(this.pageService.eventUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
                 if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
                     frmCtrl.setValue(event.leafState);
                 }
-            });
+            }));
         }
     }
 

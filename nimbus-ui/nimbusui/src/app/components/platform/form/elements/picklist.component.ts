@@ -154,8 +154,8 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
                         }
                     });
 
-                this.pageService.eventUpdate$.subscribe(event => {
-                const frmCtrl = this.form.controls[this.element.config.code];
+                this.subscribers.push(this.pageService.eventUpdate$.subscribe(event => {
+                    const frmCtrl = this.form.controls[this.element.config.code];
                     if(frmCtrl != null && event.path.startsWith(this.element.path)) {
                         if(event.leafState != null) {
                             frmCtrl.setValue(event.leafState);
@@ -163,7 +163,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
                             frmCtrl.reset();
                         }
                     }
-                });
+                }));
                 this.pageService.validationUpdate$.subscribe(event => {
                 const frmCtrl = this.form.controls[this.element.config.code];
                     if(frmCtrl != null) {
@@ -189,11 +189,11 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
             }
         }
 
-        this.pageService.eventUpdate$.subscribe(event => {
+        this.subscribers.push(this.pageService.eventUpdate$.subscribe(event => {
             if(event.path == this.parent.path) {
                 this.refreshSourceList();
             }
-        });
+        }));
     }
 
     emitValueChangedEvent() {

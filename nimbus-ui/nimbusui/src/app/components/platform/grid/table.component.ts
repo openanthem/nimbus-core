@@ -212,12 +212,12 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         }
 
         this.rowHover = true;
-        this.gridService.eventUpdate$.subscribe(data => {
+        this.subscribers.push(this.gridService.eventUpdate$.subscribe(data => {
             this.summaryData = data;
-        });
+        }));
         this.evaluateErrorMessages();
 
-        this.pageSvc.gridValueUpdate$.subscribe(event => {
+        this.subscribers.push(this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
                 this.value = event.gridData.leafState;
                 
@@ -248,10 +248,10 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                 this.cd.markForCheck();
                 this.resetMultiSelection();
             }
-        });
+        }));
 
         if (this.form != undefined && this.form.controls[this.element.config.code] != null) {
-            this.pageSvc.validationUpdate$.subscribe(event => {
+            this.subscribers.push(this.pageSvc.validationUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
                 if (frmCtrl != null && event.path == this.element.path) {
                     if (event.enabled)
@@ -259,7 +259,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                     else
                         frmCtrl.disable();
                 }
-            });
+            }));
         }
 
     }
@@ -267,7 +267,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     evaluateErrorMessages() {
         if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
             let frmCtrl = this.form.controls[this.element.config.code];
-            frmCtrl.valueChanges.subscribe(($event) => 
+            this.subscribers.push(frmCtrl.valueChanges.subscribe(($event) => 
             {
                 if(frmCtrl.valid && this.sendEvent) {
                     this.counterMessageService.evalCounterMessage(true);
@@ -278,7 +278,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                     this.counterMessageService.evalCounterMessage(true);
                     this.sendEvent = true;
                 }
-            });
+            }));
         }
     }
 

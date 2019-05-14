@@ -109,20 +109,20 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 		this.selectedFiles = [];
 		this.fileService.metaData = this.element.config.uiStyles.attributes.metaData;
 	
-		this.fileService.errorEmitter$.subscribe(data => {
+		this.subscribers.push(this.fileService.errorEmitter$.subscribe(data => {
 
 			this.pfu.files = [];
 			
 			this.element.message = [];
 			this.element.message.push(Message.createMessage("DANGER", "TOAST", "File Upload Failed", 10000, ''));
 			
-        });
+        }));
 	}
 
 	ngAfterViewInit() {
 		if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
             let frmCtrl = this.form.controls[this.element.config.code];
-            frmCtrl.valueChanges.subscribe(($event) => 
+            this.subscribers.push(frmCtrl.valueChanges.subscribe(($event) => 
             {
                 if(frmCtrl.valid && this.sendEvent) {
                     this.counterMessageService.evalCounterMessage(true);
@@ -133,7 +133,7 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
                     this.counterMessageService.evalCounterMessage(true);
                     this.sendEvent = true;
                 }
-            });
+            }));
         }
 	}
 	addFiles(event) {

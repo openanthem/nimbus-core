@@ -50,11 +50,9 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     requiredCss:boolean = false;
     labelConfig: LabelConfig;
 
-    stateChangeSubscriber: Subscription;
-    validationChangeSubscriber: Subscription;
-    onChangeSubscriber: Subscription;
     sendEvent = true;
-
+    subscribers: Subscription[] = [];
+    
     constructor(protected controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef, private counterMessageService: CounterMessageService) {
         super();
     }
@@ -92,6 +90,13 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         }
     }
 
+    ngOnDestroy() {
+        if (this.subscribers && this.subscribers.length > 0) {
+            this.subscribers.forEach(s => s.unsubscribe());
+        }
+        delete this.element;
+    }
+
     /**	
      * Retrieve the label config from the provided param and set it into this instance's labelConfig.
      * @param param The param for which to load label content for.	
@@ -103,7 +108,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     ngAfterViewInit(){
         if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
             let frmCtrl = this.form.controls[this.element.config.code];
-            frmCtrl.valueChanges.subscribe(($event) => 
+            this.subscribers.push(frmCtrl.valueChanges.subscribe(($event) => 
             {
                 this.setState($event,this);
                 if(frmCtrl.valid && this.sendEvent) {
@@ -115,7 +120,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
                     this.counterMessageService.evalCounterMessage(true);
                     this.sendEvent = true;
                 }
-            });
+            }));
             this.controlService.stateUpdateSubscriber(this);
             this.controlService.validationUpdateSubscriber(this);
         }

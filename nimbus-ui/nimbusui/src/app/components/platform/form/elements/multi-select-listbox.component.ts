@@ -115,7 +115,7 @@ export class MultiSelectListBox extends BaseElement{
             }
         });
 
-        this.pageService.eventUpdate$.subscribe(event => {
+        this.subscribers.push(this.pageService.eventUpdate$.subscribe(event => {
             let frmCtrl = this.form.controls[event.config.code];
             if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
                 if(event.leafState!=null)
@@ -123,7 +123,7 @@ export class MultiSelectListBox extends BaseElement{
                 else
                     frmCtrl.reset();
             }
-        });
+        }));
         this.pageService.validationUpdate$.subscribe(event => {
             let frmCtrl = this.form.controls[event.config.code];
             if(frmCtrl!=null) {
