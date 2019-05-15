@@ -146,7 +146,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
                                 this.counterMessageService.evalCounterMessage(true);
                                 this.counterMessageService.evalFormParamMessages(this.element);
                                 this.sendEvent = false;
-                            } else if(frmCtrl.invalid) {
+                            } else if(frmCtrl.invalid && frmCtrl.pristine) {
                                 this.counterMessageService.evalFormParamMessages(this.element);
                                 this.counterMessageService.evalCounterMessage(true);
                                 this.sendEvent = true;

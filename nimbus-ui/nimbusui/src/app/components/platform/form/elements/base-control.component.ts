@@ -53,6 +53,9 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     stateChangeSubscriber: Subscription;
     validationChangeSubscriber: Subscription;
     onChangeSubscriber: Subscription;
+
+    private subscribers: Subscription[] = []
+
     sendEvent = true;
 
     constructor(protected controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef, private counterMessageService: CounterMessageService) {
@@ -103,19 +106,19 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     ngAfterViewInit(){
         if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
             let frmCtrl = this.form.controls[this.element.config.code];
-            frmCtrl.valueChanges.subscribe(($event) => 
+            this.subscribers.push(frmCtrl.valueChanges.subscribe(($event) => 
             {
                 this.setState($event,this);
                 if(frmCtrl.valid && this.sendEvent) {
                     this.counterMessageService.evalCounterMessage(true);
                     this.counterMessageService.evalFormParamMessages(this.element);
                     this.sendEvent = false;
-                } else if(frmCtrl.invalid) {
+                } else if(frmCtrl.invalid && frmCtrl.pristine) {
                     this.counterMessageService.evalFormParamMessages(this.element);
                     this.counterMessageService.evalCounterMessage(true);
                     this.sendEvent = true;
                 }
-            });
+            }));
             this.controlService.stateUpdateSubscriber(this);
             this.controlService.validationUpdateSubscriber(this);
         }
@@ -123,6 +126,11 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     }
 
    
+    ngOndestroy() {
+        if(this.subscribers && this.subscribers.length >0) {
+            this.subscribers.forEach(s => s.unsubscribe());
+        }
+    }
     /** invoked from InPlaceEdit control */
     setInPlaceEditContext(context: any) {
         this.showLabel = false;

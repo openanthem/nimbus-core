@@ -99,7 +99,7 @@ export class MultiSelectListBox extends BaseElement{
                         this.counterMessageService.evalCounterMessage(true);
                         this.counterMessageService.evalFormParamMessages(this.element);
                         this.sendEvent = false;
-                    } else if(this.form.controls[this.element.config.code].invalid) {
+                    } else if(this.form.controls[this.element.config.code].invalid && this.form.controls[this.element.config.code].pristine) {
                         this.counterMessageService.evalFormParamMessages(this.element);
                         this.sendEvent = true;
                         this.counterMessageService.evalCounterMessage(true);

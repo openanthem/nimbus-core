@@ -108,7 +108,7 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
                 this.counterMessageService.evalCounterMessage(true);
                 this.counterMessageService.evalFormParamMessages(this.element);
                 this.sendEvent = false;
-            } else if(frmCtrl.invalid) {
+            } else if(frmCtrl.invalid && frmCtrl.pristine) {
                 this.counterMessageService.evalFormParamMessages(this.element);
                 this.sendEvent = true;
                 this.counterMessageService.evalCounterMessage(true);
