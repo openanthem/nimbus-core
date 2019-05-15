@@ -71,10 +71,10 @@ export class FilterButton extends BaseElement{
                //this.filterCount = element.leafState;
            }
        }
-       this.buttonClickEvent.subscribe(( $event ) => {
+       this.subscribers.push(this.buttonClickEvent.subscribe(( $event ) => {
            this.pageService.processEvent( $event.fbutton.path, $event.fbutton.config.uiStyles.attributes.b,
                null, $event.fbutton.config.uiStyles.attributes.method );
-       } );
+       }));
    }
 
    emitEvent( $event: any ) {

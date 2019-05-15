@@ -57,7 +57,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     private subscribers: Subscription[] = []
 
     sendEvent = true;
-
+    
     constructor(protected controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef, private counterMessageService: CounterMessageService) {
         super();
     }
@@ -95,6 +95,13 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         }
     }
 
+    ngOnDestroy() {
+        if (this.subscribers && this.subscribers.length > 0) {
+            this.subscribers.forEach(s => s.unsubscribe());
+        }
+        delete this.element;
+    }
+
     /**	
      * Retrieve the label config from the provided param and set it into this instance's labelConfig.
      * @param param The param for which to load label content for.	
@@ -113,7 +120,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
                     this.counterMessageService.evalCounterMessage(true);
                     this.counterMessageService.evalFormParamMessages(this.element);
                     this.sendEvent = false;
-                } else if(frmCtrl.invalid && frmCtrl.pristine) {
+                } else if(frmCtrl.invalid && !frmCtrl.pristine) {
                     this.counterMessageService.evalFormParamMessages(this.element);
                     this.counterMessageService.evalCounterMessage(true);
                     this.sendEvent = true;

@@ -59,7 +59,6 @@ export class BaseLabel {
             }
         });
     }
-
     /**	
      * Retrieve the label config from the provided param and set it into this instance's labelConfig.
      * @param param The param for which to load label content for.	

@@ -190,13 +190,13 @@ export class Form extends BaseElement implements OnInit, OnChanges {
         checks = ValidationUtils.buildStaticValidations(this.element);
 
         this.form = this.service.toFormGroup(this.formElements, checks);
-        this.pageSvc.eventUpdate$.subscribe(event => {
+        this.subscribers.push(this.pageSvc.eventUpdate$.subscribe(event => {
             if(event.config && event.config.uiStyles != null && event.config.uiStyles.attributes.alias === 'Form' && event.path === this.element.path) {
                 if(event.leafState != null && !this.hasNull(event.leafState))
                     this.form.patchValue(event.leafState);
                 //form reset will be addressed at the each control level where the update would be sent by the server
             }
-        });
+        }));
     }
 
      hasNull(target) {

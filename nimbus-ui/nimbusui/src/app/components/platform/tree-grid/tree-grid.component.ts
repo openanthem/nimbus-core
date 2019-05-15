@@ -83,11 +83,11 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
         super.ngOnInit();
 
         this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), HttpMethod.GET.value, undefined);
-        this.pageSvc.gridValueUpdate$.subscribe((treeList: Param) => {
+        this.subscribers.push(this.pageSvc.gridValueUpdate$.subscribe((treeList: Param) => {
             if(this.element.path === treeList.path){
                 this.treeData = this.getTreeStructure(treeList.gridData.leafState);
             }
-        });
+        }));
         // For convenience        
         this.collectionAlias = this.element.config.type.elementConfig.type.model.paramConfigs.find((config) =>
                 config.uiStyles.attributes.alias === this.viewComponent.treeGridChild.toString()).code;
@@ -111,18 +111,18 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
     evaluateErrorMessages() {
         if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
             let frmCtrl = this.form.controls[this.element.config.code];
-            frmCtrl.valueChanges.subscribe(($event) => 
+            this.subscribers.push(frmCtrl.valueChanges.subscribe(($event) => 
             {
                 if(frmCtrl.valid && this.sendEvent) {
                     this.counterMessageService.evalCounterMessage(true);
                     this.counterMessageService.evalFormParamMessages(this.element);
                     this.sendEvent = false;
-                } else if(frmCtrl.invalid && frmCtrl.pristine) {
+                } else if(frmCtrl.invalid && !frmCtrl.pristine) {
                     this.counterMessageService.evalFormParamMessages(this.element);
                     this.counterMessageService.evalCounterMessage(true);
                     this.sendEvent = true;
                 }
-            });
+            }));
         }
     }
 
