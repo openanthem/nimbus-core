@@ -83,8 +83,6 @@ export class LoggerService {
     public write(logMessage: string, logLevel: number) {
         if (this.promiseDone) {
             this.JL().log(logLevel,logMessage);
-        } else {
-            console.log('Logger not initialized, printing to console. ' + 'For session id '  + sessionStorage.get(ServiceConstants.SESSIONKEY) + ' : ' + logMessage);
         }
     }
 

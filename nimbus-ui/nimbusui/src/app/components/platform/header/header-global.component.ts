@@ -62,9 +62,7 @@ export class HeaderGlobal {
         return '';
     }
 
-    ngAfterViewInit() {
-        console.log(this.branding);
-    }
+    ngAfterViewInit() {}
 
     ngOnDestroy() {
         if (this.mouseEventSubscription)
