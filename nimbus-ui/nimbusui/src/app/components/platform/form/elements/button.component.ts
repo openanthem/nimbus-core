@@ -126,17 +126,16 @@ export class Button extends BaseElement {
             this.btnClass = 'btn btn-icon icon ' + this.cssClass;
         }
     
-        this.buttonClickEvent.subscribe(( $event ) => {
-
+        this.subscribers.push(this.buttonClickEvent.subscribe(( $event ) => {
             this.pageService.processEvent( $event.element.path, $event.element.config.uiStyles.attributes.b,
                 null, $event.element.config.uiStyles.attributes.method );
-        } );
+        }));
 
-        this.pageService.validationUpdate$.subscribe(event => {
+        this.subscribers.push(this.pageService.validationUpdate$.subscribe(event => {
             if(event.path == this.element.path) {
                 this.disabled = !event.enabled;
             }
-        });
+        }));
     }
 
     /*  This method will be run for every change detection cycle.  This is used to detect changes within 

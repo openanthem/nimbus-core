@@ -28,7 +28,7 @@ import { AbstractControl } from '@angular/forms/src/model';
 import { ConstraintMapping } from './../../shared/validationconstraints.enum';
 import { Constraint } from './../../shared/param-config';
 import { CounterMessageService } from './../../services/counter-message.service';
-import { Subscription } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 
 var counter = 0;
 
@@ -57,7 +57,6 @@ export class FormElement extends BaseElement {
     viewComponent = ViewComponent;
     componentClass: string[] = ['form-group'];
     errorStyles = 'alert alert-danger';
-    subscription: Subscription; 
 
     get isValid() {
         if (this.form.controls[this.element.config.code] != null) {
@@ -96,7 +95,7 @@ export class FormElement extends BaseElement {
         return (this.elemMessages != null && this.elemMessages.length > 0);
     }
 
-    constructor(private wcsv: WebContentSvc, private cms: CounterMessageService) { 
+    constructor(private wcsv: WebContentSvc, private cms: CounterMessageService, private cd: ChangeDetectorRef) { 
         super(wcsv);
     }
 
@@ -152,19 +151,13 @@ export class FormElement extends BaseElement {
 
     ngAfterViewInit() {
         this.getMessages();
-        this.subscription = this.cms.formErrorMessages$.subscribe(eventParam => {
+        this.cd.detectChanges();
+        this.subscribers.push(this.cms.formErrorMessages$.subscribe(eventParam => {
             if(eventParam.path == this.element.path || (eventParam.config.uiStyles != null && 
                 eventParam.config.uiStyles.attributes.style === this.componentTypes.validation.toString())) {
                this.getMessages();
             }
-        })
-    }
-
-
-    ngOnDestroy() {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
-        }
+        }));
     }
 
     getElementStyle() {

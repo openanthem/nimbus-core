@@ -22,6 +22,7 @@ import { Param } from './../../shared/param-state';
 import { LabelConfig } from './../../shared/param-config';
 import { PageService } from './../../services/page.service';
 import { ParamUtils } from './../../shared/param-utils';
+import { Subscription } from 'rxjs';
 
 /**
  * \@author Tony Lopez
@@ -41,7 +42,7 @@ export class BaseLabel {
 
     @Input() element: Param;
     protected labelConfig: LabelConfig;
-
+    private subscription: Subscription;
     constructor(private _wcs: WebContentSvc, private _pageService: PageService) {
 
     }
@@ -50,7 +51,7 @@ export class BaseLabel {
         this.loadLabelConfig(this.element);
 
         // Update the labels when an update for the param comes back from the server.
-        this._pageService.eventUpdate$.subscribe(event => {
+        this.subscription = this._pageService.eventUpdate$.subscribe(event => {
             if(event.path == this.element.path) {
                 if (event.labels && event.labels.length !== 0) {
                     this.loadLabelConfig(event);
@@ -58,7 +59,6 @@ export class BaseLabel {
             }
         });
     }
-
     /**	
      * Retrieve the label config from the provided param and set it into this instance's labelConfig.
      * @param param The param for which to load label content for.	
@@ -90,6 +90,12 @@ export class BaseLabel {
             cssClass = this.labelConfig.cssClass;
         }
         return cssClass;
+    }
+
+    ngOnDestroy() {
+        if(this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 }
 

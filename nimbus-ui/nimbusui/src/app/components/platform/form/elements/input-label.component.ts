@@ -44,6 +44,7 @@ export class InputLabel extends BaseLabel {
 
     @Input() for: string;
     @Input() required: boolean;
+    labelCss: string;
     
     constructor(private wcs: WebContentSvc, private pageService: PageService) {
         super(wcs, pageService);
