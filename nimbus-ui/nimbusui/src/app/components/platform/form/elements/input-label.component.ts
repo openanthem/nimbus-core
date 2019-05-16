@@ -31,7 +31,7 @@ import { BaseLabel } from '../../base-label.component';
   selector: 'nm-input-label',
   template: `
     <label *ngIf="label"
-        [className]="labelCss"
+        [className]="getCssClass()"
         [attr.for]="for">
         
         {{label}} 
@@ -50,10 +50,6 @@ export class InputLabel extends BaseLabel {
         super(wcs, pageService);
     }
 
-    ngOnInit() {
-        super.ngOnInit();
-        this.labelCss = this.getCssClass();
-    }
     /**
      * Get the css classes to apply for this element.
      */
