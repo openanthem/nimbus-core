@@ -31,16 +31,12 @@ import { Subscription } from 'rxjs';
  * \@howToUse 
  * 
  */
-@Component({
-    selector: 'nm-base-label',
-    providers: [ PageService ],
-    template:`
-    `
-})
-
-export class BaseLabel {
+export abstract class BaseLabel {
 
     @Input() element: Param;
+    @Input() labelClass: String;
+    @Input() required: boolean;
+    labelCss: string;
     protected labelConfig: LabelConfig;
     private subscription: Subscription;
     constructor(private _wcs: WebContentSvc, private _pageService: PageService) {
@@ -49,7 +45,6 @@ export class BaseLabel {
 
     ngOnInit() {
         this.loadLabelConfig(this.element);
-
         // Update the labels when an update for the param comes back from the server.
         this.subscription = this._pageService.eventUpdate$.subscribe(event => {
             if(event.path == this.element.path) {
@@ -65,6 +60,7 @@ export class BaseLabel {
      */	
     protected loadLabelConfig(param: Param): void {	
         this.labelConfig = this._wcs.findLabelContent(param);	
+        this.labelCss = this.applyCss();
     }
 
     /**
@@ -88,6 +84,21 @@ export class BaseLabel {
         let cssClass = '';
         if (this.labelConfig && this.labelConfig.cssClass) {
             cssClass = this.labelConfig.cssClass;
+        }
+        return cssClass;
+    }
+
+      /**
+     * Get the css classes to apply for this element.
+     */
+    public applyCss(): string {
+        let cssClass = this.getCssClass();
+        if (this.labelClass) {
+            if (cssClass.trim().length !== 0) {
+                cssClass += ' ';
+            }
+            if (this.labelClass) 
+                cssClass += this.labelClass;
         }
         return cssClass;
     }
