@@ -31,7 +31,7 @@ import { BaseLabel } from '../../base-label.component';
   selector: 'nm-input-label',
   template: `
     <label *ngIf="label"
-        [className]="getCssClass()"
+        className="{{required ? 'required '+labelCss  : labelCss}}"
         [attr.for]="for">
         
         {{label}} 
@@ -43,24 +43,8 @@ import { BaseLabel } from '../../base-label.component';
 export class InputLabel extends BaseLabel {
 
     @Input() for: string;
-    @Input() required: boolean;
-    labelCss: string;
     
     constructor(private wcs: WebContentSvc, private pageService: PageService) {
         super(wcs, pageService);
-    }
-
-    /**
-     * Get the css classes to apply for this element.
-     */
-    public getCssClass(): string {
-        let cssClass = super.getCssClass();
-        if (this.required) {
-            if (cssClass.trim().length !== 0) {
-                cssClass += ' ';
-            }
-            cssClass += 'required';
-        }
-        return cssClass;
     }
 }

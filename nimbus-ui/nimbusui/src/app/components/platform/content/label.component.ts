@@ -29,12 +29,12 @@ import { BaseLabel } from '../base-label.component';
 @Component({
     selector: 'nm-label',
     template: `
-        <H1 *ngIf="size=='H1'" [className]="cssClass">{{label}}</H1>
-        <H2 *ngIf="size=='H2'" [className]="cssClass">{{label}}</H2>
-        <H3 *ngIf="size=='H3'" [className]="cssClass">{{label}}</H3>
-        <H4 *ngIf="size=='H4'" [className]="cssClass">{{label}}</H4>
-        <H5 *ngIf="size=='H5'" [className]="cssClass">{{label}}</H5>
-        <H6 *ngIf="size=='H6'" [className]="cssClass">{{label}}</H6>
+        <H1 *ngIf="size=='H1'" [className]="labelCss">{{label}}</H1>
+        <H2 *ngIf="size=='H2'" [className]="labelCss">{{label}}</H2>
+        <H3 *ngIf="size=='H3'" [className]="labelCss">{{label}}</H3>
+        <H4 *ngIf="size=='H4'" [className]="labelCss">{{label}}</H4>
+        <H5 *ngIf="size=='H5'" [className]="labelCss">{{label}}</H5>
+        <H6 *ngIf="size=='H6'" [className]="labelCss">{{label}}</H6>
         <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
     `
 })
@@ -42,24 +42,9 @@ import { BaseLabel } from '../base-label.component';
 export class Label extends BaseLabel {
 
     @Input() size: String;
-    @Input() labelClass: String;
 
     constructor(private wcs: WebContentSvc, private pageService: PageService) {
         super(wcs, pageService);
-    }
-
-    /**
-     * Get the css classes to apply for this element.
-     */
-    public get cssClass(): string {
-        let cssClass = super.getCssClass();
-        if (this.labelClass) {
-            if (cssClass.trim().length !== 0) {
-                cssClass += ' ';
-            }
-            cssClass += this.labelClass;
-        }
-        return cssClass;
     }
 }
 
