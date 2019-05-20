@@ -35,10 +35,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  * \@howToUse 
  * 
  */
-
-// <span *ngIf="!form && validationError">
-// {{validationError}}
-//     </span>
 @Component({
   selector: 'nm-input',
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers ],
@@ -47,28 +43,17 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         [element]="element" 
         [for]="element.config?.code" 
         [required]="requiredCss">
-
     </nm-input-label>
-<div *ngIf="hidden!=true && readOnly==false">
 
     <input
+        *ngIf="hidden!=true && readOnly==false"
         type="text"
         [(ngModel)] = "value"
         [id]="element.config?.code" 
         (focusout)="emitValueChangedEvent(this,value)"
         [value]="type"
         [disabled]="disabled"
-        nmValidator
-        #xxxx="ngModel"
         class="form-control text-input"/>
-abcd...
-        <div *ngIf="xxxx.errors">
-        xyz...
-        {{xxxx.errors.nmValidator}}
-        </div>
-       
-        </div>
-
 
     <input *ngIf="hidden==true"
         [id]="element.config?.code" 

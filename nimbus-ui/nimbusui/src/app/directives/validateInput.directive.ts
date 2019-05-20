@@ -15,93 +15,83 @@
  * limitations under the License.
  */
 'use strict';
-import {ElementRef, Renderer2, Input, SimpleChanges } from '@angular/core';
-import { ParamConfig } from '../shared/param-config';
-import { ValidationErrors } from '@angular/forms';
+import {ElementRef, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Param } from '../shared/param-state';
+import { Directive, forwardRef, Attribute } from '@angular/core';
+import { Validator, AbstractControl, NG_VALIDATORS } from '@angular/forms';
+import { ControlSubscribers } from '../services/control-subscribers.service';
+import { PageService } from '../services/page.service';
+import { ValidationUtils } from '../components/platform/validators/ValidationUtils';
 /**
- * \@author Dinakar.Meda
+ * \@author Purnachander.Mashetty
  * \@whatItDoes 
  * 
  * \@howToUse 
  * 
  */
-
-
-
-
-
-
-import { Directive, forwardRef, Attribute } from '@angular/core';
-import { Validator, AbstractControl, NG_VALIDATORS } from '@angular/forms';
-
 @Directive({
     selector: '[nmValidator][formControlName],[nmValidator][formControl],[nmValidator][ngModel]',
     providers: [
-        { provide: NG_VALIDATORS, useExisting: forwardRef(() => NmValidator), multi: true }
+        { provide: NG_VALIDATORS, useExisting: forwardRef(() => NmValidator), multi: true },
+        ControlSubscribers
     ]
 })
-export class NmValidator implements Validator {
-    constructor( @Attribute('nmValidator') public nmValidator: string) {}
+export class NmValidator implements Validator, OnInit {
+
+    @Input('nmValidator') element: Param;
+    @Output() nmValidate: EventEmitter<any> = new EventEmitter();
+    vFun: any;
+
+    constructor( @Attribute('nmValidator') public nmValidator: string, 
+                            private pageSvc: PageService,
+                            private elementRef: ElementRef) {}
 
     validate(c: AbstractControl): { [key: string]: any } {
-        // self value (e.g. retype password)
-        let v = c.value;
-console.log('NmValidator is working', c);
+        const err = {nmValidator: [], param: this.element};
+        let hasError = false;
+        if (this.vFun.length > 0) {
+            for (const key in this.vFun) {
+                if (this.vFun.hasOwnProperty(key)) {
+                    const validator = this.vFun[key](c);
+                    const value = c.value;
 
-        // control value (e.g. password)
-        // let e = c.root.get(this.validateEqual);
+                    // not null validator
+                    if (validator && validator['required']){
+                        if (!value){
+                            hasError = true;
+                            for (const constraint of this.element.config.validation.constraints) {
+                                if (constraint.name === 'NotNull') {
+                                    err.nmValidator.push(constraint.attribute.message)
+                                }
+                            }
+                        }
+                    }
 
-        // value not equal
-        // if (e && v !== e.value) return {
-        //     validateEqual: false
-        // }
-        return {nmValidator:  'this is invalid...'};
+                    // regexp validator
+                    if (validator && validator['pattern'] && validator['pattern']['requiredPattern']) {
+                        const regex = new RegExp(validator['pattern']['requiredPattern']);
+                        if (!regex.test(value)) {
+                            hasError = true;
+                            for (const constraint of this.element.config.validation.constraints) {
+                                if (constraint.name === 'Pattern') {
+                                    err.nmValidator.push(constraint.attribute.message)
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        this.nmValidate.emit({nmValidator: err.nmValidator, param: this.element});
+        if (!hasError){
+            return null;
+        }
+        return err;
+    }
+
+    ngOnInit() {
+        this.vFun = ValidationUtils.buildStaticValidations(this.element);
     }
 }
-
-
-
-
-// @Directive({
-//   selector: 'validateInput, [validateInput]'
-// })
-// export class ValidateInput implements Validator {
-
-//     @Input("validateInput") element: Param;
-
-
-//     constructor(
-//         @Attribute('validateEqual') public validateEqual: string,
-//         private elementRef: ElementRef
-//     ) {    }
-//     validate(control: AbstractControl): ValidationErrors| null {
-// console.log('control...validateInput', control);
-// return null;
-//     }
-
-//     validateInput(test) {
-//         console.log('test', test);
-        
-//     }
-
-//     ngOnInit() {
-//         // console.log('this.element---validateInput', this.element);
-//         // console.log('this.element.config.validation.constraints', this.element.config.validation.constraints, this.element);
-//         if (this.element.config && this.element.config.validation && this.element.config.validation.constraints) {
-//             for (let i = 0; i < this.element.config.validation.constraints.length; i++){
-//                 if (this.element.config.validation.constraints[i].name == "NotNull"){
-//                     console.log('notnull', this.element.config.code);
-                    
-//                 }
-//             }
-//         }
-
-//         console.log('this.elementRef', this.elementRef);
-        
-
-//     }
-
-    
-
-// }

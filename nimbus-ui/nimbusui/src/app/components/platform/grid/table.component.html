@@ -106,47 +106,43 @@
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
                     <td *ngIf="showColumn(col)" [ngClass]="getColumnStyle(col)">
                             <p-cellEditor>
-                                     <ng-template pTemplate="input" [ngIf]="showValue(col) && element?.config?.uiStyles?.attributes?.editRow">
+                                     <ng-template pTemplate="input" [ngIf]="element?.config?.uiStyles?.attributes?.editRow && showValue(col)">
 
                                         <nm-input  
-                                        *ngIf="isAdding() && TableComponentConstants.allowedInlineEditColumnStylesAlias.includes(col.uiStyles.attributes.alias)"
-                                        [hideLabel]=true
+                                        *ngIf="gridMode == 'add' 
+                                        && gridModeRow == ''
+                                        && !rowData.elemId
+                                        && TableComponentConstants.allowedInlineEditColumnStylesAlias.includes(col.uiStyles.attributes.alias)"
+                                        [nmValidator]="getViewParamInEditRow(col, rowData['elemId'])"
+                                        (nmValidate)="updateValidation($event)"
+                                         [hideLabel]=true
                                         [element]="getViewParamInEditRow(col, rowData['elemId'])" 
                                         [(ngModel)]="rowData[col.code]"
-                                        nmValidator
-                                        #xxxx="ngModel"></nm-input>
+                                       [attr.id]="col.code"></nm-input>
 
-                                        <!-- <nm-input  
-                                        *ngIf="!isAdding() && TableComponentConstants.allowedInlineEditNmInputComponents.includes(col.uiStyles.attributes.alias)"
+                                    <ng-template 
+                                    [ngIf]="gridMode == 'edit' && 
+                                    TableComponentConstants.allowedInlineEditNmInputComponents.includes(col.uiStyles.attributes.alias)
+                                    && gridModeRow == rowData.elemId">
+                                        <nm-input  
+                                        [nmValidator]="getViewParamInEditRow(col, rowData['elemId'])"
+                                        (nmValidate)="updateValidation($event)"
                                         [hideLabel]=true
                                         [element]="getViewParamInEditRow(col, rowData['elemId'])" 
-                                        [(ngModel)]="rowData[col.code]"
-                                        nmValidator
-                                        #xxxx="ngModel"></nm-input> -->
-
-                                  
-    <!-- <div *ngIf="!isAdding() && TableComponentConstants.allowedInlineEditNmInputComponents.includes(col.uiStyles.attributes.alias)"> -->
-
-                                        <!-- <input  
-                                        [(ngModel)]="rowData[col.code]"
-                                        required
-                                        #xxxx="ngModel"/> -->
-
-                                        <input *ngIf="!isAdding() && TableComponentConstants.allowedInlineEditNmInputComponents.includes(col.uiStyles.attributes.alias)" pInputText type="text" [(ngModel)]="rowData[col.code]"  required>
-
-        <!-- <div *ngIf="xxxx && xxxx.errors">
-        xyz...
-        {{xxxx.errors.required}}
-        </div> -->
-
-        <!-- </div> -->
+                                        [(ngModel)]="rowData[col.code]"></nm-input>
+                                    </ng-template>
 
 
                                         <nm-comboBox 
-                                        *ngIf="!isAdding() && col?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString()" 
+                                        *ngIf="gridMode == 'edit' && col?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString() && gridModeRow == rowData.elemId" 
                                         [hideLabel]=true
                                         [element]="getViewParamInEditRow(col, rowData['elemId'])" 
                                         [(ngModel)]="rowData[col.code]" ></nm-comboBox>
+
+
+                                        <div *ngFor="let error of getAddValErr(col.code)">
+                                            {{error}}
+                                        </div>
 
                                      </ng-template>
                                     <ng-template pTemplate="output">
@@ -190,7 +186,7 @@
 
             <td style="text-align:center" *ngIf="element.config?.uiStyles?.attributes?.editRow">
                     <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil" class="ui-button-info" (click)="onRowEditInitialize(rowData)"></button>
-                    <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check" class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData)"></button>
+                    <button *ngIf="editing" pButton type="button" icon="pi pi-check" class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData)"></button>
                     <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times" class="ui-button-danger" (click)="onRowEditCancel(rowData)"></button>
             </td>
 
@@ -222,130 +218,3 @@
         </ng-template>
     </p-table>
 </div>
-
-
-
-
-
-<h3>Row Editing</h3>
-<p-table [value]="cars2" dataKey="vin" editMode="row">
-    <ng-template pTemplate="header">
-        <tr>
-            <th>Vin</th>
-            <th>Year</th>
-            <th>Brand</th>
-            <th>Color</th>
-            <th style="width:8em"></th>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
-        <tr [pEditableRow]="rowData">
-            <td>
-                {{rowData.vin}}
-            </td>
-            <td>
-                <p-cellEditor>
-                    <ng-template pTemplate="input">
-                        <input pInputText type="text" [(ngModel)]="rowData.year" required>
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                        {{rowData.year}}
-                    </ng-template>
-                </p-cellEditor>
-            </td>
-            <td>
-                <p-cellEditor>
-                    <ng-template pTemplate="input">
-                        <p-dropdown [options]="brands" [(ngModel)]="rowData.brand" [style]="{'width':'100%'}"></p-dropdown>
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                        {{rowData.brand}}
-                    </ng-template>
-                </p-cellEditor>
-            </td>
-            <td>
-                <p-cellEditor>
-                    <ng-template pTemplate="input">
-                        <input pInputText type="text" [(ngModel)]="rowData.color" required>
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                        {{rowData.color}}
-                    </ng-template>
-                </p-cellEditor>
-            </td>
-            <td style="text-align:center">
-                <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil" class="ui-button-info"
-                (click)="onRowEditInit1(rowData)"></button>
-
-                <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check" class="ui-button-success"
-                style="margin-right: .5em" (click)="onRowEditSave1(rowData)"></button>
-
-                <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times" class="ui-button-danger"
-                (click)="onRowEditCancel1(rowData, ri)"></button>
-
-            </td>
-        </tr>
-    </ng-template>
-</p-table>
-
-
-<h3>Row Editing---1</h3>
-<p-table [value]="cars2" dataKey="vin" editMode="row">
-    <ng-template pTemplate="header">
-        <tr>
-            <th>Vin</th>
-            <th>Year</th>
-            <th>Brand</th>
-            <th>Color</th>
-            <th style="width:8em"></th>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
-        <tr [pEditableRow]="rowData">
-            <td>
-                {{rowData.vin}}
-            </td>
-            <td>
-                <p-cellEditor>
-                    <ng-template pTemplate="input">
-                        <input pInputText type="text" [(ngModel)]="rowData.year" required>
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                        {{rowData.year}}
-                    </ng-template>
-                </p-cellEditor>
-            </td>
-            <td>
-                <p-cellEditor>
-                    <ng-template pTemplate="input">
-                        <p-dropdown [options]="brands" [(ngModel)]="rowData.brand" [style]="{'width':'100%'}"></p-dropdown>
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                        {{rowData.brand}}
-                    </ng-template>
-                </p-cellEditor>
-            </td>
-            <td>
-                <p-cellEditor>
-                    <ng-template pTemplate="input">
-                        <input pInputText type="text" [(ngModel)]="rowData.color" required>
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                        {{rowData.color}}
-                    </ng-template>
-                </p-cellEditor>
-            </td>
-            <td style="text-align:center">
-                <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil" class="ui-button-info"
-                (click)="onRowEditInit1(rowData)"></button>
-
-                <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check" class="ui-button-success"
-                style="margin-right: .5em" (click)="onRowEditSave1(rowData)"></button>
-
-                <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times" class="ui-button-danger"
-                (click)="onRowEditCancel1(rowData, ri)"></button>
-
-            </td>
-        </tr>
-    </ng-template>
-</p-table>

@@ -43,6 +43,7 @@ import { BaseTableElement } from './../base-table-element.component';
 import { ConfigService } from '../../../services/config.service';
 import { ValidationUtils } from '../validators/ValidationUtils';
 import { FormElementsService } from '../form-builder.service';
+import { ControlSubscribers } from '../../../services/control-subscribers.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -62,7 +63,7 @@ var counter = 0;
 
 @Component({
     selector: 'nm-table',
-    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, DateTimeFormatPipe, FormElementsService],
+    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, DateTimeFormatPipe, FormElementsService, ControlSubscribers],
     encapsulation: ViewEncapsulation.None,
     templateUrl: './table.component.html'
 })
@@ -81,32 +82,14 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     checks: ValidatorFn[] = [];
     form1: FormGroup;
     formElements1: Param[] = [];
-
-    cars2: any[] = [{
-        'vin': 'abcd',
-        'year': 1999,
-        'brand': 'audi',
-        'color': 'black'
-      }];
-    
-      brands: any[] = [
-        {label: 'Audi', value: 'Audi'},
-        {label: 'BMW', value: 'BMW'},
-        {label: 'Fiat', value: 'Fiat'},
-        {label: 'Ford', value: 'Ford'},
-        {label: 'Honda', value: 'Honda'},
-        {label: 'Jaguar', value: 'Jaguar'},
-        {label: 'Mercedes', value: 'Mercedes'},
-        {label: 'Renault', value: 'Renault'},
-        {label: 'VW', value: 'VW'},
-        {label: 'Volvo', value: 'Volvo'}
-    ];
-    
-      clonedCars: any = {};
+    addValErr = {};
+    editValErr  = [];
+    gridMode: string = '';
+    gridModeRow: string = '-1';
 
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
-    
+
     filterValue: Date;
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
@@ -162,52 +145,31 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         private dtFormat: DateTimeFormatPipe,
         protected cd: ChangeDetectorRef,
         private configService: ConfigService,
-        private service: FormElementsService) {
-
+        private service: FormElementsService,
+        private controlSubscribers: ControlSubscribers) {
         super(_wcs, cd);
     }
 
-    onRowEditInit1(car: any) {
-        console.log('onRowEditInit is called...');
-    
-        this.clonedCars[car.vin] = {...car};
-    }
-    
-    onRowEditSave1(car: any) {
-        console.log('save1 is called...');
-        
-        // if (car.year > 0) {
-            delete this.clonedCars[car.vin];
-            // this.messageService.add({severity:'success', summary: 'Success', detail:'Car is updated'});
-        // }
-        // else {
-            // this.messageService.add({severity:'error', summary: 'Error', detail:'Year is required'});
-        // }
-    }
-    
-    onRowEditCancel1(car: any, index: number) {
-        this.cars2[index] = this.clonedCars[car.vin];
-        delete this.clonedCars[car.vin];
-    }
 
     onRowEditInitialize(rowData) {
-        // this.checks = [];
-        // this.formElements1 = [];
+        this.gridModeRow = rowData.elemId;
+        this.gridMode = 'edit';
         this.clonedRowData[rowData.elemId] = {...rowData};
     }
 
-    onRowEditSave(rowData) {
-
-        if (!rowData.status) {
-            return;
+    getAddValErr(code) {
+        if (this.addValErr[code] && this.addValErr[code].nmValidator) {
+            return this.addValErr[code].nmValidator;
         }
-        // if (this.form1 != null) {
-        //     console.log('this.form1.controls', this.form1.controls, this.checks, this.formElements1 );
-        //     console.log('this.form1.valid', this.form1.valid);
-            
-            
-        // }
+        return [];
+    }
 
+    onRowEditSave(rowData) {
+        for (const key in this.addValErr) {
+            if (this.addValErr.hasOwnProperty(key)) {
+                return;
+            }
+        }
         let elemPath = `${this.element.path}/${rowData.elemId}`;
         let relativeActionPath = this.element.config.uiStyles.attributes.onEdit;
         if (this.isNewRecord(rowData)) {
@@ -218,6 +180,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             this.dt.cancelRowEdit(rowData);
             delete this.clonedRowData[rowData.elemId];
         });
+        this.gridModeRow = '-1';
+        this.gridMode = '';
     }
 
     postEditedRow(rowData: any, elemPath: string, relativeActionPath: string, onSuccess?: () => void, onFailure?: () => void) {
@@ -227,6 +191,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     onRowEditCancel(rowData: any) {
+        this.gridModeRow = '-1';
+        this.gridMode = '';
         if (this.isNewRecord(rowData)) {
             delete this.clonedRowData[rowData.elemId];
             this.value.splice(0, 1);
@@ -262,6 +228,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     addRow() {
+        this.gridMode = 'add';
+        this.gridModeRow = '';
         if (this.isAdding()) {
            return ;
         }
@@ -278,6 +246,45 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             newRow[paramconfig.code] =  new Param(this.configService).deserialize({'configId': paramconfig.id}, this.element.path);
         }
         this.element.tableBasedData.collectionParams['-1'] = newRow;
+    }
+
+    updateValidation(event) {
+        const id = event.param.config.code;
+        const path = event.param.path;
+
+            if (this.isAdding()){
+                //then path must not end with a number.
+                const parts = path.split('/');
+                const c1 = parts[parts.length - 2];
+                if (!isNaN(c1)) {
+                    return;
+                }
+            }
+
+        // append all errors for this id ..
+        // remove errors if null.
+        const errObj = this.addValErr [id] || {};
+
+       if (event.nmValidator.length > 0){
+         errObj ['nmValidator'] = event.nmValidator;
+       } else {
+           delete errObj['nmValidator'];
+       }
+
+       let foundErr = false;
+
+       for (const key in errObj) {
+           if (errObj.hasOwnProperty(key)) {
+               foundErr = true;
+               break;
+           }
+       }
+
+       if (!foundErr) {
+        delete this.addValErr[id]
+       } else {
+           this.addValErr[id] = errObj;
+       }
     }
 
     ngOnInit() {
@@ -347,7 +354,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             this.summaryData = data;
         });
 
-        this.pageSvc.gridValueUpdate$.subscribe(event => {            
+        this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
                 this.value = event.tableBasedData.values;
                 
@@ -436,6 +443,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         } 
         return false;
     }
+
     /* 
     * Show value in the grid row. Below are a few examples for various configs on a grid column:
     * @GridColumn(showAsLink=true,sortable=true) - false . Value will be shown in this case using the link component
@@ -492,17 +500,23 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     getViewParamInEditRow(col: ParamConfig, rowIndex: number): Param {
-        if (this.isAdding()) {
+        // console.log('rowIndex---589', rowIndex);
+        
+        if (this.isAdding() && !rowIndex) {
+
+            // console.log('also printing this...');
+            
             return this.element.tableBasedData.collectionParams['-1'][col.code];
         }
-        const elementChecks = ValidationUtils.buildStaticValidations(this.element.tableBasedData.collectionParams[rowIndex][col.code]);
-        if (elementChecks) {
-            for (let i = 0; i < elementChecks.length; i++) {
-                this.checks.push(elementChecks[i]);
-            }
-        }
-        this.formElements1.push(this.element.tableBasedData.collectionParams[rowIndex][col.code]);
-        this.form1 = this.service.toFormGroup(this.formElements1, this.checks);
+        // const elementChecks = ValidationUtils.buildStaticValidations(this.element.tableBasedData.collectionParams[rowIndex][col.code]);
+        // if (elementChecks) {
+        //     for (let i = 0; i < elementChecks.length; i++) {
+        //         this.checks.push(elementChecks[i]);
+        //     }
+        // }
+        // this.formElements1.push(this.element.tableBasedData.collectionParams[rowIndex][col.code]);
+        // this.form1 = this.service.toFormGroup(this.formElements1, this.checks);
+// console.log('it should n t printed');
 
         return this.element.tableBasedData.collectionParams[rowIndex][col.code];
     }
