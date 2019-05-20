@@ -41,9 +41,7 @@ import { TableComponentConstants } from './table.component.constants';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
 import { BaseTableElement } from './../base-table-element.component';
 import { ConfigService } from '../../../services/config.service';
-import { ValidationUtils } from '../validators/ValidationUtils';
-import { FormElementsService } from '../form-builder.service';
-import { ControlSubscribers } from '../../../services/control-subscribers.service';
+
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -63,7 +61,7 @@ var counter = 0;
 
 @Component({
     selector: 'nm-table',
-    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, DateTimeFormatPipe, FormElementsService, ControlSubscribers],
+    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, DateTimeFormatPipe],
     encapsulation: ViewEncapsulation.None,
     templateUrl: './table.component.html'
 })
@@ -144,9 +142,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         private gridService: GridService,
         private dtFormat: DateTimeFormatPipe,
         protected cd: ChangeDetectorRef,
-        private configService: ConfigService,
-        private service: FormElementsService,
-        private controlSubscribers: ControlSubscribers) {
+        private configService: ConfigService
+        ) {
         super(_wcs, cd);
     }
 
@@ -500,24 +497,9 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     getViewParamInEditRow(col: ParamConfig, rowIndex: number): Param {
-        // console.log('rowIndex---589', rowIndex);
-        
         if (this.isAdding() && !rowIndex) {
-
-            // console.log('also printing this...');
-            
             return this.element.tableBasedData.collectionParams['-1'][col.code];
         }
-        // const elementChecks = ValidationUtils.buildStaticValidations(this.element.tableBasedData.collectionParams[rowIndex][col.code]);
-        // if (elementChecks) {
-        //     for (let i = 0; i < elementChecks.length; i++) {
-        //         this.checks.push(elementChecks[i]);
-        //     }
-        // }
-        // this.formElements1.push(this.element.tableBasedData.collectionParams[rowIndex][col.code]);
-        // this.form1 = this.service.toFormGroup(this.formElements1, this.checks);
-// console.log('it should n t printed');
-
         return this.element.tableBasedData.collectionParams[rowIndex][col.code];
     }
 

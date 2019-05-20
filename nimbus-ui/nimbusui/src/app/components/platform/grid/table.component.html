@@ -91,8 +91,7 @@
             </tr>
         </ng-template>
         
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex" 
-        let-expanded="expanded" let-editing="editing">
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex" let-expanded="expanded" let-editing="editing">
              <tr #editableRow [pSelectableRow]="rowData" [pEditableRow]="rowData" [ngClass]="rowIndex % 2 === 0 ? 'even' : 'odd'" > 
                 <td *ngIf="element.config?.uiStyles?.attributes?.rowSelection">
                     <p-tableCheckbox id="tableCheckbox{{rowIndex}}" [value]="rowData"></p-tableCheckbox>

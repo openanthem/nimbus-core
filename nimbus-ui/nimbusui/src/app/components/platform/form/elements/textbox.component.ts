@@ -43,11 +43,11 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         [element]="element" 
         [for]="element.config?.code" 
         [required]="requiredCss">
+
     </nm-input-label>
 
     <input
         *ngIf="hidden!=true && readOnly==false"
-        type="text"
         [(ngModel)] = "value"
         [id]="element.config?.code" 
         (focusout)="emitValueChangedEvent(this,value)"

@@ -52,7 +52,6 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     stateChangeSubscriber: Subscription;
     validationChangeSubscriber: Subscription;
     onChangeSubscriber: Subscription;
-    validationError: any;
 
     constructor(protected controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super();
@@ -67,16 +66,17 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     }
 
     emitValueChangedEvent(formControl:any,$event:any) {
-        this.validationError = "";
         if (this.inPlaceEditContext) {
             this.inPlaceEditContext.value = formControl.value;
         }
         if(this.form == null || (this.form.controls[this.element.config.code]!= null && this.form.controls[this.element.config.code].valid)) {
             this.controlService.controlValueChanged.emit(formControl.element);
         }
+
     }
 
     ngOnInit() {
+
         this.value = this.element.leafState;
         this.disabled = !this.element.enabled;
         this.requiredCss = ValidationUtils.applyelementStyle(this.element);
