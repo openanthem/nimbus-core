@@ -81,7 +81,6 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     form1: FormGroup;
     formElements1: Param[] = [];
     addValErr = {};
-    editValErr  = [];
     gridMode: string = '';
     gridModeRow: string = '-1';
 
