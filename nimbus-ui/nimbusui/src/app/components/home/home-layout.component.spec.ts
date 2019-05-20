@@ -72,6 +72,7 @@ import { configureTestSuite } from 'ng-bullet';
 import { Homelayout } from 'mockdata'
 import { ToastMessageComponent } from '../platform/message/toastmessage.component';
 import { ToastModule } from 'primeng/toast';
+import { NavigationComponent } from './../navigation/navigation.component';
 
 @Component({
   template: '<div></div>',
@@ -209,7 +210,8 @@ const declarations= [
     ActionLink,
     NmPanelMenu,
     ToastMessageComponent,
-    NmPanelMenuSub
+    NmPanelMenuSub,
+    NavigationComponent
   ];
   const providers = [
     { provide: AuthenticationService, useClass: MockAuthenticationService },
@@ -257,23 +259,6 @@ describe('HomeLayoutCmp', () => {
 
   it('should create the app',  async(() => {
     expect(hostComponent).toBeTruthy();
-  }));
-
-  it('button, panelMenu, headerGlobal, footer should be created', async(() => {
-    layoutService.parseLayoutConfig(Homelayout);
-    fixture.detectChanges();
-    hostComponent.ngOnInit();
-    layoutService.parseLayoutConfig(Homelayout);
-    const debugElement = fixture.debugElement;
-    const panelMenu = debugElement.query(By.css('nm-panelMenu'));
-    const button  = debugElement.query(By.css(".navbar-toggler.collapsed"));
-    const headerGlobal  = debugElement.query(By.css('nm-header-global'));
-    const footer = debugElement.query(By.css('nm-footer-global'));
-    expect(button.name).toEqual('button');
-    expect(button.nativeElement.classList.contains('navbar-toggler', 'collapsed', 'home')).toBeTruthy();
-    expect(panelMenu.name).toEqual('nm-panelMenu');
-    expect(headerGlobal.name).toEqual('nm-header-global');
-    expect(footer.name).toEqual('nm-footer-global');
   }));
 
   it('ngOnInint() should get layout from layout service',  async(() => {

@@ -105,15 +105,13 @@ import { setup, TestContext } from '../../setup.spec';
 import { configureTestSuite } from 'ng-bullet';
 import { PrintDirective } from '../../directives/print.directive';
 import { PrintService } from '../../services/print.service';
-import {domainModalItems, domainActionTray, domainItems, domainAccordions, domainMockLayout} from 'mockdata';
+import {domainModalItems, domainActionTray, menuPanelItems, domainAccordions, domainMockLayout} from 'mockdata';
 import { TableHeader } from '../platform/grid/table-header.component';
 import { InputMaskComp } from './../platform/form/elements/input-mask.component';
 import { Tab } from './../platform/content/tab.component';
 import { NmAutocomplete } from './../platform/form/elements/autocomplete.component';
-
-
-
 import { RichText } from '../platform/form/elements/rich-text.component';
+import { NavigationComponent } from '../navigation/navigation.component';
 
 let layoutservice, pageservice, router, route;
 
@@ -378,7 +376,8 @@ export class MockActivatedRoute implements ActivatedRoute {
     Tab,
     NmAutocomplete,
     NmChart,
-    RichText
+    RichText,
+    NavigationComponent
  ];
  const imports =  [
      RouterTestingModule,
@@ -452,7 +451,9 @@ describe('DomainFlowCmp', () => {
     pageservice = TestBed.get(PageService);
     router = TestBed.get(Router);
     route = TestBed.get(ActivatedRoute);
-    hostComponent.items = domainItems;
+    hostComponent.menuPanel = {
+      menuItems: menuPanelItems
+    }
     const document = {
         "getElementById": () => {
             return {"classList": {"remove": () => {}, "add": () => {}}, "scrollTop": 11, "setAttribute": () => {}, "style": {"height": ''}};

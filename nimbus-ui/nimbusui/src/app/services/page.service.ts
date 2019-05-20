@@ -39,6 +39,7 @@ import { ViewComponent } from '../shared/param-annotations.enum';
 import { TableBasedData } from './../shared/param-state';
 import { NmMessageService } from './toastmessage.service';
 import { Observable } from 'rxjs/Observable';
+import { PageNavigationResponse } from './../shared/page-navigation-response';
 
 /**
  * \@author Dinakar.Meda
@@ -375,9 +376,17 @@ export class PageService {
                         this.logger.debug('Navigation using browser back location');
                         this.location.back();
                 } else if (navOutput) {
-                        let flow = this.getFlowNameFromOutput(navOutput.inputCommandUri);
-                        let pageParam = this.findMatchingPageConfigById(navOutput.value, flow);
-                        this.navigateToPage(pageParam, flow);
+                        let navResponse = new PageNavigationResponse(navOutput.value);
+                        switch (navResponse.type) {
+                                case PageNavigationResponse.Type.EXTERNAL:
+                                        window.open(navResponse.redirectUrl, "_blank");
+                                        break;
+                                default:
+                                        let flow = this.getFlowNameFromOutput(navOutput.inputCommandUri);
+                                        let pageParam = this.findMatchingPageConfigById(navResponse.pageId, flow);
+                                        this.navigateToPage(pageParam, flow);
+                                        break;
+                        }
                 }
         }
 

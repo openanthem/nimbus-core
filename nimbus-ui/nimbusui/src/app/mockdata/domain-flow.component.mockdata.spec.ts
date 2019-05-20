@@ -39,7 +39,7 @@ export const domainAccordions = [
   
   
   
- export const domainItems = [
+ export const menuPanelItems = [
     {
         "label": "Home",
         "path": "/home/vpHome/vsHomeLeftBar/home",

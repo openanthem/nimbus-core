@@ -109,12 +109,12 @@ import { FooterGlobal } from './components/platform/footer/footer-global.compone
 import { Calendar } from './components/platform/form/elements/calendar.component';
 import { MessageComponent } from './components/platform/message/message.component';
 import { ActionTray } from './components/platform/actiontray.component';
-import { BaseLabel } from './components/platform/base-label.component';
 import { Label } from './components/platform/content/label.component';
 import { InputLabel } from './components/platform/form/elements/input-label.component';
 import { BaseTableElement } from './components/platform/base-table-element.component';
 import { TableHeader } from './components/platform/grid/table-header.component';
 import { ToastMessageComponent } from './components/platform/message/toastmessage.component';
+import { NavigationComponent } from './components/navigation/navigation.component';
 
 // Services
 import { WebContentSvc } from './services/content-management.service';
@@ -240,7 +240,7 @@ export function init_app(appinitservice: AppInitService) {
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, LoaderComponent, MessageComponent,
         HeaderCheckBox, SvgComponent, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, NmChart, ToastMessageComponent,
-        MenuRouteLink, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage, BaseTableElement, EventPropagationDirective, TableHeader
+        MenuRouteLink, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage, BaseTableElement, EventPropagationDirective, TableHeader, NavigationComponent
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,

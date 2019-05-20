@@ -886,8 +886,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(!to) {
 			setStateInitialized(false);
 			
-			if(!isPrimitive())
-				setState(null);
+			if(!isPrimitive()) {
+				if(this.isCollection())
+					findIfCollection().clear();
+				else
+					setState(null);
+			}
 		} else {
 			initState(); // ensure all rules are fired
 		}

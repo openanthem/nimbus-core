@@ -86,5 +86,6 @@ export interface Layout {
 
 export interface MenuPanel {
     align: string;
+    code: string;
     menuItems: MenuItem[];
 }
