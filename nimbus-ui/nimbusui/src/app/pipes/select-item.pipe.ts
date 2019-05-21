@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 'use strict';
-import {Pipe, PipeTransform} from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { SelectItem } from 'primeng/components/common/selectitem';
+import { Param } from '../shared/param-state';
 
 /**
  * \@author Dinakar.Meda
@@ -31,14 +32,23 @@ import { SelectItem } from 'primeng/components/common/selectitem';
 })
 export class SelectItemPipe implements PipeTransform {
 
-  transform(value: any): SelectItem[] {
-    if (value)
-      return value.map(function (item) {
+  transform(value: any, element?: Param): SelectItem[] {
+    if (value) {
+      let items = [];
+      if (element && element.config && element.config.uiStyles && element.config.uiStyles.attributes
+        && element.config.uiStyles.attributes.defaultLabel != '') {
+        items.push({
+          label: element.config.uiStyles.attributes.defaultLabel,
+          value: null
+        });
+      }
+      return items.concat(value.map(function (item) {
         return {
           label: item['label'],
           value: item['code']
         }
-      });
+      }));
+    }
     else return [];
   }
 

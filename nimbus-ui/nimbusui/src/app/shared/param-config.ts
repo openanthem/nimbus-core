@@ -229,6 +229,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     maskPlaceHolder: string;
     fixLayout: boolean;
     headerCheckboxToggleAllPages: boolean;
+    defaultLabel: string;
     xAxisLabel: string;
     yAxisLabel: string;
     stepSize: string;
