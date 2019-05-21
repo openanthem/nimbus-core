@@ -32,6 +32,7 @@ export class Enum<T> {
 
 export class ValidationConstraint extends Enum<string> {
   public static readonly _notNull = new Enum('NotNull');
+  public static readonly _notEmpty = new Enum('NotEmpty');
   public static readonly _pattern= new Enum('Pattern');
   public static readonly _size= new Enum('Size');
   public static readonly _number = new Enum('isNumber');
@@ -43,6 +44,7 @@ export class ValidationConstraint extends Enum<string> {
 
 export class ConstraintMapping extends Enum<string> {
   public static readonly required = new Enum(ValidationConstraint._notNull.value);
+  public static readonly isNotEmpty = new Enum(ValidationConstraint._notEmpty.value);
   public static readonly pattern = new Enum(ValidationConstraint._pattern.value);
   public static readonly minMaxSelection = new Enum(ValidationConstraint._size.value);
   public static readonly isNumber = new Enum(ValidationConstraint._number.value);

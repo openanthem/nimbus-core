@@ -18,6 +18,7 @@
 import { FormControl, ValidatorFn, FormGroup, ValidationErrors } from '@angular/forms';
 import { Attribute } from './../../../shared/param-config';
 
+
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -72,6 +73,16 @@ export class CustomValidators {
             }
             return null;
         };
+    }
+
+    static isNotEmpty(control: FormControl){
+        if (control.value){
+            return null;
+        }
+        else
+        return {
+            isNotEmpty: true
+        }
     }
 
     static isPast(control: FormControl) {

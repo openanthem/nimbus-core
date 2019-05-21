@@ -78,6 +78,9 @@ export class ValidationUtils {
               return Validators.required;
             }
           }
+          else if (constraint.name ===   ValidationConstraint._notEmpty.value) {
+            return CustomValidators.isNotEmpty;
+          }
           else if (constraint.name === ValidationConstraint._pattern.value) {
             return Validators.pattern(constraint.attribute.regexp);
           }
@@ -106,7 +109,7 @@ export class ValidationUtils {
          if (element.config.validation) {
             element.config.validation.constraints.forEach(validator => {
                 groups.forEach(group => {
-                    if(validator.attribute.groups.some(x => x === group) && validator.name == ValidationConstraint._notNull.value) {
+                    if(validator.attribute.groups.some(x => x === group) && (validator.name == ValidationConstraint._notNull.value)) {
                         required = true;
                     }
                 });
@@ -143,10 +146,10 @@ export class ValidationUtils {
         let requiredCss = false;
         if (element && element.config && element.config.validation) {
             element.config.validation.constraints.forEach(validator => {
-                if (validator.name === ValidationConstraint._notNull.value && 
+                if ((validator.name === ValidationConstraint._notNull.value || validator.name === ValidationConstraint._notEmpty.value) && 
                     validator.attribute != null && validator.attribute.groups.length == 0) {
                     //style = 'required';
-                    requiredCss = true;
+                     requiredCss = true;
                 }
             });
         }
