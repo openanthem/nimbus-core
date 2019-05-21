@@ -27,6 +27,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.Valida
 import com.antheminc.oss.nimbus.domain.model.config.extension.GridStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.config.extension.LabelStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.config.extension.ToolTipStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.config.extension.TreeGridStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AccessConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ActivateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AuditStateChangeHandler;
@@ -67,6 +68,11 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean
 	public GridStateLoadHandler gridStateLoadHandler(CommandPathVariableResolver cmdPathResolver, LabelStateEventHandler labelStateLoadHandler) {
 		return new GridStateLoadHandler(cmdPathResolver, labelStateLoadHandler);
+	}
+	
+	@Bean
+	public TreeGridStateLoadHandler treeGridStateLoadHandler(CommandPathVariableResolver cmdPathResolver, LabelStateEventHandler labelStateLoadHandler) {
+		return new TreeGridStateLoadHandler(cmdPathResolver, labelStateLoadHandler);
 	}
 	
 	@Bean

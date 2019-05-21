@@ -3110,6 +3110,7 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
+	@OnStateLoad
 	public @interface TreeGrid {
 		String alias() default "TreeGrid";
 

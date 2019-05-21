@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package com.antheminc.oss.nimbus.domain.model.config.extension;
 
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
-import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TreeGrid;
 
 import lombok.Getter;
 
@@ -25,9 +25,9 @@ import lombok.Getter;
  *
  */
 @Getter
-public class GridStateLoadHandler extends TableBasedStateLoadEventHandler<Grid> {
+public class TreeGridStateLoadHandler extends TableBasedStateLoadEventHandler<TreeGrid> {
 
-	public GridStateLoadHandler(CommandPathVariableResolver cmdPathResolver,
+	public TreeGridStateLoadHandler(CommandPathVariableResolver cmdPathResolver,
 			LabelStateEventHandler labelStateLoadHandler) {
 		super(cmdPathResolver, labelStateLoadHandler);
 	}
