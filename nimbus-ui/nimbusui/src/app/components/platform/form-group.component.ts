@@ -40,7 +40,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     selector: 'nm-frm-grp',
     providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc],
     template: `
-        <span [hidden]="!element.visible">
+        <span [hidden]="!element.visible" [ngClass]="formElementGroupCss?formElementGroupCss:''">
             <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias == viewComponent.formElementGroup.toString()">
                 <fieldset>
                     <div class="fieldsetFlex">
@@ -93,7 +93,7 @@ export class FrmGroupCmp extends BaseElement {
     @Input() elements: Param[] = [];
     @Input() form: FormGroup;
     @Input() parentElement: Param;
-
+    formElementGroupCss: String = '';
     viewComponent = ViewComponent;
 
     constructor(private wcsv: WebContentSvc) {
@@ -103,6 +103,7 @@ export class FrmGroupCmp extends BaseElement {
     ngOnInit() {
         super.ngOnInit();
         this.updatePosition();
+        this.formElementGroupCss = this.getCssClass()
     }
 
     getCssClass() {

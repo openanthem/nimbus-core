@@ -107,7 +107,6 @@ import { FooterGlobal } from './components/platform/footer/footer-global.compone
 import { Calendar } from './components/platform/form/elements/calendar.component';
 import { MessageComponent } from './components/platform/message/message.component';
 import { ActionTray } from './components/platform/actiontray.component';
-import { BaseLabel } from './components/platform/base-label.component';
 import { Label } from './components/platform/content/label.component';
 import { InputLabel } from './components/platform/form/elements/input-label.component';
 import { BaseTableElement } from './components/platform/base-table-element.component';
@@ -125,6 +124,7 @@ import { LoggerService } from './services/logger.service';
 import { RouteService } from './services/route.service';
 import { MessageService } from 'primeng/api';
 import { PrintService } from './services/print.service';
+import { CounterMessageService } from './services/counter-message.service';
 
 //Utility Services
 import { GridUtils } from './shared/grid-utils';
@@ -238,7 +238,7 @@ export function init_app(appinitservice: AppInitService) {
         MenuRouteLink, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage, BaseTableElement, EventPropagationDirective, TableHeader
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
-    providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,
+    providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService, CounterMessageService,
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
          { provide: APP_INITIALIZER, useFactory: init_app, deps: [AppInitService], multi: true },
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },

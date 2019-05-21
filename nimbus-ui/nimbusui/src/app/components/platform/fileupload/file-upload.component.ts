@@ -29,6 +29,7 @@ import { BaseElement } from '../base-element.component';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { LoggerService } from './../../../services/logger.service';
 import { Message } from '../../../shared/message';
+import { CounterMessageService } from './../../../services/counter-message.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 	provide: NG_VALUE_ACCESSOR,
@@ -71,9 +72,9 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 	selectedFiles: File[];
 	multipleFiles: boolean = false;
 	@ViewChild('pfu') pfu;
+	sendEvent: boolean = true;
 
-
-	constructor(private fileService: FileService, private _wcs: WebContentSvc, private logger: LoggerService) {
+	constructor(private fileService: FileService, private _wcs: WebContentSvc, private logger: LoggerService, private counterMessageService: CounterMessageService) {
 		super(_wcs);
 	}
 
@@ -108,16 +109,33 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 		this.selectedFiles = [];
 		this.fileService.metaData = this.element.config.uiStyles.attributes.metaData;
 	
-		this.fileService.errorEmitter$.subscribe(data => {
+		this.subscribers.push(this.fileService.errorEmitter$.subscribe(data => {
 
 			this.pfu.files = [];
 			
 			this.element.message = [];
 			this.element.message.push(Message.createMessage("DANGER", "TOAST", "File Upload Failed", 10000, ''));
 			
-        });
+        }));
 	}
 
+	ngAfterViewInit() {
+		if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
+            let frmCtrl = this.form.controls[this.element.config.code];
+            this.subscribers.push(frmCtrl.valueChanges.subscribe(($event) => 
+            {
+                if(frmCtrl.valid && this.sendEvent) {
+                    this.counterMessageService.evalCounterMessage(true);
+                    this.counterMessageService.evalFormParamMessages(this.element);
+                    this.sendEvent = false;
+                } else if(frmCtrl.invalid && !frmCtrl.pristine) {
+                    this.counterMessageService.evalFormParamMessages(this.element);
+                    this.counterMessageService.evalCounterMessage(true);
+                    this.sendEvent = true;
+                }
+            }));
+        }
+	}
 	addFiles(event) {
 
 		let files = event.originalEvent.dataTransfer ? event.originalEvent.dataTransfer.files : event.originalEvent.target.files;

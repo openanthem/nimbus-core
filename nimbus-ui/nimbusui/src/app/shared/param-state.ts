@@ -313,7 +313,6 @@ export class TreeGridDeserializer {
 
         }
         catch (e) {
-            //  console.log("Error in tree deserializer", e);
 
         }
     }

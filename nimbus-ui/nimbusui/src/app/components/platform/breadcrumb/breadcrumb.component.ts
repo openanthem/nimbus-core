@@ -18,7 +18,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd, Params, PRIMARY_OUTLET } from '@angular/router';
-import { of as observableOf,  Observable } from 'rxjs';
+import { of as observableOf,  Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { DomainFlowCmp } from './../../domain/domain-flow.component';
 import { BreadcrumbService } from './breadcrumb.service';
@@ -45,6 +45,7 @@ import { Breadcrumb } from './../../../model/breadcrumb.model';
 export class BreadcrumbComponent implements OnInit {
 
     public breadcrumbs: Breadcrumb[];
+    subscribers: Subscription[] = [];
 
     constructor (private _activatedRoute: ActivatedRoute, 
         private _router: Router,
@@ -59,12 +60,18 @@ export class BreadcrumbComponent implements OnInit {
         });
 
         //subscribe to the NavigationEnd event and load the breadcrumbs.
-        this._router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
+        this.subscribers.push(this._router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
             this._loadBreadcrumbs();
-        });
+        }));
     }
 
     ngOnInit() {
+    }
+
+    ngOnDestroy() {
+        if (this.subscribers && this.subscribers.length > 0) {
+            this.subscribers.forEach(s => s.unsubscribe());
+        }
     }
 
     /**
@@ -118,7 +125,7 @@ export class BreadcrumbComponent implements OnInit {
         if (!this._breadcrumbService.isHomeRoute(this._activatedRoute)) {
 
             let root: ActivatedRoute = this._activatedRoute.root;
-            this.getBreadcrumbs(root).subscribe(breadcrumbs => {
+            this.subscribers.push(this.getBreadcrumbs(root).subscribe(breadcrumbs => {
                 
                 this.breadcrumbs = [];
 
@@ -130,7 +137,7 @@ export class BreadcrumbComponent implements OnInit {
 
                 // update labels
                 // this.breadcrumbs.forEach(breadcrumb => this._wcs.getContent(breadcrumb.id));
-            });
+            }));
         } else {
 
             // if it is the "home" route, reset the breadcrumbs

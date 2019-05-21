@@ -41,25 +41,10 @@ import { BaseLabel } from '../base-label.component';
 export class Label extends BaseLabel {
 
     @Input() size: String;
-    @Input() labelClass: String;
 
 
     constructor() {
         super();
-    }
-
-    /**
-     * Get the css classes to apply for this element.
-     */
-    public get cssClass(): string {
-        let cssClass = super.getCssClass();
-        if (this.labelClass) {
-            if (cssClass.trim().length !== 0) {
-                cssClass += ' ';
-            }
-            cssClass += this.labelClass;
-        }
-        return cssClass;
     }
 }
 

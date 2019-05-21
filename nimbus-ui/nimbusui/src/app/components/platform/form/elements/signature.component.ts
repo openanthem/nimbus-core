@@ -24,6 +24,7 @@ import { BaseControl } from './base-control.component';
 import { Param } from '../../../../shared/param-state';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
 import { LoggerService } from './../../../../services/logger.service';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -101,9 +102,9 @@ export class Signature extends BaseControl<string> {
         wcs: WebContentSvc, 
         controlService: ControlSubscribers, 
         cd: ChangeDetectorRef, 
-        private logger: LoggerService) {
+        private logger: LoggerService, cms: CounterMessageService) {
         
-            super(controlService, wcs, cd);
+            super(controlService, wcs, cd, cms);
     }
 
     public ngOnInit() {
@@ -306,7 +307,6 @@ export class Signature extends BaseControl<string> {
     }
 
     getUpdatedDataUrl (updatedDataUrl){
-        
     }
 
     getUpdatedSignature() {

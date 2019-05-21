@@ -34,7 +34,7 @@
          </nm-treegrid>
     </ng-template>
 
-    <ng-template ngFor let-msg [ngForOf]="getMessages()">
+    <ng-template ngFor let-msg [ngForOf]="elemMessages">
         <nm-message id="{{element.config?.code}}" [messageContext]="msg.context"  [messageArray]="msg.messageArray" [life] = "msg.life" [styleClass]="msg.styleClass"></nm-message>
     </ng-template>
 

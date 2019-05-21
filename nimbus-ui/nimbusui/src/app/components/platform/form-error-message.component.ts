@@ -20,6 +20,9 @@ import { FormGroup } from '@angular/forms';
 import { FormControl } from '@angular/forms';
 import { Param } from './../../shared/param-state';
 import { ValidationUtils } from './validators/ValidationUtils';
+import { CounterMessageService } from './../../services/counter-message.service';
+import { Subscription } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -31,7 +34,7 @@ import { ValidationUtils } from './validators/ValidationUtils';
     selector: 'nm-counter-message',
     template: `
         <div>
-            {{displayMessage()}}
+            Required: {{totalMandtoryCount - mandatoryLeft}} of {{totalMandtoryCount}}
         </div>
     `
 })
@@ -41,7 +44,28 @@ export class FormErrorMessage {
     mandatoryLeft: number = 0;
     totalCount: number = 0;
     totalMandtoryCount: number = 0;
-    constructor() {
+    subscription: Subscription;
+    constructor(private counterMsgSvc: CounterMessageService, private cd: ChangeDetectorRef) {
+    }
+
+    ngOnInit() {
+    }
+
+    ngAfterViewInit() {
+        this.displayMessage();
+        this.cd.detectChanges();
+        this.subscription = this.counterMsgSvc.counterMessageSubject$.subscribe(event => {
+            if(event) {
+                this.displayMessage();
+                this.cd.detectChanges();
+            }
+        })
+    }
+
+    ngOnDestroy() {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 
     displayMessage() {
@@ -49,8 +73,7 @@ export class FormErrorMessage {
         this.totalCount = 0;
         this.totalMandtoryCount = 0;
         this.calculateFieldCount(this.element);
-        return 'Required: '+ (this.totalMandtoryCount - this.mandatoryLeft) +' of '+ this.totalMandtoryCount;
-    }
+        }
 
     calculateFieldCount(param: Param) {
         if(param.type.model) {

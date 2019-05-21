@@ -20,6 +20,7 @@ import { Component, ViewChild, forwardRef, ChangeDetectorRef, Input } from '@ang
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -62,8 +63,8 @@ export class ComboBox extends BaseControl<String> {
     @Input() autoWidth: boolean = false;
     @Input() placeholder: string = 'Please Select...';
 
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
-        super(controlService,wcs,cd);
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef, cms: CounterMessageService) {
+      super(controlService,wcs,cd, cms);
     }
 
 }
