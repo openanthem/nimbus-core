@@ -42,6 +42,7 @@ import { Param } from '../../../../shared/param-state';
 import { By } from '@angular/platform-browser';
 import { ServiceConstants } from '../../../../services/service.constants';
 import { textAreaElement } from 'mockdata';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 
 let fixture, hostComponent;
 
@@ -69,7 +70,8 @@ const providers = [
   KeyFilterModule,
   LoggerService,
   NmMessageService,
-  AppInitService
+  AppInitService,
+  CounterMessageService
  ];
 
 describe('TextArea', () => {

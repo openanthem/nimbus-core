@@ -100,6 +100,7 @@ import { RichText } from './form/elements/rich-text.component';
 import { ChartModule } from 'primeng/chart';
 import { NmChart } from './charts/chart.component';
 import { NmMessageService } from './../../services/toastmessage.service';
+import { CounterMessageService } from './../../services/counter-message.service';
 
 let param: Param;
 
@@ -229,7 +230,8 @@ const declarations = [
      CustomHttpClient,
      LoaderService,
      NmMessageService,
-     ConfigService
+     ConfigService,
+     CounterMessageService
  ];
 
  let fixture, hostComponent;
@@ -514,7 +516,7 @@ describe('FrmGroupCmp', () => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const spanEle: any = debugElement.query(By.css('span'));
-    expect(spanEle.nativeElement.attributes[0].name).toEqual('hidden');
+    expect(spanEle.nativeElement.attributes[2].name).toEqual('hidden');
   }));
 
 });

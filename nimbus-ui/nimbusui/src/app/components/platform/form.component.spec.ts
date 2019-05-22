@@ -107,6 +107,7 @@ import { Tab } from './content/tab.component';
 import { NmMessageService } from './../../services/toastmessage.service';
 import { NmChart } from './charts/chart.component';
 import { TableHeader } from './grid/table-header.component';
+import { CounterMessageService } from './../../services/counter-message.service';
 
 class MockLoggerService {
   debug() { }
@@ -262,7 +263,8 @@ Location,
  PrintService,
  GridService,
  NmMessageService,
- SessionStoreService
+ SessionStoreService,
+ CounterMessageService
 ];
 
 let fixture, hostComponent, pageService, formElementsService, configService;
