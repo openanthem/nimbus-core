@@ -115,6 +115,7 @@ import { TableHeader } from './table-header.component';
 import { InputMaskComp } from './../form/elements/input-mask.component';
 import { NmAutocomplete } from './../form/elements/autocomplete.component';
 import { RichText } from '../form/elements/rich-text.component';
+import { CounterMessageService } from '../../../services/counter-message.service';
 
 let configService, pageService, elementRef, objectUtils, domHandler, tableService, cd, param, webContentSvc;
 
@@ -309,7 +310,8 @@ const providers = [
    WindowRefService,
    AppInitService,
    NmMessageService,
-   PrintService
+   PrintService,
+   CounterMessageService
 ];
 let fixture, hostComponent;
 describe('DataTable', () => {

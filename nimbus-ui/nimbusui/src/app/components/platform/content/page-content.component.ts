@@ -58,7 +58,7 @@ export class PageContent extends BaseElement{
         this.ls.onPopState(() => {
             this.isPopState = true;
         });
-        this.router.events.subscribe(event => {
+        this.subscribers.push(this.router.events.subscribe(event => {
             this.pageId = this.route.snapshot.url[0].path;
             // Scroll to the TOP of the page
             if (event instanceof NavigationEnd && !this.isPopState) {
@@ -68,12 +68,12 @@ export class PageContent extends BaseElement{
             if (event instanceof NavigationEnd) {
                 this.isPopState = false;
             }
-        });
+        }));
     }
 
     ngOnInit() {
         this._logger.debug('PageContent - i ' + this.pageId);
-        this.route.data.subscribe((data: { page: Param }) => {
+        this.subscribers.push(this.route.data.subscribe((data: { page: Param }) => {
             let page : Param = data.page;
             this.element = page;
             this.tilesList = [];
@@ -84,7 +84,7 @@ export class PageContent extends BaseElement{
                     }
                 });
             }
-        });
+        }));
         this.updateIntialPosition();        
     }
 

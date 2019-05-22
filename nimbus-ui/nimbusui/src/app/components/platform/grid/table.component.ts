@@ -41,6 +41,7 @@ import { TableComponentConstants } from './table.component.constants';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
 import { BaseTableElement } from './../base-table-element.component';
 import { ConfigService } from '../../../services/config.service';
+import { CounterMessageService } from './../../../services/counter-message.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -100,6 +101,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     gridRowConfig: any[];
     clonedRowData: any[] = [];
     TableComponentConstants: any = TableComponentConstants;
+    sendEvent: boolean = true;
 
     get value() {
         return this._value;
@@ -134,7 +136,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         private gridService: GridService,
         private dtFormat: DateTimeFormatPipe,
         protected cd: ChangeDetectorRef,
-        private configService: ConfigService) {
+        private configService: ConfigService,
+        private counterMessageService: CounterMessageService) {
 
         super(_wcs, cd);
     }
@@ -279,11 +282,12 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         }
 
         this.rowHover = true;
-        this.gridService.eventUpdate$.subscribe(data => {
+        this.subscribers.push(this.gridService.eventUpdate$.subscribe(data => {
             this.summaryData = data;
-        });
+        }));
+        this.evaluateErrorMessages();
 
-        this.pageSvc.gridValueUpdate$.subscribe(event => {            
+        this.subscribers.push(this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
                 this.value = event.tableBasedData.values;
                 
@@ -298,7 +302,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                 });
 
                 // reset the table state in the session after primeNG upgrade.
-                 this.dt.expandedRowKeys={};
+                this.dt.expandedRowKeys={};
 
                 let gridListSize = this.value ? this.value.length : 0;
                 // Check for Server Pagination Vs Client Pagination
@@ -319,10 +323,10 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                     this.cd.detectChanges();
                 this.resetMultiSelection();
             }
-        });
+        }));
 
         if (this.form != undefined && this.form.controls[this.element.config.code] != null) {
-            this.pageSvc.validationUpdate$.subscribe(event => {
+            this.subscribers.push(this.pageSvc.validationUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
                 if (frmCtrl != null && event.path == this.element.path) {
                     if (event.enabled)
@@ -330,10 +334,29 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
                     else
                         frmCtrl.disable();
                 }
-            });
+            }));
         }
 
     }
+
+    evaluateErrorMessages() {
+        if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
+            let frmCtrl = this.form.controls[this.element.config.code];
+            this.subscribers.push(frmCtrl.valueChanges.subscribe(($event) => 
+            {
+                if(frmCtrl.valid && this.sendEvent) {
+                    this.counterMessageService.evalCounterMessage(true);
+                    this.counterMessageService.evalFormParamMessages(this.element);
+                    this.sendEvent = false;
+                } else if(frmCtrl.invalid && !frmCtrl.pristine) {
+                    this.counterMessageService.evalFormParamMessages(this.element);
+                    this.counterMessageService.evalCounterMessage(true);
+                    this.sendEvent = true;
+                }
+            }));
+        }
+    }
+
     isRowExpanderHidden(rowData: any): boolean {
         if(this.rowExpanderKey == '')
             return true;

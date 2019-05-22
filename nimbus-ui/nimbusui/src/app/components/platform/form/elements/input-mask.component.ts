@@ -22,6 +22,7 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
 import { InputMask } from 'primeng/primeng';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 
 
 /**
@@ -70,8 +71,8 @@ export class InputMaskComp extends BaseControl<String>  {
 	@ViewChild(NgModel) model: NgModel;
 	@ViewChild('inputMask') inputMask: InputMask;
 
-	constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef) {
-		super(controlService, wcs, cd);
+	constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef, counterMessageService: CounterMessageService) {
+		super(controlService, wcs, cd, counterMessageService);
 	}
 
 	ngOnInit() {

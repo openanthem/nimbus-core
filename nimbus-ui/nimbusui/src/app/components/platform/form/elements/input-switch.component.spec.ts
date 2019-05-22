@@ -45,6 +45,7 @@ import { setup, TestContext } from '../../../../setup.spec';
 import { inputSwitchElement } from 'mockdata';
 import { By } from '@angular/platform-browser';
 import { ServiceConstants } from '../../../../services/service.constants';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 
 let pageService;
 
@@ -83,7 +84,8 @@ const providers = [
      ConfigService,
      LoggerService,
      AppInitService,
-     SessionStoreService
+     SessionStoreService,
+     CounterMessageService
  ];
  let fixture, hostComponent;
 

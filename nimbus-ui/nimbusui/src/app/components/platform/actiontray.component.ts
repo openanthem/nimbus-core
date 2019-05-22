@@ -83,7 +83,7 @@ export class ActionTray extends BaseElement {
     }
 
     ngOnInit() {
-        this.layoutSvc.layout$.subscribe(data => {
+        this.subscribers.push(this.layoutSvc.layout$.subscribe(data => {
             if (data.actiontray) {
                 this.showTray = data.actiontray.type.model.params.some(
                     item =>
@@ -91,7 +91,7 @@ export class ActionTray extends BaseElement {
                 )            
             }
 
-        });
+        }));
     }
 
     isTrayVisible(){

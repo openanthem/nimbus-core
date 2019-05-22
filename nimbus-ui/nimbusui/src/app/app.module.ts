@@ -127,7 +127,7 @@ import { RouteService } from './services/route.service';
 import { MessageService } from 'primeng/api';
 import { PrintService } from './services/print.service';
 import { AutoCompleteService } from './services/autocomplete.service';
-
+import { CounterMessageService } from './services/counter-message.service';
 
 //Utility Services
 import { GridUtils } from './shared/grid-utils';
@@ -242,7 +242,7 @@ export function init_app(appinitservice: AppInitService) {
         MenuRouteLink, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage, BaseTableElement, EventPropagationDirective, TableHeader, NavigationComponent
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
-    providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,
+    providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService, CounterMessageService,
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
          { provide: APP_INITIALIZER, useFactory: init_app, deps: [AppInitService], multi: true },
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },

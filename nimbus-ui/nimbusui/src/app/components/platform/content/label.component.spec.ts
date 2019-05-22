@@ -39,6 +39,8 @@ import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
 import { Param } from '../../../shared/param-state';
 import { fieldValueParam } from 'mockdata';
+import { CounterMessageService } from '../../../services/counter-message.service';
+import { ParamUtils } from '../../../shared/param-utils';
 
 const declarations = [
   Label,
@@ -62,7 +64,8 @@ LoaderService,
 ConfigService,
 LoggerService,
 AppInitService,
-Location
+Location,
+CounterMessageService
 ];
 let fixture, hostComponent;
 describe('Label', () => {
@@ -83,8 +86,8 @@ describe('Label', () => {
 
   it('app.cssClass should return labelClass',async(() => {
     hostComponent.labelClass = 'test';
-    hostComponent.getCssClass = () => { return 'a' }
-    expect(hostComponent.cssClass).toEqual('test')
+    spyOn(ParamUtils, 'getLabelCss').and.returnValue('a');
+    expect(hostComponent.cssClass).toEqual('a test')
   }));
 
 });

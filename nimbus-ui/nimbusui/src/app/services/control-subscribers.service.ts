@@ -25,7 +25,7 @@ import { Param } from './../shared/param-state';
 import { HttpMethod } from '../shared/command.enum';
 import { AbstractControl } from '@angular/forms/src/model';
 import { ParamUtils } from './../shared/param-utils';
-
+import { Subscription } from 'rxjs';
 
 /**
  * \@author Sandeep.Mantha
@@ -41,8 +41,16 @@ export class ControlSubscribers {
 
     private previousLeafState: any;
 
+    private subscribers: Subscription[] = [];
+
     constructor(private pageService: PageService) {
         
+    }
+
+    ngOnDestroy() {
+        if (this.subscribers && this.subscribers.length > 0) {
+            this.subscribers.forEach(s => s.unsubscribe());
+        }
     }
 
     /**
@@ -52,8 +60,8 @@ export class ControlSubscribers {
      * @param control the control element to match against
      * @param consumer the callback method to execute if event contains an update for control
      */
-    private onEventUpdateSubscriber(control: BaseControl<any>, consumer: (event: Param, frmCtrl: AbstractControl) => void) {
-        this.pageService.eventUpdate$.subscribe(event => {
+    private onEventUpdateSubscriber(control: BaseControl<any>, consumer: (event: Param, frmCtrl: AbstractControl) => void): Subscription {
+        return this.pageService.eventUpdate$.subscribe(event => {
             let frmCtrl = control.form.controls[event.config.code];
             if(frmCtrl != null && event.path == control.element.path) {
                 if (consumer) {
@@ -72,13 +80,13 @@ export class ControlSubscribers {
      * @param onDisabled the callback method to execute if event contains an update for control and event.enabled is false
      */
     public onEnabledUpdateSubscriber(control: BaseControl<any>, onEnabled: (event: Param, frmCtrl: AbstractControl) => void, onDisabled: (event: Param, frmCtrl: AbstractControl) => void) {
-        this.onEventUpdateSubscriber(control, (event, frmCtrl) => {
+        this.subscribers.push(this.onEventUpdateSubscriber(control, (event, frmCtrl) => {
             if (onEnabled && event.enabled) {
-                onEnabled(event, frmCtrl);
+                return onEnabled(event, frmCtrl);
             } else if (onDisabled && !event.enabled) {
-                onDisabled(event, frmCtrl);
+                return onDisabled(event, frmCtrl);
             }
-        });
+        }));
     }
 
     /**
@@ -87,20 +95,20 @@ export class ControlSubscribers {
      * @param control the control element to match against
      */
     public stateUpdateSubscriber(control:BaseControl<any>) {
-        this.onEventUpdateSubscriber(control, (event, frmCtrl) => {
+        this.subscribers.push(this.onEventUpdateSubscriber(control, (event, frmCtrl) => {
             if(event.leafState!=null) {
                 this.previousLeafState = event.leafState;
                 frmCtrl.setValue(event.leafState);
             } else {
                 frmCtrl.reset();
             }
-        });
+        }));
     }
 
-    public validationUpdateSubscriber(control:BaseControl<any>) {
-        this.pageService.validationUpdate$.subscribe(event => {
+    public validationUpdateSubscriber(control:BaseControl<any>) {  
+        this.subscribers.push(this.pageService.validationUpdate$.subscribe(event => {
             ParamUtils.validate(event, control);
-        });       
+        }));
     }
 
     public resetPreviousLeafState(val: any) {
@@ -108,7 +116,7 @@ export class ControlSubscribers {
     }
 
     public onChangeEventSubscriber(control:BaseControl<any>) {
-        this.controlValueChanged.subscribe(($event) => {
+        this.subscribers.push(this.controlValueChanged.subscribe(($event) => {
             //old leafState is used to post data to the server only when the user has changed the value
             if ($event.config.uiStyles.attributes.postEventOnChange && ($event.leafState == null || 
                             this.previousLeafState !== $event.leafState)) {
@@ -118,6 +126,6 @@ export class ControlSubscribers {
                 this.pageService.processEvent(control.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, HttpMethod.POST.value);
             }
             this.previousLeafState = $event.leafState;
-        });
+        }));
     }
 }

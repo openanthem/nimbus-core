@@ -107,6 +107,7 @@ import { PageService } from './../../../../services/page.service';
 import { PageResolver } from './../../content/page-resolver.service';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { autocompleteElement } from './../../../../mockdata/autocomplete.component.mockdata.spec';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 
 
 
@@ -223,7 +224,8 @@ const providers = [
     AppInitService,
     SessionStoreService,
     WebContentSvc,
-    ControlSubscribers
+    ControlSubscribers,
+    CounterMessageService
 
 ];
 let fixture, hostComponent;
