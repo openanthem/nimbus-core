@@ -100,6 +100,8 @@ import { NmChart } from './charts/chart.component';
 import { EditorModule } from 'primeng/editor';
 import { TableHeader } from './grid/table-header.component';
 import { By } from '@angular/platform-browser';
+import { CounterMessageService } from './../../services/counter-message.service';
+
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -214,7 +216,7 @@ const imports = [   FormsModule, ReactiveFormsModule,
     ChartModule,
     EditorModule
  ];
-const providers = [];
+const providers = [CounterMessageService];
 
 let fixture, hostComponent;
 describe("form error message component", () => {

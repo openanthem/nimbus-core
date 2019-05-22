@@ -36,6 +36,7 @@ import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
 import { Constraint } from '../../../../shared/param-config';
 import { fieldValueParam } from 'mockdata';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 let changeDetectorRef, controlSubscribers;
 
@@ -44,8 +45,8 @@ let changeDetectorRef, controlSubscribers;
  })
 class BaseControlClass extends BaseControl<any> {
     @ViewChild(NgModel) model: NgModel;
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
-        super(controlService, wcs, cd);
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef, counterMessageService: CounterMessageService) {
+        super(controlService, wcs, cd, counterMessageService);
     }
     ngOnInit() { 
         super.ngOnInit();
@@ -96,7 +97,8 @@ const declarations = [
   PageService,
   CustomHttpClient,
   LoaderService,
-  ConfigService
+  ConfigService,
+  CounterMessageService
  ];
  let fixture, hostComponent;
 describe('BaseControl', () => {
@@ -252,16 +254,5 @@ describe('BaseControl', () => {
       }).toThrow();
     });
   });
-
-  it('getMaxLength() should return constraint.attribute.value',async(() => {
-    const constraint = { attribute: { value: 123 } };
-    spyOn(hostComponent, 'getConstraint').and.returnValue(constraint);
-    expect(hostComponent.getMaxLength()).toEqual(123);
-  }));
-
-  it('getMaxLength() should return undefined',async(() => {
-    spyOn(hostComponent, 'getConstraint').and.returnValue('');
-    expect(hostComponent.getMaxLength()).toBeFalsy();
-  }));
  
 });

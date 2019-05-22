@@ -105,6 +105,7 @@ import { GridService } from '../../services/grid.service';
 import { PrintService } from '../../services/print.service';
 import { GridUtils } from '../../shared/grid-utils';
 import { formInput, formPicklist, formTreeGrid, formTable, formInputSwitch, formUpload, formCheckBoxGrp, formRadio, formCalendar, formSignature, formTextArea, formComboBox, formCheckBox, formMultiSelectCard, formMultiSelect, formRichText } from 'mockdata'
+import { CounterMessageService } from '../../services/counter-message.service';
 
 let param: Param;
 let fixture: ComponentFixture<any>, hostComponent;
@@ -266,7 +267,8 @@ const declarations = [
         provide: NG_VALUE_ACCESSOR,
         multi: true,
         useExisting: forwardRef(() => TreeGrid),
-      }
+      },
+      CounterMessageService
    ];
 
 

@@ -44,7 +44,7 @@ import { Param } from '../../../../shared/param-state';
 import { comboBoxElement } from 'mockdata';
 import { ServiceConstants } from '../../../../services/service.constants';
 import { By } from '@angular/platform-browser';
-
+import { CounterMessageService } from '../../../../services/counter-message.service';
 
 const declarations = [
   ComboBox,
@@ -71,7 +71,8 @@ const declarations = [
   LoggerService,
   SessionStoreService,
   NmMessageService,
-  AppInitService
+  AppInitService,
+  CounterMessageService
  ];
  let fixture, hostComponent;
 describe('ComboBox', () => {

@@ -33,6 +33,7 @@ import { SessionStoreService, CUSTOM_STORAGE } from './../../../services/session
 import { AppInitService } from './../../../services/app.init.service';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
+import { CounterMessageService } from './../../../services/counter-message.service';
 
 let fileservice, param;
 
@@ -69,7 +70,8 @@ const providers = [
    WebContentSvc,
    CustomHttpClient,
    LoggerService,
-   AppInitService
+   AppInitService,
+   CounterMessageService
 ];
 let fixture, hostComponent;
 describe('FileUploadComponent', () => {

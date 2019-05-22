@@ -40,7 +40,7 @@ import { checkBoxGroupElement } from 'mockdata';
 import { By } from '@angular/platform-browser';
 import { ServiceConstants } from '../../../../services/service.constants';
 import { WindowRefService } from '../../../../services/window-ref.service';
-
+import { CounterMessageService } from '../../../../services/counter-message.service';
 
 let pageService;
 
@@ -105,7 +105,8 @@ CustomHttpClient,
 LoaderService,
 ConfigService,
 LoggerService,
-WindowRefService
+WindowRefService,
+CounterMessageService
 ];
 let fixture, hostComponent;
 describe('CheckBoxGroup', () => {
