@@ -76,12 +76,13 @@ export class CustomValidators {
     }
 
     static isNotEmpty(control: FormControl){
-        if (control.value){
+        if (control.value && control.value.trim()){
             return null;
         }
-        else
-        return {
-            isNotEmpty: true
+        else{
+            return {
+                isNotEmpty: true
+            }
         }
     }
 
