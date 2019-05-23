@@ -10,7 +10,9 @@
     <ng-template pTemplate="header">
         <tr>
             <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
-                <th *ngIf="gridUtils.showHeader(col)" [ngClass]="gridUtils.getColumnStyle(col)">{{col.header}}</th>
+                <th *ngIf="gridUtils.showHeader(col)" [ngClass]="gridUtils.getColumnStyle(col)">
+                    <nm-th [element]="element" [paramConfig]="col" ></nm-th>
+                </th>
             </ng-template>
         </tr>
     </ng-template>

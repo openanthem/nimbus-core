@@ -468,11 +468,11 @@ export abstract class RowData {
      */
     protected collectNestedParams(colElemParam: Param, param: Param, nestedParams: CollectionParams, baseParam: Param): void {
 
-        if (!param || !this.shouldCollect(param, baseParam)) {
+        if (!param || !param.config || !this.shouldCollect(param, baseParam)) {
             return;
         }
 
-    this.nestedParams[param.config.code] = param;
+        this.nestedParams[param.config.code] = param;
 
         // if nested, recursively perform the collection
         if (param.type && param.type.model && param.type.model.params) {
