@@ -4,7 +4,7 @@
     </button>
 </div>
 
-<div id="{{id}}"  class="scrollGrid" [hidden]="!element?.visible">
+<div id="{{id}}"  class="scrollGrid" [hidden]="!element?.visible" [ngClass]="element.config?.uiStyles?.attributes?.addRow ? 'withAddRow' : ''">
     <div class="ui-datatable-header ui-widget-header" *ngIf="element.config?.uiStyles?.attributes?.showHeader == true">
         <p-header>
             <caption>{{label}}</caption>
@@ -105,26 +105,43 @@
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
                     <td *ngIf="showColumn(col)" [ngClass]="getColumnStyle(col)">
                             <p-cellEditor>
-
-                                     <ng-template pTemplate="input" [ngIf]="showValue(col) && element?.config?.uiStyles?.attributes?.editRow">
+                                     <ng-template pTemplate="input" [ngIf]="element?.config?.uiStyles?.attributes?.editRow && showValue(col)">
 
                                         <nm-input  
-                                        *ngIf="isAdding() && TableComponentConstants.allowedInlineEditColumnStylesAlias.includes(col.uiStyles.attributes.alias)"
+                                        *ngIf="gridMode == 'add' 
+                                        && gridModeRow == ''
+                                        && !rowData.elemId
+                                        && TableComponentConstants.allowedInlineEditColumnStylesAlias.includes(col.uiStyles.attributes.alias)"
+                                        [nmValidator]="getViewParamInEditRow(col, rowData['elemId'])"
+                                        (nmValidate)="updateValidation($event)"
+                                         [hideLabel]=true
+                                        [element]="getViewParamInEditRow(col, rowData['elemId'])" 
+                                        [(ngModel)]="rowData[col.code]"
+                                       [attr.id]="col.code"></nm-input>
+
+                                    <ng-template 
+                                    [ngIf]="gridMode == 'edit' && 
+                                    TableComponentConstants.allowedInlineEditNmInputComponents.includes(col.uiStyles.attributes.alias)
+                                    && gridModeRow == rowData.elemId">
+                                        <nm-input  
+                                        [nmValidator]="getViewParamInEditRow(col, rowData['elemId'])"
+                                        (nmValidate)="updateValidation($event)"
                                         [hideLabel]=true
                                         [element]="getViewParamInEditRow(col, rowData['elemId'])" 
                                         [(ngModel)]="rowData[col.code]"></nm-input>
+                                    </ng-template>
 
-                                        <nm-input  
-                                        *ngIf="!isAdding() && TableComponentConstants.allowedInlineEditNmInputComponents.includes(col.uiStyles.attributes.alias)"
-                                        [hideLabel]=true
-                                        [element]="getViewParamInEditRow(col, rowData['elemId'])" 
-                                        [(ngModel)]="rowData[col.code]"></nm-input>
 
                                         <nm-comboBox 
-                                        *ngIf="!isAdding() && col?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString()" 
+                                        *ngIf="gridMode == 'edit' && col?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString() && gridModeRow == rowData.elemId" 
                                         [hideLabel]=true
                                         [element]="getViewParamInEditRow(col, rowData['elemId'])" 
-                                        [(ngModel)]="rowData[col.code]"></nm-comboBox>
+                                        [(ngModel)]="rowData[col.code]" ></nm-comboBox>
+
+
+                                        <div *ngFor="let error of getAddValErr(col.code)">
+                                            {{error}}
+                                        </div>
 
                                      </ng-template>
                                     <ng-template pTemplate="output">

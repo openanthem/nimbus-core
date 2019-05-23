@@ -77,11 +77,11 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         if(this.form == null || (this.form.controls[this.element.config.code]!= null && this.form.controls[this.element.config.code].valid)) {
             this.controlService.controlValueChanged.emit(formControl.element);
         }
-            
+
     }
 
     ngOnInit() {
-        
+
         this.value = this.element.leafState;
         this.disabled = !this.element.enabled;
         this.requiredCss = ValidationUtils.applyelementStyle(this.element);

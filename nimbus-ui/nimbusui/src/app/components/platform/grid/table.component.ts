@@ -20,7 +20,7 @@ import {
     Component, Input, Output, forwardRef, ViewChild, EventEmitter,
     ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren, ViewRef
 } from '@angular/core';
-import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormGroup, NG_VALUE_ACCESSOR, ValidatorFn } from '@angular/forms';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
 import { OverlayPanel } from 'primeng/primeng';
 import { Table } from 'primeng/table';
@@ -42,6 +42,7 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
 import { BaseTableElement } from './../base-table-element.component';
 import { ConfigService } from '../../../services/config.service';
 import { CounterMessageService } from './../../../services/counter-message.service';
+
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -77,10 +78,13 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     @ViewChild('editableRow') editableRow: any;
     componentTypes = ComponentTypes;
     viewComponent = ViewComponent;
+    addValErr = {};
+    gridMode: string = '';
+    gridModeRow: string = '-1';
 
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
-    
+
     filterValue: Date;
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
@@ -142,11 +146,26 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         super(_wcs, cd);
     }
 
+
     onRowEditInitialize(rowData) {
+        this.gridModeRow = rowData.elemId;
+        this.gridMode = 'edit';
         this.clonedRowData[rowData.elemId] = {...rowData};
     }
 
+    getAddValErr(code) {
+        if (this.addValErr[code] && this.addValErr[code].nmValidator) {
+            return this.addValErr[code].nmValidator;
+        }
+        return [];
+    }
+
     onRowEditSave(rowData) {
+        for (const key in this.addValErr) {
+            if (this.addValErr.hasOwnProperty(key)) {
+                return;
+            }
+        }
         let elemPath = `${this.element.path}/${rowData.elemId}`;
         let relativeActionPath = this.element.config.uiStyles.attributes.onEdit;
         if (this.isNewRecord(rowData)) {
@@ -157,6 +176,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             this.dt.cancelRowEdit(rowData);
             delete this.clonedRowData[rowData.elemId];
         });
+        this.gridModeRow = '-1';
+        this.gridMode = '';
     }
 
     postEditedRow(rowData: any, elemPath: string, relativeActionPath: string, onSuccess?: () => void, onFailure?: () => void) {
@@ -166,6 +187,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     onRowEditCancel(rowData: any) {
+        this.gridModeRow = '-1';
+        this.gridMode = '';
         if (this.isNewRecord(rowData)) {
             delete this.clonedRowData[rowData.elemId];
             this.value.splice(0, 1);
@@ -201,6 +224,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     addRow() {
+        this.gridMode = 'add';
+        this.gridModeRow = '';
         if (this.isAdding()) {
            return ;
         }
@@ -217,6 +242,28 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
             newRow[paramconfig.code] =  new Param(this.configService).deserialize({'configId': paramconfig.id}, this.element.path);
         }
         this.element.tableBasedData.collectionParams['-1'] = newRow;
+    }
+
+    updateValidation(event) {
+        const id = event.param.config.code;
+        // append all errors for this id ..
+        // remove errors if null.
+        const errObj = this.addValErr [id] || {};
+
+       if (event.nmValidator.length > 0){
+         errObj ['nmValidator'] = event.nmValidator;
+       } else {
+           delete errObj['nmValidator'];
+       }
+
+       for (const key in errObj) {
+           if (errObj.hasOwnProperty(key)) {
+            this.addValErr[id] = errObj;
+            return;
+           }
+       }
+
+        delete this.addValErr[id]
     }
 
     ngOnInit() {
@@ -395,6 +442,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         } 
         return false;
     }
+
     /* 
     * Show value in the grid row. Below are a few examples for various configs on a grid column:
     * @GridColumn(showAsLink=true,sortable=true) - false . Value will be shown in this case using the link component
@@ -451,7 +499,7 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     }
 
     getViewParamInEditRow(col: ParamConfig, rowIndex: number): Param {
-        if (this.isAdding()) {
+        if (this.isAdding() && !rowIndex) {
             return this.element.tableBasedData.collectionParams['-1'][col.code];
         }
         return this.element.tableBasedData.collectionParams[rowIndex][col.code];
