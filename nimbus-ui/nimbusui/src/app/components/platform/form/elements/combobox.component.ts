@@ -46,7 +46,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 
     </nm-input-label>
     <p-dropdown 
-        [options]="element.values | selectItemPipe" 
+        [options]="element.values | selectItemPipe: element" 
         [(ngModel)] = "value"
         [disabled]="disabled"
         (onChange)="emitValueChangedEvent(this,$event)"

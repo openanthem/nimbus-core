@@ -627,6 +627,13 @@ public class ViewConfig {
 
 		boolean dataEntryField() default true;
 
+		/**
+		 * <p>When non-empty, add a default selection item to the top of the
+		 * rendered combo box with the provided value displayed as the label
+		 * text. The default value will always be {@code null}.
+		 */
+		String defaultLabel() default "";
+		
 		String help() default "";
 
 		String labelClass() default "anthem-label";
