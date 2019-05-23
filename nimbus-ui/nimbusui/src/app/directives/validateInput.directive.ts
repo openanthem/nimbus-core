@@ -22,6 +22,7 @@ import { Validator, AbstractControl, NG_VALIDATORS } from '@angular/forms';
 import { ControlSubscribers } from '../services/control-subscribers.service';
 import { PageService } from '../services/page.service';
 import { ValidationUtils } from '../components/platform/validators/ValidationUtils';
+import { ValidationConstraint } from '../shared/validationconstraints.enum';
 /**
  * \@author Purnachander.Mashetty
  * \@whatItDoes 
@@ -60,7 +61,7 @@ export class NmValidator implements Validator, OnInit {
                         if (!value){
                             hasError = true;
                             for (const constraint of this.element.config.validation.constraints) {
-                                if (constraint.name === 'NotNull') {
+                                if (constraint.name === ValidationConstraint._notNull.toString()) {
                                     err.nmValidator.push(constraint.attribute.message)
                                 }
                             }
@@ -73,7 +74,7 @@ export class NmValidator implements Validator, OnInit {
                         if (!regex.test(value)) {
                             hasError = true;
                             for (const constraint of this.element.config.validation.constraints) {
-                                if (constraint.name === 'Pattern') {
+                                if (constraint.name === ValidationConstraint._pattern.toString()) {
                                     err.nmValidator.push(constraint.attribute.message)
                                 }
                             }

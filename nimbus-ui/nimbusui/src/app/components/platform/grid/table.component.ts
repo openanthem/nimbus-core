@@ -77,9 +77,6 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
     @ViewChild('editableRow') editableRow: any;
     componentTypes = ComponentTypes;
     viewComponent = ViewComponent;
-    checks: ValidatorFn[] = [];
-    form1: FormGroup;
-    formElements1: Param[] = [];
     addValErr = {};
     gridMode: string = '';
     gridModeRow: string = '-1';
@@ -246,17 +243,6 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
 
     updateValidation(event) {
         const id = event.param.config.code;
-        const path = event.param.path;
-
-            if (this.isAdding()){
-                //then path must not end with a number.
-                const parts = path.split('/');
-                const c1 = parts[parts.length - 2];
-                if (!isNaN(c1)) {
-                    return;
-                }
-            }
-
         // append all errors for this id ..
         // remove errors if null.
         const errObj = this.addValErr [id] || {};
@@ -267,20 +253,14 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
            delete errObj['nmValidator'];
        }
 
-       let foundErr = false;
-
        for (const key in errObj) {
            if (errObj.hasOwnProperty(key)) {
-               foundErr = true;
-               break;
+            this.addValErr[id] = errObj;
+            return;
            }
        }
 
-       if (!foundErr) {
         delete this.addValErr[id]
-       } else {
-           this.addValErr[id] = errObj;
-       }
     }
 
     ngOnInit() {
