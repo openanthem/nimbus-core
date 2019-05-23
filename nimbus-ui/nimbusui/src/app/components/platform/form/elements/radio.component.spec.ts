@@ -41,6 +41,7 @@ import { setup, TestContext } from '../../../../setup.spec';
 import { Param } from '../../../../shared/param-state';
 import { radioElement } from 'mockdata';
 import { By } from '@angular/platform-browser';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 
 let param: Param;
 
@@ -68,7 +69,8 @@ const providers = [
    ConfigService,
    LoggerService,
    NmMessageService,
-   AppInitService
+   AppInitService,
+   CounterMessageService
 ];
 
 let fixture, hostComponent;

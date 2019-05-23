@@ -22,6 +22,7 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 import { PageService } from '../../../services/page.service';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
+
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -43,10 +44,24 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                 <p-accordionTab id="{{tab?.config?.code}}" [selected]="tab?.config?.uiStyles?.attributes?.selected" *ngIf="tab?.visible">
                     <p-header>
                         <nm-label *ngIf="tab" [element]="tab" [size]="labelSize"></nm-label>
-                        <span [ngClass]="getTabInfoClass(tab)" *ngIf="getInfoText(tab)">
-                            {{getInfoText(tab)}}
-                        </span>
-                        <nm-image class='nm-accordion-headerimage' *ngIf="getImageSrc(tab)" [name]="getImageSrc(tab)" [type]="getImageType(tab)" [title]="getTitle(tab)" [cssClass]="getcssClass(tab)"></nm-image>
+                        
+                        <ng-template [ngIf]="tabDatum[tab.config.code]?.tabInfo" let-tabInfo>
+                            <span *ngIf="tabInfo.visible"
+                                    [ngClass]="{ 'nm-accordion-headertext': !tabInfo.config?.uiStyles?.attributes?.cssClass }">
+                                {{tabInfo.leafState ? tabInfo.leafState : tabInfo.config.uiStyles.attributes.info}}
+                            </span>
+                        </ng-template>
+                
+                        <ng-template [ngIf]="tabDatum[tab.config.code]?.image" let-image>
+                            <nm-image *ngIf="image.visible"
+                                    [name]="(image.visible && image.leafState) ? image.leafState : image.config.uiStyles.attributes.imgSrc" 
+                                    [type]="image.config.uiStyles.attributes.type" 
+                                    [title]="image.config.uiStyles.attributes.title" 
+                                    [cssClass]="image.config.uiStyles.attributes.cssClass"
+                                    class="nm-accordion-headerimage">
+                            </nm-image>
+                        </ng-template>
+
                         <nm-counter-message *ngIf="element.config?.uiStyles?.attributes?.showMessages" [element]="tab" [form]="form"></nm-counter-message>
                         <div style='clear: both'></div>
                     </p-header>
@@ -121,17 +136,27 @@ export class Accordion extends BaseElement {
     index: number[]; 
     @ViewChild('accordion') accordion: Accordion;
 
+    tabDatum: { [id: string]: TabData; } = {};
+
     constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
         super(wcsvc);
     }
 
     ngOnInit() {
         super.ngOnInit();
+        this.buildTabDatum();
     }
 
     /** Handling model changes to Accordions **/
     ngOnChanges(changes: SimpleChanges) {
         const model: SimpleChange = changes.model;
+    }
+
+    private buildTabDatum() {
+        for (let tabParam of this.nestedParams) {
+            // TODO Only add for @AccordionTab aliased elements
+            this.tabDatum[tabParam.config.code] = new TabData().from(tabParam);
+        }
     }
 
     /**
@@ -170,73 +195,7 @@ export class Accordion extends BaseElement {
         this.pageSvc.processEvent(param.path, '$execute', null, 'POST');
     }
 
-    getInfoText(tab) {
-        for (let i = 0; i < tab.type.model.params.length; i++) {
-            if (tab.type.model.params[i].alias === ViewComponent.tabInfo.toString()) {
-                if (!tab.type.model.params[i].visible) {
-                    return;
-                }
-                else if(tab.type.model.params[i].leafState){
-                    return tab.type.model.params[i].leafState;
-                }
-                
-                return tab.type.model.params[i].config.uiStyles.attributes.info ;
-            }
-        }
-    }
-
-    getTabInfoClass(tab) {
-        for (let i = 0; i < tab.type.model.params.length; i++) {
-            let tabParam: Param = tab.type.model.params[i];
-            if (tabParam.alias === ViewComponent.tabInfo.toString()) {
-                if(tabParam.config && tabParam.config.uiStyles.attributes.cssClass){
-                    return tabParam.config.uiStyles.attributes.cssClass;
-                } else {
-                    return 'nm-accordion-headertext' ;
-                }
-            }
-        }
-    }
-
-    getImageSrc(tab) {
-        for (let i = 0; i < tab.type.model.params.length; i++) {
-            if (tab.type.model.params[i].alias === ViewComponent.image.toString()) {
-                if (!tab.type.model.params[i].visible) {
-                    return;
-                }
-                else if(tab.type.model.params[i].leafState){
-                    return tab.type.model.params[i].leafState;
-                }
-                
-                return tab.type.model.params[i].config.uiStyles.attributes.imgSrc;
-            }
-        }
-    }
-
-    getImageType(tab) {
-        for (let i = 0; i < tab.type.model.params.length; i++) {
-            if (tab.type.model.params[i].alias === ViewComponent.image.toString()) {
-                return tab.type.model.params[i].config.uiStyles.attributes.type;
-            }
-        }
-    }
-
-    getTitle(tab) {
-        for (let i = 0; i < tab.type.model.params.length; i++) {
-            if (tab.type.model.params[i].alias === ViewComponent.image.toString()) {
-                return tab.type.model.params[i].config.uiStyles.attributes.title;
-            }
-        }
-    }
-
-    getcssClass(tab) {
-        for (let i = 0; i < tab.type.model.params.length; i++) {
-            if (tab.type.model.params[i].alias === ViewComponent.image.toString()) {
-                return tab.type.model.params[i].config.uiStyles.attributes.cssClass;
-            }
-        }
-    }
-
+    // TODO Remove and replace with efficient change
     getElementClass(parentCss: String, child: Param) {
         if (child.config.uiStyles) {
             if (child.config.uiStyles.attributes && child.config.uiStyles.attributes.cssClass && child.config.uiStyles.attributes.cssClass != '') {
@@ -252,5 +211,31 @@ export class Accordion extends BaseElement {
             return '';
         }
     }
+}
 
+export class TabData {
+
+    tabInfo: Param;
+    image: Param;
+
+    from(tabParam: Param): TabData {
+        // find all the config within the tab params and assign the data to this instance
+        for (let param of tabParam.type.model.params) {
+            // collect only the first @TabInfo found
+            if (!this.tabInfo && param.alias === ViewComponent.tabInfo.toString()) {
+                this.tabInfo = param;
+            }
+
+            // collect only the first @Image found
+            if (!this.image && param.alias === ViewComponent.image.toString()) {
+                this.image = param;
+            }
+
+            // if we've found everything we need, return
+            if (this.tabInfo && this.image) {
+                return this;
+            }
+        }
+        return this;
+    }
 }

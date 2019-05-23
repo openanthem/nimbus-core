@@ -32,6 +32,7 @@ import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
 import { AppInitService } from '../../../services/app.init.service';
+import { CounterMessageService } from '../../../services/counter-message.service';
 
 let http, backend, service, sessionStore;
 
@@ -51,7 +52,8 @@ describe('BreadcrumbService', () => {
           ConfigService,
           LoggerService,
           SessionStoreService,
-          AppInitService
+          AppInitService,
+          CounterMessageService
         ],
       imports: [ HttpClientTestingModule, HttpModule, StorageServiceModule ]
     });

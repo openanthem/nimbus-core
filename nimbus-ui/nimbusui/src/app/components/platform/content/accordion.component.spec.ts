@@ -107,6 +107,7 @@ import { ChartModule } from 'primeng/chart';
 import { EditorModule } from 'primeng/editor';
 import { TableHeader } from './../grid/table-header.component';
 import { NmMessageService } from './../../../services/toastmessage.service';
+import { CounterMessageService } from './../../../services/counter-message.service';
 
 
 let pageService, webContentSvc, configService;
@@ -266,7 +267,8 @@ const providers = [
   GridService,
   PrintService,
   NmMessageService,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  CounterMessageService
 ];
 let fixture, hostComponent, changeDetectorRef;
 describe('Accordion', () => {
@@ -353,44 +355,6 @@ describe('Accordion', () => {
     const debugElement = fixture.debugElement;
     const nmLabelEle = debugElement.query(By.css('nm-label'));
     expect(nmLabelEle).toBeTruthy();
-  }));
-
-  it('If element.type.model.params[0].type.model.params[i].leafState or element.type.model.params[0].type.model.params[i].config.uiStyles.attributes.info is valid then It should be displayed in pheader',async(() => {
-      hostComponent.element.type.model.params[0].config.uiStyles.attributes.selected = true;
-      hostComponent.element.type.model.params[0].labels = [];
-      fixture.detectChanges();
-    const debugElement = fixture.debugElement;
-    const pHeaderEle = debugElement.query(By.css('p-header'));
-    const infoTextEle = debugElement.query(By.css('.nm-accordion-headertext'));
-    expect(pHeaderEle).toBeTruthy();
-    expect(infoTextEle.nativeElement.innerText.toString()).toEqual('testing p-header');
-  }));
-
-  it('If element.type.model.params[0].type.model.params[i].leafState or element.type.model.params[0].type.model.params[i].config.uiStyles.attributes.info is invalid then It should not be displayed in pheader',async(() => {
-    hostComponent.element.type.model.params[0].config.uiStyles.attributes.selected = true;
-    hostComponent.element.type.model.params[0].type.model.params[0].leafState = null;
-    hostComponent.element.type.model.params[0].type.model.params[0].config.uiStyles.attributes.info = null;
-    fixture.detectChanges();
-    const debugElement = fixture.debugElement;
-    const infoTextEle = debugElement.query(By.css('.nm-accordion-headertext'));
-    expect(infoTextEle).toBeFalsy();
-  }));
-
-  it('If leafState or imgSrc is configured then image should be displayed in pheader',async(() => {
-    hostComponent.element.type.model.params[0].config.uiStyles.attributes.selected = true;
-    fixture.detectChanges();
-    const debugElement = fixture.debugElement;
-    const nmImageEle = debugElement.query(By.css('nm-image'));
-    expect(nmImageEle).toBeTruthy();
-  }));
-
-  it('If leafState or imgSrc is not configured then image should not be displayed in pheader',async(() => {
-    hostComponent.element.type.model.params[0].config.uiStyles.attributes.selected = true;
-    hostComponent.element.type.model.params[0].type.model.params[1].leafState = null;
-    fixture.detectChanges();
-    const debugElement = fixture.debugElement;
-    const nmImageEle = debugElement.query(By.css('nm-image'));
-    expect(nmImageEle).toBeFalsy();
   }));
 
   it('Edit Button should be created if editable is configured',async(() => {
@@ -570,54 +534,6 @@ describe('Accordion', () => {
     expect(pageService.processEvent).toHaveBeenCalled();
     expect(pageService.processEvent).toHaveBeenCalledWith(undefined, '$execute', null, 'POST');
   }));
-
-  it('getImageSrc() should return imgSrc', async(() => {
-    const tab = { type: { model: { params: [{ alias: 'Image', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }] } } };
-    expect(hostComponent.getImageSrc(tab)).toEqual('test');
-  }));
-
-  it('getImageSrc() should return undefined', async(() => {
-    const tab = { type: { model: { params: [{ alias: 'Image', visible: false, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }] } } };
-    expect(hostComponent.getImageSrc(tab)).toBeFalsy();
-  }));
-
-  it('getImageSrc() should return leafState', async(() => {
-    const tab = { type: { model: { params: [{ alias: 'Image', visible: true, leafState: 'test', config: { uiStyles: { attributes: { imgSrc: '' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }] } } };
-    expect(hostComponent.getImageSrc(tab)).toEqual('test');
-  }));
-
-  it('getImageType() should return type, getTitle() should return title and getcssClass() should return cssClass', async(() => {
-    const tab = { type: { model: { params: [{ alias: 'Image', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test', type: 'testingType', title: 'testingTitle', cssClass: 'testingCssClass' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }] } } };
-    expect(hostComponent.getImageType(tab)).toEqual('testingType');
-    expect(hostComponent.getTitle(tab)).toEqual('testingTitle');
-    expect(hostComponent.getcssClass(tab)).toEqual('testingCssClass');
-  }));
-
-  it('getInfoText() should return undefined', async(() => {
-    const tab = { type: { model: { params: [{ alias: 'TabInfo', visible: false, config: { uiStyles: { attributes: { info: 'info' } } } }] } } };
-    expect(hostComponent.getInfoText(tab)).toEqual(undefined);
-  }));
-
-  it('getInfoText() should return tab.type.model.params[0].config.uiStyles.attributes.info', async(() => {
-    const tab = { type: { model: { params: [{ alias: 'TabInfo', visible: true, config: { uiStyles: { attributes: { info: 'info' } } } }] } } };
-    expect(hostComponent.getInfoText(tab)).toEqual('info');
-  }));
-
-  it('getInfoText() should return tab.type.model.params[0].leafState', async(() => {
-    const tab = { type: { model: { params: [{ alias: 'TabInfo', leafState: 'leafState', visible: true, config: { uiStyles: { attributes: { info: 'info' } } } }] } } };
-    expect(hostComponent.getInfoText(tab)).toEqual('leafState');
-  }));
-
-  it('getTabInfoClass() should return tab.type.model.params[0].config.uiStyles.attributes.cssClass', async(() => {
-    const tab = { type: { model: { params: [{ alias: 'TabInfo', config: { uiStyles: { attributes: { cssClass: 'cssClass' } } } }] } } };
-    expect(hostComponent.getTabInfoClass(tab)).toEqual('cssClass');
-  }));
-
-  it('getTabInfoClass() should return nm-accordion-headertext', async(() => {
-    const tab = { type: { model: { params: [{ alias: 'TabInfo', config: { uiStyles: { attributes: {} } } }] } } };
-    expect(hostComponent.getTabInfoClass(tab)).toEqual('nm-accordion-headertext');
-  }));
-
 
 it('Edit Button should not be created if editable attribute is configured as false',async(() => {
     hostComponent.element.type.model.params[0].config.uiStyles.attributes.editable = false;

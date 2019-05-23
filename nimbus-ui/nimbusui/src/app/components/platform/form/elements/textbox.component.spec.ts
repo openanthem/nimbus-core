@@ -27,12 +27,22 @@ import { Param } from '../../../../shared/param-state';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { InputText } from './textbox.component';
-import { StorageServiceModule } from 'angular-webstorage-service';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext, instantiateComponent } from '../../../../setup.spec';
 import { textBoxElement } from 'mockdata';
 import { ServiceConstants } from '../../../../services/service.constants';
+import { CounterMessageService } from '../../../../services/counter-message.service';
+import { PageService } from '../../../../services/page.service';
+import { CustomHttpClient } from '../../../../services/httpclient.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { LoaderService } from '../../../../services/loader.service';
+import { ConfigService } from '../../../../services/config.service';
+import { LoggerService } from '../../../../services/logger.service';
+import { JL } from 'jsnlog';
+import { AppInitService } from '../../../../services/app.init.service';
+import { NmMessageService } from '../../../../services/toastmessage.service';
 
 /**
  * \@author Sandeep.Mantha
@@ -45,10 +55,26 @@ import { ServiceConstants } from '../../../../services/service.constants';
 let fixture, hostComponent, controlService;
 const declarations = [InputText, TooltipComponent, InputLabel];
 const imports =  [ FormsModule, HttpClientTestingModule, HttpModule, StorageServiceModule ];
+const providers = [
+    CounterMessageService, 
+    PageService, 
+    CustomHttpClient,
+    SessionStoreService,
+    LoaderService,
+    ConfigService,
+    LoggerService,
+    AppInitService,
+    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+    { provide: 'JSNLOG', useValue: JL },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    Location,
+    NmMessageService,
+    ControlSubscribers
+];
 
 describe('InputText', () => {
     configureTestSuite(() => {
-        setup(declarations, imports);
+        setup(declarations, imports, providers);
     });
   
     beforeEach(() => {

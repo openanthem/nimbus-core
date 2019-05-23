@@ -27,6 +27,7 @@ import { KeyValuePair } from './../../../../model/key-value-pair.model';
 import { ViewConfig } from './../../../../shared/param-annotations.enum';
 import { Editor } from 'primeng/editor';
 import { Dropdown } from 'primeng/primeng';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 declare var Quill: any;
 
@@ -200,8 +201,8 @@ export class RichText extends BaseControl<String> {
         { key: "Subheading", value: "2" }
     ];
 
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef) {
-        super(controlService, wcs, cd);
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef, counterMessageService: CounterMessageService) {
+        super(controlService, wcs, cd, counterMessageService);
     }
 
     ngOnInit() {

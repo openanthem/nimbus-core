@@ -21,6 +21,7 @@ import { PageService } from '../../../../services/page.service';
 import { Param } from '../../../../shared/param-state';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseElement } from './../../base-element.component';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -60,10 +61,10 @@ export class MultiselectCard  extends BaseElement implements ControlValueAccesso
     @Input() element: Param;
     @Input() form: FormGroup;
     @Input('value') _value;
-
+    sendEvent: boolean = true;
     private selectedOptions: string[] = [];
 
-    constructor(private _wcs: WebContentSvc, private pageService: PageService) {
+    constructor(private _wcs: WebContentSvc, private pageService: PageService, private counterMessageService: CounterMessageService) {
         super(_wcs);
     }
     public onChange: any = (_) => { /*Empty*/ }
@@ -126,14 +127,26 @@ export class MultiselectCard  extends BaseElement implements ControlValueAccesso
             this.selectedOptions = this.element.leafState;
         }
         if(this.form!=null && this.form.controls[this.element.config.code]!= null) {
-            this.form.controls[this.element.config.code].valueChanges.subscribe(($event) => this.setState($event));
+            let frmCtrl =  this.form.controls[this.element.config.code];
+            frmCtrl.valueChanges.subscribe(($event) => {
+                this.setState($event);
+                if(frmCtrl.valid && this.sendEvent) {
+                    this.counterMessageService.evalCounterMessage(true);
+                    this.counterMessageService.evalFormParamMessages(this.element);
+                    this.sendEvent = false;
+                } else if(frmCtrl.invalid && !frmCtrl.pristine) {
+                    this.counterMessageService.evalFormParamMessages(this.element);
+                    this.counterMessageService.evalCounterMessage(true);
+                    this.sendEvent = true;
+                }
+            });
             
-            this.pageService.eventUpdate$.subscribe(event => {
+            this.subscribers.push(this.pageService.eventUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
                 if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
                     frmCtrl.setValue(event.leafState);
                 }
-            });
+            }));
         }
     }
 

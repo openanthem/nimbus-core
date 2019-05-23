@@ -40,6 +40,7 @@ import { TableBasedData } from './../shared/param-state';
 import { NmMessageService } from './toastmessage.service';
 import { Observable } from 'rxjs/Observable';
 import { PageNavigationResponse } from './../shared/page-navigation-response';
+import { CounterMessageService } from './counter-message.service';
 
 /**
  * \@author Dinakar.Meda
@@ -75,7 +76,7 @@ export class PageService {
 
         private _entityId: number = 0;
         constructor(private http: CustomHttpClient, private loaderService: LoaderService, private configService: ConfigService, 
-                    private logger: LoggerService, private sessionStore: SessionStoreService, private location: Location, private toastService: NmMessageService) {
+                    private logger: LoggerService, private sessionStore: SessionStoreService, private location: Location, private toastService: NmMessageService, private counterMessageService: CounterMessageService) {
                 // initialize
                 this.flowRootDomainId = {};
                 // Create Observable Stream to output our data     
@@ -198,6 +199,7 @@ export class PageService {
                         }
                         index++;
                 }
+                this.counterMessageService.evalCounterMessage(true);                
         }
 
         /**
@@ -828,6 +830,7 @@ export class PageService {
                         this.eventUpdate.next(sourceParam); 
                         this.validationUpdate.next(sourceParam);
                         this.updateNestedParameters(sourceParam,responseParam);
+                        this.counterMessageService.evalFormParamMessages(sourceParam);
                 } else {
                         this.logger.debug('Could not process the update from the server for ' + responseParam.path + ' because config is undefined.');
                 }

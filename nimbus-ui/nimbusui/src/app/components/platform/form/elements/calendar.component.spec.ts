@@ -42,6 +42,7 @@ import { By } from '@angular/platform-browser';
 import { ServiceConstants } from '../../../../services/service.constants';
 import { NmMessageService } from './../../../../services/toastmessage.service';
 import { Param } from './../../../../shared/param-state';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 
 const declarations = [
   Calendar,
@@ -67,7 +68,8 @@ const declarations = [
   ConfigService,
   LoggerService,
   SessionStoreService,
-  AppInitService
+  AppInitService,
+  CounterMessageService
  ];
  let fixture, hostComponent;
 describe('Calendar', () => {

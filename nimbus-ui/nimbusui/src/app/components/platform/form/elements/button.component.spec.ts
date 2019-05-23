@@ -49,6 +49,7 @@ import { PrintService } from '../../../../services/print.service';
 import { EventPropagationDirective } from './event-propagation.directive';
 import { By } from '@angular/platform-browser';
 import { buttonPrimaryElement, buttonSecondaryElement, buttonDestructiveElement, buttonValidationElement, buttonPrintElement, buttonPlainElement } from 'mockdata';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 
 let location, pageService, fileService;
 
@@ -107,7 +108,8 @@ const providers = [
    AppInitService,
    SessionStoreService,
    NmMessageService,
-   PrintService
+   PrintService,
+   CounterMessageService
 ];
 let fixture, hostComponent;
 describe('Button', () => {

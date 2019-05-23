@@ -27,6 +27,7 @@ import { LoggerService } from '../../services/logger.service';
 import { Message } from './../../shared/message';
 import { ViewRoot } from './../../shared/app-config.interface';
 import { NmMessageService } from './../../services/toastmessage.service';
+import { Subscription } from 'rxjs';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -52,11 +53,12 @@ export class DomainFlowCmp {
     public messages: Message[];
     menuPanel: MenuPanel;
     routeParams: any;
+    private subscribers: Subscription[] = []
 
     constructor(private _pageSvc: PageService, private layoutSvc: LayoutService,
             private _route: ActivatedRoute, private _router: Router, private _logger: LoggerService, private _messageservice: NmMessageService) {
 
-        this.layoutSvc.layout$.subscribe(
+                this.subscribers.push(this.layoutSvc.layout$.subscribe(
             data => {
                 let layout: Layout = data;
                 this.fixLayout = layout['fixLayout'];
@@ -70,9 +72,9 @@ export class DomainFlowCmp {
 
                 this.setLayoutScroll();
             }
-        );
+        ));
 
-        this._pageSvc.config$.subscribe(result => {
+        this.subscribers.push(this._pageSvc.config$.subscribe(result => {
             let page: Page = result;
             this._logger.debug('domain flow component received page from config$ subject');
             if (page && page.pageConfig && page.pageConfig.config) {
@@ -86,9 +88,9 @@ export class DomainFlowCmp {
                 this._logger.debug('domain flow component will be navigated to ' + toPage + ' route');
                 this._router.navigate([toPage], { relativeTo: this._route });
             }
-        });
+        }));
 
-        this._pageSvc.subdomainconfig$.subscribe(result => {
+        this.subscribers.push(this._pageSvc.subdomainconfig$.subscribe(result => {
             let page: Page = result;
             this._logger.debug('domain flow component received page from config$ subject');
             if (page && page.pageConfig && page.pageConfig.config) {
@@ -97,7 +99,7 @@ export class DomainFlowCmp {
                 this._logger.debug('sub domain flow component will be navigated to ' + toPage + ' route');
                 this._router.navigate([toPage], { relativeTo: this._route });
             }
-        });
+        }));
     }
 
     getDocument() {
@@ -129,7 +131,7 @@ export class DomainFlowCmp {
 
     ngOnInit() {
         this._logger.debug('DomainFlowCmp-i ');
-        this._route.data.subscribe((data: { layout: ViewRoot }) => {
+        this.subscribers.push(this._route.data.subscribe((data: { layout: ViewRoot }) => {
             let viewRoot: ViewRoot = data.layout;
             if (viewRoot && viewRoot.layout) {
                 this.hasLayout = true;
@@ -141,7 +143,13 @@ export class DomainFlowCmp {
                 this.fixLayout = false;
                 this.setLayoutScroll();
             }
-        });
+        }));
+    }
+
+    ngOndestroy() {
+        if(this.subscribers && this.subscribers.length >0) {
+            this.subscribers.forEach(s => s.unsubscribe());
+        }
     }
 
     /** 
