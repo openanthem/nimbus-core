@@ -43,6 +43,7 @@ import { setup, TestContext } from '../../../../setup.spec';
 import { signatureElement } from 'mockdata';
 import { By } from '@angular/platform-browser';
 import { ServiceConstants } from '../../../../services/service.constants';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 
 let logger, param;
 
@@ -81,7 +82,8 @@ const declarations = [
   LoaderService,
   ConfigService,
   KeyFilterModule,
-  AppInitService
+  AppInitService,
+  CounterMessageService
  ];
 
  let fixture, hostComponent;

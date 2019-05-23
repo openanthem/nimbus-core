@@ -1,3 +1,4 @@
+import { CounterMessageService } from './../../../../services/counter-message.service';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -69,8 +70,8 @@ export class InputText extends BaseControl<String> {
 
     @ViewChild(NgModel) model: NgModel;
 
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
-        super(controlService,wcs,cd);
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef, counterMessageService: CounterMessageService) {
+        super(controlService,wcs,cd, counterMessageService);
     }
 
     ngOnInit() {

@@ -430,7 +430,11 @@ abstract public class AbstractEntityConfigBuilder {
 	
 	private <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, Field f, DefaultParamConfig<P> created, EntityConfigVisitor visitedModels) {
 		created.setUiNatures(annotationConfigHandler.handle(f, ViewParamBehavior.class));
-		created.setUiStyles(annotationConfigHandler.handleSingle(f, ViewStyle.class));
+		try {
+			created.setUiStyles(annotationConfigHandler.handleSingle(f, ViewStyle.class));
+		} catch (InvalidConfigException e) {
+			throw new InvalidConfigException("Failed to decorate uiStyles attribute for field \"" + f.getName() + "\".", e);
+		}
 		
 		ExecutionConfig executionConfig = executionConfigFactory.build(f);
 		created.setExecutionConfig(executionConfig);

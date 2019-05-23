@@ -37,6 +37,7 @@ import { Param, Type, Model } from '../../../../shared/param-state';
 import { ParamConfig, UiStyle, UiAttribute } from '../../../../shared/param-config';
 import { fieldValueParam } from 'mockdata';
 import { NmMessageService } from './../../../../services/toastmessage.service';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 let pageService, configService;
 
@@ -58,7 +59,8 @@ const providers = [
     LoggerService,
     SessionStoreService,
     NmMessageService,
-    AppInitService
+    AppInitService,
+    CounterMessageService
 ];
 let fixture, hostComponent;
 describe('FilterButton', () => {

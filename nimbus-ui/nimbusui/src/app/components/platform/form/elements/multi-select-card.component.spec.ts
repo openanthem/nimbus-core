@@ -38,6 +38,7 @@ import { setup, TestContext } from '../../../../setup.spec';
 import { FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms';
 import { multiselectCardElement } from 'mockdata';
 import { By } from '@angular/platform-browser';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 
 let param, pageService;
 
@@ -68,7 +69,8 @@ const providers = [
    ConfigService,
    LoggerService,
    AppInitService,
-   SessionStoreService
+   SessionStoreService,
+   CounterMessageService
 ];
 let fixture, hostComponent;
 

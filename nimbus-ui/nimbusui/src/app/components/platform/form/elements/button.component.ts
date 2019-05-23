@@ -32,6 +32,7 @@ import { PrintService } from './../../../../services/print.service';
 import { ViewConfig } from './../../../../shared/param-annotations.enum';
 import { ParamUtils } from './../../../../shared/param-utils';
 import { PrintConfig } from './../../../../shared/print-event';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 /**
  * \@author Dinakar.Meda
@@ -104,7 +105,7 @@ export class Button extends BaseElement {
 
     constructor( private pageService: PageService, private _wcs: WebContentSvc, 
         private location: Location, private fileService: FileService, private http: CustomHttpClient, private logger: LoggerService, private differs: KeyValueDiffers,
-        private printService: PrintService) {
+        private printService: PrintService, private cms: CounterMessageService) {
         super(_wcs);
     }
 
@@ -137,12 +138,17 @@ export class Button extends BaseElement {
         } else {
             this.btnClass = 'btn btn-icon icon ' + this.cssClass;
         }
+    
+        this.subscribers.push(this.buttonClickEvent.subscribe(( $event ) => {
+            this.pageService.processEvent( $event.element.path, $event.element.config.uiStyles.attributes.b,
+                null, $event.element.config.uiStyles.attributes.method );
+        }));
 
-        this.pageService.validationUpdate$.subscribe(event => {
+        this.subscribers.push(this.pageService.validationUpdate$.subscribe(event => {
             if(event.path == this.element.path) {
                 this.disabled = !event.enabled;
             }
-        });
+        }));
     }
 
     /*  This method will be run for every change detection cycle.  This is used to detect changes within 
@@ -227,6 +233,7 @@ export class Button extends BaseElement {
              else if (ctrl instanceof FormGroup) {
                  this.validate(ctrl);
              }
+             this.cms.evalFormParamMessages(this.element);
         });
              
      }

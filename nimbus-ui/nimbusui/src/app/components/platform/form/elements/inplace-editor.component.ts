@@ -122,10 +122,10 @@ export class InPlaceEditorComponent extends BaseElement implements OnInit {
         this.setDisplayValue(this.value);
         this.generateComponent(this.type);
         
-        this.pageService.eventUpdate$.subscribe(event => {
+        this.subscribers.push(this.pageService.eventUpdate$.subscribe(event => {
             if(this.element.config.code === event.config.code)
                 this.setDisplayValue(event.leafState);
-        });
+        }));
     }
 
     ngOnChanges(changes: SimpleChanges) {

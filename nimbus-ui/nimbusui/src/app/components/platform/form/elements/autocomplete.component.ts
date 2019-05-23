@@ -28,6 +28,7 @@ import { ParamUtils } from './../../../../shared/param-utils';
 import { Subject } from 'rxjs';
 import { AutoCompleteService } from './../../../../services/autocomplete.service';
 import { LoggerService } from './../../../../services/logger.service';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 
 
@@ -73,8 +74,8 @@ export class NmAutocomplete extends BaseControl<any> {
     searchTerm$ = new Subject<string>();
     suggestionObj: any[];
 
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef, private searchService: AutoCompleteService, private pageSvc: PageService, private logger: LoggerService) {
-        super(controlService, wcs, cd);
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef, private searchService: AutoCompleteService, private pageSvc: PageService, private logger: LoggerService, counterMessageService: CounterMessageService) {
+        super(controlService, wcs, cd, counterMessageService);
     }
 
     ngOnInit() {

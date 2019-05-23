@@ -41,6 +41,7 @@ import { pageServiceProcessResponse, pageServiceOutputs, pageServiceRootParam, p
     pageServiceTraverseParamPayload, pageServiceCreateGridDataGridElementParams, pageServiceCreateGridDataParam, 
     configServiceParamConfigs, pageServiceCreateGridDataResult, pageServiceTraverseNestedPathResult } from 'mockdata'
 import { NmMessageService } from './toastmessage.service';
+import { CounterMessageService } from './../services/counter-message.service';
 
 let http, backend, service, location, loggerService, sessionStoreService, loaderService, configService, configService_actual;
 
@@ -109,7 +110,8 @@ describe('PageService', () => {
         { provide: Location, useClass: MockLocation},
         NmMessageService,
         PageService,
-        CustomHttpClient
+        CustomHttpClient,
+        CounterMessageService
       ],
       imports: [HttpClientTestingModule, HttpModule, StorageServiceModule, HttpClientTestingModule]
     });

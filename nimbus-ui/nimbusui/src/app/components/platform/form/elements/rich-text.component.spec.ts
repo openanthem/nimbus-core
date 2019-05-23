@@ -21,7 +21,6 @@ import { TooltipComponent } from './../../tooltip/tooltip.component';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StorageServiceModule } from 'angular-webstorage-service';
 import { configureTestSuite } from 'ng-bullet';
 import { setup } from '../../../../setup.spec';
 import { RichText } from './rich-text.component';
@@ -33,6 +32,19 @@ import { UiNature } from './../../../../shared/param-config';
 import { SelectItemPipe } from './../../../../pipes/select-item.pipe';
 import { Dropdown } from 'primeng/primeng';
 import { DropdownModule } from 'primeng/primeng';
+import { CounterMessageService } from './../../../../services/counter-message.service';
+import { PageService } from './../../../../services/page.service';
+import { CustomHttpClient } from './../../../../services/httpclient.service';
+import { SessionStoreService, CUSTOM_STORAGE } from './../../../../services/session.store';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { LoaderService } from './../../../../services/loader.service';
+import { ConfigService } from './../../../../services/config.service';
+import { LoggerService } from './../../../../services/logger.service';
+import { JL } from 'jsnlog';
+import { AppInitService } from './../../../../services/app.init.service';
+import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { NmMessageService } from './../../../../services/toastmessage.service';
+
 /**
  * \@author Tony Lopez
  * \@whatItDoes 
@@ -44,10 +56,25 @@ import { DropdownModule } from 'primeng/primeng';
 let fixture, hostComponent, controlService;
 const declarations = [ RichText, TooltipComponent, InputLabel, SelectItemPipe ];
 const imports =  [ FormsModule, HttpClientTestingModule, HttpModule, StorageServiceModule, EditorModule, DropdownModule ];
+const providers = [
+    CounterMessageService, 
+    PageService, 
+    CustomHttpClient,
+    SessionStoreService,
+    LoaderService,
+    ConfigService,
+    LoggerService,
+    AppInitService,
+    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+    { provide: 'JSNLOG', useValue: JL },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    Location,
+    NmMessageService
+]
 
 describe('RichText', () => {
     configureTestSuite(() => {
-        setup(declarations, imports);
+        setup(declarations, imports, providers);
     });
   
     beforeEach(() => {

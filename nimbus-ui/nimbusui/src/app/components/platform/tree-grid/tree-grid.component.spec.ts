@@ -102,6 +102,8 @@ import { ChartModule } from 'primeng/chart';
 import { NmChart } from './../charts/chart.component';
 import { EditorModule } from 'primeng/editor';
 import { Param } from './../../../shared/param-state';
+import { CounterMessageService } from './../../../services/counter-message.service';
+
 let pageService;
 
 @Component({
@@ -235,7 +237,8 @@ const providers = [
      LoggerService,
      AppInitService,
      GridUtils,
-     DateTimeFormatPipe
+     DateTimeFormatPipe,
+     CounterMessageService
  ];
  let fixture, hostComponent;
 

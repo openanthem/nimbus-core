@@ -28,6 +28,7 @@ import { ValidationConstraint } from './../../../../shared/validationconstraints
 import { Subscription } from 'rxjs';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { ParamUtils } from './../../../../shared/param-utils';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 /**
  * \@author Dinakar.Meda
@@ -53,7 +54,11 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     validationChangeSubscriber: Subscription;
     onChangeSubscriber: Subscription;
 
-    constructor(protected controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
+    private subscribers: Subscription[] = []
+
+    sendEvent = true;
+    
+    constructor(protected controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef, private counterMessageService: CounterMessageService) {
         super();
     }
 
@@ -89,9 +94,29 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         }
     }
 
+    ngOnDestroy() {
+        if (this.subscribers && this.subscribers.length > 0) {
+            this.subscribers.forEach(s => s.unsubscribe());
+        }
+        delete this.element;
+    }
+
     ngAfterViewInit(){
         if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
-            this.form.controls[this.element.config.code].valueChanges.subscribe(($event) => this.setState($event,this));
+            let frmCtrl = this.form.controls[this.element.config.code];
+            this.subscribers.push(frmCtrl.valueChanges.subscribe(($event) => 
+            {
+                this.setState($event,this);
+                if(frmCtrl.valid && this.sendEvent) {
+                    this.counterMessageService.evalCounterMessage(true);
+                    this.counterMessageService.evalFormParamMessages(this.element);
+                    this.sendEvent = false;
+                } else if(frmCtrl.invalid && !frmCtrl.pristine) {
+                    this.counterMessageService.evalFormParamMessages(this.element);
+                    this.counterMessageService.evalCounterMessage(true);
+                    this.sendEvent = true;
+                }
+            }));
             this.controlService.stateUpdateSubscriber(this);
             this.controlService.validationUpdateSubscriber(this);
         }
@@ -99,6 +124,11 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     }
 
    
+    ngOndestroy() {
+        if(this.subscribers && this.subscribers.length >0) {
+            this.subscribers.forEach(s => s.unsubscribe());
+        }
+    }
     /** invoked from InPlaceEdit control */
     setInPlaceEditContext(context: any) {
         this.showLabel = false;
@@ -174,17 +204,5 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         } else {
             return;
         }
-    }
-    /**
-     * Get Max length of the attribute
-     */
-    public getMaxLength():number {
-        let constraint = this.getConstraint(ValidationConstraint._max.value);
-        if (constraint) {
-             return constraint.attribute.value;
-        } else {
-            return;
-        }
-
     }
 }

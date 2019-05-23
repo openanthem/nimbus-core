@@ -15,35 +15,29 @@
  * limitations under the License.
  */
 'use strict';
-import { Component, Input } from '@angular/core';
-import { BaseLabel } from '../../base-label.component';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import { Param } from './../shared/param-state';
 
 /**
- * \@author Tony Lopez
- * \@whatItDoes 
- * 
- * \@howToUse 
+ * \@author Sandeep.Mantha
  * 
  */
-@Component({
-  selector: 'nm-input-label',
-  template: `
-    <label *ngIf="label"
-        className="{{required ? 'required ' + cssClass  : cssClass}}"
-        [attr.for]="for">
-        
-        {{label}} 
-        
-        <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
-    </label>
-   `
-})
-export class InputLabel extends BaseLabel {
+@Injectable()
+export class CounterMessageService {
+    private subject = new Subject<boolean>();
+    counterMessageSubject$ = this.subject.asObservable();
 
-    @Input() for: string;
-    @Input() required: boolean;
-    
-    constructor() {
-        super();
+    private formErrorMessages = new Subject<Param>();
+    formErrorMessages$ = this.formErrorMessages.asObservable();
+
+
+    evalCounterMessage(val: boolean) {
+        this.subject.next(val);
     }
+
+    evalFormParamMessages(param:Param) {
+        this.formErrorMessages.next(param);
+    }
+
 }

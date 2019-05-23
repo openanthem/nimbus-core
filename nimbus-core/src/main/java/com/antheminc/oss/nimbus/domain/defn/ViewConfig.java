@@ -627,6 +627,13 @@ public class ViewConfig {
 
 		boolean dataEntryField() default true;
 
+		/**
+		 * <p>When non-empty, add a default selection item to the top of the
+		 * rendered combo box with the provided value displayed as the label
+		 * text. The default value will always be {@code null}.
+		 */
+		String defaultLabel() default "";
+		
 		String help() default "";
 
 		String labelClass() default "anthem-label";
@@ -1215,22 +1222,38 @@ public class ViewConfig {
 
 		boolean pagination() default true;
 
+		/**
+		 * <p>Render a button below the rendered grid that when clicked, submits
+		 * an HTTP POST request with a payload containing the selected indexes
+		 */
 		boolean postButton() default false;
 
-		String postButtonAlias() default "";
-
+		/**
+		 * <p>Set the label of the button rendered by {@link #postButton()}
+		 */
 		String postButtonLabel() default "";
 
+		/**
+		 * <p>Set the key to be used for the JSON object of selected index that
+		 * is sent as a payload
+		 * @see #postButton()
+		 */
 		String postButtonTargetPath() default "";
 		
 		/**
-		 * Represents the relative path of the postButton on a rowselection Grid. 
-		 * Can use similar notation as url attribute of @Config for relative path to param i.e, '../', <!#this!>
+		 * <p>A parameter path relative to the decorated this decorated field on
+		 * which to invoke an HTTP POST
+		 * @see #postButton()
 		 */
 		String postButtonUri() default "";	
 
 		boolean postEventOnChange() default false;
 
+		/**
+		 * <p>Renders a checkbox at the beginning of each row in the table,
+		 * intended to be used for row selection and in conjunction with
+		 * {@link #postButtonUri()}, {@link #postButtonTargetPath()}
+		 */
 		boolean rowSelection() default false;
 
 		boolean showHeader() default true;
@@ -1238,11 +1261,10 @@ public class ViewConfig {
 		String url() default "";
 		
 		/**
-		 * @Since 1.1.11
-		 * Setting this to true will enable to select all the records in the dataset i.e across all pages 
-		 * within a table when selectAll checkbox in the header is checked. 
-		 * Default behavior is to select all the records only within the current  
-		 * page of the table when the table is paginated.
+		 * <p>When {@code true}, selecting the "select all" checkbox in the
+		 * header of the rendered grid will select all the records in the
+		 * dataset across all pages. When {@code false}, only within the current
+		 * page items will be selected.
 		 */
 		boolean headerCheckboxToggleAllPages() default false;
 		
@@ -3110,6 +3132,7 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
+	@OnStateLoad
 	public @interface TreeGrid {
 		String alias() default "TreeGrid";
 

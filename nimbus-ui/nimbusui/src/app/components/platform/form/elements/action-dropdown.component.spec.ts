@@ -50,6 +50,7 @@ import { ServiceConstants } from './../../../../services/service.constants';
 import { By } from '@angular/platform-browser';
 import { ComponentTypes } from './../../../../shared/param-annotations.enum';
 import { Subject } from 'rxjs';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 let pageservice, configservice;
 
@@ -83,7 +84,8 @@ const declarations = [
   ConfigService,
   SessionStoreService,
   NmMessageService,
-  AppInitService
+  AppInitService,
+  CounterMessageService
  ];
  let fixture, hostComponent;
 describe('ActionLink', () => {
@@ -204,7 +206,8 @@ const providers1 = [
   CustomHttpClient,
   LoaderService,
   ConfigService,
-  AppInitService
+  AppInitService,
+  CounterMessageService
 ];
 
 describe('ActionDropdown', () => {

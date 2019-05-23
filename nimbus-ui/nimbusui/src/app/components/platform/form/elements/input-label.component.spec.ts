@@ -138,10 +138,5 @@ describe('InputLabel', () => {
     expect(labelEle).toBeFalsy();
   }));
 
-  it('getCssClass() should return required', async(() => {
-    hostComponent.required = true;
-    expect(hostComponent.getCssClass()).toEqual('required');
-  }));
-
 });
 

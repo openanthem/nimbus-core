@@ -97,11 +97,11 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
             }
         }
 
-        this.pageSvc.eventUpdate$.subscribe(event => {
+        this.subscribers.push(this.pageSvc.eventUpdate$.subscribe(event => {
             if(event.path == this.element.path) {
                 this.display = event.visible;
             }
-        });
+        }));
     }
 
     ngAfterViewChecked() {

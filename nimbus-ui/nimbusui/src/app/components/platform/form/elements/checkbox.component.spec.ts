@@ -41,6 +41,7 @@ import { By } from '@angular/platform-browser';
 import { ServiceConstants } from '../../../../services/service.constants';
 import { WindowRefService } from './../../../../services/window-ref.service';
 import { NmMessageService } from './../../../../services/toastmessage.service';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 
 let param: Param;
 
@@ -73,7 +74,8 @@ const declarations = [
   SessionStoreService,
   AppInitService,
   NmMessageService,
-  WindowRefService
+  WindowRefService,
+  CounterMessageService
  ];
  let fixture, hostComponent;
 describe('CheckBox', () => {
