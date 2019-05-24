@@ -633,7 +633,9 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         this.totalRecords = e.filteredValue.length;
         this.updatePageDetailsState();
         this.selectedRows.length = 0
-        this.dt.toggleRowsWithCheckbox(e, true);
+        if(this.element.config.uiStyles.attributes.rowSelection){
+            this.dt.toggleRowsWithCheckbox(e, true);
+        }  
     }
 
     export() {
