@@ -18,7 +18,6 @@
 import { Component, Input, ViewChild, SimpleChanges, SimpleChange } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Param } from '../../../shared/param-state';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 import { PageService } from '../../../services/page.service';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
@@ -32,7 +31,6 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
  */
 @Component( {
     selector: 'nm-accordion',
-    providers: [WebContentSvc],
     template: `
         <div class="text-sm-right" *ngIf="element.config?.uiStyles?.attributes?.showExpandAll" [hidden]="!element?.visible">
             <button type="button" class="btn btn-expand" (click)="openAll()">Expand All</button>
@@ -138,8 +136,8 @@ export class Accordion extends BaseElement {
 
     tabDatum: { [id: string]: TabData; } = {};
 
-    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
-        super(wcsvc);
+    constructor(private pageSvc: PageService) {
+        super();
     }
 
     ngOnInit() {

@@ -19,7 +19,6 @@ import { Component, Input, forwardRef } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { PageService } from '../../../../services/page.service';
 import { Param } from '../../../../shared/param-state';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseElement } from './../../base-element.component';
 import { CounterMessageService } from './../../../../services/counter-message.service';
 
@@ -39,7 +38,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
     selector: 'nm-multiselect-card',
-    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc ],
+    providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR ],
     template: `
     <div class="col-lg-12">
         <div *ngFor="let value of element.values" class="col-sm-6 pb-2"> 
@@ -64,8 +63,8 @@ export class MultiselectCard  extends BaseElement implements ControlValueAccesso
     sendEvent: boolean = true;
     private selectedOptions: string[] = [];
 
-    constructor(private _wcs: WebContentSvc, private pageService: PageService, private counterMessageService: CounterMessageService) {
-        super(_wcs);
+    constructor(private pageService: PageService, private counterMessageService: CounterMessageService) {
+        super();
     }
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }

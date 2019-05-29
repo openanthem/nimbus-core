@@ -19,7 +19,6 @@ import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, ViewChild, ElementRef, forwardRef, Input, ChangeDetectorRef } from '@angular/core';
 import { fromEvent as observableFromEvent } from 'rxjs';
 import { takeUntil, switchMap, pairwise } from 'rxjs/operators';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { Param } from '../../../../shared/param-state';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
@@ -42,7 +41,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-signature',
-  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
+  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, ControlSubscribers],
   template: `
     <div style="position:relative" class="{{zoomClass}}">
         <nm-input-label *ngIf="!isLabelEmpty && hidden != true"
@@ -99,12 +98,11 @@ export class Signature extends BaseControl<string> {
     zoomFactor: number = 1;
     
     constructor(
-        wcs: WebContentSvc, 
         controlService: ControlSubscribers, 
         cd: ChangeDetectorRef, 
         private logger: LoggerService, cms: CounterMessageService) {
         
-            super(controlService, wcs, cd, cms);
+            super(controlService, cd, cms);
     }
 
     public ngOnInit() {

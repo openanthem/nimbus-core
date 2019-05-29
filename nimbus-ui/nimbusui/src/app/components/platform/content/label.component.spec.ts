@@ -27,7 +27,6 @@ import { Location, LocationStrategy, HashLocationStrategy } from '@angular/commo
 
 import { Label } from './label.component';
 import { TooltipComponent } from '../tooltip/tooltip.component';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
@@ -55,7 +54,6 @@ const providers = [
 { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
 { provide: 'JSNLOG', useValue: JL },
 { provide: LocationStrategy, useClass: HashLocationStrategy },
-WebContentSvc,
 PageService,
 CustomHttpClient,
 NmMessageService,

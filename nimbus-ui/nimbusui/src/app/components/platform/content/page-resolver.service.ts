@@ -19,7 +19,6 @@ import { ParamUtils } from './../../../shared/param-utils';
 import { Injectable } from '@angular/core';
 import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
 import { BreadcrumbService } from './../breadcrumb/breadcrumb.service'
-import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
 import { Param } from '../../../shared/param-state';
 import { LabelConfig } from './../../../shared/param-config';
@@ -39,7 +38,6 @@ export class PageResolver implements Resolve<Param> {
         private _pageSvc: PageService, 
         private _router: Router,
         private _breadcrumbService: BreadcrumbService,
-        private _wcs: WebContentSvc,
         private route: ActivatedRoute,
         private _logger: LoggerService
     ) {}

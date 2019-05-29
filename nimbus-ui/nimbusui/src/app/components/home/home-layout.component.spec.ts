@@ -53,7 +53,6 @@ import { Value } from '../platform/form/elements/value.component';
 import { SelectItemPipe } from '../../pipes/select-item.pipe';
 import { TooltipComponent } from '../platform/tooltip/tooltip.component';
 import { CustomHttpClient } from '../../services/httpclient.service';
-import { WebContentSvc } from '../../services/content-management.service';
 import { PageService } from '../../services/page.service';
 import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
@@ -222,7 +221,6 @@ const declarations= [
     { provide: 'JSNLOG', useValue: JL },
     {provide: LoggerService, useClass: MockLoggerService},
     CustomHttpClient,
-    WebContentSvc,
     LoaderService,
     ConfigService,
     BreadcrumbService,

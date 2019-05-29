@@ -18,7 +18,6 @@
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { Component, ViewChild, forwardRef, ChangeDetectorRef, Input } from '@angular/core';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
 import { AutoComplete } from 'primeng/primeng';
@@ -47,7 +46,7 @@ export const AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
     selector: 'nm-autocomplete',
-    providers: [AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
+    providers: [AUTOCOMPLETE_CONTROL_VALUE_ACCESSOR, ControlSubscribers],
     template: `
   <ng-template [ngIf]="element?.visible == true">
         <nm-input-label *ngIf="!isLabelEmpty && this.showLabel"
@@ -74,8 +73,8 @@ export class NmAutocomplete extends BaseControl<any> {
     searchTerm$ = new Subject<string>();
     suggestionObj: any[];
 
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef, private searchService: AutoCompleteService, private pageSvc: PageService, private logger: LoggerService, counterMessageService: CounterMessageService) {
-        super(controlService, wcs, cd, counterMessageService);
+    constructor(controlService: ControlSubscribers, cd: ChangeDetectorRef, private searchService: AutoCompleteService, private pageSvc: PageService, private logger: LoggerService, counterMessageService: CounterMessageService) {
+        super(controlService, cd, counterMessageService);
     }
 
     ngOnInit() {

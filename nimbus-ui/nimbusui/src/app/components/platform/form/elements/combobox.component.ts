@@ -17,7 +17,6 @@
 'use strict';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, ViewChild, forwardRef, ChangeDetectorRef, Input } from '@angular/core';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { CounterMessageService } from './../../../../services/counter-message.service';
@@ -38,7 +37,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-comboBox',
-  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers ],
+  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, ControlSubscribers ],
   template: `
     <nm-input-label *ngIf="!isLabelEmpty && this.showLabel && !this.hideLabel"
         [element]="element" 
@@ -63,8 +62,8 @@ export class ComboBox extends BaseControl<String> {
     @Input() autoWidth: boolean = false;
     @Input() placeholder: string = 'Please Select...';
 
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef, cms: CounterMessageService) {
-      super(controlService,wcs,cd, cms);
+    constructor(controlService: ControlSubscribers, cd:ChangeDetectorRef, cms: CounterMessageService) {
+      super(controlService, cd, cms);
     }
 
 }

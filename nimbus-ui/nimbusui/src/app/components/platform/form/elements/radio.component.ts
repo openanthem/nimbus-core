@@ -17,7 +17,6 @@
 'use strict';
 import { NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
 import { Component, forwardRef, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { CounterMessageService } from './../../../../services/counter-message.service';
@@ -38,7 +37,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-input-radio',
-  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc, ControlSubscribers],
+  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, ControlSubscribers],
   template: `
     <fieldset>
         <div class="fieldsetFlex">
@@ -65,8 +64,8 @@ export class RadioButton extends BaseControl<String> {
 
     @ViewChild(NgModel) model: NgModel;
 
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef, cms: CounterMessageService) {
-        super(controlService,wcs,cd, cms);
+    constructor(controlService: ControlSubscribers, cd:ChangeDetectorRef, cms: CounterMessageService) {
+        super(controlService, cd, cms);
     }
 
 }

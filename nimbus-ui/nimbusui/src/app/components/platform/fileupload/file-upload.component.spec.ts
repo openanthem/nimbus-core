@@ -26,7 +26,6 @@ import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-servic
 
 import { FileUploadComponent } from './file-upload.component';
 import { FileService } from './../../../services/file.service';
-import { WebContentSvc } from './../../../services/content-management.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoggerService } from './../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from './../../../services/session.store';
@@ -67,7 +66,6 @@ const providers = [
    {provide: FileService, useClass: MockFileService},
    { provide: 'JSNLOG', useValue: JL },
    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-   WebContentSvc,
    CustomHttpClient,
    LoggerService,
    AppInitService,

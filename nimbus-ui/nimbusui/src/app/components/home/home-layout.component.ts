@@ -31,7 +31,6 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { PageService } from '../../services/page.service';
 import { ServiceConstants } from '../../services/service.constants';
 import { LoggerService } from '../../services/logger.service';
-import { WebContentSvc } from '../../services/content-management.service';
 import { LabelConfig } from './../../shared/param-config';
 /**
  * \@author Dinakar.Meda
@@ -70,7 +69,6 @@ export class HomeLayoutCmp {
         private _route: ActivatedRoute,
         private _router: Router,
         private _logger: LoggerService,
-        private wcs: WebContentSvc,
         private titleService: Title) {
         
     }

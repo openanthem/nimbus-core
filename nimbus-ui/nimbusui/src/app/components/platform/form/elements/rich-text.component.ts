@@ -17,7 +17,6 @@
 'use strict';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, ViewChild, forwardRef, ChangeDetectorRef } from '@angular/core';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { UiNature } from './../../../../shared/param-config';
@@ -45,7 +44,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
     selector: 'nm-input-rich-text',
-    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
+    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, ControlSubscribers],
     template: `
         <nm-input-label
             [element]="element" 
@@ -201,8 +200,8 @@ export class RichText extends BaseControl<String> {
         { key: "Subheading", value: "2" }
     ];
 
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef, counterMessageService: CounterMessageService) {
-        super(controlService, wcs, cd, counterMessageService);
+    constructor(controlService: ControlSubscribers, cd: ChangeDetectorRef, counterMessageService: CounterMessageService) {
+        super(controlService, cd, counterMessageService);
     }
 
     ngOnInit() {

@@ -17,7 +17,6 @@
 'use strict';
 import { Component, Input } from '@angular/core';
 import { Param } from '../../../shared/param-state';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 
 /**
@@ -33,7 +32,7 @@ import { BaseElement } from '../base-element.component';
  */
 @Component({
     selector: 'nm-header',
-    providers: [WebContentSvc],
+    providers: [],
     template:`
         <ng-template [ngIf]="visible == true">
             <H1 *ngIf="size=='H1'">{{label}}</H1>
@@ -49,10 +48,6 @@ import { BaseElement } from '../base-element.component';
 export class Header extends BaseElement {
 
     private size: string;
-
-    constructor(private wcsvc: WebContentSvc) {
-        super(wcsvc);
-    }
 
     ngOnInit() {
         super.ngOnInit();

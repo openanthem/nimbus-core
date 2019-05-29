@@ -17,7 +17,6 @@
 'use strict';
 
 import { Component, Input } from '@angular/core';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
 /**
@@ -29,7 +28,6 @@ import { BaseElement } from '../base-element.component';
  */
 @Component({
     selector: 'nm-field-value',
-    providers: [WebContentSvc],
     template: `
     <div [hidden]="!element?.visible" >
         <!-- <label>{{label}}</label> -->
@@ -44,9 +42,6 @@ import { BaseElement } from '../base-element.component';
 
 export class FieldValue extends BaseElement {
     @Input() element: Param;
-    constructor(private _wcs: WebContentSvc) {
-        super(_wcs);
-    }
 
     ngOnInit() {
         super.ngOnInit();

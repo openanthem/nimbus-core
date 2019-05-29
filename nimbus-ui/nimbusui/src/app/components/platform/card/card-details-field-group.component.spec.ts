@@ -39,7 +39,6 @@ import { CustomHttpClient } from '../../../services/httpclient.service';
 import { DisplayValueDirective } from '../../../directives/display-value.directive';
 import { InputLabel } from '../../platform/form/elements/input-label.component';
 import { CardDetailsFieldGroupComponent } from './card-details-field-group.component';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
 import * as data from '../../../payload.json';
@@ -90,7 +89,6 @@ const imports = [
       SessionStoreService,
       CustomHttpClient,
       NmMessageService,
-      WebContentSvc,
       PageService,
       LoaderService,
       ConfigService,

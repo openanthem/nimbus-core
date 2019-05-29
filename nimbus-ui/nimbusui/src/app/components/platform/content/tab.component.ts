@@ -16,7 +16,6 @@
  */
 'use strict';
 import { Component} from '@angular/core';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 import { ComponentTypes } from './../../../shared/param-annotations.enum';
 import { ViewComponent } from './../../../shared/param-annotations.enum';
@@ -30,7 +29,6 @@ import { ViewComponent } from './../../../shared/param-annotations.enum';
  */
 @Component({
     selector: 'nm-tab',
-    providers: [WebContentSvc],
     template: `    
                 <p-tabView *ngIf="element?.visible">  
                    <ng-template ngFor let-tabPanel let-tabIndex="index" [ngForOf]="nestedParams">
@@ -64,10 +62,6 @@ export class Tab extends BaseElement {
 
     componentTypes = ComponentTypes;
     viewComponent = ViewComponent;
-
-    constructor(private _wcsvc: WebContentSvc) {
-        super(_wcsvc);
-    }
     
     ngOnInit() {
         super.ngOnInit();

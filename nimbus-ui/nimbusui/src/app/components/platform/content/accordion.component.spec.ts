@@ -46,7 +46,6 @@ import { ComboBox } from '../form/elements/combobox.component';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { TooltipComponent } from '../tooltip/tooltip.component';
 import { SelectItemPipe } from '../../../pipes/select-item.pipe';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
@@ -110,11 +109,7 @@ import { NmMessageService } from './../../../services/toastmessage.service';
 import { CounterMessageService } from './../../../services/counter-message.service';
 
 
-let pageService, webContentSvc, configService;
-
-class MockWebContentSvc {
-
-}
+let pageService, configService;
 
 class MockPageService {
     eventUpdate$: Subject<any>;
@@ -252,7 +247,6 @@ const imports = [
   EditorModule
 ];
 const providers = [
-  { provide: WebContentSvc, useClass: MockWebContentSvc },
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   { provide: 'JSNLOG', useValue: JL },
   { provide: LocationStrategy, useClass: HashLocationStrategy },
@@ -282,7 +276,6 @@ describe('Accordion', () => {
     hostComponent = fixture.debugElement.componentInstance;
     hostComponent.element = accordionElementWithForm as Param;
     pageService = TestBed.get(PageService);
-    webContentSvc = TestBed.get(WebContentSvc);
     configService = TestBed.get(ConfigService);
     changeDetectorRef = TestBed.get(ChangeDetectorRef);
   });
@@ -497,7 +490,7 @@ describe('Accordion', () => {
   }));
 
   it('closeAll should clear the index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService);
+    hostComponent.accordion = new Accordion(pageService);
     hostComponent.accordion['tabs'] = true;
     hostComponent.index = [1, 2, 3];
     hostComponent.closeAll();
@@ -505,7 +498,7 @@ describe('Accordion', () => {
   }));
 
   it('closeAll should not clear the index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService);
+    hostComponent.accordion = new Accordion(pageService);
     hostComponent.accordion['tabs'] = false;
     hostComponent.index = [1, 2, 3];
     hostComponent.closeAll();
@@ -513,7 +506,7 @@ describe('Accordion', () => {
   }));
 
   it('openAll() should update index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService);
+    hostComponent.accordion = new Accordion(pageService);
     hostComponent.accordion['tabs'] = [1, 2, 3];
     hostComponent.index = [];
     hostComponent.openAll();
@@ -521,7 +514,7 @@ describe('Accordion', () => {
   }));
 
   it('openAll() should not update index array', async(() => {
-    hostComponent.accordion = new Accordion(webContentSvc, pageService);
+    hostComponent.accordion = new Accordion(pageService);
     hostComponent.index = [];
     hostComponent.openAll();
     expect(hostComponent.index.length).toEqual(0);

@@ -33,7 +33,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { PageResolver } from './page-resolver.service';
 import { PageService } from '../../../services/page.service';
-import { WebContentSvc } from './../../../services/content-management.service';
 import { BreadcrumbService } from './../breadcrumb/breadcrumb.service'
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';

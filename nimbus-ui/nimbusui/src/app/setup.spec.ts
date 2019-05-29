@@ -40,7 +40,6 @@ import { LocationStrategy, HashLocationStrategy, Location } from '@angular/commo
 import { APP_BASE_HREF } from '@angular/common';
 import { WindowRefService } from './services/window-ref.service';
 import { LayoutService } from './services/layout.service';
-import { WebContentSvc } from './services/content-management.service';
 import { AuthenticationService } from './services/authentication.service';
 import { FileService } from './services/file.service';
 import { AppInitService } from "./services/app.init.service";
@@ -70,7 +69,7 @@ import { RouterTestingModule } from '@angular/router/testing'
 import { TestCtx } from 'ng-bullet';
 import { NmMessageService } from './services/toastmessage.service';
 
-export const allproviders =  [ PageService, ConfigService, WebContentSvc, HttpClient, AppInitService,
+export const allproviders =  [ PageService, ConfigService, HttpClient, AppInitService,
     CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
     { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService, Location,

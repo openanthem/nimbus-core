@@ -51,7 +51,6 @@ import { DisplayValueDirective } from '../../../directives/display-value.directi
 import { InputLabel } from '../../platform/form/elements/input-label.component';
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
 import * as data from '../../../payload.json';
@@ -141,7 +140,6 @@ const imports = [
      CustomHttpClient,
      LoaderService,
      ConfigService,
-     WebContentSvc,
      LoggerService,
      AppInitService,
      PrintService

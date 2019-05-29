@@ -19,7 +19,6 @@
 import { Component, ElementRef, Input, OnInit, OnDestroy, ViewChild, NgZone} from '@angular/core';
 import { Param, Model } from '../../../shared/param-state';
 import { DialogModule } from 'primeng/primeng';
-import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
 import { HttpMethod, Behavior} from './../../../shared/command.enum';
 import { GenericDomain } from '../../../model/generic-domain.model';
@@ -45,7 +44,7 @@ import { DomHandler } from 'primeng/components/dom/domhandler';
     selector: 'nm-modal',
     templateUrl: './modal.component.html',
     providers: [
-        WebContentSvc, DomHandler
+        DomHandler
     ]
 })
 export class Modal extends BaseElement implements OnInit, OnDestroy {
@@ -69,8 +68,8 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
         LARGE: { width: '900' }
     };
 
-    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService, private zone: NgZone) {
-        super(wcsvc);
+    constructor(private pageSvc: PageService, private zone: NgZone) {
+        super();
     }
 
     ngOnDestroy() {

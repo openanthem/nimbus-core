@@ -73,7 +73,6 @@ import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
 import { RadioButton } from '../form/elements/radio.component';
 import { Calendar } from '../form/elements/calendar.component';
 import { Signature } from '../form/elements/signature.component';
-import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
@@ -145,10 +144,6 @@ export class MockActivatedRoute implements ActivatedRoute {
   });
   paramMap: Observable<ParamMap>;
   queryParamMap: Observable<ParamMap>;
-}
-
-class MockWebContentSvc {
-
 }
 
 @Component({
@@ -291,7 +286,6 @@ const declarations = [
   EditorModule
  ];
  const providers = [
-  {provide: WebContentSvc, useClass: MockWebContentSvc},
   {provide: ActivatedRoute, useClass: MockActivatedRoute},
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   { provide: 'JSNLOG', useValue: JL },

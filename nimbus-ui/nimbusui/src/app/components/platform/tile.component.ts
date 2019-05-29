@@ -17,7 +17,6 @@
 'use strict';
 
 import { Component, Input } from '@angular/core';
-import { WebContentSvc } from './../../services/content-management.service';
 import { BaseElement } from './base-element.component';
 import { PageService } from '../../services/page.service';
 import { GenericDomain } from './../../model/generic-domain.model';
@@ -43,9 +42,6 @@ import { ViewComponent, ComponentTypes } from '../../shared/param-annotations.en
         },
         `
     ],
-    providers: [
-        WebContentSvc
-    ],
     templateUrl: './tile.component.html'
 })
 
@@ -56,8 +52,8 @@ export class Tile extends BaseElement {
     viewComponent = ViewComponent;
     componentTypes = ComponentTypes;
 
-    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService, private _logger: LoggerService) {
-        super(wcsvc);
+    constructor(private pageSvc: PageService, private _logger: LoggerService) {
+        super();
     }
 
     ngOnInit() {

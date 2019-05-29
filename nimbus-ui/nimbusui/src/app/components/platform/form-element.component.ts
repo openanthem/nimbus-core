@@ -22,7 +22,6 @@ import { Param } from '../../shared/param-state';
 import { Message } from '../../shared/message';
 import { ComponentTypes, ViewComponent } from '../../shared/param-annotations.enum';
 import { BaseElement } from './base-element.component';
-import { WebContentSvc } from './../../services/content-management.service';
 import { ValidationUtils } from './validators/ValidationUtils';
 import { AbstractControl } from '@angular/forms/src/model';
 import { ConstraintMapping } from './../../shared/validationconstraints.enum';
@@ -93,8 +92,8 @@ export class FormElement extends BaseElement {
         return (this.elemMessages != null && this.elemMessages.length > 0);
     }
 
-    constructor(private wcsv: WebContentSvc, private cms: CounterMessageService, private cd: ChangeDetectorRef) { 
-        super(wcsv);
+    constructor(private cms: CounterMessageService, private cd: ChangeDetectorRef) { 
+        super();
     }
 
     getErrorStyles() {

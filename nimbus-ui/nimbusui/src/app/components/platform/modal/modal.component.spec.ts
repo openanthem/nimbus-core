@@ -85,7 +85,6 @@ import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
 import { PrintDirective } from '../../../directives/print.directive';
 import { Subject } from 'rxjs';
-import { WebContentSvc } from './../../../services/content-management.service';
 import { fieldValueParam } from 'mockdata';
 import { InputMaskComp } from './../form/elements/input-mask.component';
 
@@ -230,8 +229,7 @@ const declarations = [
     {provide: PageService, useClass: MockPageService},
     CustomHttpClient,
     LoaderService,
-    ConfigService,
-    WebContentSvc
+    ConfigService
    ];
 let fixture, hostComponent;
 describe('Modal', () => {

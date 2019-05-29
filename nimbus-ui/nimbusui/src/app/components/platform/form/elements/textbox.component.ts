@@ -18,7 +18,6 @@ import { CounterMessageService } from './../../../../services/counter-message.se
 'use strict';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, ViewChild, forwardRef, Input, ChangeDetectorRef } from '@angular/core';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
@@ -38,7 +37,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-input',
-  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers ],
+  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, ControlSubscribers ],
   template: `
     <nm-input-label *ngIf="!isLabelEmpty && (hidden != true) && !this.hideLabel"
         [element]="element" 
@@ -70,8 +69,8 @@ export class InputText extends BaseControl<String> {
 
     @ViewChild(NgModel) model: NgModel;
 
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef, counterMessageService: CounterMessageService) {
-        super(controlService,wcs,cd, counterMessageService);
+    constructor(controlService: ControlSubscribers, cd:ChangeDetectorRef, counterMessageService: CounterMessageService) {
+        super(controlService, cd, counterMessageService);
     }
 
     ngOnInit() {

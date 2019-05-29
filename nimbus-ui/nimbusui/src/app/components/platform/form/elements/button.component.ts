@@ -20,7 +20,6 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
 import { GenericDomain } from './../../../../model/generic-domain.model';
 import { Param } from '../../../../shared/param-state';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from './../../../../services/service.constants';
 import { BaseElement } from '../../base-element.component';
@@ -44,7 +43,6 @@ import { CounterMessageService } from './../../../../services/counter-message.se
  */
 @Component( {
     selector: 'nm-button',
-    providers: [WebContentSvc],
     template: `
         <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc">
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.primary.toString() && element?.visible == true">
@@ -103,10 +101,10 @@ export class Button extends BaseElement {
     differ: KeyValueDiffer<any, any>;
     componentTypes = ComponentTypes;
 
-    constructor( private pageService: PageService, private _wcs: WebContentSvc, 
+    constructor( private pageService: PageService,  
         private location: Location, private fileService: FileService, private http: CustomHttpClient, private logger: LoggerService, private differs: KeyValueDiffers,
         private printService: PrintService, private cms: CounterMessageService) {
-        super(_wcs);
+        super();
     }
 
     emitEvent( $event: any ) {

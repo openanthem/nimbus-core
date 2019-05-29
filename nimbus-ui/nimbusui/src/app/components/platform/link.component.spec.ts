@@ -25,17 +25,12 @@ import { PageService } from '../../services/page.service';
 import { CustomHttpClient } from '../../services/httpclient.service';
 import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
-import { WebContentSvc } from '../../services/content-management.service';
 import { Param, Type, Model } from '../../shared/param-state';
 import { setup, TestContext } from './../../setup.spec';
 import { configureTestSuite } from 'ng-bullet';
 import { fieldValueParam } from 'mockdata';
 
 let pageService, configService, param: Param;
-
-class MockWebContentSvc {
-
-}
 
 class MockPageService {
     processEvent(a, b, c, d) {
@@ -51,7 +46,6 @@ const  imports = [
      HttpClientTestingModule
  ];
 const providers = [
-     {provide: WebContentSvc, useClass: MockWebContentSvc},
      {provide: PageService, useClass: MockPageService},
      CustomHttpClient,
      LoaderService,

@@ -20,7 +20,6 @@ import { ControlValueAccessor } from '@angular/forms/src/directives';
 import { Component, Input, Output, EventEmitter,forwardRef, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Param } from '../../../../shared/param-state';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';
 import { BaseElement } from './../../base-element.component';
@@ -44,7 +43,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-input-checkbox',
-  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc ],
+  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR ],
   template: `
       <fieldset>
         <div class="fieldsetFlex">
@@ -67,8 +66,8 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
     @Output() controlValueChanged =new EventEmitter();
     sendEvent: boolean = true;
 
-    constructor(private pageService: PageService, private _wcs: WebContentSvc, private cd: ChangeDetectorRef, private counterMessageService:CounterMessageService) {
-        super(_wcs);    
+    constructor(private pageService: PageService, private cd: ChangeDetectorRef, private counterMessageService:CounterMessageService) {
+        super();    
     }
 
     public onChange: any = (_) => { /*Empty*/ }

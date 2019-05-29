@@ -17,7 +17,6 @@
 'use strict';
 import { Component, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
 
@@ -34,9 +33,6 @@ import { BaseElement } from '../base-element.component';
 
 @Component({
   selector: 'nm-paragraph',
-  providers: [
-      WebContentSvc
-  ],
   template: `
       <p *ngIf="visible == true" [innerHTML]="htmlContent"></p>
    `
@@ -45,8 +41,8 @@ export class Paragraph extends BaseElement {
 
     private _htmlContent: string;
 
-    constructor(private wcsvc: WebContentSvc, private _sanitizer: DomSanitizer) {
-        super(wcsvc);
+    constructor(private _sanitizer: DomSanitizer) {
+        super();
     }
     
     public get htmlContent() : SafeHtml {

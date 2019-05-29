@@ -27,7 +27,6 @@ import { Table } from 'primeng/table';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { ParamUtils } from './../../../shared/param-utils';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { ParamConfig } from '../../../shared/param-config';
@@ -62,7 +61,7 @@ var counter = 0;
 
 @Component({
     selector: 'nm-table',
-    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, DateTimeFormatPipe],
+    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, DateTimeFormatPipe],
     encapsulation: ViewEncapsulation.None,
     templateUrl: './table.component.html'
 })
@@ -136,14 +135,13 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
 
     constructor(
         private pageSvc: PageService,
-        protected _wcs: WebContentSvc,
         private gridService: GridService,
         private dtFormat: DateTimeFormatPipe,
         protected cd: ChangeDetectorRef,
         private configService: ConfigService,
         private counterMessageService: CounterMessageService) {
 
-        super(_wcs, cd);
+        super(cd);
     }
 
 

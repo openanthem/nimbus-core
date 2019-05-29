@@ -20,7 +20,6 @@ import { ActionDropdown } from './form/elements/action-dropdown.component';
 import { fromEvent as observableFromEvent, Subscription } from 'rxjs';
 import { first, filter } from 'rxjs/operators';
 import { Component, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
-import { WebContentSvc } from './../../services/content-management.service';
 import { BaseElement } from './base-element.component';
 
 /**
@@ -29,7 +28,6 @@ import { BaseElement } from './base-element.component';
  */
 @Component({
     selector: 'nm-base-table-element',
-    providers: [ WebContentSvc ],
     template: ``
 })
 export class BaseTableElement extends BaseElement {
@@ -39,9 +37,8 @@ export class BaseTableElement extends BaseElement {
     mouseEventSubscription: Subscription;
 
     constructor(
-        protected _wcs: WebContentSvc, 
         protected cd: ChangeDetectorRef) {
-            super(_wcs);
+            super();
     }
 
     toggleOpen(e: any) {

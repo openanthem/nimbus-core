@@ -102,7 +102,6 @@ import { FormErrorMessage } from '../form-error-message.component';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../setup.spec';
 import * as data from '../../../payload.json';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { PrintDirective } from '../../../directives/print.directive';
 import { By } from '@angular/platform-browser';
 import { ServiceConstants } from '../../../services/service.constants';
@@ -117,7 +116,7 @@ import { NmAutocomplete } from './../form/elements/autocomplete.component';
 import { RichText } from '../form/elements/rich-text.component';
 import { CounterMessageService } from '../../../services/counter-message.service';
 
-let configService, pageService, elementRef, objectUtils, domHandler, tableService, cd, param, webContentSvc;
+let configService, pageService, elementRef, objectUtils, domHandler, tableService, cd, param;
 
 @Component({
     selector: 'nm-section',
@@ -305,7 +304,6 @@ const providers = [
    DomHandler,
    TableService,
    SessionStoreService,
-   WebContentSvc,
    ChangeDetectorRef,
    WindowRefService,
    AppInitService,
@@ -336,7 +334,6 @@ describe('DataTable', () => {
         domHandler = TestBed.get(DomHandler);
         tableService = TestBed.get(TableService);
         cd = TestBed.get(ChangeDetectorRef);
-        webContentSvc = TestBed.get(WebContentSvc);
     });
 
     it('should create the DataTable', () => {
@@ -1269,13 +1266,13 @@ describe('DataTable', () => {
     });
 
     it('isClickedOnDropDown() should return true', () => {
-        const dArray = new ActionDropdown(webContentSvc, pageService, elementRef);
+        const dArray = new ActionDropdown(pageService, elementRef);
         dArray['elementRef'].nativeElement.contains = () => { return true };
         expect(hostComponent.isClickedOnDropDown([dArray], 'te')).toBeTruthy();
     });
 
     it('isClickedOnDropDown() should return false', () => {
-        const dArray = new ActionDropdown(webContentSvc, pageService, elementRef);
+        const dArray = new ActionDropdown(pageService, elementRef);
         dArray['elementRef'].nativeElement.contains = () => { return false };
         expect(hostComponent.isClickedOnDropDown([dArray], 'te')).toBeFalsy();
     });

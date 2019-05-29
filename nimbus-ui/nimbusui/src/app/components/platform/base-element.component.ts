@@ -19,7 +19,6 @@ import { Message } from './../../shared/message';
 
 import { Component, Input } from '@angular/core';
 import { Param } from '../../shared/param-state';
-import { WebContentSvc } from '../../services/content-management.service';
 import { LabelConfig } from './../../shared/param-config';
 import { ValidationUtils } from './validators/ValidationUtils';
 import { ParamUtils } from '../../shared/param-utils';
@@ -37,10 +36,7 @@ import { Subscription } from 'rxjs';
 @Component({
     selector: 'nm-base-element',
     template:`
-    `,
-    providers: [
-        WebContentSvc
-    ]
+    `
 })
 /**
  * \@author Dinakar.Meda
@@ -66,11 +62,7 @@ export class BaseElement {
     labelSize: String;
     @Input() position: number;
 
-    subscribers: Subscription[] = []
-
-    constructor(private wcs: WebContentSvc) {
-        
-    }
+    subscribers: Subscription[] = [];
 
     /**
      * Initialization activities this Param

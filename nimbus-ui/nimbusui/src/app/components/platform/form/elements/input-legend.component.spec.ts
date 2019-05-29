@@ -35,7 +35,6 @@ import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
 import { InputLegend } from './input-legend.component';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { configureTestSuite } from 'ng-bullet';
 import { setup, TestContext } from '../../../../setup.spec';
 import { Param } from '../../../../shared/param-state';
@@ -67,7 +66,6 @@ const declarations = [
   LoggerService,
   SessionStoreService,
   AppInitService,
-  WebContentSvc,
   NmMessageService,
   WindowRefService
  ];

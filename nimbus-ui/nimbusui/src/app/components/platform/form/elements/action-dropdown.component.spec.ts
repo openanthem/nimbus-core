@@ -36,7 +36,6 @@ import { ConfigService } from '../../../../services/config.service';
 import { Page } from '../../../../shared/app-config.interface';
 import { ParamConfig } from '../../../../shared/param-config';
 import { Param } from '../../../../shared/param-state';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
@@ -202,7 +201,6 @@ const providers1 = [
   { provide: 'JSNLOG', useValue: JL },
   { provide: LocationStrategy, useClass: HashLocationStrategy },
   Location,
-  WebContentSvc,
   CustomHttpClient,
   LoaderService,
   ConfigService,

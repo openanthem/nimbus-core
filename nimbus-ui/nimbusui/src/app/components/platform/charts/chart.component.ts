@@ -18,7 +18,6 @@
 import { Component, Input } from '@angular/core';
 import { Param } from '../../../shared/param-state';
 import { DataSets, ChartData, DataGroup, ChartType } from './chartdata';
-import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from './../../../services/page.service';
 /**
  * \@author Sandeep.Mantha

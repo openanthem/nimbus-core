@@ -18,7 +18,6 @@
 'use strict';
 import { NgModel, NG_VALUE_ACCESSOR, FormGroup, ControlValueAccessor, Validators } from '@angular/forms';
 import { Component, ViewChild, ChangeDetectorRef, forwardRef, Input } from '@angular/core';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
 import { InputMask } from 'primeng/primeng';
@@ -41,7 +40,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 
 @Component({
 	selector: 'nm-input-mask',
-	providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
+	providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, ControlSubscribers],
 	template: `
 	<div >
 		<nm-input-label *ngIf="!isLabelEmpty && (hidden != true)"
@@ -71,8 +70,8 @@ export class InputMaskComp extends BaseControl<String>  {
 	@ViewChild(NgModel) model: NgModel;
 	@ViewChild('inputMask') inputMask: InputMask;
 
-	constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef, counterMessageService: CounterMessageService) {
-		super(controlService, wcs, cd, counterMessageService);
+	constructor(controlService: ControlSubscribers, cd: ChangeDetectorRef, counterMessageService: CounterMessageService) {
+		super(controlService, cd, counterMessageService);
 	}
 
 	ngOnInit() {
