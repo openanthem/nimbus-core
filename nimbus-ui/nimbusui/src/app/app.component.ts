@@ -15,9 +15,10 @@
  * limitations under the License.
  * 
  */
+
 'use strict';
-import { Component, ViewEncapsulation } from '@angular/core';
-import { HostListener } from '@angular/core';
+
+import { Component, HostListener, ViewEncapsulation } from '@angular/core';
 
 /**
  * \@author Dinakar.Meda

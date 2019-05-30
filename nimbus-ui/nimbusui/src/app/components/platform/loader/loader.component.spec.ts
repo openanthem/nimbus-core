@@ -16,13 +16,13 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-
-import { LoaderComponent } from './loader.component';
-import { LoaderService } from './../../../services/loader.service';
-import { Subject, Subscription } from 'rxjs/Rx';
+import { TestBed } from '@angular/core/testing';
 import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
+import { Subject, Subscription } from 'rxjs/Rx';
+import { setup } from '../../../setup.spec';
+import { LoaderService } from './../../../services/loader.service';
+import { LoaderComponent } from './loader.component';
+
 
 class MockLoaderService {
     public loaderUpdate: Subject<any>;

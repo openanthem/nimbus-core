@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Component, Input, forwardRef } from '@angular/core';
-import { FormGroup, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+
+import { Component, forwardRef, Input } from '@angular/core';
+import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { PageService } from '../../../../services/page.service';
 import { Param } from '../../../../shared/param-state';
-import { BaseElement } from './../../base-element.component';
 import { CounterMessageService } from './../../../../services/counter-message.service';
+import { BaseElement } from './../../base-element.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,

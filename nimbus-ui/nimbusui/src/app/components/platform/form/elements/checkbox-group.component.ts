@@ -1,4 +1,3 @@
-import { AbstractControl } from '@angular/forms';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -15,17 +14,18 @@ import { AbstractControl } from '@angular/forms';
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
+
+import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
+import { AbstractControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
-import { Component, Input, Output, EventEmitter,forwardRef, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Param } from '../../../../shared/param-state';
-import { PageService } from '../../../../services/page.service';
-import { ServiceConstants } from '../../../../services/service.constants';
-import { BaseElement } from './../../base-element.component';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
+import { PageService } from '../../../../services/page.service';
+import { Param } from '../../../../shared/param-state';
 import { ValidationUtils } from '../../validators/ValidationUtils';
 import { CounterMessageService } from './../../../../services/counter-message.service';
+import { BaseElement } from './../../base-element.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,

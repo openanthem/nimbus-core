@@ -15,39 +15,35 @@
  * limitations under the License.
  */
 
-import { Param } from './../../../../shared/param-state';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
-    FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule  } from 'primeng/primeng';
+import { async, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { By } from '@angular/platform-browser';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-import { of as observableOf,  Observable } from 'rxjs';
+import { pickListElement, pickListParent } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { PickListModule } from 'primeng/primeng';
 import { Subject } from 'rxjs';
-import { EventEmitter } from '@angular/core';
-
-import { OrderablePickList } from './picklist.component';
-import { PageService } from '../../../../services/page.service';
+import { GenericDomain } from '../../../../model/generic-domain.model';
+import { AppInitService } from '../../../../services/app.init.service';
+import { ConfigService } from '../../../../services/config.service';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
-import { AppInitService } from '../../../../services/app.init.service';
-import { InputLabel } from './input-label.component';
-import { TooltipComponent } from '../../tooltip/tooltip.component';
-import { GenericDomain } from '../../../../model/generic-domain.model';
-import { ValidationUtils } from './../../validators/ValidationUtils';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-import { Validators, FormControl, ValidatorFn, FormGroup } from '@angular/forms';
-import { pickListElement, pickListParent } from 'mockdata';
-import { By } from '@angular/platform-browser';
+import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';
-import { CounterMessageService } from '../../../../services/counter-message.service';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import { setup } from '../../../../setup.spec';
+import { TooltipComponent } from '../../tooltip/tooltip.component';
+import { Param } from './../../../../shared/param-state';
+import { ValidationUtils } from './../../validators/ValidationUtils';
+import { InputLabel } from './input-label.component';
+import { OrderablePickList } from './picklist.component';
+'use strict';
+
 
 let pageService;
 

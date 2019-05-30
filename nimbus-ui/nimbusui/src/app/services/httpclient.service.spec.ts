@@ -15,14 +15,12 @@
  * limitations under the License.
  */
 
-import { TestBed, inject, async } from '@angular/core/testing';
-import { HttpClient, HttpRequest } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
-
 import { CustomHttpClient } from './httpclient.service';
-import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
+import { CUSTOM_STORAGE, SessionStoreService } from './session.store';
+
 
 let backend, service;
 

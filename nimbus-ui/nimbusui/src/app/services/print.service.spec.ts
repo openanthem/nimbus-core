@@ -14,20 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TestBed, async } from '@angular/core/testing';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { JL } from 'jsnlog';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { Location } from '@angular/common';
-
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
 import { CustomHttpClient } from './httpclient.service';
 import { LoaderService } from './loader.service';
 import { LoggerService } from './logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
-
 import { PrintService } from './print.service';
+import { CUSTOM_STORAGE, SessionStoreService } from './session.store';
+
+
 
 let http, backend, service;
 

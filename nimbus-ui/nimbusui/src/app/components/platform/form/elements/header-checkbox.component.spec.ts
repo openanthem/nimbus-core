@@ -17,16 +17,15 @@
 
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { of as observableOf,  Observable } from 'rxjs';
-
-import { HeaderCheckBox } from './header-checkbox.component';
+import { TestBed } from '@angular/core/testing';
 import { EventEmitter } from 'events';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-import { Table } from 'primeng/table';
-import { Param } from '../../../../shared/param-state';
 import { fieldValueParam } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { Table } from 'primeng/table';
+import { of as observableOf } from 'rxjs';
+import { setup, TestContext } from '../../../../setup.spec';
+import { HeaderCheckBox } from './header-checkbox.component';
+
 
 let fixture, hostComponent;
 const declarations = [HeaderCheckBox];

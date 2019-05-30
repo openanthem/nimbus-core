@@ -1,4 +1,3 @@
-
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -15,27 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
-import { Component, EventEmitter, Injectable, Inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 
-import { Result, ViewRoot } from '../shared/app-config.interface';
-import { UiAttribute } from '../shared/param-config';
-import { Param, Model } from '../shared/param-state';
-import { ServiceConstants } from './service.constants';
-import { PageService } from './page.service';
-import { ConfigService } from './config.service';
-import { CustomHttpClient } from './httpclient.service';
-import { AppBranding, Layout, TopBarConfig, FooterConfig, MenuPanel } from '../model/menu-meta.interface';
+'use strict';
+
+import { HttpClient } from '@angular/common/http';
+import { Component, EventEmitter, Inject, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { GenericDomain } from '../model/generic-domain.model';
-import { ViewComponent } from './../shared/param-annotations.enum';
-import { LoggerService } from './logger.service';
+import { AppBranding, FooterConfig, Layout, MenuPanel, TopBarConfig } from '../model/menu-meta.interface';
+import { Result, ViewRoot } from '../shared/app-config.interface';
 import { MenuItem } from '../shared/menuitem';
+import { UiAttribute } from '../shared/param-config';
+import { Model, Param } from '../shared/param-state';
 import { Action, Behavior } from './../shared/command.enum';
-import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
+import { ViewComponent } from './../shared/param-annotations.enum';
 import { ParamUtils } from './../shared/param-utils';
 import { URLUtils } from './../shared/url-utils';
+import { ConfigService } from './config.service';
+import { CustomHttpClient } from './httpclient.service';
+import { LoggerService } from './logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
+import { PageService } from './page.service';
+import { ServiceConstants } from './service.constants';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 

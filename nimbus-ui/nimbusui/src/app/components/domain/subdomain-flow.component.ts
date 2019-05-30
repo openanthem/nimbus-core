@@ -14,16 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { ActivatedRoute, Router } from '@angular/router';
+
 import { Component } from '@angular/core';
-import { LayoutService } from '../../services/layout.service';
-import { PageService } from '../../services/page.service';
-import { Layout, LinkConfig } from '../../model/menu-meta.interface';
-import { Page } from '../../shared/app-config.interface';
-import { Param } from '../../shared/param-state';
-import { LoggerService } from '../../services/logger.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
+import { LinkConfig } from '../../model/menu-meta.interface';
+import { LayoutService } from '../../services/layout.service';
+import { LoggerService } from '../../services/logger.service';
+import { PageService } from '../../services/page.service';
+import { Param } from '../../shared/param-state';
+
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 

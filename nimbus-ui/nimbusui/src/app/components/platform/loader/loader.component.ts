@@ -21,10 +21,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
 'use strict';
-import { LoaderState } from './loader.state';
-import { LoaderService } from './../../../services/loader.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+
+import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { LoaderService } from './../../../services/loader.service';
+import { LoaderState } from './loader.state';
 
 /**
  * 

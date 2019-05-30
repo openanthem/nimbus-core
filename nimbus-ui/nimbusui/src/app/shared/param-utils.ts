@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { ServiceConstants } from '../services/service.constants';
-import { Param } from './param-state';
-import { LabelConfig } from './param-config';
-import { UiNature } from './param-config';
-import { ValidationUtils } from '../components/platform/validators/ValidationUtils';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
+import { ValidationUtils } from '../components/platform/validators/ValidationUtils';
+import { ServiceConstants } from '../services/service.constants';
 import { TableComponentConstants } from './../components/platform/grid/table.component.constants';
+import { LabelConfig, UiNature } from './param-config';
+import { Param } from './param-state';
 
 /**
  * \@author Tony.Lopez

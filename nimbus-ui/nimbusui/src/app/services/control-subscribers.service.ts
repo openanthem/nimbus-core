@@ -14,18 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Injectable, EventEmitter, Output } from '@angular/core';
-import { PageService } from './page.service';
-import { ValidationUtils } from '../components/platform/validators/ValidationUtils';
+
+import { EventEmitter, Injectable, Output } from '@angular/core';
+import { AbstractControl } from '@angular/forms/src/model';
+import { Subscription } from 'rxjs';
 import { BaseControl } from '../components/platform/form/elements/base-control.component';
-import { ValidatorFn } from '@angular/forms/src/directives/validators';
+import { HttpMethod } from '../shared/command.enum';
 import { GenericDomain } from './../model/generic-domain.model';
 import { Param } from './../shared/param-state';
-import { HttpMethod } from '../shared/command.enum';
-import { AbstractControl } from '@angular/forms/src/model';
 import { ParamUtils } from './../shared/param-utils';
-import { Subscription } from 'rxjs';
+import { PageService } from './page.service';
 
 /**
  * \@author Sandeep.Mantha

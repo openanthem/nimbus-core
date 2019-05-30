@@ -17,17 +17,16 @@
 
 'use strict';
 
-import { LabelConfig, Constraint } from './../../../../shared/param-config';
-import { BaseControlValueAccessor } from './control-value-accessor.component';
-import { Input, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Input } from '@angular/core';
 import { FormGroup, NgModel } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Param } from '../../../../shared/param-state';
 import { ValidationUtils } from '../../validators/ValidationUtils';
-import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
-import { Subscription } from 'rxjs';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
-import { ParamUtils } from './../../../../shared/param-utils';
 import { CounterMessageService } from './../../../../services/counter-message.service';
+import { Constraint } from './../../../../shared/param-config';
+import { ParamUtils } from './../../../../shared/param-utils';
+import { BaseControlValueAccessor } from './control-value-accessor.component';
 
 /**
  * \@author Dinakar.Meda

@@ -16,13 +16,13 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-
-import { TooltipComponent } from './tooltip.component';
-import { WindowRefService } from '../../../services/window-ref.service';
+import { async, TestBed } from '@angular/core/testing';
 import { DomSanitizer } from '@angular/platform-browser';
 import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
+import { WindowRefService } from '../../../services/window-ref.service';
+import { setup } from '../../../setup.spec';
+import { TooltipComponent } from './tooltip.component';
+
 
 let domSanitizer;
 

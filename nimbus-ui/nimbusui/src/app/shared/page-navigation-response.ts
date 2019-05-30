@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import { Converter } from './object.conversion';
+'use strict';
 
- 'use strict';
+import { Converter } from './object.conversion';
 
 /**
  * \@author Tony Lopez

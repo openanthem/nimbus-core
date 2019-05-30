@@ -14,15 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Component, Input, QueryList, ViewChildren } from '@angular/core';
+
+import { state, style, trigger } from '@angular/animations';
+import { Component, HostListener, Input, QueryList, ViewChildren } from '@angular/core';
+import { LayoutService } from '../../services/layout.service';
+import { LoggerService } from '../../services/logger.service';
+import { PageService } from '../../services/page.service';
 import { Param } from './../../shared/param-state';
 import { BaseElement } from './base-element.component';
-import { PageService } from '../../services/page.service';
-import { LoggerService } from '../../services/logger.service';
-import { LayoutService } from '../../services/layout.service';
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
-import { HostListener } from '@angular/core';
 
 /**
  * \@author Vivek Kamineni

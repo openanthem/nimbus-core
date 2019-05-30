@@ -16,8 +16,8 @@
  */
 'use strict';
 
-import { Injectable, EventEmitter } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { EventEmitter, Injectable } from '@angular/core';
+import { Headers, Http, RequestOptions } from '@angular/http';
 import { map } from 'rxjs/operators';
 import { LoggerService } from './logger.service';
 

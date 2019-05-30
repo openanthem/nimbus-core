@@ -15,27 +15,25 @@
  * limitations under the License.
  */
 
-import { Param } from './../../../../shared/param-state';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { ChangeDetectorRef, ViewChild, Component, EventEmitter } from '@angular/core';
-import { FormGroup, NgModel, Validators, FormControl, ValidatorFn } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { of as observableOf,  Observable } from 'rxjs';
-
-import { BaseControl } from './base-control.component';
+import { ChangeDetectorRef, Component, EventEmitter, ViewChild } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, NgModel, ValidatorFn, Validators } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { fieldValueParam } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { ConfigService } from '../../../../services/config.service';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
-import { PageService } from '../../../../services/page.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
-import { ValidationUtils } from '../../validators/ValidationUtils';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
+import { PageService } from '../../../../services/page.service';
+import { setup } from '../../../../setup.spec';
 import { Constraint } from '../../../../shared/param-config';
-import { fieldValueParam } from 'mockdata';
+import { ValidationUtils } from '../../validators/ValidationUtils';
 import { CounterMessageService } from './../../../../services/counter-message.service';
+import { BaseControl } from './base-control.component';
+'use strict';
+
 
 let changeDetectorRef, controlSubscribers;
 

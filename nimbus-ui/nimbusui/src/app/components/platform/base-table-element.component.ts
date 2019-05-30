@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { ActionDropdown } from './form/elements/action-dropdown.component';
+import { ChangeDetectorRef, Component, QueryList, ViewChildren } from '@angular/core';
 import { fromEvent as observableFromEvent, Subscription } from 'rxjs';
-import { first, filter } from 'rxjs/operators';
-import { Component, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
+import { filter, first } from 'rxjs/operators';
 import { BaseElement } from './base-element.component';
+import { ActionDropdown } from './form/elements/action-dropdown.component';
 
 /**
  * \@author Tony Lopez

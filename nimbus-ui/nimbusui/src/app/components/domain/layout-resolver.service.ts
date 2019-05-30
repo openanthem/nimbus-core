@@ -1,4 +1,3 @@
-import { ViewRoot } from './../../shared/app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -15,15 +14,17 @@ import { ViewRoot } from './../../shared/app-config.interface';
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+
+ 'use strict';
 
 import { Injectable } from '@angular/core';
-import { Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
-import { PageService } from '../../services/page.service';
 import { ConfigService } from '../../services/config.service';
 import { LoggerService } from '../../services/logger.service';
+import { PageService } from '../../services/page.service';
+import { ViewRoot } from './../../shared/app-config.interface';
 
 /**
  * \@author Dinakar.Meda

@@ -15,21 +15,19 @@
  * limitations under the License.
  */
 
-import { TestBed, inject, async } from '@angular/core/testing';
-import { HttpClient, HttpRequest } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing'
-import { Router, Resolve } from '@angular/router';
-import { ActivatedRoute, Route, ActivatedRouteSnapshot, UrlSegment, Params, Data, ParamMap } from '@angular/router';
-import { of as observableOf,  Observable } from 'rxjs';
-
-import { FlowResolver } from './flow-resolver.service';
-import { PageService } from '../../../services/page.service';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
+import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Params, Route, Router, UrlSegment } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Observable, of as observableOf, Subject } from 'rxjs';
+import { ConfigService } from '../../../services/config.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
-import { ConfigService } from '../../../services/config.service';
-import { Subject } from 'rxjs';
+import { PageService } from '../../../services/page.service';
+import { FlowResolver } from './flow-resolver.service';
+
 
 let http, backend, service, pageservice, configservice, router, activatedroute;
 

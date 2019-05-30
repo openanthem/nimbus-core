@@ -14,9 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Directive, ElementRef, Renderer2, Input, SimpleChanges } from '@angular/core';
+
+import { Directive, ElementRef, Input, Renderer2, SimpleChanges } from '@angular/core';
 import { ParamConfig } from '../shared/param-config';
+
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 

@@ -16,35 +16,35 @@
  */
 
 
-import { NmMessageService } from './../../../../services/toastmessage.service';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { DropdownModule } from 'primeng/primeng';
-import { FormsModule } from '@angular/forms';
+import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { async, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { By } from '@angular/platform-browser';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
-
-import { ComboBox } from './combobox.component';
-import { TooltipComponent } from '../../../platform/tooltip/tooltip.component';
+import { comboBoxElement } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { DropdownModule } from 'primeng/primeng';
 import { SelectItemPipe } from '../../../../pipes/select-item.pipe';
-import { PageService } from '../../../../services/page.service';
+import { AppInitService } from '../../../../services/app.init.service';
+import { ConfigService } from '../../../../services/config.service';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
-import { AppInitService } from '../../../../services/app.init.service';
-import { InputLabel } from './input-label.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-import { Param } from '../../../../shared/param-state';
-import { comboBoxElement } from 'mockdata';
+import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';
-import { By } from '@angular/platform-browser';
-import { CounterMessageService } from '../../../../services/counter-message.service';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import { setup } from '../../../../setup.spec';
+import { Param } from '../../../../shared/param-state';
+import { TooltipComponent } from '../../../platform/tooltip/tooltip.component';
+import { NmMessageService } from './../../../../services/toastmessage.service';
+import { ComboBox } from './combobox.component';
+import { InputLabel } from './input-label.component';
+'use strict';
+
 
 const declarations = [
   ComboBox,

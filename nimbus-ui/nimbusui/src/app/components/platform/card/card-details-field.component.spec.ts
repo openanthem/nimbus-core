@@ -15,41 +15,40 @@
  * limitations under the License.
  */
 
-
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import { DropdownModule, TooltipModule } from 'primeng/primeng';
+
+import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { Component, Input, ViewChild } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { By } from '@angular/platform-browser';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
-import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
-
-import { PageService } from './../../../services/page.service';
-import { CardDetailsFieldComponent } from './card-details-field.component';
-import { InputText } from '../form/elements/textbox.component';
-import { TextArea } from '../form/elements/textarea.component';
-import { ComboBox } from '../form/elements/combobox.component';
-import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
-import { TooltipComponent } from '../tooltip/tooltip.component';
-import { SelectItemPipe } from '../../../pipes/select-item.pipe';
-import { CustomHttpClient } from '../../../services/httpclient.service';
-import { DisplayValueDirective } from '../../../directives/display-value.directive';
-import { InputLabel } from '../../platform/form/elements/input-label.component';
+import { cardDetailsFieldInputLabel, cardDetailsFieldInputLabelNoDate, cardDetailsFieldNmDisplayValueParam, cardDetailsFieldParam } from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
-import * as data from '../../../payload.json';
-import { Values, Param } from '../../../shared/param-state';
-import { SessionStoreService, CUSTOM_STORAGE } from './../../../services/session.store';
-import { LoaderService } from './../../../services/loader.service';
-import { ConfigService } from './../../../services/config.service';
-import { LoggerService } from '../../../services/logger.service';
+import { DropdownModule, TooltipModule } from 'primeng/primeng';
+import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
+import { SelectItemPipe } from '../../../pipes/select-item.pipe';
 import { AppInitService } from '../../../services/app.init.service';
-import { cardDetailsFieldInputLabel, cardDetailsFieldInputLabelNoDate, cardDetailsFieldParam, cardDetailsFieldNmDisplayValueParam } from 'mockdata';
+import { CustomHttpClient } from '../../../services/httpclient.service';
+import { LoggerService } from '../../../services/logger.service';
+import { setup } from '../../../setup.spec';
+import { Values } from '../../../shared/param-state';
+import { InputLabel } from '../../platform/form/elements/input-label.component';
+import { ComboBox } from '../form/elements/combobox.component';
+import { TextArea } from '../form/elements/textarea.component';
+import { InputText } from '../form/elements/textbox.component';
+import { TooltipComponent } from '../tooltip/tooltip.component';
+import { ConfigService } from './../../../services/config.service';
+import { LoaderService } from './../../../services/loader.service';
+import { PageService } from './../../../services/page.service';
+import { CUSTOM_STORAGE, SessionStoreService } from './../../../services/session.store';
 import { NmMessageService } from './../../../services/toastmessage.service';
+import { CardDetailsFieldComponent } from './card-details-field.component';
+
 
 @Component({
   template: '<div></div>',

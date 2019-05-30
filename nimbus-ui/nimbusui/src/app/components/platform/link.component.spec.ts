@@ -16,19 +16,19 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-
-import { Link } from './link.component';
-import { PageService } from '../../services/page.service';
+import { TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
+import { fieldValueParam } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { ConfigService } from '../../services/config.service';
 import { CustomHttpClient } from '../../services/httpclient.service';
 import { LoaderService } from '../../services/loader.service';
-import { ConfigService } from '../../services/config.service';
-import { Param, Type, Model } from '../../shared/param-state';
-import { setup, TestContext } from './../../setup.spec';
-import { configureTestSuite } from 'ng-bullet';
-import { fieldValueParam } from 'mockdata';
+import { PageService } from '../../services/page.service';
+import { Model, Param, Type } from '../../shared/param-state';
+import { setup } from './../../setup.spec';
+import { Link } from './link.component';
+
 
 let pageService, configService, param: Param;
 

@@ -16,30 +16,29 @@
  */
 
 
-import { NmMessageService } from './../../../services/toastmessage.service';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
+import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { async, TestBed } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
-
-import { Label } from './label.component';
-import { TooltipComponent } from '../tooltip/tooltip.component';
-import { PageService } from '../../../services/page.service';
-import { CustomHttpClient } from '../../../services/httpclient.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
-import { LoaderService } from '../../../services/loader.service';
-import { ConfigService } from '../../../services/config.service';
-import { LoggerService } from '../../../services/logger.service';
-import { AppInitService } from '../../../services/app.init.service';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
-import { Param } from '../../../shared/param-state';
 import { fieldValueParam } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { AppInitService } from '../../../services/app.init.service';
+import { ConfigService } from '../../../services/config.service';
 import { CounterMessageService } from '../../../services/counter-message.service';
+import { CustomHttpClient } from '../../../services/httpclient.service';
+import { LoaderService } from '../../../services/loader.service';
+import { LoggerService } from '../../../services/logger.service';
+import { PageService } from '../../../services/page.service';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../../services/session.store';
+import { setup } from '../../../setup.spec';
 import { ParamUtils } from '../../../shared/param-utils';
+import { TooltipComponent } from '../tooltip/tooltip.component';
+import { NmMessageService } from './../../../services/toastmessage.service';
+import { Label } from './label.component';
+'use strict';
+
 
 const declarations = [
   Label,

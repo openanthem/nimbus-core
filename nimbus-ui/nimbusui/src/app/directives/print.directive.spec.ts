@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TestBed, async } from '@angular/core/testing';
-
-import { PrintDirective } from './print.directive';
-import { Directive, ElementRef, Input } from '@angular/core';
+import { ElementRef } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { printDirectiveElement, printServiceSubject } from 'mockdata';
+import { Subject, Subscription } from 'rxjs';
 import { LoggerService } from '../services/logger.service';
 import { PrintService } from '../services/print.service';
-import { Subject, Subscription } from 'rxjs';
 import { WindowRefService } from './../services/window-ref.service';
-import { printServiceSubject, printDirectiveElement } from 'mockdata';
+import { PrintDirective } from './print.directive';
+
 
 class MockElementRef {
     nativeElement = {

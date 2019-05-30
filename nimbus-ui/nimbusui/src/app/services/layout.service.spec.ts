@@ -1,40 +1,22 @@
-import { ServiceConstants } from './service.constants';
-/**
- * @license
- * Copyright 2016-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import { ViewComponent } from './../shared/param-annotations.enum';
-import { TestBed, inject, async } from '@angular/core/testing';
-import { HttpClient, HttpRequest } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
-import { of as observableOf,  Observable } from 'rxjs';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
 import { Router } from '@angular/router';
-
-import { LayoutService } from './layout.service';
-import { CustomHttpClient } from './httpclient.service';
-import { PageService } from './page.service';
-import { ConfigService } from './config.service';
-import { LoggerService } from './logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
-import { LoaderService } from './loader.service';
-import { configServiceFlowConfigs, configServiceParamConfigs, layoutServicePageParam } from 'mockdata'
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { configServiceFlowConfigs, configServiceParamConfigs, layoutServicePageParam } from 'mockdata';
+import { of as observableOf } from 'rxjs';
 import { GenericDomain } from '../model/generic-domain.model';
 import { URLUtils } from './../shared/url-utils';
+import { ConfigService } from './config.service';
+import { CustomHttpClient } from './httpclient.service';
+import { LayoutService } from './layout.service';
+import { LoaderService } from './loader.service';
+import { LoggerService } from './logger.service';
+import { PageService } from './page.service';
+import { ServiceConstants } from './service.constants';
+import { CUSTOM_STORAGE, SessionStoreService } from './session.store';
+
 
 let http, backend, service, configService, sessionStoreService, mockHttpClient, logger, pageService;
 

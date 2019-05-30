@@ -14,17 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { ConfigService } from './../services/config.service';
-import { ParamUtils } from './param-utils';
-import { Converter } from './object.conversion';
-import { Serializable } from './serializable';
-import { ParamConfig, LabelConfig } from './param-config';
-import { Message } from './message';
-import { ViewComponent } from './param-annotations.enum';
 import { DataGroup } from './../components/platform/charts/chartdata';
 import { TableComponentConstants } from './../components/platform/grid/table.component.constants';
+import { ConfigService } from './../services/config.service';
+import { Message } from './message';
+import { Converter } from './object.conversion';
+import { ViewComponent } from './param-annotations.enum';
+import { LabelConfig, ParamConfig } from './param-config';
+import { ParamUtils } from './param-utils';
+import { Serializable } from './serializable';
 
 export interface NestedParams {[id:string]: Param;};
 export interface CollectionParams { [id: number]: NestedParams};

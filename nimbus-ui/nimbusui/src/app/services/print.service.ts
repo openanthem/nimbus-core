@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import { PrintEvent, PrintConfig } from './../shared/print-event';
+import { PrintConfig, PrintEvent } from './../shared/print-event';
 
 @Injectable()
 export class PrintService {

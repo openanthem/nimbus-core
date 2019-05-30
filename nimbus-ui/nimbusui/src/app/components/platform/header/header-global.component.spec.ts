@@ -16,22 +16,21 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing'
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
-
-import { HeaderGlobal } from './header-global.component';
-import { Link } from '../link.component';
-import { Value } from '../form/elements/value.component';
-import { Paragraph } from '../content/paragraph.component';
-import { BreadcrumbService } from './../breadcrumb/breadcrumb.service';
-// import { Button } from '../../platform/form/elements/button.component';
+import { configureTestSuite } from 'ng-bullet';
+import { setup } from '../../../setup.spec';
 import { ActionDropdown, ActionLink } from '../../platform/form/elements/action-dropdown.component';
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
+import { Paragraph } from '../content/paragraph.component';
+import { Value } from '../form/elements/value.component';
+import { Link } from '../link.component';
+import { BreadcrumbService } from './../breadcrumb/breadcrumb.service';
+import { HeaderGlobal } from './header-global.component';
+
 
 let breadcrumbService;
 

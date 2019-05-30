@@ -16,26 +16,26 @@
  */
 
 
-import { TestBed, inject, async } from '@angular/core/testing';
-import { HttpClient, HttpRequest } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing'
-import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot, ActivatedRoute, Route, UrlSegment, Params, Data, ParamMap } from '@angular/router';
-import { JL } from 'jsnlog';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-import { Observable } from 'rxjs/Observable';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-
-import { PageResolver } from './page-resolver.service';
-import { PageService } from '../../../services/page.service';
-import { BreadcrumbService } from './../breadcrumb/breadcrumb.service'
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
+import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Params, Route, Router, UrlSegment } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { Observable } from 'rxjs/Observable';
+import { AppInitService } from '../../../services/app.init.service';
+import { ConfigService } from '../../../services/config.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
-import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
-import { AppInitService } from '../../../services/app.init.service';
+import { PageService } from '../../../services/page.service';
+import { CUSTOM_STORAGE } from '../../../services/session.store';
+import { BreadcrumbService } from './../breadcrumb/breadcrumb.service';
+import { PageResolver } from './page-resolver.service';
+
 
 let http, backend, service, rustate, breadcrumpservice, pageservice, wcservice, router, loggerService, activatedRoute;
 

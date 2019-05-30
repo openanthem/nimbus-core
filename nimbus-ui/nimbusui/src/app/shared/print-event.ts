@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { UiNature } from './param-config';
 import { Converter } from './object.conversion';
+import { UiNature } from './param-config';
 
 export interface PrintEvent {
     path: string;

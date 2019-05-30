@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 /**
  * \@author Tony Lopez
  * \@whatItDoes Simple key/value pair object.

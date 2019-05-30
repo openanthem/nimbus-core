@@ -15,23 +15,23 @@
  * limitations under the License.
  */
 
-import { TestBed, inject, async } from '@angular/core/testing';
-import { HttpClientModule, HttpClient, HttpRequest } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { JL } from 'jsnlog';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
 import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
 import { Subject } from 'rxjs/Subject';
-
+import { ValidationUtils } from '../components/platform/validators/ValidationUtils';
+import { AppInitService } from './app.init.service';
+import { ConfigService } from './config.service';
 import { ControlSubscribers } from './control-subscribers.service';
-import { PageService } from './page.service';
 import { CustomHttpClient } from './httpclient.service';
 import { LoaderService } from './loader.service';
-import { ConfigService } from './config.service';
 import { LoggerService } from './logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
-import { AppInitService } from './app.init.service';
-import { ValidationUtils } from '../components/platform/validators/ValidationUtils';
+import { PageService } from './page.service';
+import { CUSTOM_STORAGE, SessionStoreService } from './session.store';
+
 
 let http, backend, service, pageService;
 

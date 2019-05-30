@@ -15,21 +15,19 @@
  * limitations under the License.
  */
 
-import { TestBed, inject, async, tick, fakeAsync } from '@angular/core/testing';
-import { HttpClient, HttpRequest } from '@angular/common/http';
-import { HttpModule, BaseRequestOptions, JsonpModule, Jsonp } from '@angular/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import {MockBackend} from '@angular/http/testing';
-import { Http, Headers, RequestOptions, Response, ResponseOptions, ResponseType, Request } from '@angular/http';
-import { JL } from 'jsnlog';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { BaseRequestOptions, Http, HttpModule, Jsonp, JsonpModule, RequestOptions, Response, ResponseOptions, ResponseType } from '@angular/http';
+import { MockBackend } from '@angular/http/testing';
 import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
-
-import { LoginSvc } from './login.service';
-import { LoggerService } from './logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
+import { JL } from 'jsnlog';
+import 'rxjs/add/observable/of';
 import { AppInitService } from './app.init.service';
+import { LoggerService } from './logger.service';
+import { LoginSvc } from './login.service';
+import { CUSTOM_STORAGE } from './session.store';
+
 
 let http, backend, service;
 

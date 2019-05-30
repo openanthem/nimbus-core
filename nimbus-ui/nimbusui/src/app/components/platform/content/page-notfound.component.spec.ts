@@ -16,18 +16,19 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { JL } from 'jsnlog';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-import { HttpModule } from '@angular/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { PageNotfoundComponent } from './page-notfound.component';
-import { LoggerService } from '../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
-import { AppInitService } from '../../../services/app.init.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
 import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
+import { AppInitService } from '../../../services/app.init.service';
+import { LoggerService } from '../../../services/logger.service';
+import { CUSTOM_STORAGE } from '../../../services/session.store';
+import { setup } from '../../../setup.spec';
+import { PageNotfoundComponent } from './page-notfound.component';
+
 
 const declarations = [
   PageNotfoundComponent

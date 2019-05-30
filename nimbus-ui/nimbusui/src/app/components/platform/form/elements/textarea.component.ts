@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
+
+import { ChangeDetectorRef, Component, forwardRef, ViewChild } from '@angular/core';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Component, ViewChild, forwardRef, ChangeDetectorRef } from '@angular/core';
-import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
-import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
 import { CounterMessageService } from './../../../../services/counter-message.service';
+import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
+import { BaseControl } from './base-control.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,

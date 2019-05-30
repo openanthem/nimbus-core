@@ -14,11 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Injectable, EventEmitter } from '@angular/core';
+
+import { Injectable } from '@angular/core';
 import { ViewRoot } from '../shared/app-config.interface';
+import { ParamConfig } from '../shared/param-config';
 import { Model } from '../shared/param-state';
-import { ParamConfig, ConfigType, ModelConfig } from '../shared/param-config';
 
 /**
  * \@author Dinakar.Meda

@@ -14,10 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TestBed, inject, async } from '@angular/core/testing';
-import { HttpClient, HttpRequest } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ParamUtils } from './param-utils';
 
 /**

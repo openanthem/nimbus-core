@@ -16,27 +16,26 @@
  */
 
 
-import { NmMessageService } from './../../services/toastmessage.service';
-import { TestBed, inject, async } from '@angular/core/testing';
-import { HttpClient, HttpRequest } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing'
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { RouterTestingModule } from '@angular/router/testing';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-
-import { LayoutResolver } from './layout-resolver.service';
-import { PageService } from '../../services/page.service';
+import { Subject } from 'rxjs';
+import { AppInitService } from '../../services/app.init.service';
+import { ConfigService } from '../../services/config.service';
 import { CustomHttpClient } from '../../services/httpclient.service';
 import { LoaderService } from '../../services/loader.service';
-import { ConfigService } from '../../services/config.service';
-import { BreadcrumbService } from '../platform/breadcrumb/breadcrumb.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 import { LoggerService } from '../../services/logger.service';
-import { AppInitService } from '../../services/app.init.service'
+import { PageService } from '../../services/page.service';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../services/session.store';
+import { BreadcrumbService } from '../platform/breadcrumb/breadcrumb.service';
+import { NmMessageService } from './../../services/toastmessage.service';
+import { LayoutResolver } from './layout-resolver.service';
+
 
 class MockConfigService {
     getFlowConfig(a) {

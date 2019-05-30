@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import { TestBed, async } from '@angular/core/testing';
-
-import { GridMouseEventDirective } from './gridhover.directive';
+import { ElementRef } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { GridService } from '../services/grid.service';
-import { Directive, ElementRef, Input } from '@angular/core';
+import { GridMouseEventDirective } from './gridhover.directive';
+
 
 class MockGridService { }
 

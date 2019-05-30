@@ -15,13 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { NgModel, NG_VALUE_ACCESSOR, FormGroup, ControlValueAccessor, Validators } from '@angular/forms';
-import { Component, ViewChild, ChangeDetectorRef, forwardRef, Input } from '@angular/core';
-import { BaseControl } from './base-control.component';
-import { ControlSubscribers } from '../../../../services/control-subscribers.service';
+
+import { ChangeDetectorRef, Component, forwardRef, ViewChild } from '@angular/core';
+import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InputMask } from 'primeng/primeng';
+import { ControlSubscribers } from '../../../../services/control-subscribers.service';
 import { CounterMessageService } from '../../../../services/counter-message.service';
+import { BaseControl } from './base-control.component';
 
 
 /**

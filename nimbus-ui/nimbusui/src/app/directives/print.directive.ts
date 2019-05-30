@@ -14,16 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { Param } from './../shared/param-state';
 import { Directive, ElementRef, Input } from '@angular/core';
-import { PrintService } from './../services/print.service';
-import { PrintEvent } from './../shared/print-event';
-import { ServiceConstants } from './../services/service.constants';
-import { LoggerService } from './../services/logger.service';
 import { Subscription } from 'rxjs';
-import { PrintConfig } from './../shared/print-event';
+import { LoggerService } from './../services/logger.service';
+import { PrintService } from './../services/print.service';
+import { ServiceConstants } from './../services/service.constants';
+import { Param } from './../shared/param-state';
+import { PrintConfig, PrintEvent } from './../shared/print-event';
 
 /**
  * \@author Tony Lopez

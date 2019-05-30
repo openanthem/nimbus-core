@@ -14,12 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { ViewChild, Component, forwardRef, ChangeDetectorRef } from '@angular/core';
+
+import { ChangeDetectorRef, Component, forwardRef, ViewChild } from '@angular/core';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { CounterMessageService } from './../../../../services/counter-message.service';
+import { BaseControl } from './base-control.component';
 
 /**
  * \@author Dinakar.Meda

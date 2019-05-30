@@ -17,16 +17,16 @@
 
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
+import { async, TestBed } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-
-import { Paragraph } from './paragraph.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
-import { Param } from '../../../shared/param-state';
+import { DomSanitizer } from '@angular/platform-browser';
 import { fieldValueParam } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { setup } from '../../../setup.spec';
+import { Param } from '../../../shared/param-state';
+import { Paragraph } from './paragraph.component';
+
 
 let param: Param;
 

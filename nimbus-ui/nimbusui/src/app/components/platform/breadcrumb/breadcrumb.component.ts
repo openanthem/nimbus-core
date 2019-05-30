@@ -14,15 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd, Params, PRIMARY_OUTLET } from '@angular/router';
-import { of as observableOf,  Observable, Subscription } from 'rxjs';
+import { ActivatedRoute, NavigationEnd, PRIMARY_OUTLET, Router } from '@angular/router';
+import { Observable, of as observableOf, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { Breadcrumb } from './../../../model/breadcrumb.model';
 import { DomainFlowCmp } from './../../domain/domain-flow.component';
 import { BreadcrumbService } from './breadcrumb.service';
-import { Breadcrumb } from './../../../model/breadcrumb.model';
+
 /**
  * \@author Tony.Lopez
  * \@whatItDoes 

@@ -14,22 +14,23 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
 'use strict';
 
 import { Injectable } from '@angular/core';
-import { SessionStoreService } from './session.store';
 import { Observable } from 'rxjs';
-import { ConfigService } from './config.service';
-import { Result } from './../shared/app-config.interface';
-import { CustomHttpClient } from './httpclient.service';
-import { Action, Behavior } from './../shared/command.enum';
-import { ServiceConstants } from './service.constants';
-import { LoggerService } from './logger.service';
-import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/Rx';
+import { Result } from './../shared/app-config.interface';
+import { Action, Behavior } from './../shared/command.enum';
+import { ConfigService } from './config.service';
+import { CustomHttpClient } from './httpclient.service';
+import { LoggerService } from './logger.service';
+import { ServiceConstants } from './service.constants';
+import { SessionStoreService } from './session.store';
 
 /**
 * \@author Sandeep.Mantha

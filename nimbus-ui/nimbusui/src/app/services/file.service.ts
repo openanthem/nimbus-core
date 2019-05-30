@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { CustomHttpClient } from './httpclient.service';
-import { Injectable, EventEmitter, Output } from '@angular/core';
-import { catchError, map } from 'rxjs/operators';
-import { throwError as observableThrowError,  Subject , Observable } from 'rxjs';
-import { HttpHeaders } from '@angular/common/http';
-import { RequestOptions, Request, RequestMethod } from '@angular/http';
-import { LoggerService } from './logger.service';
+
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { throwError as observableThrowError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { CustomHttpClient } from './httpclient.service';
+import { LoggerService } from './logger.service';
 
 /**
  * \@author Dinakar.Meda

@@ -1,4 +1,3 @@
-import { ServiceConstants } from './service.constants';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -16,20 +15,22 @@ import { ServiceConstants } from './service.constants';
  * limitations under the License.
  * 
  */
+
 'use strict';
-/**
- * \@author Sandeep.Mantha
- * \@whatItDoes 
- * 
- * \@howToUse 
- * 
- */
-import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
-import { Inject, Injectable } from '@angular/core';
-import { InjectionToken } from '@angular/core';
+
+import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { StorageService } from 'angular-webstorage-service';
+import { ServiceConstants } from './service.constants';
 
 export const CUSTOM_STORAGE = new InjectionToken<StorageService>('CUSTOM_STORAGE');
  
+/**
+ * \@author Sandeep.Mantha
+ * \@whatItDoes
+ *
+ * \@howToUse
+ *
+ */
 @Injectable()
 export class SessionStoreService {
  

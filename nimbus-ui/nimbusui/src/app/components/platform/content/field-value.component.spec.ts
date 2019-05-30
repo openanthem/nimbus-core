@@ -15,20 +15,20 @@
  * limitations under the License.
  */
 
-
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
 
-import { FieldValue } from './field-value.component';
+import { HttpClientModule } from '@angular/common/http';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
+import { fieldValueParam } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { setup } from '../../../setup.spec';
+import { Param } from '../../../shared/param-state';
 import { FormErrorMessage } from '../form-error-message.component';
 import { InputLabel } from '../form/elements/input-label.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
 import { TooltipComponent } from '../tooltip/tooltip.component';
-import { Param } from '../../../shared/param-state';
-import { fieldValueParam } from 'mockdata';
+import { FieldValue } from './field-value.component';
+
 
 const declarations = [
   FieldValue,

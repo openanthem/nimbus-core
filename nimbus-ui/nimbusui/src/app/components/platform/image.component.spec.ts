@@ -16,14 +16,13 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-
-import { Image } from './image.component';
-import { ServiceConstants } from './../../services/service.constants';
-import { SvgComponent } from './svg/svg.component';
-import { setup, TestContext } from './../../setup.spec';
 import { configureTestSuite } from 'ng-bullet';
+import { setup } from './../../setup.spec';
+import { Image } from './image.component';
+import { SvgComponent } from './svg/svg.component';
+
 
 const declarations = [
   Image,

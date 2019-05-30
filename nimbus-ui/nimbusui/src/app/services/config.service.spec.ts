@@ -15,16 +15,13 @@
  * limitations under the License.
  */
 
-import { TestBed, inject, async } from '@angular/core/testing';
-import { HttpClient, HttpRequest } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-
-import { ConfigService } from './config.service';
-import { ViewRoot } from '../shared/app-config.interface';
-import { ParamConfig, ConfigType, ModelConfig } from '../shared/param-config';
-import { ViewConfig } from './../shared/param-annotations.enum';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
 import { Model } from '../shared/param-state';
+import { ConfigService } from './config.service';
+
 
 let http, backend, service;
 

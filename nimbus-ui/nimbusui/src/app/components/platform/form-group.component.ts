@@ -14,12 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Component, Input, forwardRef } from '@angular/core';
+
+import { Component, forwardRef, Input } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ViewComponent } from '../../shared/param-annotations.enum';
-import { BaseElement } from './base-element.component';
 import { Param } from './../../shared/param-state';
+import { BaseElement } from './base-element.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,

@@ -14,15 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import {ElementRef, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { Param } from '../shared/param-state';
-import { Directive, forwardRef, Attribute } from '@angular/core';
-import { Validator, AbstractControl, NG_VALIDATORS } from '@angular/forms';
+
+import { Attribute, Directive, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
+import { AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
+import { ValidationUtils } from '../components/platform/validators/ValidationUtils';
 import { ControlSubscribers } from '../services/control-subscribers.service';
 import { PageService } from '../services/page.service';
-import { ValidationUtils } from '../components/platform/validators/ValidationUtils';
+import { Param } from '../shared/param-state';
 import { ValidationConstraint } from '../shared/validationconstraints.enum';
+
 /**
  * \@author Purnachander.Mashetty
  * \@whatItDoes 

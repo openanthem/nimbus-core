@@ -1,4 +1,3 @@
-import { ParamUtils } from './../../shared/param-utils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -15,23 +14,24 @@ import { ParamUtils } from './../../shared/param-utils';
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
+import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Message } from 'stompjs';
-import { Component } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { LayoutService } from '../../services/layout.service';
-import { AppBranding, Layout, LinkConfig, FooterConfig, MenuPanel } from '../../model/menu-meta.interface';
-import { ExecuteOutput, ModelEvent } from '../../shared/app-config.interface';
-import { Param } from '../../shared/param-state';
+import { AppBranding, FooterConfig, Layout, LinkConfig, MenuPanel } from '../../model/menu-meta.interface';
 import { AuthenticationService } from '../../services/authentication.service';
-// import { STOMPService } from '../../services/stomp.service';
+import { LayoutService } from '../../services/layout.service';
+import { LoggerService } from '../../services/logger.service';
 import { PageService } from '../../services/page.service';
 import { ServiceConstants } from '../../services/service.constants';
-import { LoggerService } from '../../services/logger.service';
-import { LabelConfig } from './../../shared/param-config';
+import { ExecuteOutput, ModelEvent } from '../../shared/app-config.interface';
+import { Param } from '../../shared/param-state';
+import { ParamUtils } from './../../shared/param-utils';
+
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 

@@ -15,63 +15,52 @@
  * limitations under the License.
  */
 
-
-import { NmMessageService } from './../../services/toastmessage.service';
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import * as Stomp from 'stompjs';
-import { RouterTestingModule } from '@angular/router/testing';
-import { FormsModule } from '@angular/forms';
-import { DropdownModule } from 'primeng/primeng';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
-import { Subject } from 'rxjs/Rx';
-import { of as observableOf,  Observable } from 'rxjs';
-import {
-  ActivatedRoute,
-  Route,
-  ActivatedRouteSnapshot,
-  UrlSegment,
-  Params,
-  Data,
-  ParamMap
-} from '@angular/router';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-import { JL } from 'jsnlog';
-import { AngularSvgIconModule } from 'angular-svg-icon';
-import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
-import { By } from '@angular/platform-browser';
 
-import { HomeLayoutCmp } from './home-layout.component';
-import { FooterGlobal } from '../platform/footer/footer-global.component';
-import { HeaderGlobal } from '../platform/header/header-global.component';
-import { Link } from '../platform/link.component';
-import { Paragraph } from '../platform/content/paragraph.component';
-import { ComboBox } from '../platform/form/elements/combobox.component';
-import { KeysPipe } from '../../pipes/app.pipe';
-import { Value } from '../platform/form/elements/value.component';
-import { SelectItemPipe } from '../../pipes/select-item.pipe';
-import { TooltipComponent } from '../platform/tooltip/tooltip.component';
-import { CustomHttpClient } from '../../services/httpclient.service';
-import { PageService } from '../../services/page.service';
-import { LoaderService } from '../../services/loader.service';
-import { ConfigService } from '../../services/config.service';
-import { AuthenticationService } from '../../services/authentication.service';
-import { BreadcrumbService } from '../platform/breadcrumb/breadcrumb.service';
-import { LayoutService } from '../../services/layout.service';
-import { LoggerService } from '../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
-import { AppInitService } from '../../services/app.init.service'
-import { SvgComponent } from '../platform/svg/svg.component';
-import { ActionDropdown, ActionLink } from '../platform/form/elements/action-dropdown.component';
-import { InputLabel } from '../platform/form/elements/input-label.component';
-import { Image } from '../platform/image.component';
-import { setup, TestContext } from '../../setup.spec';
+import { HttpClientModule } from '@angular/common/http';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Params, Route, UrlSegment } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { Homelayout } from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
-import { Homelayout } from 'mockdata'
-import { ToastMessageComponent } from '../platform/message/toastmessage.component';
+import { DropdownModule } from 'primeng/primeng';
 import { ToastModule } from 'primeng/toast';
+import { Observable, of as observableOf } from 'rxjs';
+import { Subject } from 'rxjs/Rx';
+import { KeysPipe } from '../../pipes/app.pipe';
+import { SelectItemPipe } from '../../pipes/select-item.pipe';
+import { AppInitService } from '../../services/app.init.service';
+import { AuthenticationService } from '../../services/authentication.service';
+import { ConfigService } from '../../services/config.service';
+import { CustomHttpClient } from '../../services/httpclient.service';
+import { LayoutService } from '../../services/layout.service';
+import { LoaderService } from '../../services/loader.service';
+import { LoggerService } from '../../services/logger.service';
+import { PageService } from '../../services/page.service';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../services/session.store';
+import { setup } from '../../setup.spec';
+import { BreadcrumbService } from '../platform/breadcrumb/breadcrumb.service';
+import { Paragraph } from '../platform/content/paragraph.component';
+import { FooterGlobal } from '../platform/footer/footer-global.component';
+import { ActionDropdown, ActionLink } from '../platform/form/elements/action-dropdown.component';
+import { ComboBox } from '../platform/form/elements/combobox.component';
+import { InputLabel } from '../platform/form/elements/input-label.component';
+import { Value } from '../platform/form/elements/value.component';
+import { HeaderGlobal } from '../platform/header/header-global.component';
+import { Image } from '../platform/image.component';
+import { Link } from '../platform/link.component';
+import { ToastMessageComponent } from '../platform/message/toastmessage.component';
+import { SvgComponent } from '../platform/svg/svg.component';
+import { TooltipComponent } from '../platform/tooltip/tooltip.component';
+import { NmMessageService } from './../../services/toastmessage.service';
 import { NavigationComponent } from './../navigation/navigation.component';
+import { HomeLayoutCmp } from './home-layout.component';
 
 @Component({
   template: '<div></div>',

@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Component} from '@angular/core';
+
+import { Component } from '@angular/core';
 import { BaseElement } from '../base-element.component';
-import { ComponentTypes } from './../../../shared/param-annotations.enum';
-import { ViewComponent } from './../../../shared/param-annotations.enum';
+import { ComponentTypes, ViewComponent } from './../../../shared/param-annotations.enum';
 
 /**
  * \@author Vivek.Kamineni

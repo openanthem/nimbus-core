@@ -14,19 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
+
+import { ChangeDetectorRef, Component, forwardRef, ViewChild } from '@angular/core';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Component, ViewChild, forwardRef, ChangeDetectorRef } from '@angular/core';
-import { BaseControl } from './base-control.component';
+import { Editor } from 'primeng/editor';
+import { Dropdown } from 'primeng/primeng';
+import { KeyValuePair } from './../../../../model/key-value-pair.model';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
+import { CounterMessageService } from './../../../../services/counter-message.service';
+import { ViewConfig } from './../../../../shared/param-annotations.enum';
 import { UiNature } from './../../../../shared/param-config';
 import { ParamUtils } from './../../../../shared/param-utils';
 import { StringUtils } from './../../../../shared/string-utils';
-import { KeyValuePair } from './../../../../model/key-value-pair.model';
-import { ViewConfig } from './../../../../shared/param-annotations.enum';
-import { Editor } from 'primeng/editor';
-import { Dropdown } from 'primeng/primeng';
-import { CounterMessageService } from './../../../../services/counter-message.service';
+import { BaseControl } from './base-control.component';
 
 declare var Quill: any;
 
@@ -183,7 +185,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 export class RichText extends BaseControl<String> {
 
     @ViewChild(NgModel) model: NgModel;
-    
+
     @ViewChild(Editor) editor: Editor;
 
     @ViewChild(Dropdown) valuesDropdown: Dropdown;
@@ -217,7 +219,7 @@ export class RichText extends BaseControl<String> {
 
         var Font = Quill.import('formats/font');
         Font.whitelist = [];
-        for(let font of this.fonts) {
+        for (let font of this.fonts) {
             Font.whitelist.push(font.value);
         }
         Quill.register(Font, true);
@@ -238,9 +240,9 @@ export class RichText extends BaseControl<String> {
         if (!uiNature || !uiNature.attributes || !uiNature.attributes.value) {
             return undefined;
         }
-        
+
         let config: KeyValuePair[] = [];
-        for(let value of uiNature.attributes.value) {
+        for (let value of uiNature.attributes.value) {
             let item: KeyValuePair;
             if (typeof value === 'string') {
                 item = {
@@ -250,7 +252,7 @@ export class RichText extends BaseControl<String> {
             } else {
                 item = value;
             }
-            
+
             if (!config.find(c => c.key === item.key)) {
                 config.push(item);
             }

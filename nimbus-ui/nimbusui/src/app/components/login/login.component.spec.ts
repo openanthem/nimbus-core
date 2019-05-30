@@ -16,21 +16,22 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Router } from '@angular/router';
-import { JL } from 'jsnlog';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
 
-import { LoggerService } from './../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
-import { LoginCmp } from './login.component';
-import { AppInitService } from '../../services/app.init.service'
+import { HttpClientModule } from '@angular/common/http';
+import { async, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
 import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../setup.spec';
+import { AppInitService } from '../../services/app.init.service';
+import { CUSTOM_STORAGE } from '../../services/session.store';
+import { setup } from '../../setup.spec';
+import { LoggerService } from './../../services/logger.service';
+import { LoginCmp } from './login.component';
+
 
 class MockRouter {
     navigate() { }

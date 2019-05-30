@@ -14,17 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { SubDomainFlowCmp } from './components/domain/subdomain-flow.component';
-import { DomainFlowCmp } from './components/domain/domain-flow.component';
-import { HomeLayoutCmp } from './components/home/home-layout.component';
-import { LandingPage } from './components/login/auth-landingpage';
-import { LayoutResolver } from './components/domain/layout-resolver.service';
-import { PageResolver } from './components/platform/content/page-resolver.service';
-import { PageNotfoundComponent } from './components/platform/content/page-notfound.component';
-import { PageContent } from './components/platform/content/page-content.component';
+
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { DomainFlowCmp } from './components/domain/domain-flow.component';
+import { LayoutResolver } from './components/domain/layout-resolver.service';
+import { SubDomainFlowCmp } from './components/domain/subdomain-flow.component';
+import { HomeLayoutCmp } from './components/home/home-layout.component';
+import { LandingPage } from './components/login/auth-landingpage';
+import { PageContent } from './components/platform/content/page-content.component';
+import { PageNotfoundComponent } from './components/platform/content/page-notfound.component';
+import { PageResolver } from './components/platform/content/page-resolver.service';
+
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha

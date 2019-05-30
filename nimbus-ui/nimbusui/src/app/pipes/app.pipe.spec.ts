@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-import { KeysPipe } from './app.pipe';
-import { TestBed, async } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { Param } from '../shared/param-state';
 import { ConfigService } from './../services/config.service';
+import { KeysPipe } from './app.pipe';
 
 describe('KeysPipe', () => {
 

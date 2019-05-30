@@ -16,37 +16,27 @@
  */
 
 
-import { NmMessageService } from './../../../services/toastmessage.service';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import {
-  Router,
-  ActivatedRoute,
-  Route,
-  ActivatedRouteSnapshot,
-  UrlSegment,
-  Params,
-  Data,
-  ParamMap
-} from '@angular/router';
-import { of as observableOf,  Observable } from 'rxjs';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
+import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Params, Route, Router, UrlSegment } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-
-import { FlowWrapper } from './flow-wrapper.component';
-import { PageService } from '../../../services/page.service';
+import { configureTestSuite } from 'ng-bullet';
+import { Observable, of as observableOf, Subject } from 'rxjs';
+import { AppInitService } from '../../../services/app.init.service';
+import { ConfigService } from '../../../services/config.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
-import { ConfigService } from '../../../services/config.service';
-import { Subject } from 'rxjs';
 import { LoggerService } from '../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
-import { AppInitService } from '../../../services/app.init.service';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
+import { PageService } from '../../../services/page.service';
+import { CUSTOM_STORAGE } from '../../../services/session.store';
+import { setup } from '../../../setup.spec';
+import { NmMessageService } from './../../../services/toastmessage.service';
+import { FlowWrapper } from './flow-wrapper.component';
+'use strict';
+
 
 let pageService, configService, router;
 

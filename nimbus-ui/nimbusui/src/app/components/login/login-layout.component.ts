@@ -14,12 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
 import { Component, OnInit } from '@angular/core';
-import { AppBranding, Layout, FooterConfig } from '../../model/menu-meta.interface';
-import { Param } from '../../shared/param-state';
+import { AppBranding, FooterConfig, Layout } from '../../model/menu-meta.interface';
 import { LayoutService } from '../../services/layout.service';
+import { Param } from '../../shared/param-state';
+
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 

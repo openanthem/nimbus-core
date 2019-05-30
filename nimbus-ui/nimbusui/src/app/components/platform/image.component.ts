@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
 import { Component, Input } from '@angular/core';
-import { Param } from '../../shared/param-state';
 import { ServiceConstants } from '../../services/service.constants';
 import { ImageTypes } from '../../shared/imageTypes.enum';
 

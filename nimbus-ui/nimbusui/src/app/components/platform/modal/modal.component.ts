@@ -14,18 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { Component, ElementRef, Input, OnInit, OnDestroy, ViewChild, NgZone} from '@angular/core';
-import { Param, Model } from '../../../shared/param-state';
-import { DialogModule } from 'primeng/primeng';
-import { PageService } from '../../../services/page.service';
-import { HttpMethod, Behavior} from './../../../shared/command.enum';
-import { GenericDomain } from '../../../model/generic-domain.model';
-import { BaseElement } from '../base-element.component';
-import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
-import { Dialog } from 'primeng/primeng';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DomHandler } from 'primeng/components/dom/domhandler';
+import { Dialog } from 'primeng/primeng';
+import { GenericDomain } from '../../../model/generic-domain.model';
+import { PageService } from '../../../services/page.service';
+import { ComponentTypes, ViewComponent } from '../../../shared/param-annotations.enum';
+import { BaseElement } from '../base-element.component';
+import { Behavior, HttpMethod } from './../../../shared/command.enum';
 /**
  * \@author Sandeep.Mantha
  * \@author Dinakar.Meda

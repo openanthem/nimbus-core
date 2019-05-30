@@ -16,16 +16,15 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
+import { async, TestBed } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
-
-import { SubHeaderCmp } from './sub-header.component';
-import { DateTimeFormatPipe } from '../../pipes/date.pipe';
-import { Param } from '../../shared/param-state';
-import { setup, TestContext } from './../../setup.spec';
-import { configureTestSuite } from 'ng-bullet';
 import { fieldValueParam } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { DateTimeFormatPipe } from '../../pipes/date.pipe';
+import { setup } from './../../setup.spec';
+import { SubHeaderCmp } from './sub-header.component';
+
 
 const declarations = [
   SubHeaderCmp,

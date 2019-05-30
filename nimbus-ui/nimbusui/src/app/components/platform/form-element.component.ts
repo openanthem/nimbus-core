@@ -13,21 +13,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
  */
+
 'use strict';
-import { Component, Input } from '@angular/core';
-import { FormGroup, AbstractControlDirective, NgModel, ValidationErrors } from '@angular/forms';
-import { Param } from '../../shared/param-state';
+
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { AbstractControlDirective, FormGroup, NgModel, ValidationErrors } from '@angular/forms';
+import { AbstractControl } from '@angular/forms/src/model';
 import { Message } from '../../shared/message';
 import { ComponentTypes, ViewComponent } from '../../shared/param-annotations.enum';
-import { BaseElement } from './base-element.component';
-import { ValidationUtils } from './validators/ValidationUtils';
-import { AbstractControl } from '@angular/forms/src/model';
-import { ConstraintMapping } from './../../shared/validationconstraints.enum';
-import { Constraint } from './../../shared/param-config';
 import { CounterMessageService } from './../../services/counter-message.service';
-import { ChangeDetectorRef } from '@angular/core';
+import { Constraint } from './../../shared/param-config';
+import { ConstraintMapping } from './../../shared/validationconstraints.enum';
+import { BaseElement } from './base-element.component';
 
 var counter = 0;
 

@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Component, Input } from '@angular/core';
-import { Param } from '../../../shared/param-state';
-import { BaseElement } from '../base-element.component';
+
+import { Component } from '@angular/core';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
+import { BaseElement } from '../base-element.component';
 
 /**
  * \@author Dinakar.Meda

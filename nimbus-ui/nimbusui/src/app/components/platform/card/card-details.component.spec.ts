@@ -16,47 +16,46 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import { DropdownModule } from 'primeng/primeng';
-import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
-import { AngularSvgIconModule } from 'angular-svg-icon';
-import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-import { CardDetailsComponent } from './card-details.component';
-import { Link } from '../link.component';
-import { StaticText } from '../content/static-content.component';
-import { InPlaceEditorComponent } from '../form/elements/inplace-editor.component';
-import { InputText } from '../form/elements/textbox.component';
-import { TextArea } from '../form/elements/textarea.component';
-import { ComboBox } from '../form/elements/combobox.component';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { cardDetailsBodyElement, cardDetailsHeaderElement } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { DropdownModule } from 'primeng/primeng';
+import { Subject } from 'rxjs';
+import { DisplayValueDirective } from '../../../directives/display-value.directive';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
-import { TooltipComponent } from '../tooltip/tooltip.component';
 import { SelectItemPipe } from '../../../pipes/select-item.pipe';
-import { PageService } from '../../../services/page.service';
+import { ConfigService } from '../../../services/config.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
-import { ConfigService } from '../../../services/config.service';
-import { CardDetailsFieldGroupComponent } from './card-details-field-group.component';
-import { Paragraph } from '../content/paragraph.component';
+import { PageService } from '../../../services/page.service';
+import { ServiceConstants } from '../../../services/service.constants';
+import { setup } from '../../../setup.spec';
 import { ButtonGroup } from '../../platform/form/elements/button-group.component';
-import { Label } from '../content/label.component';
-import { DisplayValueDirective } from '../../../directives/display-value.directive';
 import { InputLabel } from '../../platform/form/elements/input-label.component';
+import { InputLegend } from '../../platform/form/elements/input-legend.component';
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
-import * as data from '../../../payload.json';
-import { By } from '@angular/platform-browser';
-import { ServiceConstants } from '../../../services/service.constants';
-import { Subject } from 'rxjs';
-import { ComponentTypes } from '../../../shared/param-annotations.enum';
-import { cardDetailsBodyElement, cardDetailsHeaderElement } from 'mockdata';
-import { NmMessageService } from './../../../services/toastmessage.service';import { Param } from './../../../shared/param-state';
-import { InputLegend } from '../../platform/form/elements/input-legend.component';
+import { Label } from '../content/label.component';
+import { Paragraph } from '../content/paragraph.component';
+import { StaticText } from '../content/static-content.component';
+import { ComboBox } from '../form/elements/combobox.component';
+import { InPlaceEditorComponent } from '../form/elements/inplace-editor.component';
+import { TextArea } from '../form/elements/textarea.component';
+import { InputText } from '../form/elements/textbox.component';
+import { Link } from '../link.component';
+import { TooltipComponent } from '../tooltip/tooltip.component';
+import { NmMessageService } from './../../../services/toastmessage.service';
+import { Param } from './../../../shared/param-state';
+import { CardDetailsFieldGroupComponent } from './card-details-field-group.component';
+import { CardDetailsComponent } from './card-details.component';
+
 
 class MockPageService {
     public eventUpdate$: Subject<any>;

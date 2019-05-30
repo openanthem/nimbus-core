@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { Component, Input, NgZone, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
 import { NmMessageService } from './../../../services/toastmessage.service';

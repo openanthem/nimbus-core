@@ -14,17 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Component, Input, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
-import { LayoutService } from '../../../services/layout.service';
-import { Param } from '../../../shared/param-state';
+
+import { ChangeDetectorRef, Component, Input, QueryList, ViewChildren } from '@angular/core';
+import { fromEvent as observableFromEvent, Subscription } from 'rxjs';
+import { filter, first } from 'rxjs/operators';
+import { Breadcrumb } from '../../../model/breadcrumb.model';
 import { AppBranding, LinkConfig } from '../../../model/menu-meta.interface';
+import { Param } from '../../../shared/param-state';
+import { ActionDropdown } from '../form/elements/action-dropdown.component';
 import { ServiceConstants } from './../../../services/service.constants';
 import { BreadcrumbService } from './../breadcrumb/breadcrumb.service';
-import { Breadcrumb } from '../../../model/breadcrumb.model';
-import { ActionDropdown } from '../form/elements/action-dropdown.component';
-import { fromEvent as observableFromEvent,  Subscription, Observable } from 'rxjs';
-import { first, filter } from 'rxjs/operators';
 
 /**
  * \@author Mayur.Mehta

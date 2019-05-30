@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
 import { Component, Input } from '@angular/core';
-import { BaseElement } from './base-element.component';
-import { PageService } from '../../services/page.service';
-import { GenericDomain } from './../../model/generic-domain.model';
 import { LoggerService } from '../../services/logger.service';
-import { ViewComponent, ComponentTypes } from '../../shared/param-annotations.enum';
+import { PageService } from '../../services/page.service';
+import { ComponentTypes, ViewComponent } from '../../shared/param-annotations.enum';
+import { GenericDomain } from './../../model/generic-domain.model';
+import { BaseElement } from './base-element.component';
 
 /**
  * \@author Dinakar.Meda

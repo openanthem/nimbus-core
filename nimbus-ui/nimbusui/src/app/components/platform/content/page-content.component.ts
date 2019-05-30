@@ -14,15 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { Component, ChangeDetectorRef } from '@angular/core';
+
 import { LocationStrategy } from '@angular/common';
-import { ExecuteException } from '../../../shared/app-config.interface';
+import { ChangeDetectorRef, Component } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { LoggerService } from '../../../services/logger.service';
+import { PageService } from '../../../services/page.service';
 import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
-import { PageService } from '../../../services/page.service';
-import { LoggerService } from '../../../services/logger.service';
 
 /**
  * \@author Dinakar.Meda

@@ -16,28 +16,26 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
+import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
-
-import { FilterButton } from './filter-button.component';
-import { PageService } from '../../../../services/page.service';
+import { fieldValueParam } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { AppInitService } from '../../../../services/app.init.service';
+import { ConfigService } from '../../../../services/config.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
-import { AppInitService } from '../../../../services/app.init.service';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-import { Param, Type, Model } from '../../../../shared/param-state';
-import { ParamConfig, UiStyle, UiAttribute } from '../../../../shared/param-config';
-import { fieldValueParam } from 'mockdata';
-import { NmMessageService } from './../../../../services/toastmessage.service';
+import { PageService } from '../../../../services/page.service';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import { setup } from '../../../../setup.spec';
 import { CounterMessageService } from './../../../../services/counter-message.service';
+import { NmMessageService } from './../../../../services/toastmessage.service';
+import { FilterButton } from './filter-button.component';
+
 
 let pageService, configService;
 

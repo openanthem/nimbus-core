@@ -15,30 +15,28 @@
  * limitations under the License.
  */
 
-import { Param } from './../../../../shared/param-state';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { async, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { By } from '@angular/platform-browser';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
+import { multiselectCardElement } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
 import { Subject } from 'rxjs';
-import { of as observableOf,  Observable } from 'rxjs';
-
-import { MultiselectCard } from './multi-select-card.component';
-import { PageService } from '../../../../services/page.service';
+import { AppInitService } from '../../../../services/app.init.service';
+import { ConfigService } from '../../../../services/config.service';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
-import { AppInitService } from '../../../../services/app.init.service';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-import { FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms';
-import { multiselectCardElement } from 'mockdata';
-import { By } from '@angular/platform-browser';
-import { CounterMessageService } from '../../../../services/counter-message.service';
+import { PageService } from '../../../../services/page.service';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import { setup } from '../../../../setup.spec';
+import { MultiselectCard } from './multi-select-card.component';
+'use strict';
+
 
 let param, pageService;
 

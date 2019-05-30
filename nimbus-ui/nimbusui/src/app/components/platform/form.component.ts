@@ -14,16 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Component, Input, OnInit, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
+
+import { Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges } from '@angular/core';
 import { FormGroup, ValidatorFn } from '@angular/forms';
-import { FormElementsService } from './form-builder.service';
-import { PageService } from '../../services/page.service';
-import { ValidationUtils } from './validators/ValidationUtils';
-import { Param, Model } from '../../shared/param-state';
+import { FormElementType, FormModel } from '../../model/form.model';
 import { LoggerService } from '../../services/logger.service';
+import { PageService } from '../../services/page.service';
+import { Model, Param } from '../../shared/param-state';
 import { BaseElement } from './base-element.component';
-import { FormModel, FormElementType } from '../../model/form.model';
+import { FormElementsService } from './form-builder.service';
+import { ValidationUtils } from './validators/ValidationUtils';
 
 var uniqueId = 0;
 

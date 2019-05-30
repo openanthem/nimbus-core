@@ -15,24 +15,24 @@
  * limitations under the License.
  */
 
-import { NmMessageService } from './../../../services/toastmessage.service';
-import { TestBed, inject, async } from '@angular/core/testing';
-import { HttpClient, HttpRequest } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
+import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
-
-import { BreadcrumbService } from './breadcrumb.service';
-import { PageService } from './../../../services/page.service';
+import { AppInitService } from '../../../services/app.init.service';
+import { ConfigService } from '../../../services/config.service';
+import { CounterMessageService } from '../../../services/counter-message.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
-import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
-import { AppInitService } from '../../../services/app.init.service';
-import { CounterMessageService } from '../../../services/counter-message.service';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../../services/session.store';
+import { PageService } from './../../../services/page.service';
+import { NmMessageService } from './../../../services/toastmessage.service';
+import { BreadcrumbService } from './breadcrumb.service';
+
 
 let http, backend, service, sessionStore;
 

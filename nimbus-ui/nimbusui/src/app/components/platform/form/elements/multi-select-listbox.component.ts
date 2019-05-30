@@ -14,18 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Param } from '../../../../shared/param-state';
-import { Component, forwardRef, Input,Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, NgModel} from '@angular/forms';
-import { PageService } from '../../../../services/page.service';
-import {SelectItem} from 'primeng/primeng';
-import { GenericDomain } from '../../../../model/generic-domain.model';
-import { BaseElement } from './../../base-element.component';
+
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
+import { SelectItem } from 'primeng/primeng';
+import { GenericDomain } from '../../../../model/generic-domain.model';
+import { PageService } from '../../../../services/page.service';
+import { Param } from '../../../../shared/param-state';
 import { ValidationUtils } from '../../validators/ValidationUtils';
-import { HttpMethod } from './../../../../shared/command.enum';
 import { CounterMessageService } from './../../../../services/counter-message.service';
+import { HttpMethod } from './../../../../shared/command.enum';
+import { BaseElement } from './../../base-element.component';
 
 /**
  * \@author Dinakar.Meda

@@ -16,20 +16,17 @@
  */
 
 
-import { NmMessageService } from './../../../services/toastmessage.service';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { ToastModule } from 'primeng/toast';
-import { MessageModule } from 'primeng/message';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
-import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
-    FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
-import { MessageService } from 'primeng/api';
+import { TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
+import { MessageService } from 'primeng/api';
+import { MessageModule } from 'primeng/message';
+import { AccordionModule, CalendarModule, CheckboxModule, DataTableModule, DialogModule, DragDropModule, DropdownModule, FileUploadModule, GrowlModule, InputSwitchModule, ListboxModule, OverlayPanelModule, PickListModule, ProgressBarModule, ProgressSpinnerModule, RadioButtonModule, SharedModule, TreeTableModule } from 'primeng/primeng';
+import { ToastModule } from 'primeng/toast';
+import { setup } from '../../../setup.spec';
+import { NmMessageService } from './../../../services/toastmessage.service';
 import { MessageComponent } from './message.component';
+'use strict';
 
 let messageService;
 

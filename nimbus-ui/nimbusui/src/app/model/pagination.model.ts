@@ -17,6 +17,8 @@ import { Enum } from "../shared/command.enum";
  * limitations under the License.
  */
 
+'use strict';
+
  /**
  * \@author Dinakar.Meda
  * \@whatItDoes - Definition for the Pagination object that gets exachanged between server and client.

@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
 import { ControlValueAccessor } from '@angular/forms';
-import { BaseElement } from '../../base-element.component';
 
 /**
  * \@author Dinakar.Meda, Sandeep Mantha

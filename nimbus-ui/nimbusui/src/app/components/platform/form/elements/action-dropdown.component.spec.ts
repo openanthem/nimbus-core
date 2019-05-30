@@ -15,41 +15,39 @@
  * limitations under the License.
  */
 
-import { NmMessageService } from './../../../../services/toastmessage.service';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
+import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ElementRef } from '@angular/core';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-import { JL } from 'jsnlog';
-import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
+import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-
-import { ActionLink } from './action-dropdown.component';
-import { ActionDropdown } from './action-dropdown.component';
-import { PageService } from '../../../../services/page.service';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { actionDropDownElement, ActionDropDownLinkElement, actionDropDownLinkParams, actionDropDownParams, actionDropDownRowData, MockActionDropdownLink } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { Subject } from 'rxjs';
+import { AppInitService } from '../../../../services/app.init.service';
+import { ConfigService } from '../../../../services/config.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
-import { Page } from '../../../../shared/app-config.interface';
+import { LoggerService } from '../../../../services/logger.service';
+import { PageService } from '../../../../services/page.service';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import { setup } from '../../../../setup.spec';
 import { ParamConfig } from '../../../../shared/param-config';
 import { Param } from '../../../../shared/param-state';
-import { LoggerService } from '../../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
-import { AppInitService } from '../../../../services/app.init.service';
 import { Image } from '../../image.component';
 import { Link } from '../../link.component';
 import { SvgComponent } from '../../svg/svg.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-import { actionDropDownRowData, actionDropDownElement, actionDropDownParams, ActionDropDownLinkElement, actionDropDownLinkParams, MockActionDropdownLink } from 'mockdata';
-import { ServiceConstants } from './../../../../services/service.constants';
-import { By } from '@angular/platform-browser';
-import { ComponentTypes } from './../../../../shared/param-annotations.enum';
-import { Subject } from 'rxjs';
 import { CounterMessageService } from './../../../../services/counter-message.service';
+import { ServiceConstants } from './../../../../services/service.constants';
+import { NmMessageService } from './../../../../services/toastmessage.service';
+import { ComponentTypes } from './../../../../shared/param-annotations.enum';
+import { ActionDropdown, ActionLink } from './action-dropdown.component';
+'use strict';
+
 
 let pageservice, configservice;
 

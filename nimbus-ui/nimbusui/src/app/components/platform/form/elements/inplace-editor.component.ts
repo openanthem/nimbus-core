@@ -14,17 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { BaseElement } from './../../base-element.component';
+
+import { Component, ComponentFactoryResolver, ComponentRef, forwardRef, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { PageService } from './../../../../services/page.service';
-import { ComponentFactoryResolver, ViewChild,
-    ComponentRef, ViewContainerRef } from '@angular/core';
-import { Component, OnInit, forwardRef, SimpleChanges } from '@angular/core';
+import { BaseElement } from './../../base-element.component';
+import { BaseControl } from './base-control.component';
 import { ComboBox } from './combobox.component';
 import { TextArea } from './textarea.component';
 import { InputText } from './textbox.component';
-import { BaseControl } from './base-control.component';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 export const InputComponents = [
     InputText,

@@ -14,20 +14,19 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
 'use strict';
+
+import { ChangeDetectorRef, Component, forwardRef, ViewChild } from '@angular/core';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { FormGroup } from '@angular/forms';
-import { Component, ViewChild, forwardRef, ChangeDetectorRef, Input } from '@angular/core';
-import { BaseControl } from './base-control.component';
+import { Subject } from 'rxjs';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
-import { AutoComplete } from 'primeng/primeng';
-import { Param } from './../../../../shared/param-state';
+import { AutoCompleteService } from './../../../../services/autocomplete.service';
+import { CounterMessageService } from './../../../../services/counter-message.service';
+import { LoggerService } from './../../../../services/logger.service';
 import { PageService } from './../../../../services/page.service';
 import { ParamUtils } from './../../../../shared/param-utils';
-import { Subject } from 'rxjs';
-import { AutoCompleteService } from './../../../../services/autocomplete.service';
-import { LoggerService } from './../../../../services/logger.service';
-import { CounterMessageService } from './../../../../services/counter-message.service';
+import { BaseControl } from './base-control.component';
 
 
 

@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-// import { AppModule } from './../app.module';
+
+import { Injectable, Type } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
-import { Component, Injectable, Type } from '@angular/core';
-import { AppRoutingModule } from '../app.routing.module';
 
 @Injectable()
 export class RouteService {

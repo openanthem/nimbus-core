@@ -16,14 +16,13 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-
-import { Menu } from './menu.component';
-import { Link } from '../platform/link.component';
-import { setup, TestContext } from './../../setup.spec';
-import { configureTestSuite } from 'ng-bullet';
-import { Param } from '../../shared/param-state';
+import { async, TestBed } from '@angular/core/testing';
 import { fieldValueParam } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { Link } from '../platform/link.component';
+import { setup } from './../../setup.spec';
+import { Menu } from './menu.component';
+
 
 const declarations = [
   Menu,

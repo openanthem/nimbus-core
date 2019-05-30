@@ -16,22 +16,22 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientModule } from '@angular/common/http';
+import { async, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-
-import { FooterGlobal } from './footer-global.component';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { configureTestSuite } from 'ng-bullet';
+import { setup } from '../../../setup.spec';
+import { Header } from '../content/header.component';
 import { Paragraph } from '../content/paragraph.component';
+import { InputLabel } from '../form/elements/input-label.component';
+import { InputText } from '../form/elements/textbox.component';
 import { Link } from '../link.component';
 import { SvgComponent } from '../svg/svg.component';
-import { Header } from '../content/header.component';
-import { InputText } from '../form/elements/textbox.component';
 import { TooltipComponent } from '../tooltip/tooltip.component';
-import { InputLabel } from '../form/elements/input-label.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
+import { FooterGlobal } from './footer-global.component';
+
 
 const declarations = [
   FooterGlobal,

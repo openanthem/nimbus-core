@@ -14,15 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
 import { ConfigService } from './../services/config.service';
-import { SortAs } from "../components/platform/grid/sortas.interface";
-import { PageService } from '../services/page.service';
-import { GridService } from '../services/grid.service';
-import { ParamUtils } from './param-utils';
 import { Converter } from './object.conversion';
-import { Param, Model } from './param-state';
+import { Model, Param } from './param-state';
 import { Serializable } from './serializable';
 /**
  * \@author Dinakar.Meda

@@ -14,11 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
+
 import { Component, Input } from '@angular/core';
 import { Table } from 'primeng/table';
-
 import { Param } from '../../../../shared/param-state';
+
 
 /**
  * \@author Purna

@@ -15,41 +15,39 @@
  * limitations under the License.
  */
 
-import { NmMessageService } from './../../../../services/toastmessage.service';
-import { Param } from './../../../../shared/param-state';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Location } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { async, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
-import { JL } from 'jsnlog';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { of as observableOf,  Observable } from 'rxjs';
-
-import { Button } from './button.component';
-import { PageService } from '../../../../services/page.service';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { buttonDestructiveElement, buttonPlainElement, buttonPrimaryElement, buttonPrintElement, buttonSecondaryElement, buttonValidationElement } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { Subject } from 'rxjs';
+import { PrintDirective } from '../../../../directives/print.directive';
+import { AppInitService } from '../../../../services/app.init.service';
+import { ConfigService } from '../../../../services/config.service';
+import { CounterMessageService } from '../../../../services/counter-message.service';
+import { FileService } from '../../../../services/file.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
-import { FileService } from '../../../../services/file.service';
-import { Subject, observable } from 'rxjs';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
-import { AppInitService } from '../../../../services/app.init.service';
-import { SvgComponent } from '../../svg/svg.component';
-import { Image } from '../../image.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-import { UiAttribute } from '../../../../shared/param-config';
-import { FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms';
-import { PrintDirective } from '../../../../directives/print.directive';
+import { PageService } from '../../../../services/page.service';
 import { PrintService } from '../../../../services/print.service';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import { setup } from '../../../../setup.spec';
+import { Image } from '../../image.component';
+import { SvgComponent } from '../../svg/svg.component';
+import { NmMessageService } from './../../../../services/toastmessage.service';
+import { Param } from './../../../../shared/param-state';
+import { Button } from './button.component';
 import { EventPropagationDirective } from './event-propagation.directive';
-import { By } from '@angular/platform-browser';
-import { buttonPrimaryElement, buttonSecondaryElement, buttonDestructiveElement, buttonValidationElement, buttonPrintElement, buttonPlainElement } from 'mockdata';
-import { CounterMessageService } from '../../../../services/counter-message.service';
+'use strict';
+
 
 let location, pageService, fileService;
 

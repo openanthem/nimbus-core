@@ -14,10 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { GridService } from '../services/grid.service';
-import { OverlayPanel } from 'primeng/primeng';
+
 import { Directive, ElementRef, Input } from '@angular/core';
+import { OverlayPanel } from 'primeng/primeng';
+import { GridService } from '../services/grid.service';
 
 @Directive({
   selector: '[gridMouseEvents]',

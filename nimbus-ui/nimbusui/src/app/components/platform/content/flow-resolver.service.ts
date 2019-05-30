@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { PageService } from '../../../services/page.service';
+import { Injectable } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { ConfigService } from '../../../services/config.service';
+import { PageService } from '../../../services/page.service';
 import { Page } from '../../../shared/app-config.interface';
 import { Param } from '../../../shared/param-state';
-import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 
 /**
  * \@author Dinakar.Meda

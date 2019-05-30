@@ -14,7 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
+
+import { ChangeDetectorRef, Directive, ElementRef, Input, Renderer2 } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -22,12 +27,6 @@
  * \@howToUse 
  * 
  */
-import {AfterContentInit, ChangeDetectorRef, ContentChildren, ViewChildren, Directive, ElementRef, Input, OnChanges, 
-  OnDestroy, QueryList, Renderer2, SimpleChanges} from '@angular/core';
-import {Subscription} from 'rxjs';
-
-import { RouterLink, Router, NavigationEnd, RouterEvent , RouterLinkWithHref, ActivatedRoute} from '@angular/router';
-
 @Directive({
     selector: 'a[nmrouterLink]',
     exportAs: 'routerLink',

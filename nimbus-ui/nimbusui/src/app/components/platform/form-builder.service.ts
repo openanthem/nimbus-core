@@ -1,4 +1,3 @@
-import { ParamUtils } from './../../shared/param-utils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -15,14 +14,17 @@ import { ParamUtils } from './../../shared/param-utils';
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
-import { Injectable } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, ValidatorFn, FormControl } from '@angular/forms';
 
-import { CustomValidators } from './validators/custom.validators';
-import { Param } from '../../shared/param-state';
-import { ValidationUtils } from './validators/ValidationUtils';
+'use strict';
+
+import { Injectable } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ViewComponent } from '../../shared/param-annotations.enum';
+import { Param } from '../../shared/param-state';
+import { ParamUtils } from './../../shared/param-utils';
+import { CustomValidators } from './validators/custom.validators';
+import { ValidationUtils } from './validators/ValidationUtils';
+
 
 /**
  * \@author Dinakar.Meda

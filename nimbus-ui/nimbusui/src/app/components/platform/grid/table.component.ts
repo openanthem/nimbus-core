@@ -14,33 +14,31 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
 'use strict';
 
-import {
-    Component, Input, Output, forwardRef, ViewChild, EventEmitter,
-    ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren, ViewRef
-} from '@angular/core';
-import { FormGroup, NG_VALUE_ACCESSOR, ValidatorFn } from '@angular/forms';
+import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, Output, QueryList, ViewChild, ViewChildren, ViewEncapsulation, ViewRef } from '@angular/core';
+import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
+import * as moment from 'moment';
 import { OverlayPanel } from 'primeng/primeng';
 import { Table } from 'primeng/table';
-import * as moment from 'moment';
 import { Subscription } from 'rxjs';
-import { ParamUtils } from './../../../shared/param-utils';
-import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { ParamConfig } from '../../../shared/param-config';
-import { PageService } from '../../../services/page.service';
-import { GridService } from '../../../services/grid.service';
-import { ServiceConstants } from './../../../services/service.constants';
-import { SortAs, GridColumnDataType } from './sortas.interface';
-import { Param, StyleState, NestedParams, CollectionParams } from '../../../shared/param-state';
-import { HttpMethod } from './../../../shared/command.enum';
-import { TableComponentConstants } from './table.component.constants';
-import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
-import { BaseTableElement } from './../base-table-element.component';
+import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { ConfigService } from '../../../services/config.service';
+import { GridService } from '../../../services/grid.service';
+import { PageService } from '../../../services/page.service';
+import { ComponentTypes, ViewComponent } from '../../../shared/param-annotations.enum';
+import { ParamConfig } from '../../../shared/param-config';
+import { CollectionParams, NestedParams, Param, StyleState } from '../../../shared/param-state';
 import { CounterMessageService } from './../../../services/counter-message.service';
+import { ServiceConstants } from './../../../services/service.constants';
+import { HttpMethod } from './../../../shared/command.enum';
+import { ParamUtils } from './../../../shared/param-utils';
+import { BaseTableElement } from './../base-table-element.component';
+import { GridColumnDataType, SortAs } from './sortas.interface';
+import { TableComponentConstants } from './table.component.constants';
 
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {

@@ -14,24 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Component, Input, Output, EventEmitter, KeyValueDiffer, KeyValueDiffers } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+
 import { Location } from '@angular/common';
-import { GenericDomain } from './../../../../model/generic-domain.model';
-import { Param } from '../../../../shared/param-state';
-import { PageService } from '../../../../services/page.service';
-import { ServiceConstants } from './../../../../services/service.constants';
-import { BaseElement } from '../../base-element.component';
+import { Component, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FileService } from '../../../../services/file.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoggerService } from '../../../../services/logger.service';
+import { PageService } from '../../../../services/page.service';
 import { ComponentTypes } from '../../../../shared/param-annotations.enum';
+import { Param } from '../../../../shared/param-state';
+import { BaseElement } from '../../base-element.component';
+import { GenericDomain } from './../../../../model/generic-domain.model';
+import { CounterMessageService } from './../../../../services/counter-message.service';
 import { PrintService } from './../../../../services/print.service';
+import { ServiceConstants } from './../../../../services/service.constants';
 import { ViewConfig } from './../../../../shared/param-annotations.enum';
 import { ParamUtils } from './../../../../shared/param-utils';
 import { PrintConfig } from './../../../../shared/print-event';
-import { CounterMessageService } from './../../../../services/counter-message.service';
 
 /**
  * \@author Dinakar.Meda

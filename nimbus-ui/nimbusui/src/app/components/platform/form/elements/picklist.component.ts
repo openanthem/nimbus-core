@@ -14,19 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { ControlValueAccessor } from '@angular/forms/src/directives';
-import { Param, Values } from '../../../../shared/param-state';
-import { Component, forwardRef, Input, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+
+import { Component, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR, ValidatorFn } from '@angular/forms';
-import { PageService } from '../../../../services/page.service';
+import { ControlValueAccessor } from '@angular/forms/src/directives';
 import { PickList } from 'primeng/primeng';
-import { BaseElement } from '../../base-element.component';
-import { MAX_LENGTH_VALIDATOR } from '@angular/forms/src/directives/validators';
-import { BaseControl } from './base-control.component';
 import { GenericDomain } from '../../../../model/generic-domain.model';
-import { ValidationUtils } from './../../validators/ValidationUtils';
+import { PageService } from '../../../../services/page.service';
+import { Param, Values } from '../../../../shared/param-state';
+import { BaseElement } from '../../base-element.component';
 import { CounterMessageService } from './../../../../services/counter-message.service';
+import { ValidationUtils } from './../../validators/ValidationUtils';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,

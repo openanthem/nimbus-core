@@ -14,9 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+'use strict';
+
+import { Enum } from './../../../shared/command.enum';
 import { Converter } from './../../../shared/object.conversion';
 import { Serializable } from './../../../shared/serializable';
-import { Enum } from './../../../shared/command.enum';
 
 /**
  * \@author Sandeep.Mantha

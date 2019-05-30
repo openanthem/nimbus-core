@@ -1,4 +1,3 @@
-import { ParamUtils } from './../../../shared/param-utils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -15,11 +14,15 @@ import { ParamUtils } from './../../../shared/param-utils';
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
+
 import { Component, Input } from '@angular/core';
-import { TableComponentConstants } from './table.component.constants';
-import { Param } from '../../../shared/param-state';
 import { ParamConfig } from '../../../shared/param-config';
+import { Param } from '../../../shared/param-state';
+import { ParamUtils } from './../../../shared/param-utils';
+import { TableComponentConstants } from './table.component.constants';
+
 /**
  * \@author Sandeep Mantha
  * \@whatItDoes 

@@ -1,5 +1,3 @@
-import { Enum } from "../../../shared/command.enum";
-
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -16,7 +14,10 @@ import { Enum } from "../../../shared/command.enum";
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
+
+import { Enum } from "../../../shared/command.enum";
 
 /**
  * \@author Rakesh.Patel

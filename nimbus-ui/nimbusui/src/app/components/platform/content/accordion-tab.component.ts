@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
+
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { PageService } from '../../../services/page.service';
+import { ComponentTypes, ViewComponent } from '../../../shared/param-annotations.enum';
 import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
-import { PageService } from '../../../services/page.service';
-import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda

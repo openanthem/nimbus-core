@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { BaseElement } from './../base-element.component';
-import { Param } from '../../../shared/param-state';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, Input } from '@angular/core';
 import { PageService } from '../../../services/page.service';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Param } from '../../../shared/param-state';
+import { BaseElement } from './../base-element.component';
 
 /**
  * \@author Dinakar.Meda

@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
 import { ConfigService } from './../services/config.service';
 import { Converter } from './object.conversion';
-import { Serializable } from './serializable';
 import { ViewConfig } from './param-annotations.enum';
+import { Serializable } from './serializable';
 
 /**
  * \@author Sandeep.Mantha
@@ -28,7 +29,6 @@ import { ViewConfig } from './param-annotations.enum';
  * \@howToUse 
  * 
  */
-
 export class ParamConfig implements Serializable<ParamConfig,string> {
     uiStyles: UiStyle;
     id: string;

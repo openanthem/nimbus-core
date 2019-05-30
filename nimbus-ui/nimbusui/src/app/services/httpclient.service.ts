@@ -14,15 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
+
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { ExecuteResponse } from '../shared/app-config.interface';
+import { Injectable } from '@angular/core';
+import { URLSearchParams } from '@angular/http';
+import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { throwError as observableThrowError, Observable } from 'rxjs';
-import { SessionStoreService } from './session.store';
+import { ExecuteResponse } from '../shared/app-config.interface';
 import { ServiceConstants } from './service.constants';
+import { SessionStoreService } from './session.store';
 
 /**
  * \@author Swetha.Vemuri

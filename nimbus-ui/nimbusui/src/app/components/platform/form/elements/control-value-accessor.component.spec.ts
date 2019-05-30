@@ -16,9 +16,9 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-
+import { async } from '@angular/core/testing';
 import { BaseControlValueAccessor } from './control-value-accessor.component';
+
 
 let sut;
 

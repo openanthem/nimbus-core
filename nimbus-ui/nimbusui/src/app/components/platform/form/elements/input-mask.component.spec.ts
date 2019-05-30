@@ -17,37 +17,34 @@
 
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { By } from '@angular/platform-browser';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-import { JL } from 'jsnlog';
-import { Subject } from 'rxjs';
-import { of as observableOf,  Observable } from 'rxjs';
-import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
-    FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule, InputMaskModule } from 'primeng/primeng';
+import { async, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { TooltipComponent } from '../../tooltip/tooltip.component';
-
-import { InputLabel } from './input-label.component';
-import { InputSwitch } from './input-switch.component';
-import { PageService } from '../../../../services/page.service';
+import { HttpModule } from '@angular/http';
+import { By } from '@angular/platform-browser';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+// import { inputMaskElement } from './../../../../mockdata/input-mask.component.mockdata.spec';
+import { inputMaskElement } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { AccordionModule, CalendarModule, CheckboxModule, DataTableModule, DialogModule, DragDropModule, DropdownModule, FileUploadModule, GrowlModule, InputMaskModule, InputSwitchModule, ListboxModule, OverlayPanelModule, PickListModule, ProgressBarModule, ProgressSpinnerModule, RadioButtonModule, SharedModule, TreeTableModule } from 'primeng/primeng';
+import { Subject } from 'rxjs';
+import { AppInitService } from '../../../../services/app.init.service';
+import { ConfigService } from '../../../../services/config.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
-import { AppInitService } from '../../../../services/app.init.service';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-// import { inputMaskElement } from './../../../../mockdata/input-mask.component.mockdata.spec';
-import {inputMaskElement} from 'mockdata';
-import { Param } from './../../../../shared/param-state';
-import { ServiceConstants } from './../../../../services/service.constants';
+import { PageService } from '../../../../services/page.service';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import { setup } from '../../../../setup.spec';
+import { TooltipComponent } from '../../tooltip/tooltip.component';
 import { CounterMessageService } from './../../../../services/counter-message.service';
-import {InputMaskComp} from './input-mask.component';
+import { ServiceConstants } from './../../../../services/service.constants';
+import { Param } from './../../../../shared/param-state';
+import { InputLabel } from './input-label.component';
+import { InputMaskComp } from './input-mask.component';
+import { InputSwitch } from './input-switch.component';
+
 
 let pageService;
 

@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing'
+import { Component } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
-
-import { AppComponent } from './app.component';
-import { LoaderService } from './services/loader.service';
-import { ServiceConstants } from './services/service.constants';
-import { SvgComponent } from './components/platform/svg/svg.component';
-import { setup, TestContext } from './setup.spec';
 import { configureTestSuite } from 'ng-bullet';
 import { Subscription } from 'rxjs';
+import { AppComponent } from './app.component';
+import { SvgComponent } from './components/platform/svg/svg.component';
+import { LoaderService } from './services/loader.service';
+import { ServiceConstants } from './services/service.constants';
+import { setup } from './setup.spec';
+
 
 class MockServiceConstant {
   STOPGAP_APP_HOST: string;

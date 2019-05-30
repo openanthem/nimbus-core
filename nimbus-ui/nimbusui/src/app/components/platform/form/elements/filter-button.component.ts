@@ -14,14 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Param } from '../../../../shared/param-state';
+
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { PageService } from '../../../../services/page.service';
-import { ServiceConstants } from './../../../../services/service.constants';
-import { BaseElement } from '../../base-element.component';
 import { ComponentTypes } from '../../../../shared/param-annotations.enum';
+import { Param } from '../../../../shared/param-state';
+import { BaseElement } from '../../base-element.component';
+import { ServiceConstants } from './../../../../services/service.constants';
 
 /**
  * \@author Sandeep.Mantha

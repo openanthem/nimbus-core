@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { Component, Input, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
 import { NmMessageService } from './../../../services/toastmessage.service';
 /**

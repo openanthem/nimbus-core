@@ -14,15 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CustomHttpClient } from '../../services/httpclient.service';
 import { LoggerService } from '../../services/logger.service';
-import { SessionStoreService } from '../../services/session.store';
 import { ServiceConstants } from '../../services/service.constants';
+import { SessionStoreService } from '../../services/session.store';
 import { RedirectHandle } from '../../shared/app-redirecthandle.interface';
+
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 

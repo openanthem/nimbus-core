@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, Input } from '@angular/core';
-import { MenuPanel } from '../../model/menu-meta.interface';
 
 'use strict';
+
+import { Component, Input } from '@angular/core';
+import { MenuPanel } from '../../model/menu-meta.interface';
 
 /**
  * \@author Tony Lopez

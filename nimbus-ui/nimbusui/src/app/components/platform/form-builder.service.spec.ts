@@ -16,19 +16,17 @@
  */
 
 
-import { TestBed, inject, async } from '@angular/core/testing';
-import { HttpClient, HttpRequest } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
-
+import { HttpModule } from '@angular/http';
+import { formBuilderServiceElements, formPicklist } from 'mockdata';
+import { ConfigService } from '../../services/config.service';
+import { ParamUtils } from './../../shared/param-utils';
 import { FormElementsService } from './form-builder.service';
 import { ValidationUtils } from './validators/ValidationUtils';
-import { ParamUtils } from './../../shared/param-utils';
-import { Param, Type, Model } from '../../shared/param-state';
-import { ParamConfig } from '../../shared/param-config';
-import { ConfigService } from '../../services/config.service';
-import { formPicklist, formBuilderServiceElements } from 'mockdata';
+
 
 const picklistParam = Object.assign({}, formPicklist);
 

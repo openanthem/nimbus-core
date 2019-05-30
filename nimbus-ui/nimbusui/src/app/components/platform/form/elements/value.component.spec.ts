@@ -16,11 +16,11 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-
-import { Value } from './value.component';
+import { async, TestBed } from '@angular/core/testing';
 import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
+import { setup } from '../../../../setup.spec';
+import { Value } from './value.component';
+
 
 const declarations = [Value];
 const imports = [];

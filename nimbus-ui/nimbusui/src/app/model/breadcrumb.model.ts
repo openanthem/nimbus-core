@@ -15,7 +15,10 @@
  * limitations under the License.
  */
 
+'use strict';
+
 import { Params } from '@angular/router';
+
 /**
  * \@author Dinakar.Meda
  * \@author Tony.Lopez

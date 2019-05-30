@@ -14,11 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ServiceConstants } from './service.constants';
-import { Injectable, Inject } from '@angular/core';
+
+'use strict';
+
+import { Inject, Injectable } from '@angular/core';
+import { Headers, Http, RequestOptions } from '@angular/http';
 import { DOCUMENT } from '@angular/platform-browser';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { timeout } from 'rxjs/operators';
+import { ServiceConstants } from './service.constants';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 

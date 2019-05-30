@@ -16,23 +16,23 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { FileUploadModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
+import { async, TestBed } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
-import { Subject } from 'rxjs';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-
-import { FileUploadComponent } from './file-upload.component';
-import { FileService } from './../../../services/file.service';
-import { CustomHttpClient } from '../../../services/httpclient.service';
-import { LoggerService } from './../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from './../../../services/session.store';
-import { AppInitService } from './../../../services/app.init.service';
 import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
+import { FileUploadModule } from 'primeng/primeng';
+import { Subject } from 'rxjs';
+import { CustomHttpClient } from '../../../services/httpclient.service';
+import { setup } from '../../../setup.spec';
+import { AppInitService } from './../../../services/app.init.service';
 import { CounterMessageService } from './../../../services/counter-message.service';
+import { FileService } from './../../../services/file.service';
+import { LoggerService } from './../../../services/logger.service';
+import { CUSTOM_STORAGE } from './../../../services/session.store';
+import { FileUploadComponent } from './file-upload.component';
+
 
 let fileservice, param;
 

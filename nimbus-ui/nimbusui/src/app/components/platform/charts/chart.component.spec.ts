@@ -15,28 +15,24 @@
  * limitations under the License.
  */
 
-
-import { NmMessageService } from './../../../services/toastmessage.service';
 'use strict';
-import { PageService } from './../../../services/page.service';
-import { TestBed, async } from '@angular/core/testing';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
-import { Subject } from 'rxjs';
+
+import { async, TestBed } from '@angular/core/testing';
 import { JL } from 'jsnlog';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { chartMockParam } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
 import { ChartModule } from 'primeng/chart';
 import { TooltipModule } from 'primeng/primeng';
+import { Subject } from 'rxjs';
 import { CustomHttpClient } from '../../../services/httpclient.service';
-import { LoggerService } from './../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from './../../../services/session.store';
-import { AppInitService } from './../../../services/app.init.service';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
-import { NmChart } from './chart.component';
-import { chartMockParam } from 'mockdata';
-import { TooltipComponent } from './../tooltip/tooltip.component';
+import { setup } from '../../../setup.spec';
 import { InputLabel } from '../form/elements/input-label.component';
+import { AppInitService } from './../../../services/app.init.service';
+import { LoggerService } from './../../../services/logger.service';
+import { PageService } from './../../../services/page.service';
+import { NmMessageService } from './../../../services/toastmessage.service';
+import { TooltipComponent } from './../tooltip/tooltip.component';
+import { NmChart } from './chart.component';
 
 let  param;
 

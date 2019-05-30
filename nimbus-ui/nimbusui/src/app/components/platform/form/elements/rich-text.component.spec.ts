@@ -14,36 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { HttpModule } from '@angular/http';
-import { InputLabel } from './input-label.component';
-import { TooltipComponent } from './../../tooltip/tooltip.component';
-import { TestBed, async } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+
+import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { configureTestSuite } from 'ng-bullet';
-import { setup } from '../../../../setup.spec';
-import { RichText } from './rich-text.component';
-import { EditorModule, Editor } from 'primeng/editor';
+import { async, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
 import { By } from '@angular/platform-browser';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { configureTestSuite } from 'ng-bullet';
+import { EditorModule } from 'primeng/editor';
+import { Dropdown, DropdownModule } from 'primeng/primeng';
+import { setup } from '../../../../setup.spec';
 import { MockRichText } from './../../../../mockdata/rich-text.component.mockdata.spec';
+import { SelectItemPipe } from './../../../../pipes/select-item.pipe';
+import { AppInitService } from './../../../../services/app.init.service';
+import { ConfigService } from './../../../../services/config.service';
+import { CounterMessageService } from './../../../../services/counter-message.service';
+import { CustomHttpClient } from './../../../../services/httpclient.service';
+import { LoaderService } from './../../../../services/loader.service';
+import { LoggerService } from './../../../../services/logger.service';
+import { PageService } from './../../../../services/page.service';
+import { CUSTOM_STORAGE, SessionStoreService } from './../../../../services/session.store';
+import { NmMessageService } from './../../../../services/toastmessage.service';
 import { ViewConfig } from './../../../../shared/param-annotations.enum';
 import { UiNature } from './../../../../shared/param-config';
-import { SelectItemPipe } from './../../../../pipes/select-item.pipe';
-import { Dropdown } from 'primeng/primeng';
-import { DropdownModule } from 'primeng/primeng';
-import { CounterMessageService } from './../../../../services/counter-message.service';
-import { PageService } from './../../../../services/page.service';
-import { CustomHttpClient } from './../../../../services/httpclient.service';
-import { SessionStoreService, CUSTOM_STORAGE } from './../../../../services/session.store';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-import { LoaderService } from './../../../../services/loader.service';
-import { ConfigService } from './../../../../services/config.service';
-import { LoggerService } from './../../../../services/logger.service';
-import { JL } from 'jsnlog';
-import { AppInitService } from './../../../../services/app.init.service';
-import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
-import { NmMessageService } from './../../../../services/toastmessage.service';
+import { TooltipComponent } from './../../tooltip/tooltip.component';
+import { InputLabel } from './input-label.component';
+import { RichText } from './rich-text.component';
 
 /**
  * \@author Tony Lopez

@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
 import { Component, Input, OnInit } from '@angular/core';
-import { FooterConfig } from '../../../model/menu-meta.interface'
+import { FooterConfig } from '../../../model/menu-meta.interface';
 
 /**
  * \@author Vinay.Kurva

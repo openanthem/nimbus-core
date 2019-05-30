@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { ViewComponent, ComponentTypes } from "../../../shared/param-annotations.enum";
+import { ComponentTypes, ViewComponent } from "../../../shared/param-annotations.enum";
 
 /**
 * \@author Swetha Vemuri

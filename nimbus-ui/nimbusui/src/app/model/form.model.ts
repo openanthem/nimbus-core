@@ -15,7 +15,10 @@
  * limitations under the License.
  */
 
+'use strict';
+
 import { Param } from './../shared/param-state';
+
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 

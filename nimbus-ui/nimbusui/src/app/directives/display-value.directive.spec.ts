@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import { TestBed, async } from '@angular/core/testing';
-
-import { DisplayValueDirective } from './display-value.directive';
 import { ElementRef, Renderer2 } from '@angular/core';
-import { displayValueDirectiveConfig, displayValueDirectiveChanges } from 'mockdata';
+import { TestBed } from '@angular/core/testing';
+import { displayValueDirectiveChanges, displayValueDirectiveConfig } from 'mockdata';
+import { DisplayValueDirective } from './display-value.directive';
+
 
 class MockElementRef {
     nativeElement = {

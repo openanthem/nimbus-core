@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { Injectable, Inject } from '@angular/core';
-import { ActivatedRoute, Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
-import { ServiceConstants } from './../../../services/service.constants';
-import { PageService } from './../../../services/page.service';
+import { Inject, Injectable } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Breadcrumb } from '../../../model/breadcrumb.model';
+import { PageService } from './../../../services/page.service';
 import { CUSTOM_STORAGE, SessionStoreService } from './../../../services/session.store';
 
 /**

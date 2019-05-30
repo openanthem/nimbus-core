@@ -15,33 +15,26 @@
  * limitations under the License.
  */
 
-import { ParamConfig } from './../shared/param-config';
-import { TestBed, async } from '@angular/core/testing';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { JL } from 'jsnlog';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { Location } from '@angular/common';
-
-import { PageService } from './page.service';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { configServiceFlowConfigs, configServiceParamConfigs, pageServiceCreateGridDataParam, pageServiceModel, pageServiceOutputs, pageServiceProcessResponse, pageServiceRootParam, pageServiceRootParam1, pageServiceSetViewRootAndNavigateOutput, pageServiceTraverseParam, pageServiceTraverseParamEventModel, pageServiceTraverseParamPayload } from 'mockdata';
+import { GenericDomain } from '../model/generic-domain.model';
+import { ModelEvent, Page, ViewRoot } from '../shared/app-config.interface';
+import { GridPage, Param } from '../shared/param-state';
+import { CounterMessageService } from './../services/counter-message.service';
+import { ConfigService } from './config.service';
 import { CustomHttpClient } from './httpclient.service';
 import { LoaderService } from './loader.service';
-import { ConfigService } from './config.service';
 import { LoggerService } from './logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
-import { ParamUtils } from './../shared/param-utils';
-import { Param, Type, Model, GridPage } from '../shared/param-state';
-import { ExecuteException, ModelEvent, ViewRoot, Page } from '../shared/app-config.interface';
-import { Message } from './../shared/message';
-import { ServiceConstants } from './../services/service.constants';
-import { GenericDomain } from '../model/generic-domain.model';
-import { pageServiceProcessResponse, pageServiceOutputs, pageServiceRootParam, pageServiceRootParam1, configServiceFlowConfigs, 
-    pageServiceModel, pageServiceSetViewRootAndNavigateOutput, pageServiceTraverseParam, pageServiceTraverseParamEventModel, 
-    pageServiceTraverseParamPayload, pageServiceCreateGridDataGridElementParams, pageServiceCreateGridDataParam, 
-    configServiceParamConfigs, pageServiceCreateGridDataResult, pageServiceTraverseNestedPathResult } from 'mockdata'
+import { PageService } from './page.service';
+import { CUSTOM_STORAGE, SessionStoreService } from './session.store';
 import { NmMessageService } from './toastmessage.service';
-import { CounterMessageService } from './../services/counter-message.service';
+
 
 let http, backend, service, location, loggerService, sessionStoreService, loaderService, configService, configService_actual;
 

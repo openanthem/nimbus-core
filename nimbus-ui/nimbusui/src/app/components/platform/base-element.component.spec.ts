@@ -16,16 +16,15 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-
-import { BaseElement } from './base-element.component';
-import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Param } from '../../shared/param-state';
-import { ConfigService } from '../../services/config.service';
-import { setup, TestContext } from '../../setup.spec';
-import { configureTestSuite } from 'ng-bullet';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
 import { fieldValueParam } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { ConfigService } from '../../services/config.service';
+import { setup } from '../../setup.spec';
+import { BaseElement } from './base-element.component';
+
 
 let configService, param;
 

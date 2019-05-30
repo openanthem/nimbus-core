@@ -15,22 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import {
-	Component, Input, ViewChild, ViewEncapsulation,
-	ElementRef, ViewChildren, QueryList, forwardRef, ChangeDetectorRef
-} from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { FormGroup, FormControl, FormArray, FormBuilder, Validators } from '@angular/forms';
-import { FormArrayName } from '@angular/forms/src/directives/reactive_directives/form_group_name';
-import { Param } from '../../../shared/param-state';
-import { FileService } from './../../../services/file.service';
-import { BaseElement } from '../base-element.component';
-import { LoggerService } from './../../../services/logger.service';
+import { Component, forwardRef, Input, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Message } from '../../../shared/message';
-import { ServiceConstants } from './../../../services/service.constants';
+import { Param } from '../../../shared/param-state';
+import { BaseElement } from '../base-element.component';
 import { CounterMessageService } from './../../../services/counter-message.service';
+import { FileService } from './../../../services/file.service';
+import { LoggerService } from './../../../services/logger.service';
+import { ServiceConstants } from './../../../services/service.constants';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 	provide: NG_VALUE_ACCESSOR,

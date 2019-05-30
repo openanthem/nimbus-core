@@ -16,38 +16,38 @@
  */
 
 
-import { Param } from './../../../../shared/param-state';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule } from 'primeng/primeng';
-import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CustomHttpClient } from '../../../../services/httpclient.service';
-import { JL } from 'jsnlog';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-import { Subject } from 'rxjs';
-
-import { InPlaceEditorComponent } from './inplace-editor.component';
-import { PageService } from './../../../../services/page.service';
-import { InputText } from './textbox.component';
-import { TextArea } from './textarea.component';
-import { ComboBox } from './combobox.component';
-import { TooltipComponent } from '../../tooltip/tooltip.component';
-import { SelectItemPipe } from '../../../../pipes/select-item.pipe';
-import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
-import { LoggerService } from '../../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
-import { AppInitService } from '../../../../services/app.init.service';
-import { InputLabel } from './input-label.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-import { Values } from '../../../../shared/param-state';
-import { inplaceEditorElement } from 'mockdata';
+import { async, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
 import { By } from '@angular/platform-browser';
-import { ServiceConstants } from '../../../../services/service.constants';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { inplaceEditorElement } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { DropdownModule } from 'primeng/primeng';
+import { Subject } from 'rxjs';
+import { SelectItemPipe } from '../../../../pipes/select-item.pipe';
+import { AppInitService } from '../../../../services/app.init.service';
+import { ConfigService } from '../../../../services/config.service';
 import { CounterMessageService } from '../../../../services/counter-message.service';
+import { CustomHttpClient } from '../../../../services/httpclient.service';
+import { LoaderService } from '../../../../services/loader.service';
+import { LoggerService } from '../../../../services/logger.service';
+import { ServiceConstants } from '../../../../services/service.constants';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import { setup } from '../../../../setup.spec';
+import { Values } from '../../../../shared/param-state';
+import { TooltipComponent } from '../../tooltip/tooltip.component';
+import { PageService } from './../../../../services/page.service';
+import { Param } from './../../../../shared/param-state';
+import { ComboBox } from './combobox.component';
+import { InPlaceEditorComponent } from './inplace-editor.component';
+import { InputLabel } from './input-label.component';
+import { TextArea } from './textarea.component';
+import { InputText } from './textbox.component';
+'use strict';
+
 
 let pageService;
 

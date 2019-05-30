@@ -16,36 +16,33 @@
  */
 
 
-import { Param } from './../../../../shared/param-state';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-import { JL } from 'jsnlog';
-import { Subject } from 'rxjs';
-import { of as observableOf,  Observable } from 'rxjs';
-import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
-    FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
+import { async, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { TooltipComponent } from '../../tooltip/tooltip.component';
-
-import { InputLabel } from './input-label.component';
-import { InputSwitch } from './input-switch.component';
-import { PageService } from '../../../../services/page.service';
+import { HttpModule } from '@angular/http';
+import { By } from '@angular/platform-browser';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { inputSwitchElement } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { AccordionModule, CalendarModule, CheckboxModule, DataTableModule, DialogModule, DragDropModule, DropdownModule, FileUploadModule, GrowlModule, InputSwitchModule, ListboxModule, OverlayPanelModule, PickListModule, ProgressBarModule, ProgressSpinnerModule, RadioButtonModule, SharedModule, TreeTableModule } from 'primeng/primeng';
+import { Subject } from 'rxjs';
+import { AppInitService } from '../../../../services/app.init.service';
+import { ConfigService } from '../../../../services/config.service';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
-import { AppInitService } from '../../../../services/app.init.service';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-import { inputSwitchElement } from 'mockdata';
-import { By } from '@angular/platform-browser';
+import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';
-import { CounterMessageService } from '../../../../services/counter-message.service';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import { setup } from '../../../../setup.spec';
+import { TooltipComponent } from '../../tooltip/tooltip.component';
+import { Param } from './../../../../shared/param-state';
+import { InputLabel } from './input-label.component';
+import { InputSwitch } from './input-switch.component';
+'use strict';
+
 
 let pageService;
 

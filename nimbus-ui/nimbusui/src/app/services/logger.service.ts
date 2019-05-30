@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { JL } from 'jsnlog';
+
 import { Inject, Injectable } from '@angular/core';
-import { ServiceConstants } from './service.constants';
-import { SessionStoreService } from './session.store';
-import { CUSTOM_STORAGE } from './session.store';
+import { JL } from 'jsnlog';
 import { AppInitService } from './app.init.service';
+import { ServiceConstants } from './service.constants';
+import { CUSTOM_STORAGE, SessionStoreService } from './session.store';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 

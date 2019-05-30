@@ -16,37 +16,33 @@
  */
 
 
-import { Param } from './../../../../shared/param-state';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
-    FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule  } from 'primeng/primeng';
-import { FormsModule, ReactiveFormsModule, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
+import { async, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { By } from '@angular/platform-browser';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { multiSelectListBoxElement } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { ListboxModule } from 'primeng/primeng';
 import { Subject } from 'rxjs';
-import { of as observableOf,  Observable } from 'rxjs';
-
-import { MultiSelectListBox } from './multi-select-listbox.component';
-import { TooltipComponent } from '../../tooltip/tooltip.component';
-import { PageService } from '../../../../services/page.service';
+import { AppInitService } from '../../../../services/app.init.service';
+import { ConfigService } from '../../../../services/config.service';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
-import { AppInitService } from '../../../../services/app.init.service';
+import { PageService } from '../../../../services/page.service';
+import { ServiceConstants } from '../../../../services/service.constants';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import { setup } from '../../../../setup.spec';
+import { TooltipComponent } from '../../tooltip/tooltip.component';
 import { ValidationUtils } from '../../validators/ValidationUtils';
 import { InputLabel } from './input-label.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-import { By } from '@angular/platform-browser';
-import { ServiceConstants } from '../../../../services/service.constants';
-import { multiSelectListBoxElement } from 'mockdata';
-import { CounterMessageService } from '../../../../services/counter-message.service';
+import { MultiSelectListBox } from './multi-select-listbox.component';
+'use strict';
+
 
 let pageService;
 

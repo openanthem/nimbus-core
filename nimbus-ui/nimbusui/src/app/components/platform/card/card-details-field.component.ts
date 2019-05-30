@@ -14,16 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { Param } from '../../../shared/param-state';
-import { Component, Input, forwardRef } from '@angular/core';
-import { BaseElement } from './../base-element.component';
-import {DateTimeFormatPipe} from '../../../pipes/date.pipe';
+
+import { Component, forwardRef, Input } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
-import { ParamUtils } from './../../../shared/param-utils';
+import { Param } from '../../../shared/param-state';
 import { ViewConfig } from './../../../shared/param-annotations.enum';
 import { UiNature } from './../../../shared/param-config';
+import { ParamUtils } from './../../../shared/param-utils';
+import { BaseElement } from './../base-element.component';
 
 
 

@@ -17,43 +17,42 @@
 
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import { DropdownModule, TooltipModule } from 'primeng/primeng';
+import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { async, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { By } from '@angular/platform-browser';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
-
-import { CardDetailsFieldComponent } from './card-details-field.component';
-import { InPlaceEditorComponent } from '../form/elements/inplace-editor.component';
-import { InputText } from '../form/elements/textbox.component';
-import { TextArea } from '../form/elements/textarea.component';
-import { ComboBox } from '../form/elements/combobox.component';
-import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
-import { TooltipComponent } from '../tooltip/tooltip.component';
-import { SelectItemPipe } from '../../../pipes/select-item.pipe';
-import { CustomHttpClient } from '../../../services/httpclient.service';
-import { DisplayValueDirective } from '../../../directives/display-value.directive';
-import { InputLabel } from '../../platform/form/elements/input-label.component';
-import { CardDetailsFieldGroupComponent } from './card-details-field-group.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
-import * as data from '../../../payload.json';
-import { Param } from '../../../shared/param-state';
-import { ServiceConstants } from '../../../services/service.constants';
-import { PageService } from '../../../services/page.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
-import { LoaderService } from '../../../services/loader.service';
-import { ConfigService } from '../../../services/config.service';
-import { LoggerService } from '../../../services/logger.service';
-import { AppInitService } from '../../../services/app.init.service';
 import { cardDetailsFieldGroupElement, newCardDetailsFieldGroupElement } from 'mockdata';
-import { Paragraph } from '../content/paragraph.component';
-import { NmMessageService } from './../../../services/toastmessage.service';
+import { configureTestSuite } from 'ng-bullet';
+import { DropdownModule, TooltipModule } from 'primeng/primeng';
+import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
+import { SelectItemPipe } from '../../../pipes/select-item.pipe';
+import { AppInitService } from '../../../services/app.init.service';
+import { ConfigService } from '../../../services/config.service';
+import { CustomHttpClient } from '../../../services/httpclient.service';
+import { LoaderService } from '../../../services/loader.service';
+import { LoggerService } from '../../../services/logger.service';
+import { PageService } from '../../../services/page.service';
+import { ServiceConstants } from '../../../services/service.constants';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../../services/session.store';
+import { setup } from '../../../setup.spec';
+import { Param } from '../../../shared/param-state';
+import { InputLabel } from '../../platform/form/elements/input-label.component';
 import { InputLegend } from '../../platform/form/elements/input-legend.component';
+import { Paragraph } from '../content/paragraph.component';
+import { ComboBox } from '../form/elements/combobox.component';
+import { InPlaceEditorComponent } from '../form/elements/inplace-editor.component';
+import { TextArea } from '../form/elements/textarea.component';
+import { InputText } from '../form/elements/textbox.component';
+import { TooltipComponent } from '../tooltip/tooltip.component';
+import { NmMessageService } from './../../../services/toastmessage.service';
+import { CardDetailsFieldGroupComponent } from './card-details-field-group.component';
+import { CardDetailsFieldComponent } from './card-details-field.component';
+
 
 let fixture,hostComponent;
 

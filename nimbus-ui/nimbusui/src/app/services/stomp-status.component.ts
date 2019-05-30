@@ -14,11 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
+
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { STOMPService, StateLookup } from './stomp.service';
+import { StateLookup, STOMPService } from './stomp.service';
 
 /**
  * \@author Dinakar.Meda

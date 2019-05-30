@@ -16,18 +16,18 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { AngularSvgIconModule } from 'angular-svg-icon';
-import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
-
-import { ButtonGroup } from './button-group.component';
-import { SvgComponent } from '../../svg/svg.component';
-import { Image } from '../../image.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 import { buttonGroupbuttonList } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { setup } from '../../../../setup.spec';
+import { Image } from '../../image.component';
+import { SvgComponent } from '../../svg/svg.component';
+import { ButtonGroup } from './button-group.component';
+
 
 @Component({
   template: '<div></div>',

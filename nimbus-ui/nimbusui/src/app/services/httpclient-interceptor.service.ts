@@ -14,17 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
+
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpHandler, HttpEvent, HttpRequest, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ServiceConstants } from './service.constants';
-import { ExecuteException, ExecuteResponse, MultiOutput } from '../shared/app-config.interface';
-import { PageService } from './page.service';
+import { ExecuteException, ExecuteResponse } from '../shared/app-config.interface';
 import { ConfigService } from './config.service';
+import { ServiceConstants } from './service.constants';
 import { SessionStoreService } from './session.store';
-import { RedirectHandle } from '../shared/app-redirecthandle.interface';
 import { NmMessageService } from './toastmessage.service';
 /**
  * \@author Swetha.Vemuri

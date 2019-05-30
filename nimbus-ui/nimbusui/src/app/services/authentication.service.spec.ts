@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
+import { inject, TestBed } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
-
 import { AuthenticationService } from './authentication.service';
+
 
 describe('AuthenticationService', () => {
   beforeEach(() => {

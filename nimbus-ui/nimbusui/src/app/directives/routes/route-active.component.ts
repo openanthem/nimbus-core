@@ -20,14 +20,15 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 'use strict';
 
-import { MenuRouteLink } from './route-link.component';
-import { AfterContentInit, ChangeDetectorRef, ContentChildren, Directive, ElementRef, Input, OnChanges, OnDestroy, QueryList, Renderer2, SimpleChanges, Output, EventEmitter} from '@angular/core';
+import { AfterContentInit, ChangeDetectorRef, ContentChildren, Directive, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, QueryList, Renderer2, SimpleChanges } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router, RouterEvent, RouterLink, RouterLinkWithHref } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { URLUtils } from './../../shared/url-utils';
-import { RouterLink, Router, NavigationEnd, RouterEvent, RouterLinkWithHref, ActivatedRoute } from '@angular/router';
 import { MenuItem } from '../../shared/menuitem';
+import { URLUtils } from './../../shared/url-utils';
+import { MenuRouteLink } from './route-link.component';
 
 /**
  * \@author Sandeep.Mantha

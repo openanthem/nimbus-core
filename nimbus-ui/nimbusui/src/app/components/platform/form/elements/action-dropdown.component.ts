@@ -14,19 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { trigger,state,style,transition,animate,keyframes } from '@angular/animations';
-import { Component, Input, ViewChild, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
-import { LabelConfig } from './../../../../shared/param-config';
-import { Behavior } from './../../../../shared/command.enum';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
 import { PageService } from '../../../../services/page.service';
+import { HttpMethod } from '../../../../shared/command.enum';
+import { ComponentTypes } from '../../../../shared/param-annotations.enum';
 import { ParamConfig } from '../../../../shared/param-config';
 import { Param } from '../../../../shared/param-state';
 import { GenericDomain } from './../../../../model/generic-domain.model';
-import { HttpMethod } from '../../../../shared/command.enum';
+import { Behavior } from './../../../../shared/command.enum';
 import { BaseElement } from './../../base-element.component';
-import { ComponentTypes } from '../../../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda

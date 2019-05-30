@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import {Injectable} from "@angular/core";
-import { ParamConfig } from './param-config';
+import { Injectable } from "@angular/core";
 import { DateTimeFormatPipe } from '../pipes/date.pipe';
-import { ViewComponent} from './param-annotations.enum';
+import { ViewComponent } from './param-annotations.enum';
+import { ParamConfig } from './param-config';
 import { ParamUtils } from './param-utils';
 
 /**

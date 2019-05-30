@@ -15,20 +15,20 @@
  * limitations under the License.
  */
 
-import { TestBed, inject, async } from '@angular/core/testing';
-import { CustomHttpClient } from './httpclient.service';
-import { HttpClientModule, HttpClient, HttpRequest } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { JL } from 'jsnlog';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
 import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
-import { of as observableOf,  Observable } from 'rxjs';
-
-
-import { FileService } from './file.service';
-import { LoggerService } from './logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
+import { JL } from 'jsnlog';
+import { of as observableOf } from 'rxjs';
 import { AppInitService } from './app.init.service';
+import { FileService } from './file.service';
+import { CustomHttpClient } from './httpclient.service';
+import { LoggerService } from './logger.service';
+import { CUSTOM_STORAGE } from './session.store';
+
+
 
 let http, backend, service, mHttpClient, logger;
 

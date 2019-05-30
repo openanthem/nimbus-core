@@ -15,33 +15,33 @@
  * limitations under the License.
  */
 
-import { NmMessageService } from './../../../../services/toastmessage.service';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { RadioButtonModule } from 'primeng/primeng';
-import { FormsModule } from '@angular/forms';
+import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { async, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { By } from '@angular/platform-browser';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
-
-import { RadioButton } from './radio.component';
-import { TooltipComponent } from '../../../platform/tooltip/tooltip.component';
-import { PageService } from '../../../../services/page.service';
+import { radioElement } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { RadioButtonModule } from 'primeng/primeng';
+import { AppInitService } from '../../../../services/app.init.service';
+import { ConfigService } from '../../../../services/config.service';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
-import { AppInitService } from '../../../../services/app.init.service';
-import { InputLegend } from '../../../platform/form/elements/input-legend.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
+import { PageService } from '../../../../services/page.service';
+import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import { setup } from '../../../../setup.spec';
 import { Param } from '../../../../shared/param-state';
-import { radioElement } from 'mockdata';
-import { By } from '@angular/platform-browser';
-import { CounterMessageService } from '../../../../services/counter-message.service';
+import { InputLegend } from '../../../platform/form/elements/input-legend.component';
+import { TooltipComponent } from '../../../platform/tooltip/tooltip.component';
+import { NmMessageService } from './../../../../services/toastmessage.service';
+import { RadioButton } from './radio.component';
+'use strict';
+
 
 let param: Param;
 

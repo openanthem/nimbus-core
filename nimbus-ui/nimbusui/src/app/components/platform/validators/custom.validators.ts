@@ -14,8 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { FormControl, ValidatorFn, FormGroup, ValidationErrors } from '@angular/forms';
+
+import { FormControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Attribute } from './../../../shared/param-config';
 
 

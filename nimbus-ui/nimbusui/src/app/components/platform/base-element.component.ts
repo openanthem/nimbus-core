@@ -1,4 +1,3 @@
-import { Message } from './../../shared/message';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -15,15 +14,15 @@ import { Message } from './../../shared/message';
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
 import { Component, Input } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Param } from '../../shared/param-state';
-import { LabelConfig } from './../../shared/param-config';
-import { ValidationUtils } from './validators/ValidationUtils';
 import { ParamUtils } from '../../shared/param-utils';
 import { ValidationConstraint } from './../../shared/validationconstraints.enum';
-import { Subscription } from 'rxjs';
+import { ValidationUtils } from './validators/ValidationUtils';
 
 /**
  * \@author Dinakar.Meda

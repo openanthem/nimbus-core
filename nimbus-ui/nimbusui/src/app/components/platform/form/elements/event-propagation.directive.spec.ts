@@ -14,20 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TestBed, async } from '@angular/core/testing';
+import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
-
-import { EventPropagationDirective } from './event-propagation.directive';
-import { LoggerService } from './../../../../services/logger.service';
-import { PageService } from './../../../../services/page.service';
-import { SessionStoreService, CUSTOM_STORAGE } from './../../../../services/session.store';
+import { TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup } from '@angular/forms';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { Subject, Subscription } from 'rxjs';
+import { ConfigService } from './../../../../services/config.service';
 import { CustomHttpClient } from './../../../../services/httpclient.service';
 import { LoaderService } from './../../../../services/loader.service';
-import { ConfigService } from './../../../../services/config.service';
-import { Subject, Observable, throwError, of as observableOf, Subscription } from 'rxjs';
-import { FormGroup, FormControl } from '@angular/forms';
+import { LoggerService } from './../../../../services/logger.service';
+import { PageService } from './../../../../services/page.service';
+import { CUSTOM_STORAGE, SessionStoreService } from './../../../../services/session.store';
+import { EventPropagationDirective } from './event-propagation.directive';
+
 
 class MockLoggerService {
     debug() { }

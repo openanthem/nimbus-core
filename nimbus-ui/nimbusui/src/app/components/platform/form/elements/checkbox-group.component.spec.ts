@@ -15,31 +15,31 @@
  * limitations under the License.
  */
 
-import { Param } from './../../../../shared/param-state';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule } from 'primeng/primeng';
-import { FormsModule, ReactiveFormsModule, Validators, FormGroup, ValidatorFn, FormControl } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { EventEmitter, Input, Component } from '@angular/core';
-
-import { CheckBoxGroup } from './checkbox-group.component';
-import { TooltipComponent } from '../../../platform/tooltip/tooltip.component';
-import { PageService } from '../../../../services/page.service';
+import { Component, Input } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { By } from '@angular/platform-browser';
+import { checkBoxGroupElement } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { AccordionModule, CalendarModule, CheckboxModule, DataTableModule, DropdownModule, FileUploadModule, GrowlModule, ListboxModule, PickListModule, RadioButtonModule } from 'primeng/primeng';
+import { Subject } from 'rxjs';
+import { ConfigService } from '../../../../services/config.service';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
-import { Subject } from 'rxjs';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-import { ValidationUtils } from '../../validators/ValidationUtils';
-import { checkBoxGroupElement } from 'mockdata';
-import { By } from '@angular/platform-browser';
+import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';
 import { WindowRefService } from '../../../../services/window-ref.service';
-import { CounterMessageService } from '../../../../services/counter-message.service';
+import { setup } from '../../../../setup.spec';
+import { TooltipComponent } from '../../../platform/tooltip/tooltip.component';
+import { ValidationUtils } from '../../validators/ValidationUtils';
+import { Param } from './../../../../shared/param-state';
+import { CheckBoxGroup } from './checkbox-group.component';
+'use strict';
+
 
 let pageService;
 

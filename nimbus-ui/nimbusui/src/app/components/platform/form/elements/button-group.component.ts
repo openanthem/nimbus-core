@@ -14,11 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
-import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { Param } from '../../../../shared/param-state';
+
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ViewComponent } from '../../../../shared/param-annotations.enum';
+import { Param } from '../../../../shared/param-state';
 
 /**
  * \@author Dinakar.Meda

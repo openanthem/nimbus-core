@@ -1,4 +1,3 @@
-import { BaseElement } from './../base-element.component';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -15,13 +14,14 @@ import { BaseElement } from './../base-element.component';
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { Component, Input } from '@angular/core';
-import { PageService } from '../../../services/page.service';
+import { Component } from '@angular/core';
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { Param } from '../../../shared/param-state';
+import { PageService } from '../../../services/page.service';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
+import { BaseElement } from './../base-element.component';
 
 /**
  * \@author Dinakar.Meda

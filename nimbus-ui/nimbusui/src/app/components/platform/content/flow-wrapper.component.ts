@@ -14,19 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
-import { ActivatedRoute, Router } from '@angular/router';
-
 import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Message } from 'stompjs';
-
-import { PageService } from '../../../services/page.service';
 import { ConfigService } from '../../../services/config.service';
-import { STOMPService } from '../../../services/stomp.service';
-import { ExecuteOutput, ModelEvent, Page } from '../../../shared/app-config.interface';
 import { LoggerService } from '../../../services/logger.service';
+import { PageService } from '../../../services/page.service';
+import { Page } from '../../../shared/app-config.interface';
 
 /**
  * \@author Dinakar.Meda

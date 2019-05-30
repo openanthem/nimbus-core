@@ -16,25 +16,23 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import { EventEmitter } from '@angular/core';
 
+import { HttpClientModule } from '@angular/common/http';
+import { EventEmitter } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
+import { RouterTestingModule } from '@angular/router/testing';
+import { configureTestSuite } from 'ng-bullet';
+import { ConfigService } from '../../services/config.service';
+import { CustomHttpClient } from '../../services/httpclient.service';
+import { LayoutService } from '../../services/layout.service';
+import { LoaderService } from '../../services/loader.service';
+import { PageService } from '../../services/page.service';
+import { setup } from '../../setup.spec';
+import { Paragraph } from '../platform/content/paragraph.component';
 import { Link } from '../platform/link.component';
 import { LoginLayoutCmp } from './login-layout.component';
-import { Paragraph } from '../platform/content/paragraph.component';
-import { CustomHttpClient } from '../../services/httpclient.service';
-import { PageService } from '../../services/page.service';
-import { LoaderService } from '../../services/loader.service';
-import { ConfigService } from '../../services/config.service';
-import { LayoutService } from '../../services/layout.service';
-import { setup, TestContext } from '../../setup.spec';
-import { AppBranding, FooterConfig } from '../../model/menu-meta.interface';
-import { Param } from '../../shared/param-state';
-import { configureTestSuite } from 'ng-bullet';
+
 
 let layoutService, configService;
 
