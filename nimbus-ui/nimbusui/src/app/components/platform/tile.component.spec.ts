@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,13 +23,36 @@ import { async, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { fieldValueParam } from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
 import { ChartModule } from 'primeng/chart';
 import { KeyFilterModule } from 'primeng/keyfilter';
-import { AccordionModule, AutoCompleteModule, CalendarModule, CheckboxModule, DataTableModule, DialogModule, DropdownModule, EditorModule, FileUploadModule, GrowlModule, InputMaskModule, InputSwitchModule, ListboxModule, MessagesModule, PickListModule, RadioButtonModule, TabViewModule, TooltipModule, TreeTableModule } from 'primeng/primeng';
+import {
+  AccordionModule,
+  AutoCompleteModule,
+  CalendarModule,
+  CheckboxModule,
+  DataTableModule,
+  DialogModule,
+  DropdownModule,
+  EditorModule,
+  FileUploadModule,
+  GrowlModule,
+  InputMaskModule,
+  InputSwitchModule,
+  ListboxModule,
+  MessagesModule,
+  PickListModule,
+  RadioButtonModule,
+  TabViewModule,
+  TooltipModule,
+  TreeTableModule
+} from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { DisplayValueDirective } from '../../directives/display-value.directive';
@@ -53,7 +76,10 @@ import { Paragraph } from '../platform/content/paragraph.component';
 import { StaticText } from '../platform/content/static-content.component';
 import { FileUploadComponent } from '../platform/fileupload/file-upload.component';
 import { Form } from '../platform/form.component';
-import { ActionDropdown, ActionLink } from '../platform/form/elements/action-dropdown.component';
+import {
+  ActionDropdown,
+  ActionLink
+} from '../platform/form/elements/action-dropdown.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
 import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.component';
@@ -95,230 +121,224 @@ import { Section } from './section.component';
 import { SvgComponent } from './svg/svg.component';
 import { Tile } from './tile.component';
 
-
 let pageService;
 
 class MockPageService {
-    processEvent() {
-
-    }
+  processEvent() {}
 }
 
 @Component({
-    template: '<div></div>',
-    selector: 'nm-button'
-  })
-  class Button {
-  
-    @Input() element: any;
-    @Input() payload: string;
-    @Input() form: any;
-    @Input() actionTray?: boolean;
-  
-    @Output() buttonClickEvent = new EventEmitter();
-  
-    @Output() elementChange = new EventEmitter();
-    private imagesPath: string;
-    private btnClass: string;
-    private disabled: boolean;
-    files: any;
-    differ: any;
-    componentTypes;
-  }
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
+
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
+}
 
 class MockLoggerService {
-    debug() { }
-    info() { }
-    error() { }
+  debug() {}
+  info() {}
+  error() {}
 }
 
 const declarations = [
-    Tile,
-    MessageComponent,
-    Header,
-    Section,
-    Modal,
-    CardDetailsGrid,
-    CardDetailsComponent,
-    Paragraph,
-    StaticText,
-    Form,
-    Link,
-    Menu,
-    Button,
-    ButtonGroup,
-    InputText,
-    ComboBox,
-    TooltipComponent,
-    CardDetailsFieldComponent,
-    FrmGroupCmp,
-    Accordion,
-    ActionDropdown,
-    DateTimeFormatPipe,
-    SelectItemPipe,
-    InPlaceEditorComponent,
-    TextArea,
-    FormElement,
-    ActionLink,
-    FileUploadComponent,
-    OrderablePickList,
-    MultiselectCard,
-    MultiSelectListBox,
-    CheckBox,
-    CheckBoxGroup,
-    RadioButton,
-    Calendar,
-    Signature,
-    TableHeader,
-    DataTable,
-    HeaderCheckBox,
-    SvgComponent,
-    Image,
-    InputLabel,
-    Label,
-    TreeGrid,
-    InputSwitch,
-    CardDetailsFieldGroupComponent,
-    DisplayValueDirective,
-    FormGridFiller,
-    InputLegend,
-    FormErrorMessage,
-    PrintDirective,
-    InputMaskComp,
-    NmAutocomplete,
-    Tab,
-    NmChart,
-    RichText
-   ];
+  Tile,
+  MessageComponent,
+  Header,
+  Section,
+  Modal,
+  CardDetailsGrid,
+  CardDetailsComponent,
+  Paragraph,
+  StaticText,
+  Form,
+  Link,
+  Menu,
+  Button,
+  ButtonGroup,
+  InputText,
+  ComboBox,
+  TooltipComponent,
+  CardDetailsFieldComponent,
+  FrmGroupCmp,
+  Accordion,
+  ActionDropdown,
+  DateTimeFormatPipe,
+  SelectItemPipe,
+  InPlaceEditorComponent,
+  TextArea,
+  FormElement,
+  ActionLink,
+  FileUploadComponent,
+  OrderablePickList,
+  MultiselectCard,
+  MultiSelectListBox,
+  CheckBox,
+  CheckBoxGroup,
+  RadioButton,
+  Calendar,
+  Signature,
+  TableHeader,
+  DataTable,
+  HeaderCheckBox,
+  SvgComponent,
+  Image,
+  InputLabel,
+  Label,
+  TreeGrid,
+  InputSwitch,
+  CardDetailsFieldGroupComponent,
+  DisplayValueDirective,
+  FormGridFiller,
+  InputLegend,
+  FormErrorMessage,
+  PrintDirective,
+  InputMaskComp,
+  NmAutocomplete,
+  Tab,
+  NmChart,
+  RichText
+];
 const imports = [
-    FormsModule,
-    GrowlModule,
-    MessagesModule,
-    DialogModule,
-    ReactiveFormsModule,
-    AccordionModule,
-    DataTableModule,
-    TooltipModule,
-    DropdownModule,
-    FileUploadModule,
-    PickListModule,
-    ListboxModule,
-    CheckboxModule,
-    RadioButtonModule,
-    CalendarModule,
-    HttpModule,
-    HttpClientTestingModule,
-    TableModule,
-    KeyFilterModule,
-    StorageServiceModule,
-    AngularSvgIconModule,
-    ToastModule,
-    TreeTableModule, 
-    InputSwitchModule,
-    InputMaskModule,
-    TabViewModule,
-    ChartModule,
-    EditorModule,
-    AutoCompleteModule
-   ];
+  FormsModule,
+  GrowlModule,
+  MessagesModule,
+  DialogModule,
+  ReactiveFormsModule,
+  AccordionModule,
+  DataTableModule,
+  TooltipModule,
+  DropdownModule,
+  FileUploadModule,
+  PickListModule,
+  ListboxModule,
+  CheckboxModule,
+  RadioButtonModule,
+  CalendarModule,
+  HttpModule,
+  HttpClientTestingModule,
+  TableModule,
+  KeyFilterModule,
+  StorageServiceModule,
+  AngularSvgIconModule,
+  ToastModule,
+  TreeTableModule,
+  InputSwitchModule,
+  InputMaskModule,
+  TabViewModule,
+  ChartModule,
+  EditorModule,
+  AutoCompleteModule
+];
 const providers = [
-    {provide: PageService, useClass: MockPageService},
-    { provide: 'JSNLOG', useValue: JL },
-    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-    {provide: LoggerService, useClass: MockLoggerService},
-    CustomHttpClient,
-    LoaderService,
-    ConfigService,
-    AppInitService
-   ];
+  { provide: PageService, useClass: MockPageService },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: LoggerService, useClass: MockLoggerService },
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  AppInitService
+];
 
 let fixture, hostComponent;
 
 describe('Tile', () => {
+  configureTestSuite(() => {
+    setup(declarations, imports, providers);
+  });
 
-    configureTestSuite(() => {
-        setup( declarations, imports, providers);
-    });
-  
-    beforeEach(() => {
-        fixture = TestBed.createComponent(Tile);
-        hostComponent = fixture.debugElement.componentInstance;
-        hostComponent.element = fieldValueParam;
-        pageService = TestBed.get(PageService);
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(Tile);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = fieldValueParam;
+    pageService = TestBed.get(PageService);
+  });
 
-    it('should create the Tile',  async(() => {
-        expect(hostComponent).toBeTruthy();
-    }));
+  it('should create the Tile', async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
 
-    // it('based on the xSmall size the styleWd and styleHt should be updated',  () => {
-    //     fixture.whenStable().then(() => {
-    //         hostComponent.element.config.uiStyles.attributes.size = 'XSmall';
-    //         hostComponent.element.config.initializeComponent = () => { return false };
-    //         hostComponent.ngOnInit();
-    //         expect(hostComponent.styleWd).toEqual('card-holder col-lg-3 col-md-6 XsmallCard');
-    //         expect(hostComponent.styleHt).toEqual('height-md');
-    //     });
-    // });
+  // it('based on the xSmall size the styleWd and styleHt should be updated',  () => {
+  //     fixture.whenStable().then(() => {
+  //         hostComponent.element.config.uiStyles.attributes.size = 'XSmall';
+  //         hostComponent.element.config.initializeComponent = () => { return false };
+  //         hostComponent.ngOnInit();
+  //         expect(hostComponent.styleWd).toEqual('card-holder col-lg-3 col-md-6 XsmallCard');
+  //         expect(hostComponent.styleHt).toEqual('height-md');
+  //     });
+  // });
 
-    // it('based on the small size the styleWd and styleHt should be updated',  () => {
-    //     fixture.whenStable().then(() => {
-    //         hostComponent.element.config.uiStyles.attributes.size = 'Small';
-    //         hostComponent.element.config.initializeComponent = () => { return false };
-    //         hostComponent.ngOnInit();
-    //         expect(hostComponent.styleWd).toEqual('col-lg-4 col-md-6 smallCard');
-    //         expect(hostComponent.styleHt).toEqual('height-md');
-    //     });
-    // });
+  // it('based on the small size the styleWd and styleHt should be updated',  () => {
+  //     fixture.whenStable().then(() => {
+  //         hostComponent.element.config.uiStyles.attributes.size = 'Small';
+  //         hostComponent.element.config.initializeComponent = () => { return false };
+  //         hostComponent.ngOnInit();
+  //         expect(hostComponent.styleWd).toEqual('col-lg-4 col-md-6 smallCard');
+  //         expect(hostComponent.styleHt).toEqual('height-md');
+  //     });
+  // });
 
-    // it('based on the medium size the styleWd and styleHt should be updated',  () => {
-    //     fixture.whenStable().then(() => {
-    //         hostComponent.element.config.uiStyles.attributes.size = 'Medium';
-    //         hostComponent.element.config.initializeComponent = () => { return false };
-    //         hostComponent.ngOnInit();
-    //         expect(hostComponent.styleWd).toEqual('card-holder col-md-6 mediumCard');
-    //         expect(hostComponent.styleHt).toEqual('height-md');
-    //     });
-    // });
+  // it('based on the medium size the styleWd and styleHt should be updated',  () => {
+  //     fixture.whenStable().then(() => {
+  //         hostComponent.element.config.uiStyles.attributes.size = 'Medium';
+  //         hostComponent.element.config.initializeComponent = () => { return false };
+  //         hostComponent.ngOnInit();
+  //         expect(hostComponent.styleWd).toEqual('card-holder col-md-6 mediumCard');
+  //         expect(hostComponent.styleHt).toEqual('height-md');
+  //     });
+  // });
 
-    // it('based on the colorBox size the styleWd and styleHt should be updated',  () => {
-    //     fixture.whenStable().then(() => {
-    //         hostComponent.element.config.uiStyles.attributes.size = 'Colorbox';
-    //         hostComponent.element.config.initializeComponent = () => { return false };
-    //         hostComponent.ngOnInit();
-    //         expect(hostComponent.styleWd).toEqual('');
-    //         expect(hostComponent.styleHt).toEqual('');
-    //     });
-    // });
+  // it('based on the colorBox size the styleWd and styleHt should be updated',  () => {
+  //     fixture.whenStable().then(() => {
+  //         hostComponent.element.config.uiStyles.attributes.size = 'Colorbox';
+  //         hostComponent.element.config.initializeComponent = () => { return false };
+  //         hostComponent.ngOnInit();
+  //         expect(hostComponent.styleWd).toEqual('');
+  //         expect(hostComponent.styleHt).toEqual('');
+  //     });
+  // });
 
-    // it('based on the size the styleWd and styleHt should be updated',  () => {
-    //     fixture.whenStable().then(() => {
-    //         hostComponent.element.config.uiStyles.attributes.size = '';
-    //         hostComponent.element.config.initializeComponent = () => { return false };
-    //         hostComponent.ngOnInit();
-    //         expect(hostComponent.styleWd).toEqual('');
-    //         expect(hostComponent.styleHt).toEqual('');
-    //     });
-    // });
+  // it('based on the size the styleWd and styleHt should be updated',  () => {
+  //     fixture.whenStable().then(() => {
+  //         hostComponent.element.config.uiStyles.attributes.size = '';
+  //         hostComponent.element.config.initializeComponent = () => { return false };
+  //         hostComponent.ngOnInit();
+  //         expect(hostComponent.styleWd).toEqual('');
+  //         expect(hostComponent.styleHt).toEqual('');
+  //     });
+  // });
 
-    // it('ngOnInit() should update the styleWd',  () => {
-    //     fixture.whenStable().then(() => {
-    //         hostComponent.element.config.uiStyles.attributes.size = '';
-    //         hostComponent.element.config.initializeComponent = () => { return false };
-    //         hostComponent.tileType = 'subcard';
-    //         hostComponent.ngOnInit();
-    //         expect(hostComponent.styleWd).toEqual(' subcard');
-    //     });
-    // });
+  // it('ngOnInit() should update the styleWd',  () => {
+  //     fixture.whenStable().then(() => {
+  //         hostComponent.element.config.uiStyles.attributes.size = '';
+  //         hostComponent.element.config.initializeComponent = () => { return false };
+  //         hostComponent.tileType = 'subcard';
+  //         hostComponent.ngOnInit();
+  //         expect(hostComponent.styleWd).toEqual(' subcard');
+  //     });
+  // });
 
-    // it('ngOnInit() should call the pageService.processEvent',  () => {
-    //     fixture.whenStable().then(() => {
-    //         hostComponent.element.config.uiStyles.attributes.size = '';
-    //         hostComponent.element.config.initializeComponent = () => { return true };
-    //         spyOn(pageService, 'processEvent').and.callThrough();
-    //         hostComponent.ngOnInit();
-    //         expect(pageService.processEvent).toHaveBeenCalled();
-    //     });
-    // });
-
+  // it('ngOnInit() should call the pageService.processEvent',  () => {
+  //     fixture.whenStable().then(() => {
+  //         hostComponent.element.config.uiStyles.attributes.size = '';
+  //         hostComponent.element.config.initializeComponent = () => { return true };
+  //         spyOn(pageService, 'processEvent').and.callThrough();
+  //         hostComponent.ngOnInit();
+  //         expect(pageService.processEvent).toHaveBeenCalled();
+  //     });
+  // });
 });

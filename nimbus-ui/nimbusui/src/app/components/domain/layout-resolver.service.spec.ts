@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,14 +15,19 @@
  * limitations under the License.
  */
 
-
 import { HttpClient } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
 import { async, TestBed } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { Subject } from 'rxjs';
 import { AppInitService } from '../../services/app.init.service';
@@ -31,58 +36,58 @@ import { CustomHttpClient } from '../../services/httpclient.service';
 import { LoaderService } from '../../services/loader.service';
 import { LoggerService } from '../../services/logger.service';
 import { PageService } from '../../services/page.service';
-import { CUSTOM_STORAGE, SessionStoreService } from '../../services/session.store';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from '../../services/session.store';
 import { BreadcrumbService } from '../platform/breadcrumb/breadcrumb.service';
 import { NmMessageService } from './../../services/toastmessage.service';
 import { LayoutResolver } from './layout-resolver.service';
 
-
 class MockConfigService {
-    getFlowConfig(a) {
-        const test = {
-            model: 123
-        }
-        return test;
-    }
+  getFlowConfig(a) {
+    const test = {
+      model: 123
+    };
+    return test;
+  }
 }
 
 class MockConfigSvc {
-    getFlowConfig(a) {
-        const test = {        }
-        return test;
-    }
+  getFlowConfig(a) {
+    const test = {};
+    return test;
+  }
 }
 
 class MockRouterStateSnapshot {
-    firstChild: any;
-    constructor() {
-        this.firstChild = {
-            params: {
-                pageId: 123
-            }
-        }
-    }
+  firstChild: any;
+  constructor() {
+    this.firstChild = {
+      params: {
+        pageId: 123
+      }
+    };
+  }
 }
 
 class MockPageService {
-    public layout$: Subject<any>;
-    constructor() {
-        this.layout$ = new Subject<any>();
-    }
-    getLayoutConfigForFlow(a) {
-        this.layout$.next({test:123});
-    }
-    getFlowLayoutConfig(a) {
-        return new Promise(
-            (resolve, reject) => {
-                resolve('abcd');
-            }
-        );
-    }
+  public layout$: Subject<any>;
+  constructor() {
+    this.layout$ = new Subject<any>();
+  }
+  getLayoutConfigForFlow(a) {
+    this.layout$.next({ test: 123 });
+  }
+  getFlowLayoutConfig(a) {
+    return new Promise((resolve, reject) => {
+      resolve('abcd');
+    });
+  }
 }
 
 class MockLoggerService {
-    debug() { }
+  debug() {}
 }
 
 let http, backend, service, pagesvc, route, state, configsvc;
@@ -90,7 +95,12 @@ let http, backend, service, pagesvc, route, state, configsvc;
 describe('LayoutResolver', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, HttpModule, RouterTestingModule, StorageServiceModule],
+      imports: [
+        HttpClientTestingModule,
+        HttpModule,
+        RouterTestingModule,
+        StorageServiceModule
+      ],
       providers: [
         LayoutResolver,
         { provide: PageService, useClass: MockPageService },
@@ -100,7 +110,7 @@ describe('LayoutResolver', () => {
           provide: ActivatedRouteSnapshot,
           useValue: {
             params: {
-              domain: "test"
+              domain: 'test'
             },
             firstChild: {
               params: {
@@ -109,10 +119,10 @@ describe('LayoutResolver', () => {
             }
           }
         },
-        {provide: ConfigService, useClass: MockConfigService},
+        { provide: ConfigService, useClass: MockConfigService },
         { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
         { provide: 'JSNLOG', useValue: JL },
-        {provide: LoggerService, useClass: MockLoggerService},
+        { provide: LoggerService, useClass: MockLoggerService },
         CustomHttpClient,
         LoaderService,
         BreadcrumbService,
@@ -135,23 +145,22 @@ describe('LayoutResolver', () => {
   }));
 
   it('resolve() should call pageservice flowLayoutConfig', async(() => {
-      spyOn(pagesvc, 'getFlowLayoutConfig').and.callThrough();
-      service.resolve(route, state);
-      expect(pagesvc.getFlowLayoutConfig).toHaveBeenCalled();
+    spyOn(pagesvc, 'getFlowLayoutConfig').and.callThrough();
+    service.resolve(route, state);
+    expect(pagesvc.getFlowLayoutConfig).toHaveBeenCalled();
   }));
 
   it('resolve() should call pageservice flowLayoutConfig without routeToDefaultPage flag', async(() => {
     spyOn(pagesvc, 'getFlowLayoutConfig').and.callThrough();
     route.firstChild.params = {};
     service.resolve(route, state);
-    expect(pagesvc.getFlowLayoutConfig).toHaveBeenCalled(); 
+    expect(pagesvc.getFlowLayoutConfig).toHaveBeenCalled();
   }));
 
   it('resolve() should call pageservice getLayoutConfigForFlow', async(() => {
-    spyOn(configsvc, 'getFlowConfig').and.returnValue({    });
+    spyOn(configsvc, 'getFlowConfig').and.returnValue({});
     spyOn(pagesvc, 'getLayoutConfigForFlow').and.callThrough();
     service.resolve(route, state);
     expect(pagesvc.getLayoutConfigForFlow).toHaveBeenCalled();
   }));
-
 });

@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,70 +24,70 @@ import { MenuItem } from 'primeng/primeng';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
- * \@whatItDoes 
- * 
- * \@howToUse 
- * 
+ * \@whatItDoes
+ *
+ * \@howToUse
+ *
  */
 export enum MenuType {
-    DEFAULT,
-    TOP,
-    LEFT,
-    RIGHT
+  DEFAULT,
+  TOP,
+  LEFT,
+  RIGHT
 }
 
 export interface MenuConfig extends Route {
-    title?: string;
-    image?: string;
-    menuType: MenuType;
-    children?: MenuConfig[];
+  title?: string;
+  image?: string;
+  menuType: MenuType;
+  children?: MenuConfig[];
 }
 export interface LinkConfig extends Route {
-    path:string;
-    title?: string;
-    image?: string;
-    enabled?: boolean;
-    visible?: boolean;
-    children?: LinkConfig[];
+  path: string;
+  title?: string;
+  image?: string;
+  enabled?: boolean;
+  visible?: boolean;
+  children?: LinkConfig[];
 }
 
 export interface AppBranding {
-    logo: Param;
-    title: Param;
-    appTitle: Param;
-    subTitle: Param;
-    userName: Param;
-    userRole: Param;
-    settings:Param;
-    help:Param;
-    logOut: Param;
-    numOfNotifications:Param;
-    linkNotifications:Param;
+  logo: Param;
+  title: Param;
+  appTitle: Param;
+  subTitle: Param;
+  userName: Param;
+  userRole: Param;
+  settings: Param;
+  help: Param;
+  logOut: Param;
+  numOfNotifications: Param;
+  linkNotifications: Param;
 }
 
 export interface TopBarConfig {
-    branding: AppBranding;
-    headerMenus: Param[];
-    accordions: Param[];
+  branding: AppBranding;
+  headerMenus: Param[];
+  accordions: Param[];
 }
 
 export interface FooterConfig {
-    disclaimer: Param;
-    links: Param[];
-    sslCert: Param;
+  disclaimer: Param;
+  links: Param[];
+  sslCert: Param;
 }
 
 export interface Layout {
-    fixLayout: boolean;
-    topBar: TopBarConfig;
-    menuPanel: MenuPanel;
-    footer: FooterConfig;
-    actiontray: Param;
-    modalList: Param[];
+  fixLayout: boolean;
+  topBar: TopBarConfig;
+  menuPanel: MenuPanel;
+  footer: FooterConfig;
+  actiontray: Param;
+  modalList: Param[];
 }
 
 export interface MenuPanel {
-    align: string;
-    code: string;
-    menuItems: MenuItem[];
+  align: string;
+  code: string;
+  menuItems: MenuItem[];
 }

@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,6 @@ import { Paragraph } from '../platform/content/paragraph.component';
 import { Link } from '../platform/link.component';
 import { LoginLayoutCmp } from './login-layout.component';
 
-
 let layoutService, configService;
 
 class MockLayoutService {
@@ -54,7 +53,7 @@ class MockLayoutService {
 const declarations = [LoginLayoutCmp, Link, Paragraph];
 const imports = [RouterTestingModule, HttpClientModule, HttpModule];
 const providers = [
-  {provide: LayoutService, useClass: MockLayoutService},
+  { provide: LayoutService, useClass: MockLayoutService },
   CustomHttpClient,
   PageService,
   LoaderService,
@@ -63,11 +62,9 @@ const providers = [
 let fixture, hostComponent;
 
 describe('LoginLayoutCmp', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LoginLayoutCmp);
@@ -76,8 +73,8 @@ describe('LoginLayoutCmp', () => {
     configService = TestBed.get(ConfigService);
   });
 
-  it('should create the LoginLayoutCmp',  async(() => {
-    expect(hostComponent).toBeTruthy();  
+  it('should create the LoginLayoutCmp', async(() => {
+    expect(hostComponent).toBeTruthy();
   }));
 
   // it('ngoninit() should get branding, footer, topMenuItems',  async(() => {
@@ -101,5 +98,4 @@ describe('LoginLayoutCmp', () => {
   //   expect(hostComponent.footer).toEqual(Footer);
   //   expect(hostComponent.topMenuItems).toEqual(headerMenus);
   // }));
-
 });

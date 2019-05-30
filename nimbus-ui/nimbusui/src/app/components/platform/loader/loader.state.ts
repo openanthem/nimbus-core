@@ -24,11 +24,11 @@ THE SOFTWARE.*/
 
 /**
  * \@author reference https://github.com/ivanderbu2/angular-redux
- * \@whatItDoes 
- * 
- * \@howToUse 
- * 
+ * \@whatItDoes
+ *
+ * \@howToUse
+ *
  */
 export interface LoaderState {
-    show: boolean;
+  show: boolean;
 }

@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,9 +23,19 @@ import { HttpModule } from '@angular/http';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { buttonDestructiveElement, buttonPlainElement, buttonPrimaryElement, buttonPrintElement, buttonSecondaryElement, buttonValidationElement } from 'mockdata';
+import {
+  buttonDestructiveElement,
+  buttonPlainElement,
+  buttonPrimaryElement,
+  buttonPrintElement,
+  buttonSecondaryElement,
+  buttonValidationElement
+} from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
 import { Subject } from 'rxjs';
 import { PrintDirective } from '../../../../directives/print.directive';
@@ -38,7 +48,10 @@ import { LoaderService } from '../../../../services/loader.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { PageService } from '../../../../services/page.service';
 import { PrintService } from '../../../../services/print.service';
-import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from '../../../../services/session.store';
 import { setup } from '../../../../setup.spec';
 import { Image } from '../../image.component';
 import { SvgComponent } from '../../svg/svg.component';
@@ -48,27 +61,24 @@ import { Button } from './button.component';
 import { EventPropagationDirective } from './event-propagation.directive';
 'use strict';
 
-
 let location, pageService, fileService;
 
 class MockLocation {
-    back() { }
+  back() {}
 }
 
 class MockPageService {
-    validationUpdate$: Subject<any>;
-    postResponseProcessing$: Subject<any>;
-    constructor() {
-        this.validationUpdate$ = new Subject();
-        this.postResponseProcessing$ = new Subject();
-    }
-    processEvent(a, b, c, d) {
+  validationUpdate$: Subject<any>;
+  postResponseProcessing$: Subject<any>;
+  constructor() {
+    this.validationUpdate$ = new Subject();
+    this.postResponseProcessing$ = new Subject();
+  }
+  processEvent(a, b, c, d) {}
 
-    }
-
-    logError(a) {
-        this.validationUpdate$.next(a);
-    }
+  logError(a) {
+    this.validationUpdate$.next(a);
+  }
 }
 
 class MockFileService {
@@ -87,33 +97,32 @@ const declarations = [
   EventPropagationDirective
 ];
 const imports = [
-   HttpModule,
-   HttpClientTestingModule,
-   RouterTestingModule,
-   StorageServiceModule,
-   AngularSvgIconModule
+  HttpModule,
+  HttpClientTestingModule,
+  RouterTestingModule,
+  StorageServiceModule,
+  AngularSvgIconModule
 ];
 const providers = [
-   {provide: Location, useClass: MockLocation},
-   {provide: PageService, useClass: MockPageService},
-   { provide: 'JSNLOG', useValue: JL },
-   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-   {provide: FileService, useClass: MockFileService},
-   CustomHttpClient,
-   LoaderService,
-   ConfigService,
-   LoggerService,
-   AppInitService,
-   SessionStoreService,
-   NmMessageService,
-   PrintService,
-   CounterMessageService
+  { provide: Location, useClass: MockLocation },
+  { provide: PageService, useClass: MockPageService },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: FileService, useClass: MockFileService },
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  LoggerService,
+  AppInitService,
+  SessionStoreService,
+  NmMessageService,
+  PrintService,
+  CounterMessageService
 ];
 let fixture, hostComponent;
 describe('Button', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
 
   beforeEach(() => {
@@ -121,7 +130,7 @@ describe('Button', () => {
     hostComponent = fixture.debugElement.componentInstance;
     hostComponent.form = new FormGroup({
       search: new FormControl()
-   });
+    });
     hostComponent.element = buttonPrimaryElement;
     pageService = TestBed.get(PageService);
     location = TestBed.get(Location);
@@ -159,11 +168,13 @@ describe('Button', () => {
   });
 
   it('checkObjectType() should return false', async(() => {
-      expect(hostComponent.checkObjectType('test', { test: 'test' })).toBeFalsy();
+    expect(hostComponent.checkObjectType('test', { test: 'test' })).toBeFalsy();
   }));
 
   it('checkObjectType() should return true', async(() => {
-    expect(hostComponent.checkObjectType('Object', {ttttesttest1 : 'testtest1'})).toBeTruthy();
+    expect(
+      hostComponent.checkObjectType('Object', { ttttesttest1: 'testtest1' })
+    ).toBeTruthy();
   }));
 
   it('getFileParameter() should call checkObjectType()', async(() => {
@@ -293,7 +304,9 @@ describe('Button', () => {
     const debugElement = fixture.debugElement;
     const buttonEle = debugElement.query(By.css('button'));
     expect(buttonEle).toBeTruthy();
-    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-primary');
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual(
+      'btn-primary'
+    );
   }));
 
   it('On click primary button should call onSubmit()', async(() => {
@@ -314,7 +327,9 @@ describe('Button', () => {
     const debugElement = fixture.debugElement;
     const buttonEle = debugElement.query(By.css('button'));
     expect(buttonEle).toBeTruthy();
-    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-secondary');
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual(
+      'btn-secondary'
+    );
   }));
 
   it('On click secondary button should call emitEvent()', async(() => {
@@ -335,7 +350,9 @@ describe('Button', () => {
     const debugElement = fixture.debugElement;
     const buttonEle = debugElement.query(By.css('button'));
     expect(buttonEle).toBeTruthy();
-    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-plain');
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual(
+      'btn-plain'
+    );
   }));
 
   it('On click plain button should call emitEvent()', async(() => {
@@ -356,7 +373,9 @@ describe('Button', () => {
     const debugElement = fixture.debugElement;
     const buttonEle = debugElement.query(By.css('button'));
     expect(buttonEle).toBeTruthy();
-    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-delete');
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual(
+      'btn-delete'
+    );
   }));
 
   it('On click destructive button should call emitEvent()', async(() => {
@@ -376,16 +395,20 @@ describe('Button', () => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const buttonEle = debugElement.query(By.css('button'));
-    expect(buttonEle).toBeTruthy();    
-    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-primary');
+    expect(buttonEle).toBeTruthy();
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual(
+      'btn-primary'
+    );
   }));
 
   it('On click validation button should call emitEvent()', async(() => {
     hostComponent.element = buttonValidationElement as Param;
     hostComponent.form = new FormGroup({
       validationButton: new FormControl()
-   });
-   hostComponent.form.controls['validationButton'].setErrors({'incorrect': true});
+    });
+    hostComponent.form.controls['validationButton'].setErrors({
+      incorrect: true
+    });
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const buttonEle = debugElement.query(By.css('button'));
@@ -403,7 +426,9 @@ describe('Button', () => {
     const debugElement = fixture.debugElement;
     const buttonEle = debugElement.query(By.css('button'));
     expect(buttonEle).toBeTruthy();
-    expect(buttonEle.nativeElement.classList[1].toString()).toEqual('btn-secondary');
+    expect(buttonEle.nativeElement.classList[1].toString()).toEqual(
+      'btn-secondary'
+    );
   }));
 
   it('On click print button should call emitEvent()', async(() => {
@@ -437,5 +462,4 @@ describe('Button', () => {
       expect((hostComponent as any).disabled).toBeFalsy();
     });
   });
-
 });

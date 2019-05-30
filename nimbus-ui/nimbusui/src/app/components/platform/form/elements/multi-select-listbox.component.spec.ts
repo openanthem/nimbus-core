@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,13 +15,22 @@
  * limitations under the License.
  */
 
-
 import { HttpClientModule } from '@angular/common/http';
 import { async, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { By } from '@angular/platform-browser';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { multiSelectListBoxElement } from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
@@ -35,7 +44,10 @@ import { LoaderService } from '../../../../services/loader.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';
-import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from '../../../../services/session.store';
 import { setup } from '../../../../setup.spec';
 import { TooltipComponent } from '../../tooltip/tooltip.component';
 import { ValidationUtils } from '../../validators/ValidationUtils';
@@ -43,61 +55,55 @@ import { InputLabel } from './input-label.component';
 import { MultiSelectListBox } from './multi-select-listbox.component';
 'use strict';
 
-
 let pageService;
 
 class MockPageService {
-    eventUpdate$: Subject<any>;
-    validationUpdate$: Subject<any>;
+  eventUpdate$: Subject<any>;
+  validationUpdate$: Subject<any>;
 
-    constructor() {
-        this.eventUpdate$ = new Subject();
-        this.validationUpdate$ = new Subject();
-    }
+  constructor() {
+    this.eventUpdate$ = new Subject();
+    this.validationUpdate$ = new Subject();
+  }
 
-    logError(a) {
-        this.eventUpdate$.next(a);
-    }
+  logError(a) {
+    this.eventUpdate$.next(a);
+  }
 
-    notifyErrorEvent(a) {
-        this.validationUpdate$.next(a);
-    }
-    processEvent(a, b, c, d) { }
-    postOnChange(a, b, c) {  }
+  notifyErrorEvent(a) {
+    this.validationUpdate$.next(a);
+  }
+  processEvent(a, b, c, d) {}
+  postOnChange(a, b, c) {}
 }
 
-const declarations = [
-  MultiSelectListBox,
-  TooltipComponent,
-  InputLabel
-];
+const declarations = [MultiSelectListBox, TooltipComponent, InputLabel];
 const imports = [
-   ListboxModule,
-   FormsModule, 
-   ReactiveFormsModule,
-   HttpModule,
-   HttpClientModule,
-   StorageServiceModule
+  ListboxModule,
+  FormsModule,
+  ReactiveFormsModule,
+  HttpModule,
+  HttpClientModule,
+  StorageServiceModule
 ];
 const providers = [
-   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-   { provide: 'JSNLOG', useValue: JL },
-   { provide: PageService, useClass: MockPageService },
-   CustomHttpClient,
-   LoaderService,
-   ConfigService,
-   LoggerService,
-   AppInitService,
-   SessionStoreService,
-   CounterMessageService
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: PageService, useClass: MockPageService },
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  LoggerService,
+  AppInitService,
+  SessionStoreService,
+  CounterMessageService
 ];
 
 let fixture, hostComponent;
 describe('MultiSelectListBox', () => {
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MultiSelectListBox);
@@ -105,7 +111,10 @@ describe('MultiSelectListBox', () => {
     const fg = new FormGroup({});
     const checks: ValidatorFn[] = [];
     checks.push(Validators.required);
-    fg.addControl(multiSelectListBoxElement.config.code, new FormControl(multiSelectListBoxElement.leafState, checks));
+    fg.addControl(
+      multiSelectListBoxElement.config.code,
+      new FormControl(multiSelectListBoxElement.leafState, checks)
+    );
     hostComponent.form = fg;
     hostComponent.element = multiSelectListBoxElement;
     pageService = TestBed.get(PageService);
@@ -134,14 +143,17 @@ describe('MultiSelectListBox', () => {
 
   it('serState() should update the formInp.element.leafState and call cd.markForCheck()', async(() => {
     const formInp = { element: { leafState: '' } };
-    const spy = spyOn((hostComponent as any).cd, 'markForCheck').and.returnValue('');
+    const spy = spyOn(
+      (hostComponent as any).cd,
+      'markForCheck'
+    ).and.returnValue('');
     hostComponent.setState('t', formInp);
     expect(formInp.element.leafState).toEqual('t');
     expect(spy).toHaveBeenCalled();
   }));
 
   it('emitValueChangedEvent() should call controlValueChanged.emit with formcontrol.element', async(() => {
-    const controlValue: any = { emit: () => { } };
+    const controlValue: any = { emit: () => {} };
     hostComponent.controlValueChanged = controlValue;
     const formControl = { element: 't' };
     spyOn(hostComponent.controlValueChanged, 'emit').and.callThrough();
@@ -190,7 +202,10 @@ describe('MultiSelectListBox', () => {
       hostComponent.element.path = '/t';
       const eve = { config: { code: 'a' }, path: '/test', leafState: '' };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
-      spyOn(hostComponent.form.controls.firstName, 'setValue').and.callThrough();
+      spyOn(
+        hostComponent.form.controls.firstName,
+        'setValue'
+      ).and.callThrough();
       hostComponent.ngOnInit();
       pageService.logError(eve);
       expect(hostComponent.form.controls.firstName.setValue).toHaveBeenCalled();
@@ -204,7 +219,11 @@ describe('MultiSelectListBox', () => {
       hostComponent.element.activeValidationGroups = [''];
       hostComponent.element.leafState = 'b';
       hostComponent.element.path = '/t';
-      const eve = { config: { code: 'firstName' }, path: '/test', leafState: null };
+      const eve = {
+        config: { code: 'firstName' },
+        path: '/test',
+        leafState: null
+      };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
       spyOn(hostComponent.form.controls.firstName, 'reset').and.callThrough();
       hostComponent.ngOnInit();
@@ -219,7 +238,12 @@ describe('MultiSelectListBox', () => {
     hostComponent.element.activeValidationGroups = [''];
     hostComponent.element.leafState = 'b';
     hostComponent.element.path = '/t';
-    const eve = { activeValidationGroups: [1], config: { code: 'a' }, path: '/t', leafState: '' };
+    const eve = {
+      activeValidationGroups: [1],
+      config: { code: 'a' },
+      path: '/t',
+      leafState: ''
+    };
     spyOn(ValidationUtils, 'rebindValidations').and.returnValue('test');
     spyOn(ValidationUtils, 'assessControlValidation').and.returnValue('');
     hostComponent.ngOnInit();
@@ -234,15 +258,25 @@ describe('MultiSelectListBox', () => {
       hostComponent.element.activeValidationGroups = [''];
       hostComponent.element.leafState = 'b';
       hostComponent.element.path = '/t';
-      const eve = { activeValidationGroups: null, config: { code: 'firstName' }, path: '/t', leafState: '' };
+      const eve = {
+        activeValidationGroups: null,
+        config: { code: 'firstName' },
+        path: '/t',
+        leafState: ''
+      };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('test');
       spyOn(ValidationUtils, 'assessControlValidation').and.returnValue('');
       spyOn(ValidationUtils, 'buildStaticValidations').and.returnValue('');
       spyOn(ValidationUtils, 'applyelementStyle').and.returnValue('');
-      spyOn(hostComponent.form.controls.firstName, 'setValidators').and.callThrough();
+      spyOn(
+        hostComponent.form.controls.firstName,
+        'setValidators'
+      ).and.callThrough();
       hostComponent.ngOnInit();
       pageService.notifyErrorEvent(eve);
-      expect(hostComponent.form.controls.firstName.setValidators).toHaveBeenCalled();
+      expect(
+        hostComponent.form.controls.firstName.setValidators
+      ).toHaveBeenCalled();
     });
   });
 
@@ -252,7 +286,11 @@ describe('MultiSelectListBox', () => {
     hostComponent.element.activeValidationGroups = [''];
     hostComponent.element.leafState = 'b';
     hostComponent.element.path = '/t';
-    const eve = { leafState: 's', path: '/t', config: { uiStyles: { attributes: { postEventOnChange: true } } } };
+    const eve = {
+      leafState: 's',
+      path: '/t',
+      config: { uiStyles: { attributes: { postEventOnChange: true } } }
+    };
     spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
     spyOn(pageService, 'postOnChange').and.callThrough();
     hostComponent.ngOnInit();
@@ -268,7 +306,15 @@ describe('MultiSelectListBox', () => {
       hostComponent.element.leafState = 'b';
       hostComponent.element.path = '/t';
       hostComponent.element.config.uiStyles.attributes.postButtonUrl = '';
-      const eve = { leafState: 's', path: '/t', config: { uiStyles: { attributes: { postEventOnChange: false, postButtonUrl: true } } } };
+      const eve = {
+        leafState: 's',
+        path: '/t',
+        config: {
+          uiStyles: {
+            attributes: { postEventOnChange: false, postButtonUrl: true }
+          }
+        }
+      };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
       spyOn(pageService, 'processEvent').and.callThrough();
       hostComponent.ngOnInit();
@@ -276,6 +322,4 @@ describe('MultiSelectListBox', () => {
       expect(pageService.processEvent).toHaveBeenCalled();
     });
   });
-
 });
-

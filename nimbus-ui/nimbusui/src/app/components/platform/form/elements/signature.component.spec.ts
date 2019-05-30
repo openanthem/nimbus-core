@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,13 +15,20 @@
  * limitations under the License.
  */
 
-import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
+import {
+  HashLocationStrategy,
+  Location,
+  LocationStrategy
+} from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { async, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { By } from '@angular/platform-browser';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { signatureElement } from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
@@ -35,7 +42,10 @@ import { LoaderService } from '../../../../services/loader.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';
-import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from '../../../../services/session.store';
 import { setup } from '../../../../setup.spec';
 import { TooltipComponent } from '../../../platform/tooltip/tooltip.component';
 import { NmMessageService } from './../../../../services/toastmessage.service';
@@ -44,36 +54,31 @@ import { InputLabel } from './input-label.component';
 import { Signature } from './signature.component';
 'use strict';
 
-
 let logger, param;
 
 class MockControlSubscribers {
-  onEnabledUpdateSubscriber(a, b, c) {  }
+  onEnabledUpdateSubscriber(a, b, c) {}
 }
 
 class MockLoggerService {
-  debug(a) {  }
+  debug(a) {}
   info(a) {}
   error(a) {}
 }
 
-const declarations = [
-  Signature,
-  TooltipComponent,
-  InputLabel
- ];
- const imports = [
+const declarations = [Signature, TooltipComponent, InputLabel];
+const imports = [
   FormsModule,
   HttpClientModule,
   HttpModule,
   StorageServiceModule
- ];
- const providers = [
+];
+const providers = [
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   { provide: 'JSNLOG', useValue: JL },
   { provide: LocationStrategy, useClass: HashLocationStrategy },
-  { provide: ControlSubscribers, useClass: MockControlSubscribers},
-  { provide: LoggerService, useClass: MockLoggerService},
+  { provide: ControlSubscribers, useClass: MockControlSubscribers },
+  { provide: LoggerService, useClass: MockLoggerService },
   NmMessageService,
   Location,
   SessionStoreService,
@@ -84,13 +89,13 @@ const declarations = [
   KeyFilterModule,
   AppInitService,
   CounterMessageService
- ];
+];
 
- let fixture, hostComponent;
+let fixture, hostComponent;
 
 describe('Signature', () => {
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
 
   beforeEach(() => {
@@ -131,7 +136,9 @@ describe('Signature', () => {
   it('on click of the clear button the clear() should be called', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const clearButtonEle = debugElement.query(By.css('.btn.btn-secondary.post-btn'));
+    const clearButtonEle = debugElement.query(
+      By.css('.btn.btn-secondary.post-btn')
+    );
     spyOn(hostComponent, 'clear').and.callThrough();
     expect(clearButtonEle).toBeTruthy();
     clearButtonEle.nativeElement.click();
@@ -175,7 +182,7 @@ describe('Signature', () => {
   }));
 
   it('on click of the getUpdatesignature in button the getUpdatedSignature() should be called', async(() => {
-    hostComponent.getUpdatedSignature = () => { };
+    hostComponent.getUpdatedSignature = () => {};
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const allButtonEle = debugElement.queryAll(By.css('button'));
@@ -208,30 +215,41 @@ describe('Signature', () => {
   }));
 
   it('ngAfterViewInit() should call initCanvasElement()', async(() => {
-    (hostComponent as any).initCanvasElement = () => { };
-    const spy = spyOn((hostComponent as any), 'initCanvasElement').and.callThrough();
+    (hostComponent as any).initCanvasElement = () => {};
+    const spy = spyOn(
+      hostComponent as any,
+      'initCanvasElement'
+    ).and.callThrough();
     hostComponent.ngAfterViewInit();
     expect(spy).toHaveBeenCalled();
   }));
 
   it('initCanvasElement() should call applyContextRules(), renderExistingSignature(), registerCaptureEvents()', async(() => {
-    (hostComponent as any).applyContextRules = () => { };
-    (hostComponent as any).renderExistingSignature = () => { };
-    (hostComponent as any).registerCaptureEvents = () => { };
-    const spy1 = spyOn((hostComponent as any), 'applyContextRules').and.callThrough();
-    const spy2 = spyOn((hostComponent as any), 'renderExistingSignature').and.callThrough();
-    const spy3 = spyOn((hostComponent as any), 'registerCaptureEvents').and.callThrough();
+    (hostComponent as any).applyContextRules = () => {};
+    (hostComponent as any).renderExistingSignature = () => {};
+    (hostComponent as any).registerCaptureEvents = () => {};
+    const spy1 = spyOn(
+      hostComponent as any,
+      'applyContextRules'
+    ).and.callThrough();
+    const spy2 = spyOn(
+      hostComponent as any,
+      'renderExistingSignature'
+    ).and.callThrough();
+    const spy3 = spyOn(
+      hostComponent as any,
+      'registerCaptureEvents'
+    ).and.callThrough();
     (hostComponent as any).initCanvasElement();
     expect(spy1).toHaveBeenCalled();
     expect(spy2).toHaveBeenCalled();
     expect(spy3).toHaveBeenCalled();
-
   }));
 
   it('initCanvasElement() should update hostComponent.canvas.nativeElement.width, hostComponent.canvas.nativeElement.height', async(() => {
-    (hostComponent as any).applyContextRules = () => { };
-    (hostComponent as any).renderExistingSignature = () => { };
-    (hostComponent as any).registerCaptureEvents = () => { };
+    (hostComponent as any).applyContextRules = () => {};
+    (hostComponent as any).renderExistingSignature = () => {};
+    (hostComponent as any).registerCaptureEvents = () => {};
     hostComponent.canvas = { nativeElement: { width: '', height: '' } };
     hostComponent.width = 10;
     hostComponent.height = 20;
@@ -244,7 +262,7 @@ describe('Signature', () => {
     hostComponent.value = 'mockValue';
     const canvas: any = {
       getContext: a => {
-        return { drawImage: (a, b, c, d, e) => { } };
+        return { drawImage: (a, b, c, d, e) => {} };
       }
     };
     hostComponent.canvasEl = canvas;
@@ -265,7 +283,6 @@ describe('Signature', () => {
       lineWidth: 3,
       strokeStyle: '#000'
     });
-
   }));
 
   it('save() should call clear()', async(() => {
@@ -287,7 +304,7 @@ describe('Signature', () => {
         return 'test';
       }
     };
-    hostComponent.canvasEl = canvas
+    hostComponent.canvasEl = canvas;
     hostComponent.defaultEmptyImage = 'test1';
     spyOn(hostComponent, 'clear').and.returnValue('');
     hostComponent.save();
@@ -313,8 +330,14 @@ describe('Signature', () => {
     const canvas: any = {
       getBoundingClientRect: () => {
         return { left: 5, top: 5 };
-      }, getContext: a => {
-        return { beginPath: () => { }, moveTo: (a, b) => { }, lineTo: (a, b) => { }, stroke: () => { } };
+      },
+      getContext: a => {
+        return {
+          beginPath: () => {},
+          moveTo: (a, b) => {},
+          lineTo: (a, b) => {},
+          stroke: () => {}
+        };
       }
     };
     hostComponent.canvasEl = canvas;
@@ -327,7 +350,7 @@ describe('Signature', () => {
   it('clear() should update value, isSaved and call canvasEl.getContext', async(() => {
     const canvas: any = {
       getContext: a => {
-        return { clearRect: (a, b, c, d) => { } };
+        return { clearRect: (a, b, c, d) => {} };
       }
     };
     hostComponent.canvasEl = canvas;
@@ -364,8 +387,11 @@ describe('Signature', () => {
   it('registerCaptureEvents() should call registerCaptureOnEvent() with mousedown, mouseup', () => {
     fixture.whenStable().then(() => {
       hostComponent.element.config.uiStyles.attributes.captureType = 'DEFAULT';
-      (hostComponent as any).registerCaptureOnEvent = (a, b) => { };
-      const spy = spyOn((hostComponent as any), 'registerCaptureOnEvent').and.callThrough();
+      (hostComponent as any).registerCaptureOnEvent = (a, b) => {};
+      const spy = spyOn(
+        hostComponent as any,
+        'registerCaptureOnEvent'
+      ).and.callThrough();
       (hostComponent as any).registerCaptureEvents();
       expect(spy).toHaveBeenCalled();
       expect(spy).toHaveBeenCalledWith('mousedown', 'mouseup');
@@ -375,12 +401,14 @@ describe('Signature', () => {
   it('registerCaptureEvents() should call registerCaptureOnEvent() with click, click', () => {
     fixture.whenStable().then(() => {
       hostComponent.element.config.uiStyles.attributes.captureType = 'ON_CLICK';
-      (hostComponent as any).registerCaptureOnEvent = (a, b) => { };
-      const spy = spyOn((hostComponent as any), 'registerCaptureOnEvent').and.callThrough();
+      (hostComponent as any).registerCaptureOnEvent = (a, b) => {};
+      const spy = spyOn(
+        hostComponent as any,
+        'registerCaptureOnEvent'
+      ).and.callThrough();
       (hostComponent as any).registerCaptureEvents();
       expect(spy).toHaveBeenCalled();
       expect(spy).toHaveBeenCalledWith('click', 'click');
     });
   });
-
 });

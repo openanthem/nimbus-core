@@ -1,20 +1,19 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 'use strict';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -27,7 +26,26 @@ import { fieldValueParam } from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
 import { ChartModule } from 'primeng/chart';
 import { KeyFilterModule } from 'primeng/keyfilter';
-import { AccordionModule, AutoCompleteModule, CalendarModule, CheckboxModule, DataTableModule, DialogModule, DropdownModule, EditorModule, FileUploadModule, GrowlModule, InputMaskModule, InputSwitchModule, ListboxModule, MessagesModule, PickListModule, RadioButtonModule, TooltipModule, TreeTableModule } from 'primeng/primeng';
+import {
+  AccordionModule,
+  AutoCompleteModule,
+  CalendarModule,
+  CheckboxModule,
+  DataTableModule,
+  DialogModule,
+  DropdownModule,
+  EditorModule,
+  FileUploadModule,
+  GrowlModule,
+  InputMaskModule,
+  InputSwitchModule,
+  ListboxModule,
+  MessagesModule,
+  PickListModule,
+  RadioButtonModule,
+  TooltipModule,
+  TreeTableModule
+} from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { Subject } from 'rxjs';
@@ -60,7 +78,10 @@ import { FormElement } from '../form-element.component';
 import { FormErrorMessage } from '../form-error-message.component';
 import { FrmGroupCmp } from '../form-group.component';
 import { Form } from '../form.component';
-import { ActionDropdown, ActionLink } from '../form/elements/action-dropdown.component';
+import {
+  ActionDropdown,
+  ActionLink
+} from '../form/elements/action-dropdown.component';
 import { NmAutocomplete } from '../form/elements/autocomplete.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
 import { Calendar } from '../form/elements/calendar.component';
@@ -88,224 +109,218 @@ import { InputMaskComp } from './../form/elements/input-mask.component';
 import { TableHeader } from './../grid/table-header.component';
 import { Modal } from './modal.component';
 
+@Component({
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
 
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
+}
 
 @Component({
-    template: '<div></div>',
-    selector: 'nm-button'
-  })
-  class Button {
-  
-    @Input() element: any;
-    @Input() payload: string;
-    @Input() form: any;
-    @Input() actionTray?: boolean;
-  
-    @Output() buttonClickEvent = new EventEmitter();
-  
-    @Output() elementChange = new EventEmitter();
-    private imagesPath: string;
-    private btnClass: string;
-    private disabled: boolean;
-    files: any;
-    differ: any;
-    componentTypes;
-  }
-
-  @Component({
-    selector: 'nm-section',
-    template: '<div></div>'
+  selector: 'nm-section',
+  template: '<div></div>'
 })
-export class Section  {
-    @Input() position: any;
-    @Input() element: any;
-    viewComponent: any;
-    componentTypes : any;
-    constructor() {}
+export class Section {
+  @Input() position: any;
+  @Input() element: any;
+  viewComponent: any;
+  componentTypes: any;
+  constructor() {}
 }
 
 class MockPageService {
-    public eventUpdate$: Subject<any>;
-  
-    constructor() {
-      this.eventUpdate$ = new Subject();
-    }
-    processEvent(a, b, c, d) { }
+  public eventUpdate$: Subject<any>;
 
+  constructor() {
+    this.eventUpdate$ = new Subject();
+  }
+  processEvent(a, b, c, d) {}
 }
 
 let pageservice, param;
 
 const declarations = [
-    Modal,
-    TooltipComponent,
-    Section,
-    ComboBox,
-    InputText,
-    ButtonGroup,
-    Button,
-    Menu,
-    Link,
-    Form,
-    StaticText,
-    Paragraph,
-    CardDetailsComponent,
-    CardDetailsGrid,
-    MessageComponent,
-    SelectItemPipe,
-    ActionDropdown,
-    DateTimeFormatPipe,
-    FrmGroupCmp,
-    Accordion,
-    CardDetailsFieldComponent,
-    ActionLink,
-    FormElement,
-    InPlaceEditorComponent,
-    TextArea,
-    FileUploadComponent,
-    OrderablePickList,
-    MultiselectCard,
-    MultiSelectListBox,
-    CheckBox,
-    CheckBoxGroup,
-    RadioButton,
-    Calendar,
-    Signature,
-    Header,
-    DataTable,
-    TableHeader,
-    HeaderCheckBox,
-    SvgComponent,
-    Image,
-    InputSwitch,
-    TreeGrid,
-    Label,
-    InputLabel,
-    CardDetailsFieldGroupComponent,
-    DisplayValueDirective,
-    FormGridFiller,
-    InputLegend,
-    FormErrorMessage,
-    PrintDirective,
-    InputMaskComp,
-    NmAutocomplete,
-    NmChart,
-    RichText
-   ];
-   const imports = [
-       DialogModule,
-       FormsModule,
-       DropdownModule,
-       DataTableModule,
-       AccordionModule,
-       ReactiveFormsModule,
-       GrowlModule,
-       TooltipModule,
-       MessagesModule,
-       FileUploadModule,
-       PickListModule,
-       ListboxModule,
-       CheckboxModule,
-       RadioButtonModule,
-       CalendarModule,
-       HttpModule,
-       HttpClientTestingModule,
-       TableModule,
-       KeyFilterModule,
-       AngularSvgIconModule,
-       ToastModule,
-       InputSwitchModule,
-       TreeTableModule,
-       InputMaskModule,
-       AutoCompleteModule,
-       ChartModule,
-       EditorModule
-   ];
-   const providers = [
-    {provide: PageService, useClass: MockPageService},
-    CustomHttpClient,
-    LoaderService,
-    ConfigService
-   ];
+  Modal,
+  TooltipComponent,
+  Section,
+  ComboBox,
+  InputText,
+  ButtonGroup,
+  Button,
+  Menu,
+  Link,
+  Form,
+  StaticText,
+  Paragraph,
+  CardDetailsComponent,
+  CardDetailsGrid,
+  MessageComponent,
+  SelectItemPipe,
+  ActionDropdown,
+  DateTimeFormatPipe,
+  FrmGroupCmp,
+  Accordion,
+  CardDetailsFieldComponent,
+  ActionLink,
+  FormElement,
+  InPlaceEditorComponent,
+  TextArea,
+  FileUploadComponent,
+  OrderablePickList,
+  MultiselectCard,
+  MultiSelectListBox,
+  CheckBox,
+  CheckBoxGroup,
+  RadioButton,
+  Calendar,
+  Signature,
+  Header,
+  DataTable,
+  TableHeader,
+  HeaderCheckBox,
+  SvgComponent,
+  Image,
+  InputSwitch,
+  TreeGrid,
+  Label,
+  InputLabel,
+  CardDetailsFieldGroupComponent,
+  DisplayValueDirective,
+  FormGridFiller,
+  InputLegend,
+  FormErrorMessage,
+  PrintDirective,
+  InputMaskComp,
+  NmAutocomplete,
+  NmChart,
+  RichText
+];
+const imports = [
+  DialogModule,
+  FormsModule,
+  DropdownModule,
+  DataTableModule,
+  AccordionModule,
+  ReactiveFormsModule,
+  GrowlModule,
+  TooltipModule,
+  MessagesModule,
+  FileUploadModule,
+  PickListModule,
+  ListboxModule,
+  CheckboxModule,
+  RadioButtonModule,
+  CalendarModule,
+  HttpModule,
+  HttpClientTestingModule,
+  TableModule,
+  KeyFilterModule,
+  AngularSvgIconModule,
+  ToastModule,
+  InputSwitchModule,
+  TreeTableModule,
+  InputMaskModule,
+  AutoCompleteModule,
+  ChartModule,
+  EditorModule
+];
+const providers = [
+  { provide: PageService, useClass: MockPageService },
+  CustomHttpClient,
+  LoaderService,
+  ConfigService
+];
 let fixture, hostComponent;
 describe('Modal', () => {
+  configureTestSuite(() => {
+    setup(declarations, imports, providers);
+  });
 
-    configureTestSuite(() => {
-        setup( declarations, imports, providers);
-      });
-  
-    beforeEach(() => {
-        fixture = TestBed.createComponent(Modal);
-        hostComponent = fixture.debugElement.componentInstance;
-        hostComponent.element = fieldValueParam;
-        pageservice = TestBed.get(PageService);
+  beforeEach(() => {
+    fixture = TestBed.createComponent(Modal);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = fieldValueParam;
+    pageservice = TestBed.get(PageService);
+  });
+
+  it('should create the Modal', async(() => {
+    // fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      console.log('hostComponent.element', hostComponent.element);
+
+      expect(hostComponent).toBeTruthy();
     });
-  
-    it('should create the Modal', async(() => {
-        // fixture.detectChanges();
-        fixture.whenStable().then(() => {
-            console.log('hostComponent.element', hostComponent.element);
-            
-            expect(hostComponent).toBeTruthy();
-        });
-    }));
+  }));
 
-    it('width should be 500 for small size', async(() => {
-        // fixture.detectChanges();
-        // fixture.whenStable().then(() => {
-                // hostComponent.element.config.uiStyles.attributes.width = 'small';
-                // expect(hostComponent.width).toEqual('500');
-        // });
-    }));
+  it('width should be 500 for small size', async(() => {
+    // fixture.detectChanges();
+    // fixture.whenStable().then(() => {
+    // hostComponent.element.config.uiStyles.attributes.width = 'small';
+    // expect(hostComponent.width).toEqual('500');
+    // });
+  }));
 
-    // it('width should be 700 for medium size', async(() => {
-    //     // fixture.whenStable().then(() => {
-    //         hostComponent.element.config.uiStyles.attributes.width = 'medium';
-    //         expect(hostComponent.width).toEqual('700');
-    //     // });
-    // }));
+  // it('width should be 700 for medium size', async(() => {
+  //     // fixture.whenStable().then(() => {
+  //         hostComponent.element.config.uiStyles.attributes.width = 'medium';
+  //         expect(hostComponent.width).toEqual('700');
+  //     // });
+  // }));
 
-    // it('width should be 900 for large size', async(() => {
-    //     // fixture.whenStable().then(() => {
-    //         hostComponent.element.config.uiStyles.attributes.width = 'large';
-    //         expect(hostComponent.width).toEqual('900');
-    //     // });
-    // }));
+  // it('width should be 900 for large size', async(() => {
+  //     // fixture.whenStable().then(() => {
+  //         hostComponent.element.config.uiStyles.attributes.width = 'large';
+  //         expect(hostComponent.width).toEqual('900');
+  //     // });
+  // }));
 
-    // it('width property should be updated from element if size is not available', async(() => {
-    //     // fixture.whenStable().then(() => {
-    //         hostComponent.element.config.uiStyles.attributes.width = '999';
-    //         expect(hostComponent.width).toEqual('999');
-    //     // });
-    // }));
+  // it('width property should be updated from element if size is not available', async(() => {
+  //     // fixture.whenStable().then(() => {
+  //         hostComponent.element.config.uiStyles.attributes.width = '999';
+  //         expect(hostComponent.width).toEqual('999');
+  //     // });
+  // }));
 
-    // it('closeDialog() should call pageservice.processEvent', async(() => {
-    //     hostComponent.element.visible = true;
-    //     spyOn(pageservice, 'processEvent').and.callThrough();
-    //     hostComponent.closeDialog(false);
-    //     expect(pageservice.processEvent).toHaveBeenCalled();
-    // }));
+  // it('closeDialog() should call pageservice.processEvent', async(() => {
+  //     hostComponent.element.visible = true;
+  //     spyOn(pageservice, 'processEvent').and.callThrough();
+  //     hostComponent.closeDialog(false);
+  //     expect(pageservice.processEvent).toHaveBeenCalled();
+  // }));
 
-    // it('closeDialog() should not call pageservice.processEvent', async(() => {
-    //     hostComponent.element.visible = false;
-    //     spyOn(pageservice, 'processEvent').and.callThrough();
-    //     hostComponent.closeDialog('a');
-    //     expect(pageservice.processEvent).not.toHaveBeenCalled();
-    // }));
+  // it('closeDialog() should not call pageservice.processEvent', async(() => {
+  //     hostComponent.element.visible = false;
+  //     spyOn(pageservice, 'processEvent').and.callThrough();
+  //     hostComponent.closeDialog('a');
+  //     expect(pageservice.processEvent).not.toHaveBeenCalled();
+  // }));
 
-    // it('resizable property should be updated from element', async(() => {
-    //     // fixture.whenStable().then(() => {
-    //         hostComponent.element.config.uiStyles.attributes.resizable = true;
-    //         expect(hostComponent.resizable).toEqual(true);
-    
-    //     // });
-    // }));
+  // it('resizable property should be updated from element', async(() => {
+  //     // fixture.whenStable().then(() => {
+  //         hostComponent.element.config.uiStyles.attributes.resizable = true;
+  //         expect(hostComponent.resizable).toEqual(true);
 
-    // it('closable property should updated from the element', function (this: TestContext<Modal>) {
-    //     // fixture.whenStable().then(() => {
-    //         hostComponent.element.config.uiStyles.attributes.closable = true;
-    //         expect(hostComponent.closable).toEqual(true);
-    //     // });
-    // }));
+  //     // });
+  // }));
 
+  // it('closable property should updated from the element', function (this: TestContext<Modal>) {
+  //     // fixture.whenStable().then(() => {
+  //         hostComponent.element.config.uiStyles.attributes.closable = true;
+  //         expect(hostComponent.closable).toEqual(true);
+  //     // });
+  // }));
 });

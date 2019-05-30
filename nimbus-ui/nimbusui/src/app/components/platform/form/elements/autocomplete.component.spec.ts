@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,13 +21,39 @@ import { async, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { configureTestSuite } from 'ng-bullet';
 import { ChartModule } from 'primeng/chart';
 import { Editor } from 'primeng/editor';
 import { KeyFilterModule } from 'primeng/keyfilter';
-import { AccordionModule, AutoCompleteModule, CalendarModule, CheckboxModule, DataTableModule, DialogModule, DragDropModule, DropdownModule, FileUploadModule, GrowlModule, InputMaskModule, InputSwitchModule, ListboxModule, OverlayPanelModule, PickListModule, ProgressBarModule, ProgressSpinnerModule, RadioButtonModule, SharedModule, TabViewModule, TooltipModule, TreeTableModule } from 'primeng/primeng';
+import {
+  AccordionModule,
+  AutoCompleteModule,
+  CalendarModule,
+  CheckboxModule,
+  DataTableModule,
+  DialogModule,
+  DragDropModule,
+  DropdownModule,
+  FileUploadModule,
+  GrowlModule,
+  InputMaskModule,
+  InputSwitchModule,
+  ListboxModule,
+  OverlayPanelModule,
+  PickListModule,
+  ProgressBarModule,
+  ProgressSpinnerModule,
+  RadioButtonModule,
+  SharedModule,
+  TabViewModule,
+  TooltipModule,
+  TreeTableModule
+} from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { Observable, Subject } from 'rxjs';
@@ -45,10 +71,16 @@ import { CustomHttpClient } from './../../../../services/httpclient.service';
 import { LoaderService } from './../../../../services/loader.service';
 import { LoggerService } from './../../../../services/logger.service';
 import { PageService } from './../../../../services/page.service';
-import { CUSTOM_STORAGE, SessionStoreService } from './../../../../services/session.store';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from './../../../../services/session.store';
 import { setup } from './../../../../setup.spec';
 import { Param } from './../../../../shared/param-state';
-import { Accordion, DataTable } from './../../../domain/domain-flow.component.spec';
+import {
+  Accordion,
+  DataTable
+} from './../../../domain/domain-flow.component.spec';
 import { CardDetailsFieldGroupComponent } from './../../card/card-details-field-group.component';
 import { CardDetailsFieldComponent } from './../../card/card-details-field.component';
 import { CardDetailsGrid } from './../../card/card-details-grid.component';
@@ -98,161 +130,168 @@ import { Signature } from './signature.component';
 import { TextArea } from './textarea.component';
 import { InputText } from './textbox.component';
 
-
-
-
-
-
-
-
 let pageService, autoCompleteService;
 
 class MockPageService {
-    eventUpdate$: Subject<any>;
-    validationUpdate$: Subject<any>;
+  eventUpdate$: Subject<any>;
+  validationUpdate$: Subject<any>;
 
-    constructor() {
-        this.eventUpdate$ = new Subject();
-        this.validationUpdate$ = new Subject();
-    }
-    postOnChange(a, b, c) { }
-    logError(a) {
-        this.eventUpdate$.next(a);
-    }
+  constructor() {
+    this.eventUpdate$ = new Subject();
+    this.validationUpdate$ = new Subject();
+  }
+  postOnChange(a, b, c) {}
+  logError(a) {
+    this.eventUpdate$.next(a);
+  }
 }
 
 class MockAutoCompleteService {
+  constructor() {}
 
-    constructor() {
-    }
-
-    search(a, b) {
-        let data = [{ code: "0", label: "label0" }, { code: "1", label: "label1" }]
-        return Observable.of(data);
-    }
-
+  search(a, b) {
+    let data = [{ code: '0', label: 'label0' }, { code: '1', label: 'label1' }];
+    return Observable.of(data);
+  }
 }
 
 const declarations = [
-    NmAutocomplete,
-    Tab,
-    Label,
-    Section,
-    TooltipComponent,
-    MessageComponent,
-    CardDetailsGrid,
-    CardDetailsComponent,
-    PrintDirective,
-    Paragraph,
-    StaticText,
-    Form,
-    Link,
-    Menu,
-    Accordion,
-    NmChart,
-    DataTable,
-    TreeGrid,
-    Button,
-    ButtonGroup,
-    InputText,
-    ComboBox,
-    InputSwitch,
-    CardDetailsFieldComponent,
-    CardDetailsFieldGroupComponent,
-    FrmGroupCmp,
-    FormErrorMessage,
-    Image,
-    InputLabel,
-    ActionDropdown,
-    HeaderCheckBox,
-    TableHeader,
-    DisplayValueDirective,
-    EventPropagationDirective,
-    SelectItemPipe,
-    InPlaceEditorComponent,
-    TextArea,
-    DateTimeFormatPipe,
-    InputLegend,
-    FormElement,
-    FormGridFiller,
-    Header,
-    SvgComponent,
-    ActionLink,
-    InputMaskComp,
-    RichText,
-    Signature,
-    Calendar,
-    RadioButton,
-    CheckBox,
-    CheckBoxGroup,
-    MultiSelectListBox,
-    MultiselectCard,
-    FileUploadComponent,
-    OrderablePickList,
-    Editor
-
+  NmAutocomplete,
+  Tab,
+  Label,
+  Section,
+  TooltipComponent,
+  MessageComponent,
+  CardDetailsGrid,
+  CardDetailsComponent,
+  PrintDirective,
+  Paragraph,
+  StaticText,
+  Form,
+  Link,
+  Menu,
+  Accordion,
+  NmChart,
+  DataTable,
+  TreeGrid,
+  Button,
+  ButtonGroup,
+  InputText,
+  ComboBox,
+  InputSwitch,
+  CardDetailsFieldComponent,
+  CardDetailsFieldGroupComponent,
+  FrmGroupCmp,
+  FormErrorMessage,
+  Image,
+  InputLabel,
+  ActionDropdown,
+  HeaderCheckBox,
+  TableHeader,
+  DisplayValueDirective,
+  EventPropagationDirective,
+  SelectItemPipe,
+  InPlaceEditorComponent,
+  TextArea,
+  DateTimeFormatPipe,
+  InputLegend,
+  FormElement,
+  FormGridFiller,
+  Header,
+  SvgComponent,
+  ActionLink,
+  InputMaskComp,
+  RichText,
+  Signature,
+  Calendar,
+  RadioButton,
+  CheckBox,
+  CheckBoxGroup,
+  MultiSelectListBox,
+  MultiselectCard,
+  FileUploadComponent,
+  OrderablePickList,
+  Editor
 ];
 const imports = [
-    HttpModule,
-    HttpClientTestingModule,
-    StorageServiceModule,
-    DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule,
-    FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule,
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, TabViewModule, AutoCompleteModule, TreeTableModule,
-    FormsModule, ReactiveFormsModule, InputMaskModule, ToastModule, ChartModule, DataTableModule, TableModule,
-    KeyFilterModule, InputSwitchModule, FileUploadModule, AngularSvgIconModule, TooltipModule
+  HttpModule,
+  HttpClientTestingModule,
+  StorageServiceModule,
+  DataTableModule,
+  SharedModule,
+  OverlayPanelModule,
+  PickListModule,
+  DragDropModule,
+  CalendarModule,
+  FileUploadModule,
+  ListboxModule,
+  DialogModule,
+  CheckboxModule,
+  DropdownModule,
+  RadioButtonModule,
+  ProgressBarModule,
+  ProgressSpinnerModule,
+  AccordionModule,
+  GrowlModule,
+  TabViewModule,
+  AutoCompleteModule,
+  TreeTableModule,
+  FormsModule,
+  ReactiveFormsModule,
+  InputMaskModule,
+  ToastModule,
+  ChartModule,
+  DataTableModule,
+  TableModule,
+  KeyFilterModule,
+  InputSwitchModule,
+  FileUploadModule,
+  AngularSvgIconModule,
+  TooltipModule
 ];
 const providers = [
-    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-    { provide: 'JSNLOG', useValue: JL },
-    { provide: AutoCompleteService, useClass: MockAutoCompleteService },
-    { provide: PageService, useClass: MockPageService },
-    CustomHttpClient,
-    LoaderService,
-    ConfigService,
-    LoggerService,
-    AppInitService,
-    SessionStoreService,
-    ControlSubscribers,
-    CounterMessageService
-
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: AutoCompleteService, useClass: MockAutoCompleteService },
+  { provide: PageService, useClass: MockPageService },
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  LoggerService,
+  AppInitService,
+  SessionStoreService,
+  ControlSubscribers,
+  CounterMessageService
 ];
 let fixture, hostComponent;
 
 describe('Autocomplete', () => {
-    configureTestSuite(() => {
-        setup(declarations, imports, providers);
-    });
+  configureTestSuite(() => {
+    setup(declarations, imports, providers);
+  });
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(NmAutocomplete);
-        hostComponent = fixture.debugElement.componentInstance;
-        hostComponent.element = autocompleteElement as Param;
-        pageService = TestBed.get(PageService);
-        autoCompleteService = TestBed.get(AutoCompleteService);
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NmAutocomplete);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = autocompleteElement as Param;
+    pageService = TestBed.get(PageService);
+    autoCompleteService = TestBed.get(AutoCompleteService);
+  });
 
-    it('should create the Autocomplete Component', async(() => {
-        expect(hostComponent).toBeTruthy();
-    }));
+  it('should create the Autocomplete Component', async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
 
-    it('should not display the component when visible is set to false', async(() => {
-        hostComponent.element.visible = false;
-        fixture.detectChanges();
-        const autoCompleteInput = document.getElementsByTagName('p-autocomplete');
-        expect(autoCompleteInput.length).toBe(0);
-    }));
+  it('should not display the component when visible is set to false', async(() => {
+    hostComponent.element.visible = false;
+    fixture.detectChanges();
+    const autoCompleteInput = document.getElementsByTagName('p-autocomplete');
+    expect(autoCompleteInput.length).toBe(0);
+  }));
 
-    it('should set the list of results received from the server', async(() => {
-        fixture.detectChanges();
-        autoCompleteService.search("", "");
-        expect(hostComponent.results.length).toBe(2);
-    }));
-
+  it('should set the list of results received from the server', async(() => {
+    fixture.detectChanges();
+    autoCompleteService.search('', '');
+    expect(hostComponent.results.length).toBe(2);
+  }));
 });
-
-
-
-
-
-

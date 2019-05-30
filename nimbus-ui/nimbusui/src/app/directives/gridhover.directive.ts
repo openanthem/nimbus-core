@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,13 +35,15 @@ export class GridMouseEventDirective {
   private _defaultColor = 'blue';
   private el: HTMLElement;
   private highlightColor: string;
-  constructor(el: ElementRef,private gridService: GridService) { this.el = el.nativeElement; }
+  constructor(el: ElementRef, private gridService: GridService) {
+    this.el = el.nativeElement;
+  }
 
-  onMouseEnter(event:MouseEvent) {
+  onMouseEnter(event: MouseEvent) {
     this.highlight(this.highlightColor || this._defaultColor);
     //TODO ------- url to come from server config
     let url = 'resources/case-data.json';
-  // TODO - Remove this unused code. Replace with actual implementation. 
+    // TODO - Remove this unused code. Replace with actual implementation.
     /*  this.gridService.getSummaryDetails(this.data.rowObj.caseId,url).subscribe((tasks) => {
         if(this.data.col.hover || this.data.rowhover) {
             this.gridService.setSummaryObject(tasks.find(p => p.caseId === this.data.rowObj.caseID ));
@@ -53,12 +55,11 @@ export class GridMouseEventDirective {
     });*/
   }
   onMouseLeave() {
-      this.highlight(null);
-      this.overlayPanel.hide();
+    this.highlight(null);
+    this.overlayPanel.hide();
   }
 
-   private highlight(color:string) {
+  private highlight(color: string) {
     this.el.style.backgroundColor = color;
   }
-
 }

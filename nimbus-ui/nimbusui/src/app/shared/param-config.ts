@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 'use strict';
 
 import { ConfigService } from './../services/config.service';
 import { Converter } from './object.conversion';
-import { ViewConfig } from './param-annotations.enum';
 import { Serializable } from './serializable';
+import { ViewConfig } from './param-annotations.enum';
 
 /**
  * \@author Sandeep.Mantha
@@ -29,6 +28,7 @@ import { Serializable } from './serializable';
  * \@howToUse 
  * 
  */
+
 export class ParamConfig implements Serializable<ParamConfig,string> {
     uiStyles: UiStyle;
     id: string;
@@ -112,142 +112,141 @@ export class UiStyle implements Serializable<UiStyle,string> {
 }
 
 export class UiAttribute implements Serializable<UiAttribute,string> {
-    value: any;
-    url: string;
-    asynchronous: boolean;
-    controlType: string;
-    editUrl: string;
-    editable: boolean;
-    align: string;
-    alias: string;
-    control: string;
-    onLoad: boolean;
-    expandableRows: boolean;
-    b: string;
-    method: string;
-    imgSrc: string;
-    imgType: string;
-    hidden: boolean = false;
-    readOnly: boolean = false;
-    level: string;
-    cssClass: string;
-    multiple: boolean;
-    showExpandAll: boolean;
-    selected: boolean;
+    acceptLabel: string;
     activeIndex: string;
-    submitButton: boolean = true;
+    addRow: boolean;
+    alias: string;
+    align: string;
+    applyValueStyles: boolean;
+    asynchronous: boolean;
+    autoPrint: boolean;
+    b: string;
+    border: boolean;
+    breadcrumbLabel: string;
+    browserBack: boolean=false;
+    captureType: string;
+    charRegex: string;
+    clearAllFilters: boolean;
+    clearLabel: string;
+    closable: boolean;
+    closeAfterPrint: boolean;
+    cols: string;
     content: string; //-- TO BE DELETED (always pull with contentId)
     contentId: string;
-    datePattern: string;
-    labelClass: string;
-    showTime: boolean;
-    timeOnly: boolean;
-    hourFormat: string;
-    header: string;
-    help: string;
-    title: string;
-    closable: boolean;
-    width: string;
-    height: string;
-    type: string;
-    style: string;
-    layout: string;
-    route: string;
-    size: string;
-    submitUrl: string;
-    rows: string;
-    cols: string;
-    showName: boolean = true;
-    iconField: string;
-    navLink: string; //TODO temp fix for launching a new flow from current flow on form submit
+    control: string;
     controlId: string;
-    postEventOnChange: boolean;
+    controlType: string;
+    cssClass: string;
+    dataEntryField: boolean;
+    datePattern: string;
+    defaultFlow: string;
+    defaultLabel: string;
+    defaultPage: boolean;
+    delay: number;
+    display: string;
     draggable: boolean;
-    rowSelection: boolean;
-    showHeader: boolean;
-    pagination: boolean;
-    pageSize: number = 25; //server side has a default but defaulting here so that coverter can cast to number
-    postButton: boolean;
-    postButtonUrl: string;
-    postButtonUri: string;
-    postButtonTargetPath: string;
-    postButtonAlias : string;
-    postButtonLabel: string;
+    editable: boolean;
+    editRow: boolean;
+    editUrl: string;
+    escape: boolean;
+    expandable: boolean;
+    expandableRows: boolean;
+    export: boolean;
     filter: boolean;
     filterMode : string;
     filterValue : string;
-    modelPath: string;
+    fixLayout: boolean;
+    flow: string;
+    formats: string;
+    formReset: boolean;
+    header: string;
+    headerCheckboxToggleAllPages: boolean;
+    height: string;
+    help: string;
+    hidden: boolean = false;
+    hourFormat: string;
+    iconField: string;
+    imgSrc: string;
+    imgType: string;
+    info: string;
+    inlineStyle: string;
     inplaceEdit: boolean;
     inplaceEditType: string;
-    //below 2 attributes are for OrderablePickList
-    sourceHeader: string;
-    targetHeader: string;
-    payload: string;
-    defaultPage: boolean;
-    defaultFlow: string;
-    formReset: boolean;
-    browserBack: boolean=false;
-    target: string;
-    rel: string;
-    sortAs: string;
-    sortable: boolean;
+    labelClass: string;
+    layout: string;
     lazyLoad: boolean;
-    resizable:boolean;
-    placeholder: string;
-    clearAllFilters: boolean;
-    export: boolean;
-    clearLabel: string;
-    acceptLabel: string;
-    rowExpander: boolean;
-    readonlyInput: boolean;
-	  monthNavigator: boolean;
-	  yearNavigator: boolean;
-    yearRange: string;
+    level: string;
+    mask: string;
+    maskPlaceHolder: string;
     metaData: any;
-    captureType: string;
-    showAsLink: boolean = false;
-    info: string;
+    method: string;
+    minLength: number;
+    modelPath: string;
+    monthNavigator: boolean;
+    multiple: boolean;
+    navLink: string; //TODO temp fix for launching a new flow from current flow on form submit
+    onAdd: string;
+    onEdit: string;
+    onLoad: boolean;
+    orientation: string;
     page: string;
-    applyValueStyles: boolean;
-    expandable: boolean;
-    border: boolean;
+    pageSize: number = 25; //server side has a default but defaulting here so that coverter can cast to number
+    pagination: boolean;
+    payload: string;
+    placeholder: string;
+    postButton: boolean;
+    postButtonAlias : string;
+    postButtonLabel: string;
+    postButtonTargetPath: string;
+    postButtonUri: string;
+    postButtonUrl: string;
+    postEventOnChange: boolean;
+    printPath: string;
+    readOnly: boolean = false;
+    readonlyInput: boolean;
+    rel: string;
+    resizable:boolean;
+    route: string;
+    rowExpander: boolean;
+    rows: string;
+    rowSelection: boolean;
+    scriptName: string;
+    selected: boolean;
+    showAsLink: boolean = false;
+    showExpandAll: boolean;
+    showHeader: boolean;
+    showMessages: boolean;
+    showName: boolean = true;
     showSourceControls: boolean;
     showTargetControls: boolean;
-    scriptName: string;
-    orientation: string;
-    showMessages: boolean;
-    stylesheet: string;
-    delay: number;
-    useDelay: boolean;
-    closeAfterPrint: boolean;
-    printPath: string;
-    autoPrint: boolean;
-    dataEntryField: boolean;
-    mask: string;
+    showTime: boolean;
+    size: string;
     slotChar: string;
-    charRegex: string;
-    maskPlaceHolder: string;
-    fixLayout: boolean;
-    headerCheckboxToggleAllPages: boolean;
-    defaultLabel: string;
-    xAxisLabel: string;
-    yAxisLabel: string;
+    sortable: boolean;
+    sortAs: string;
+    sourceHeader: string;
     stepSize: string;
-    inlineStyle: string;
-    formats: string;
+    style: string;
+    stylesheet: string;
+    submitButton: boolean = true;
+    submitUrl: string;
+    target: string;
+    targetHeader: string;
+    timeOnly: boolean;
+    title: string;
     toolbarFeatures: string[];
-    display: string;
-    minLength: number;
-    editRow: boolean;
-    onEdit: string;
-    addRow: boolean;
-    onAdd: string;
-    toolTipText: string;
     toolTipPosition: string;
     tooltipStyleClass: string;
-    escape: boolean;
-    flow: string;
-    breadcrumbLabel: string;
+    toolTipText: string;
+    type: string;
+    url: string;
+    useDelay: boolean;
+    value: any;
+    width: string;
+    xAxisLabel: string;
+    yAxisLabel: string;
+    yearNavigator: boolean;
+    yearRange: string;
     
     deserialize( inJson ) {
         let obj = this;
@@ -386,4 +385,3 @@ export class Attribute implements Serializable<Attribute,string> {
         return obj;
     }
 }
-

@@ -1,18 +1,48 @@
-import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
+import {
+  HashLocationStrategy,
+  Location,
+  LocationStrategy
+} from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { fieldValueParam } from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
 import { ChartModule } from 'primeng/chart';
 import { EditorModule } from 'primeng/editor';
 import { KeyFilterModule } from 'primeng/keyfilter';
-import { AccordionModule, AutoCompleteModule, CalendarModule, CheckboxModule, DataTableModule, DialogModule, DragDropModule, DropdownModule, FileUploadModule, GrowlModule, InputMaskModule, InputSwitchModule, ListboxModule, OverlayPanelModule, PickListModule, ProgressBarModule, ProgressSpinnerModule, RadioButtonModule, SharedModule, TabViewModule, TooltipModule, TreeTableModule } from 'primeng/primeng';
+import {
+  AccordionModule,
+  AutoCompleteModule,
+  CalendarModule,
+  CheckboxModule,
+  DataTableModule,
+  DialogModule,
+  DragDropModule,
+  DropdownModule,
+  FileUploadModule,
+  GrowlModule,
+  InputMaskModule,
+  InputSwitchModule,
+  ListboxModule,
+  OverlayPanelModule,
+  PickListModule,
+  ProgressBarModule,
+  ProgressSpinnerModule,
+  RadioButtonModule,
+  SharedModule,
+  TabViewModule,
+  TooltipModule,
+  TreeTableModule
+} from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { Subject } from 'rxjs';
@@ -26,7 +56,10 @@ import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
 import { LoggerService } from '../../../services/logger.service';
 import { PageService } from '../../../services/page.service';
-import { CUSTOM_STORAGE, SessionStoreService } from '../../../services/session.store';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from '../../../services/session.store';
 import { setup } from '../../../setup.spec';
 import { GridUtils } from '../../../shared/grid-utils';
 import { CardDetailsFieldGroupComponent } from '../../platform/card/card-details-field-group.component';
@@ -49,7 +82,10 @@ import { FormElement } from '../form-element.component';
 import { FormErrorMessage } from '../form-error-message.component';
 import { FrmGroupCmp } from '../form-group.component';
 import { Form } from '../form.component';
-import { ActionDropdown, ActionLink } from '../form/elements/action-dropdown.component';
+import {
+  ActionDropdown,
+  ActionLink
+} from '../form/elements/action-dropdown.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
 import { Calendar } from '../form/elements/calendar.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
@@ -81,13 +117,13 @@ import { TreeGrid } from './tree-grid.component';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -97,257 +133,266 @@ import { TreeGrid } from './tree-grid.component';
 
 'use strict';
 
-
-
 let pageService;
 
 @Component({
-    template: '<div></div>',
-    selector: 'nm-button'
-  })
-  class Button {
-  
-    @Input() element: any;
-    @Input() payload: string;
-    @Input() form: any;
-    @Input() actionTray?: boolean;
-  
-    @Output() buttonClickEvent = new EventEmitter();
-  
-    @Output() elementChange = new EventEmitter();
-    private imagesPath: string;
-    private btnClass: string;
-    private disabled: boolean;
-    files: any;
-    differ: any;
-    componentTypes;
-  }
+  template: '<div></div>',
+  selector: 'nm-button'
+})
+class Button {
+  @Input() element: any;
+  @Input() payload: string;
+  @Input() form: any;
+  @Input() actionTray?: boolean;
+
+  @Output() buttonClickEvent = new EventEmitter();
+
+  @Output() elementChange = new EventEmitter();
+  private imagesPath: string;
+  private btnClass: string;
+  private disabled: boolean;
+  files: any;
+  differ: any;
+  componentTypes;
+}
 
 class MockPageService {
-    public config$: Subject<any>;
-    public subdomainconfig$: Subject<any>;
-    public gridValueUpdate$: Subject<any>;
+  public config$: Subject<any>;
+  public subdomainconfig$: Subject<any>;
+  public gridValueUpdate$: Subject<any>;
 
-  
-    constructor() {
-      this.config$ = new Subject();
-      this.subdomainconfig$ = new Subject();
-      this.gridValueUpdate$ = new Subject();
-    }
-  
-    logError(res) {
-      this.gridValueUpdate$.next(res);
-    }
-
-    processEvent(a, b, c, d, e) {    }
-  
+  constructor() {
+    this.config$ = new Subject();
+    this.subdomainconfig$ = new Subject();
+    this.gridValueUpdate$ = new Subject();
   }
 
-  const declarations = [
-    TreeGrid,
-    Button,
-    TooltipComponent,
-    Image,
-    SvgComponent,
-    Section,
-    ActionDropdown,
-    Label,
-    MessageComponent,
-    CardDetailsGrid,
-    CardDetailsComponent,
-    Paragraph,
-    StaticText,
-    Form,
-    Link,
-    Menu,
-    Accordion,
-    DataTable,
-    TableHeader,
-    ButtonGroup,
-    InputText,
-    ComboBox,
-    InputSwitch,
-    PrintDirective,
-    ActionLink,
-    CardDetailsFieldComponent,
-    CardDetailsFieldGroupComponent,
-    FormErrorMessage,
-    FrmGroupCmp,
-    HeaderCheckBox,
-    DisplayValueDirective,
-    InputLabel,
-    SelectItemPipe,
-    InPlaceEditorComponent,
-    TextArea,
-    InputLegend,
-    FormElement,
-    NmAutocomplete,
-    FormGridFiller,
-    Header,
-    Signature,
-    Calendar,
-    RadioButton,
-    CheckBox,
-    MultiSelectListBox,
-    MultiselectCard,
-    FileUploadComponent,
-    OrderablePickList,
-    CheckBoxGroup,
-    DateTimeFormatPipe,
-    InputMaskComp,
-    Tab,
-    NmChart,
-    RichText
- ];
+  logError(res) {
+    this.gridValueUpdate$.next(res);
+  }
+
+  processEvent(a, b, c, d, e) {}
+}
+
+const declarations = [
+  TreeGrid,
+  Button,
+  TooltipComponent,
+  Image,
+  SvgComponent,
+  Section,
+  ActionDropdown,
+  Label,
+  MessageComponent,
+  CardDetailsGrid,
+  CardDetailsComponent,
+  Paragraph,
+  StaticText,
+  Form,
+  Link,
+  Menu,
+  Accordion,
+  DataTable,
+  TableHeader,
+  ButtonGroup,
+  InputText,
+  ComboBox,
+  InputSwitch,
+  PrintDirective,
+  ActionLink,
+  CardDetailsFieldComponent,
+  CardDetailsFieldGroupComponent,
+  FormErrorMessage,
+  FrmGroupCmp,
+  HeaderCheckBox,
+  DisplayValueDirective,
+  InputLabel,
+  SelectItemPipe,
+  InPlaceEditorComponent,
+  TextArea,
+  InputLegend,
+  FormElement,
+  NmAutocomplete,
+  FormGridFiller,
+  Header,
+  Signature,
+  Calendar,
+  RadioButton,
+  CheckBox,
+  MultiSelectListBox,
+  MultiselectCard,
+  FileUploadComponent,
+  OrderablePickList,
+  CheckBoxGroup,
+  DateTimeFormatPipe,
+  InputMaskComp,
+  Tab,
+  NmChart,
+  RichText
+];
 const imports = [
-     DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
-     FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule,
-     AngularSvgIconModule,
-     AutoCompleteModule,
-     AngularSvgIconModule,TooltipModule,
-     HttpClientModule,
-     StorageServiceModule,
-     HttpModule, 
-     FormsModule, 
-     ReactiveFormsModule, 
-     ToastModule,
-     TableModule,
-     KeyFilterModule,
-     InputMaskModule,
-     TabViewModule,
-     ChartModule,
-     EditorModule
- ];
+  DataTableModule,
+  SharedModule,
+  OverlayPanelModule,
+  PickListModule,
+  DragDropModule,
+  CalendarModule,
+  FileUploadModule,
+  ListboxModule,
+  DialogModule,
+  CheckboxModule,
+  DropdownModule,
+  RadioButtonModule,
+  ProgressBarModule,
+  ProgressSpinnerModule,
+  AccordionModule,
+  GrowlModule,
+  InputSwitchModule,
+  TreeTableModule,
+  AngularSvgIconModule,
+  AutoCompleteModule,
+  AngularSvgIconModule,
+  TooltipModule,
+  HttpClientModule,
+  StorageServiceModule,
+  HttpModule,
+  FormsModule,
+  ReactiveFormsModule,
+  ToastModule,
+  TableModule,
+  KeyFilterModule,
+  InputMaskModule,
+  TabViewModule,
+  ChartModule,
+  EditorModule
+];
 const providers = [
-     { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-     { provide: 'JSNLOG', useValue: JL },
-     { provide: LocationStrategy, useClass: HashLocationStrategy },
-     {provide: PageService, useClass: MockPageService},
-     Location,
-     CustomHttpClient,
-     SessionStoreService,
-     LoaderService,
-     ConfigService,
-     LoggerService,
-     AppInitService,
-     GridUtils,
-     DateTimeFormatPipe,
-     CounterMessageService
- ];
- let fixture, hostComponent;
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: LocationStrategy, useClass: HashLocationStrategy },
+  { provide: PageService, useClass: MockPageService },
+  Location,
+  CustomHttpClient,
+  SessionStoreService,
+  LoaderService,
+  ConfigService,
+  LoggerService,
+  AppInitService,
+  GridUtils,
+  DateTimeFormatPipe,
+  CounterMessageService
+];
+let fixture, hostComponent;
 
 describe('TreeGrid', () => {
+  configureTestSuite(() => {
+    setup(declarations, imports, providers);
+  });
 
-    configureTestSuite(() => {
-        setup( declarations, imports, providers);
-      });
-      
-    beforeEach(() => {
-        fixture = TestBed.createComponent(TreeGrid);
-        hostComponent = fixture.debugElement.componentInstance;
-        hostComponent.element = fieldValueParam;
-        pageService = TestBed.get(PageService);
-    });
-    
-    it('should create the TreeGrid', async(() => {
-        expect(hostComponent).toBeTruthy();
-    }));
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TreeGrid);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = fieldValueParam;
+    pageService = TestBed.get(PageService);
+  });
 
-    it('registerOnChange() should update the onChange', async(() => {
-        const test = () => { };
-        hostComponent.registerOnChange(test);
-        expect(hostComponent.onChange).toEqual(test);
-    }));
+  it('should create the TreeGrid', async(() => {
+    expect(hostComponent).toBeTruthy();
+  }));
 
-    it('registerOnTouched() should update the onTouched', async(() => {
-        const test = () => { };
-        hostComponent.registerOnTouched(test);
-        expect(hostComponent.onTouched).toEqual(test);
-    }));
+  it('registerOnChange() should update the onChange', async(() => {
+    const test = () => {};
+    hostComponent.registerOnChange(test);
+    expect(hostComponent.onChange).toEqual(test);
+  }));
 
-    it('isDisplayValueColumn() should return false if col.uiStyles is not available', async(() => {
-        const col: any = {
-            type: {
-                collection: false
-            }
-        };
-        expect(hostComponent.isDisplayValueColumn(col)).toBeFalsy();
-    }));
+  it('registerOnTouched() should update the onTouched', async(() => {
+    const test = () => {};
+    hostComponent.registerOnTouched(test);
+    expect(hostComponent.onTouched).toEqual(test);
+  }));
 
-    it('isDisplayValueColumn() should return false', async(() => {
-        const col: any = {
-            type: {
-                collection: []
-            },
-            uiStyles: 't'
-        };
-        expect(hostComponent.isDisplayValueColumn(col)).toBeFalsy();
-    }));
+  it('isDisplayValueColumn() should return false if col.uiStyles is not available', async(() => {
+    const col: any = {
+      type: {
+        collection: false
+      }
+    };
+    expect(hostComponent.isDisplayValueColumn(col)).toBeFalsy();
+  }));
 
-    // it('ngOnInit() should update collectionAlias, treeData and firstColumn', () => {
-    //     fixture.whenStable().then(() => {
-    //         const elemLabels: any = [];
-    //         hostComponent.element.elemLabels = elemLabels;
-    //         hostComponent.element.path = '';
-    //         const model: any = {
-    //             paramConfigs: [{
-    //                 code: 'test',
-    //                 uiStyles: {
-    //                     attributes: {
-    //                         alias: 'TreeGridChild',
-    //                     }
-    //                 }
-    //             }]
-    //         };
-    //         hostComponent.element.config.type.elementConfig.type.model = model;
-    //         const params: any = [{
-    //             uiStyles: {
-    //                 attributes: {
-    //                     hidden: false
-    //                 }
-    //             }
-    //         }];
-    //         hostComponent.params = params;
-    //         const event = {
-    //             path: '',
-    //             gridData: {
-    //                 leafState: 'testgridlist'
-    //             }
-    //         };
-    //         hostComponent.getTreeStructure = (a) => {
-    //             return a;
-    //         };
-    //         hostComponent.ngOnInit();
-    //         pageService.logError(event);
-    //         expect((hostComponent as any).collectionAlias).toEqual('test');
-    //         expect(hostComponent.firstColumn).not.toEqual(undefined);
-    //         expect(hostComponent.treeData).toEqual('testgridlist');
-    //     });
-    // });
+  it('isDisplayValueColumn() should return false', async(() => {
+    const col: any = {
+      type: {
+        collection: []
+      },
+      uiStyles: 't'
+    };
+    expect(hostComponent.isDisplayValueColumn(col)).toBeFalsy();
+  }));
 
-    it('isRenderableComponent() should return true', async(() => {
-        const param1: any = {
-            uiStyles: {
-                attributes: {
-                    alias: 'Button'
-                }
-            }
-        };
-        expect(hostComponent.isRenderableComponent(param1)).toBeTruthy();
-    }));
+  // it('ngOnInit() should update collectionAlias, treeData and firstColumn', () => {
+  //     fixture.whenStable().then(() => {
+  //         const elemLabels: any = [];
+  //         hostComponent.element.elemLabels = elemLabels;
+  //         hostComponent.element.path = '';
+  //         const model: any = {
+  //             paramConfigs: [{
+  //                 code: 'test',
+  //                 uiStyles: {
+  //                     attributes: {
+  //                         alias: 'TreeGridChild',
+  //                     }
+  //                 }
+  //             }]
+  //         };
+  //         hostComponent.element.config.type.elementConfig.type.model = model;
+  //         const params: any = [{
+  //             uiStyles: {
+  //                 attributes: {
+  //                     hidden: false
+  //                 }
+  //             }
+  //         }];
+  //         hostComponent.params = params;
+  //         const event = {
+  //             path: '',
+  //             gridData: {
+  //                 leafState: 'testgridlist'
+  //             }
+  //         };
+  //         hostComponent.getTreeStructure = (a) => {
+  //             return a;
+  //         };
+  //         hostComponent.ngOnInit();
+  //         pageService.logError(event);
+  //         expect((hostComponent as any).collectionAlias).toEqual('test');
+  //         expect(hostComponent.firstColumn).not.toEqual(undefined);
+  //         expect(hostComponent.treeData).toEqual('testgridlist');
+  //     });
+  // });
 
-    it('buildNestedCollectionPath() should return rowNode.node.data.elemId', async(() => {
-        const rowNode = {
-            level: 0,
-            node: {
-                data: {
-                    elemId: 123
-                }
-            }
-        };
-        const res: any = 123;
-        expect(hostComponent.buildNestedCollectionPath(rowNode)).toEqual(res);
-    }));
+  it('isRenderableComponent() should return true', async(() => {
+    const param1: any = {
+      uiStyles: {
+        attributes: {
+          alias: 'Button'
+        }
+      }
+    };
+    expect(hostComponent.isRenderableComponent(param1)).toBeTruthy();
+  }));
 
+  it('buildNestedCollectionPath() should return rowNode.node.data.elemId', async(() => {
+    const rowNode = {
+      level: 0,
+      node: {
+        data: {
+          elemId: 123
+        }
+      }
+    };
+    const res: any = 123;
+    expect(hostComponent.buildNestedCollectionPath(rowNode)).toEqual(res);
+  }));
 });

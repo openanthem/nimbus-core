@@ -18,12 +18,12 @@
 'use strict';
 
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
-import { LoggerService } from '../../../services/logger.service';
+import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
+import { BreadcrumbService } from './../breadcrumb/breadcrumb.service'
 import { PageService } from '../../../services/page.service';
 import { Param } from '../../../shared/param-state';
 import { ParamUtils } from './../../../shared/param-utils';
-import { BreadcrumbService } from './../breadcrumb/breadcrumb.service';
+import { LoggerService } from '../../../services/logger.service';
 
 /**
  * \@author Dinakar.Meda

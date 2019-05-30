@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,20 +16,60 @@
  */
 
 'use strict';
-import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
+import {
+  HashLocationStrategy,
+  Location,
+  LocationStrategy
+} from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { By } from '@angular/platform-browser';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
-import { formGroupNestedFrmGrpEle, formGroupNmButtonParam, formGroupNmElementInputParam, formGroupNmFormGridFiller, formGroupNmHeaderParam, formGroupNmLinkParam, formGroupnmParagraphParam, formGroupNmPickListParam, formGroupParam } from 'mockdata';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
+import {
+  formGroupNestedFrmGrpEle,
+  formGroupNmButtonParam,
+  formGroupNmElementInputParam,
+  formGroupNmFormGridFiller,
+  formGroupNmHeaderParam,
+  formGroupNmLinkParam,
+  formGroupnmParagraphParam,
+  formGroupNmPickListParam,
+  formGroupParam
+} from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
 import { ChartModule } from 'primeng/chart';
 import { KeyFilterModule } from 'primeng/keyfilter';
-import { AccordionModule, AutoCompleteModule, CalendarModule, CheckboxModule, DataTableModule, DropdownModule, EditorModule, FileUploadModule, GrowlModule, InputMaskModule, InputSwitchModule, ListboxModule, PickListModule, RadioButtonModule, TabViewModule, TooltipModule, TreeTableModule } from 'primeng/primeng';
+import {
+  AccordionModule,
+  AutoCompleteModule,
+  CalendarModule,
+  CheckboxModule,
+  DataTableModule,
+  DropdownModule,
+  EditorModule,
+  FileUploadModule,
+  GrowlModule,
+  InputMaskModule,
+  InputSwitchModule,
+  ListboxModule,
+  PickListModule,
+  RadioButtonModule,
+  TabViewModule,
+  TooltipModule,
+  TreeTableModule
+} from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { DisplayValueDirective } from '../../directives/display-value.directive';
@@ -41,7 +81,10 @@ import { CustomHttpClient } from '../../services/httpclient.service';
 import { LoaderService } from '../../services/loader.service';
 import { LoggerService } from '../../services/logger.service';
 import { PageService } from '../../services/page.service';
-import { CUSTOM_STORAGE, SessionStoreService } from '../../services/session.store';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from '../../services/session.store';
 import { Param } from '../../shared/param-state';
 import { CardDetailsFieldComponent } from '../platform/card/card-details-field.component';
 import { CardDetailsGrid } from '../platform/card/card-details-grid.component';
@@ -52,7 +95,10 @@ import { Paragraph } from '../platform/content/paragraph.component';
 import { StaticText } from '../platform/content/static-content.component';
 import { FileUploadComponent } from '../platform/fileupload/file-upload.component';
 import { Form } from '../platform/form.component';
-import { ActionDropdown, ActionLink } from '../platform/form/elements/action-dropdown.component';
+import {
+  ActionDropdown,
+  ActionLink
+} from '../platform/form/elements/action-dropdown.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
 import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.component';
@@ -94,9 +140,6 @@ import { DataTable } from './grid/table.component';
 import { Image } from './image.component';
 import { SvgComponent } from './svg/svg.component';
 import { TreeGrid } from './tree-grid/tree-grid.component';
-    
-
-
 
 let param: Param;
 
@@ -105,7 +148,6 @@ let param: Param;
   selector: 'nm-button'
 })
 class Button {
-
   @Input() element: any;
   @Input() payload: string;
   @Input() form: any;
@@ -123,9 +165,9 @@ class Button {
 }
 
 class MockLoggerService {
-  debug() { }
-  info() { }
-  error() { }
+  debug() {}
+  info() {}
+  error() {}
 }
 
 const declarations = [
@@ -183,59 +225,58 @@ const declarations = [
   Tab,
   NmChart,
   RichText
- ];
- const imports = [
-     FormsModule,
-     ReactiveFormsModule,
-     CalendarModule,
-     DropdownModule,
-     RadioButtonModule,
-     CheckboxModule,
-     ListboxModule,
-     PickListModule,
-     FileUploadModule,
-     DataTableModule,
-     GrowlModule,
-     AccordionModule,
-     HttpModule,
-     HttpClientModule,
-     TooltipModule,
-     TableModule,
-     KeyFilterModule,
-     AngularSvgIconModule,
-     ToastModule,
-     InputSwitchModule, 
-     TreeTableModule,
-     StorageServiceModule,
-     InputMaskModule,
-     TabViewModule,
-     AutoCompleteModule,
-     ChartModule,
-     EditorModule
- ];
- const providers = [
-     { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-     {provide: LoggerService, useClass: MockLoggerService},
-     { provide: LocationStrategy, useClass: HashLocationStrategy },
-     Location,
-     SessionStoreService,
-     PageService,
-     CustomHttpClient,
-     LoaderService,
-     NmMessageService,
-     ConfigService,
-     CounterMessageService
- ];
+];
+const imports = [
+  FormsModule,
+  ReactiveFormsModule,
+  CalendarModule,
+  DropdownModule,
+  RadioButtonModule,
+  CheckboxModule,
+  ListboxModule,
+  PickListModule,
+  FileUploadModule,
+  DataTableModule,
+  GrowlModule,
+  AccordionModule,
+  HttpModule,
+  HttpClientModule,
+  TooltipModule,
+  TableModule,
+  KeyFilterModule,
+  AngularSvgIconModule,
+  ToastModule,
+  InputSwitchModule,
+  TreeTableModule,
+  StorageServiceModule,
+  InputMaskModule,
+  TabViewModule,
+  AutoCompleteModule,
+  ChartModule,
+  EditorModule
+];
+const providers = [
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: LoggerService, useClass: MockLoggerService },
+  { provide: LocationStrategy, useClass: HashLocationStrategy },
+  Location,
+  SessionStoreService,
+  PageService,
+  CustomHttpClient,
+  LoaderService,
+  NmMessageService,
+  ConfigService,
+  CounterMessageService
+];
 
- let fixture, hostComponent;
- 
+let fixture, hostComponent;
+
 describe('FrmGroupCmp', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
 
-  beforeEach( () => {
+  beforeEach(() => {
     fixture = TestBed.createComponent(FrmGroupCmp);
     hostComponent = fixture.debugElement.componentInstance;
     hostComponent.element = formGroupNmElementInputParam as Param;
@@ -254,7 +295,8 @@ describe('FrmGroupCmp', () => {
 
   it('getCssClass() should return the element.config.uiStyles.attributes.cssClass', () => {
     fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup';
+      hostComponent.element.config.uiStyles.attributes.alias =
+        'FormElementGroup';
       hostComponent.element.config.uiStyles.attributes.cssClass = 'test';
       expect(hostComponent.getCssClass()).toEqual('test');
     });
@@ -262,7 +304,8 @@ describe('FrmGroupCmp', () => {
 
   it('getCssClass() should return elementCss', () => {
     fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup';
+      hostComponent.element.config.uiStyles.attributes.alias =
+        'FormElementGroup';
       hostComponent.element.config.uiStyles.attributes.cssClass = 'test1';
       expect(hostComponent.getCssClass()).toEqual('test1');
     });
@@ -270,7 +313,8 @@ describe('FrmGroupCmp', () => {
 
   it('getCssClass() should return empty string', () => {
     fixture.whenStable().then(() => {
-      hostComponent.element.config.uiStyles.attributes.alias = 'FormElementGroup1';
+      hostComponent.element.config.uiStyles.attributes.alias =
+        'FormElementGroup1';
       expect(hostComponent.getCssClass()).toEqual('');
     });
   });
@@ -337,7 +381,7 @@ describe('FrmGroupCmp', () => {
 
   it('nm-element should be created based on the nestedparams length', async(() => {
     hostComponent.form = new FormGroup({
-      question123: new FormControl(),
+      question123: new FormControl()
     });
     hostComponent.element = formGroupNmElementInputParam as Param;
     fixture.detectChanges();
@@ -350,9 +394,9 @@ describe('FrmGroupCmp', () => {
 
   it('nm-element should be created based on the collection', async(() => {
     hostComponent.form = new FormGroup({
-      question123: new FormControl(),
+      question123: new FormControl()
     });
-    formGroupNmElementInputParam.type['model'] = { params: [1] }
+    formGroupNmElementInputParam.type['model'] = { params: [1] };
     formGroupNmElementInputParam.config.type.collection = true;
     hostComponent.element = formGroupNmElementInputParam as Param;
     fixture.detectChanges();
@@ -440,16 +484,16 @@ describe('FrmGroupCmp', () => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const linkEle = debugElement.query(By.css('nm-link'));
-    expect(linkEle).toBeTruthy()
+    expect(linkEle).toBeTruthy();
   }));
 
   it('nm-link should not be created if @Link is not configured', async(() => {
     hostComponent.element = formGroupNmLinkParam as Param;
-    hostComponent.element.config.uiStyles.attributes.alias = ''
+    hostComponent.element.config.uiStyles.attributes.alias = '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const linkEle = debugElement.query(By.css('nm-link'));
-    expect(linkEle).toBeFalsy()
+    expect(linkEle).toBeFalsy();
   }));
 
   it('nm-paragraph should be created if @Paragraph is configured', async(() => {
@@ -491,7 +535,7 @@ describe('FrmGroupCmp', () => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const btnGrpEle = debugElement.query(By.css('nm-button-group'));
-    expect(btnGrpEle).toBeTruthy()
+    expect(btnGrpEle).toBeTruthy();
   }));
 
   it('nm-button-group should not be created if @ButtonGroup is not configured', async(() => {
@@ -500,7 +544,7 @@ describe('FrmGroupCmp', () => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const btnGrpEle = debugElement.query(By.css('nm-button-group'));
-    expect(btnGrpEle).toBeFalsy()
+    expect(btnGrpEle).toBeFalsy();
   }));
 
   it('All elements in form group should be hidden if the element.visible!==false', async(() => {
@@ -511,6 +555,4 @@ describe('FrmGroupCmp', () => {
     const spanEle: any = debugElement.query(By.css('span'));
     expect(spanEle.nativeElement.attributes[2].name).toEqual('hidden');
   }));
-
 });
-

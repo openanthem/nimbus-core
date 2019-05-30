@@ -17,11 +17,20 @@
 
 'use strict';
 
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ExecuteException, ExecuteResponse } from '../shared/app-config.interface';
+import {
+  ExecuteException,
+  ExecuteResponse
+} from '../shared/app-config.interface';
 import { ConfigService } from './config.service';
 import { ServiceConstants } from './service.constants';
 import { SessionStoreService } from './session.store';
@@ -36,52 +45,79 @@ import { NmMessageService } from './toastmessage.service';
  */
 @Injectable()
 export class CustomHttpClientInterceptor implements HttpInterceptor {
-    constructor(private msgSvc: NmMessageService, private configSvc: ConfigService, private sessionStore: SessionStoreService) {}
-    /**
-     * Http interceptor to handle custom implementation of request & error handling.
-     * On a failure of http response, the error handler event is emitted based on the
-     * exception in response. Framework returns all exceptions in a predefined format of ExecuteException.
-     * To clear the event emitter of the web service exceptions, on each successful request an empty
-     * exception object is emitted through the error handler event emitter.
-     * @param req
-     * @param next
-     */
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        // Token generated for the first time, and not in session yet. Retrieve from header and store in session
-        if (! this.sessionStore.get(ServiceConstants.AUTH_TOKEN_KEY)) {
-            const token = req.headers.get(ServiceConstants.TOKEN_HEADER_KEY);
-            // JWT token will be in the format Authorization : Bearer <token>
-            const token_parts = [];
-            if (token) {
-                token.split(' ').forEach(
-                    part => { token_parts.push(part);
-                });
-                if (token_parts && token_parts[0] === 'Bearer' && token_parts[1]) {
-                    this.sessionStore.set(ServiceConstants.AUTH_TOKEN_KEY, token_parts[1]);
-                }
-            }
+  constructor(
+    private msgSvc: NmMessageService,
+    private configSvc: ConfigService,
+    private sessionStore: SessionStoreService
+  ) {}
+  /**
+   * Http interceptor to handle custom implementation of request & error handling.
+   * On a failure of http response, the error handler event is emitted based on the
+   * exception in response. Framework returns all exceptions in a predefined format of ExecuteException.
+   * To clear the event emitter of the web service exceptions, on each successful request an empty
+   * exception object is emitted through the error handler event emitter.
+   * @param req
+   * @param next
+   */
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    // Token generated for the first time, and not in session yet. Retrieve from header and store in session
+    if (!this.sessionStore.get(ServiceConstants.AUTH_TOKEN_KEY)) {
+      const token = req.headers.get(ServiceConstants.TOKEN_HEADER_KEY);
+      // JWT token will be in the format Authorization : Bearer <token>
+      const token_parts = [];
+      if (token) {
+        token.split(' ').forEach(part => {
+          token_parts.push(part);
+        });
+        if (token_parts && token_parts[0] === 'Bearer' && token_parts[1]) {
+          this.sessionStore.set(
+            ServiceConstants.AUTH_TOKEN_KEY,
+            token_parts[1]
+          );
         }
-        return next.handle(req).pipe(tap((event: HttpEvent<any>) => {
-            const exception = new ExecuteException();
-            exception.message = null;
-            exception.code = null;
-            this.msgSvc.notifyErrorEvent(exception);
-          }, (err: any) => {
-                if (err instanceof HttpErrorResponse) {
-                    /*  Currently, the server side websecurityconfig redirects to /login when session in expired.
+      }
+    }
+    return next.handle(req).pipe(
+      tap(
+        (event: HttpEvent<any>) => {
+          const exception = new ExecuteException();
+          exception.message = null;
+          exception.code = null;
+          this.msgSvc.notifyErrorEvent(exception);
+        },
+        (err: any) => {
+          if (err instanceof HttpErrorResponse) {
+            /*  Currently, the server side websecurityconfig redirects to /login when session in expired.
                         Although the original response is HttpErrorResponse, the redirected url is in 200 status.
                         Hence the additional check for 200 & err.url.
                         This will have to be refactored when Siteminder authentication replaces the form based authentication. */
-                    if (err.status === 302 || err.status === 403 || (err.status === 200 && err.url === `${ServiceConstants.LOGIN_URL}`)) {
-                        this.sessionStore.removeAll();
-                        window.location.href = `${ServiceConstants.LOGOUT_URL}`;
-                    }
-                    const execResp  = new ExecuteResponse(this.configSvc).deserialize(err.error);
-                    if (execResp != null && execResp.result != null && execResp.result[0] != null) {
-                        const exception: ExecuteException = execResp.result[0].executeException;
-                        this.msgSvc.notifyErrorEvent(exception);
-                    }
-                }
-        }));
-    }
+            if (
+              err.status === 302 ||
+              err.status === 403 ||
+              (err.status === 200 &&
+                err.url === `${ServiceConstants.LOGIN_URL}`)
+            ) {
+              this.sessionStore.removeAll();
+              window.location.href = `${ServiceConstants.LOGOUT_URL}`;
+            }
+            const execResp = new ExecuteResponse(this.configSvc).deserialize(
+              err.error
+            );
+            if (
+              execResp != null &&
+              execResp.result != null &&
+              execResp.result[0] != null
+            ) {
+              const exception: ExecuteException =
+                execResp.result[0].executeException;
+              this.msgSvc.notifyErrorEvent(exception);
+            }
+          }
+        }
+      )
+    );
+  }
 }

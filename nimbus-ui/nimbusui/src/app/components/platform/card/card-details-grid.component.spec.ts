@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,10 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { By } from '@angular/platform-browser';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { cardDetailsGridElement, cardDetailsGridNewElement } from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
@@ -62,17 +65,14 @@ import { CardDetailsGrid } from './card-details-grid.component';
 import { CardDetailsComponent } from './card-details.component';
 'use strict';
 
-
 class MockPageService {
-    eventUpdate$: Subject<any>;
+  eventUpdate$: Subject<any>;
 
-    constructor() {
-        this.eventUpdate$ = new Subject();
-    }
+  constructor() {
+    this.eventUpdate$ = new Subject();
+  }
 
-    processEvent() {
-
-    }
+  processEvent() {}
 }
 
 @Component({
@@ -80,7 +80,6 @@ class MockPageService {
   selector: 'nm-button'
 })
 class Button {
-
   @Input() element: any;
   @Input() payload: string;
   @Input() form: any;
@@ -98,57 +97,56 @@ class Button {
 }
 
 const declarations = [
-    CardDetailsGrid,
-    CardDetailsComponent,
-    Link,
-    CardDetailsFieldComponent,
-    StaticText,
-    InPlaceEditorComponent,
-    InputText,
-    TextArea,
-    ComboBox,
-    DateTimeFormatPipe,
-    TooltipComponent,
-    SelectItemPipe,
-    Label,
-    CardDetailsFieldGroupComponent,
-    Paragraph,
-    ButtonGroup,
-    DisplayValueDirective,
-    InputLabel,
-    Button,
-    Image,
-    SvgComponent,
-    PrintDirective,
-    InputLegend
-    ];
-const imports = [ 
-    FormsModule,
-    DropdownModule,
-    TooltipModule,
-    HttpClientModule,
-    HttpModule,
-    AngularSvgIconModule,
-    StorageServiceModule
+  CardDetailsGrid,
+  CardDetailsComponent,
+  Link,
+  CardDetailsFieldComponent,
+  StaticText,
+  InPlaceEditorComponent,
+  InputText,
+  TextArea,
+  ComboBox,
+  DateTimeFormatPipe,
+  TooltipComponent,
+  SelectItemPipe,
+  Label,
+  CardDetailsFieldGroupComponent,
+  Paragraph,
+  ButtonGroup,
+  DisplayValueDirective,
+  InputLabel,
+  Button,
+  Image,
+  SvgComponent,
+  PrintDirective,
+  InputLegend
 ];
- const providers = [
-    { provide: PageService, useClass: MockPageService },
-    { provide: 'JSNLOG', useValue: JL },
-    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-     CustomHttpClient,
-     LoaderService,
-     ConfigService,
-     LoggerService,
-     AppInitService,
-     PrintService
-     ];
+const imports = [
+  FormsModule,
+  DropdownModule,
+  TooltipModule,
+  HttpClientModule,
+  HttpModule,
+  AngularSvgIconModule,
+  StorageServiceModule
+];
+const providers = [
+  { provide: PageService, useClass: MockPageService },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  LoggerService,
+  AppInitService,
+  PrintService
+];
 
 let fixture, hostComponent, pageService;
 
 describe('CardDetailsGrid', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
 
   beforeEach(() => {
@@ -162,58 +160,73 @@ describe('CardDetailsGrid', () => {
     expect(hostComponent).toBeTruthy();
   }));
 
-  it('Label should be created on providing the element.labels display the value provided',async(() => {
-      hostComponent.position = 1;
-      ServiceConstants.LOCALE_LANGUAGE = "en-US";
+  it('Label should be created on providing the element.labels display the value provided', async(() => {
+    hostComponent.position = 1;
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const labelEle = debugElement.query(By.css('nm-label'));
     expect(labelEle.name).toEqual('nm-label');
-    expect(labelEle.nativeElement.innerText.toString().trim()).toEqual('testing grid label-181');    
+    expect(labelEle.nativeElement.innerText.toString().trim()).toEqual(
+      'testing grid label-181'
+    );
   }));
 
-  it('nm-card-details should be created if element?.type?.model?.params[0].type?.model?.params[0].config?.uiStyles?.attributes?.alias === CardDetail',async(() => {
+  it('nm-card-details should be created if element?.type?.model?.params[0].type?.model?.params[0].config?.uiStyles?.attributes?.alias === CardDetail', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const cardDetailsComponentEle = debugElement.query(By.css('nm-card-details'));    
+    const cardDetailsComponentEle = debugElement.query(
+      By.css('nm-card-details')
+    );
     expect(cardDetailsComponentEle.name).toEqual('nm-card-details');
   }));
 
-  it('compare the values rendered in the view with param object provided',async(() => {
-    ServiceConstants.LOCALE_LANGUAGE = "en-US";
+  it('compare the values rendered in the view with param object provided', async(() => {
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
     hostComponent.position = 1;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const cardDetailsComponentEle = debugElement.query(By.css('nm-card-details'));
-    const labelEles = debugElement.queryAll(By.css('nm-label'));    
+    const cardDetailsComponentEle = debugElement.query(
+      By.css('nm-card-details')
+    );
+    const labelEles = debugElement.queryAll(By.css('nm-label'));
     expect(cardDetailsComponentEle.name).toEqual('nm-card-details');
-    expect(labelEles[1].nativeElement.innerText.toString().trim()).toEqual('testing card details label 108-');    
+    expect(labelEles[1].nativeElement.innerText.toString().trim()).toEqual(
+      'testing card details label 108-'
+    );
   }));
 
-  it('Updating the param object should add a row',async(() => {
+  it('Updating the param object should add a row', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const allCardDetailsEles = debugElement.queryAll(By.css('nm-card-details'));
     expect(allCardDetailsEles.length).toEqual(2);
     hostComponent.element.type.model.params.push(cardDetailsGridNewElement);
     fixture.detectChanges();
-    const newAllCardDetailsEles = debugElement.queryAll(By.css('nm-card-details'));
+    const newAllCardDetailsEles = debugElement.queryAll(
+      By.css('nm-card-details')
+    );
     expect(newAllCardDetailsEles.length).toEqual(3);
   }));
 
-  it('nm-card-details should not be created if element?.type?.model?.params[0].type?.model?.params[0].config?.uiStyles?.attributes?.alias !== CardDetail',async(() => {
-    hostComponent.element.type.model.params[0].type.model.params[0].config.uiStyles.attributes.alias = '';
-    hostComponent.element.type.model.params[1].type.model.params[0].config.uiStyles.attributes.alias = '';
-    hostComponent.element.type.model.params[2].type.model.params[0].config.uiStyles.attributes.alias = '';
+  it('nm-card-details should not be created if element?.type?.model?.params[0].type?.model?.params[0].config?.uiStyles?.attributes?.alias !== CardDetail', async(() => {
+    hostComponent.element.type.model.params[0].type.model.params[0].config.uiStyles.attributes.alias =
+      '';
+    hostComponent.element.type.model.params[1].type.model.params[0].config.uiStyles.attributes.alias =
+      '';
+    hostComponent.element.type.model.params[2].type.model.params[0].config.uiStyles.attributes.alias =
+      '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const cardDetailsComponentEle = debugElement.query(By.css('nm-card-details'));
+    const cardDetailsComponentEle = debugElement.query(
+      By.css('nm-card-details')
+    );
     expect(cardDetailsComponentEle).toBeFalsy();
   }));
 
-  it('Label should not be created on if element.labels is empty',async(() => {
+  it('Label should not be created on if element.labels is empty', async(() => {
     hostComponent.position = 1;
-    ServiceConstants.LOCALE_LANGUAGE = "en-US";
+    ServiceConstants.LOCALE_LANGUAGE = 'en-US';
     hostComponent.element.labels = [];
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -222,17 +235,16 @@ describe('CardDetailsGrid', () => {
   }));
 
   it('ngonint() should call pageService.processEvent', () => {
-      hostComponent.element.config.uiStyles.attributes.onLoad = true;
-      spyOn(pageService, 'processEvent').and.callThrough();
-      hostComponent.ngOnInit();
-      expect(pageService.processEvent).toHaveBeenCalled();
+    hostComponent.element.config.uiStyles.attributes.onLoad = true;
+    spyOn(pageService, 'processEvent').and.callThrough();
+    hostComponent.ngOnInit();
+    expect(pageService.processEvent).toHaveBeenCalled();
   });
 
   it('ngonint() should not call pageSvc.processEvent', () => {
-      hostComponent.element.config.uiStyles.attributes.onLoad = false;
-      spyOn(pageService, 'processEvent').and.callThrough();
-      hostComponent.ngOnInit();
-      expect(pageService.processEvent).not.toHaveBeenCalled();
+    hostComponent.element.config.uiStyles.attributes.onLoad = false;
+    spyOn(pageService, 'processEvent').and.callThrough();
+    hostComponent.ngOnInit();
+    expect(pageService.processEvent).not.toHaveBeenCalled();
   });
-
 });

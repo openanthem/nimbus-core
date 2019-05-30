@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,23 +17,64 @@
 
 'use strict';
 
-import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
+import {
+  HashLocationStrategy,
+  Location,
+  LocationStrategy
+} from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { accordionElementWithForm, accordionElementWithNoForm } from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
 import { ChartModule } from 'primeng/chart';
 import { EditorModule } from 'primeng/editor';
 import { KeyFilterModule } from 'primeng/keyfilter';
-import { AccordionModule, AutoCompleteModule, CalendarModule, CheckboxModule, DataTableModule, DialogModule, DragDropModule, DropdownModule, FileUploadModule, GrowlModule, InputMaskModule, InputSwitchModule, ListboxModule, OverlayPanelModule, PickListModule, ProgressBarModule, ProgressSpinnerModule, RadioButtonModule, SharedModule, TabViewModule, TooltipModule, TreeTableModule } from 'primeng/primeng';
+import {
+  AccordionModule,
+  AutoCompleteModule,
+  CalendarModule,
+  CheckboxModule,
+  DataTableModule,
+  DialogModule,
+  DragDropModule,
+  DropdownModule,
+  FileUploadModule,
+  GrowlModule,
+  InputMaskModule,
+  InputSwitchModule,
+  ListboxModule,
+  OverlayPanelModule,
+  PickListModule,
+  ProgressBarModule,
+  ProgressSpinnerModule,
+  RadioButtonModule,
+  SharedModule,
+  TabViewModule,
+  TooltipModule,
+  TreeTableModule
+} from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { Subject } from 'rxjs';
@@ -49,7 +90,10 @@ import { LoaderService } from '../../../services/loader.service';
 import { LoggerService } from '../../../services/logger.service';
 import { PageService } from '../../../services/page.service';
 import { PrintService } from '../../../services/print.service';
-import { CUSTOM_STORAGE, SessionStoreService } from '../../../services/session.store';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from '../../../services/session.store';
 import { setup } from '../../../setup.spec';
 import { Param } from '../../../shared/param-state';
 import { CardDetailsFieldGroupComponent } from '../card/card-details-field-group.component';
@@ -64,7 +108,10 @@ import { FormElement } from '../form-element.component';
 import { FormErrorMessage } from '../form-error-message.component';
 import { FrmGroupCmp } from '../form-group.component';
 import { Form } from '../form.component';
-import { ActionDropdown, ActionLink } from '../form/elements/action-dropdown.component';
+import {
+  ActionDropdown,
+  ActionLink
+} from '../form/elements/action-dropdown.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
 import { Calendar } from '../form/elements/calendar.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
@@ -103,23 +150,19 @@ import { Accordion } from './accordion.component';
 import { Label } from './label.component';
 import { Tab } from './tab.component';
 
-
-
 let pageService, configService;
 
 class MockPageService {
-    eventUpdate$: Subject<any>;
-    validationUpdate$: Subject<any>;
-    gridValueUpdate$: Subject<any>;
+  eventUpdate$: Subject<any>;
+  validationUpdate$: Subject<any>;
+  gridValueUpdate$: Subject<any>;
 
-    constructor() {
-        this.eventUpdate$ = new Subject();
-        this.validationUpdate$ = new Subject();
-        this.gridValueUpdate$ = new Subject();
-
-    }
-  processEvent(a, b, c, d) { 
-   }
+  constructor() {
+    this.eventUpdate$ = new Subject();
+    this.validationUpdate$ = new Subject();
+    this.gridValueUpdate$ = new Subject();
+  }
+  processEvent(a, b, c, d) {}
 }
 
 @Component({
@@ -127,7 +170,6 @@ class MockPageService {
   selector: 'nm-button'
 })
 class Button {
-
   @Input() element: any;
   @Input() payload: string;
   @Input() form: any;
@@ -145,9 +187,9 @@ class Button {
 }
 
 class MockLoggerService {
-    debug() { }
-    info() { }
-    error() { }
+  debug() {}
+  info() {}
+  error() {}
 }
 
 const declarations = [
@@ -213,27 +255,27 @@ const imports = [
   StorageServiceModule,
   AngularSvgIconModule,
   ReactiveFormsModule,
-  DataTableModule, 
-  SharedModule, 
-  OverlayPanelModule, 
-  PickListModule, 
+  DataTableModule,
+  SharedModule,
+  OverlayPanelModule,
+  PickListModule,
   ChartModule,
-  DragDropModule, 
-  CalendarModule, 
-  FileUploadModule, 
-  ListboxModule, 
-  DialogModule, 
-  CheckboxModule, 
-  DropdownModule, 
-  RadioButtonModule, 
-  ProgressBarModule, 
-  ProgressSpinnerModule, 
-  AccordionModule, 
+  DragDropModule,
+  CalendarModule,
+  FileUploadModule,
+  ListboxModule,
+  DialogModule,
+  CheckboxModule,
+  DropdownModule,
+  RadioButtonModule,
+  ProgressBarModule,
+  ProgressSpinnerModule,
+  AccordionModule,
   GrowlModule,
   TableModule,
   KeyFilterModule,
   ToastModule,
-  InputSwitchModule, 
+  InputSwitchModule,
   TreeTableModule,
   BrowserAnimationsModule,
   InputMaskModule,
@@ -262,9 +304,8 @@ const providers = [
 ];
 let fixture, hostComponent, changeDetectorRef;
 describe('Accordion', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
 
   beforeEach(() => {
@@ -280,50 +321,62 @@ describe('Accordion', () => {
     expect(hostComponent).toBeTruthy();
   }));
 
-  it('Expand All and Collapse All should be created if showExpandAll attribute configured',async(() => {
+  it('Expand All and Collapse All should be created if showExpandAll attribute configured', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const expandAllndCollapseEle = debugElement.queryAll(By.css('.btn.btn-expand'));    
-    expect(expandAllndCollapseEle[0].nativeElement.innerText.toString()).toEqual('Expand All');    
-    expect(expandAllndCollapseEle[1].nativeElement.innerText.toString()).toEqual('Collapse All');    
+    const expandAllndCollapseEle = debugElement.queryAll(
+      By.css('.btn.btn-expand')
+    );
+    expect(
+      expandAllndCollapseEle[0].nativeElement.innerText.toString()
+    ).toEqual('Expand All');
+    expect(
+      expandAllndCollapseEle[1].nativeElement.innerText.toString()
+    ).toEqual('Collapse All');
   }));
 
-  it('Expand All and Collapse All should not be created if showExpandAll attribute is not configured',async(() => {
+  it('Expand All and Collapse All should not be created if showExpandAll attribute is not configured', async(() => {
     hostComponent.element.config.uiStyles.attributes.showExpandAll = false;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const expandAllndCollapseEle = debugElement.queryAll(By.css('.btn.btn-expand'));   
-    expect(expandAllndCollapseEle.length).toEqual(0);    
+    const expandAllndCollapseEle = debugElement.queryAll(
+      By.css('.btn.btn-expand')
+    );
+    expect(expandAllndCollapseEle.length).toEqual(0);
   }));
 
-  it('Onclick of expand all button the openAll() should be called',async(() => {
+  it('Onclick of expand all button the openAll() should be called', async(() => {
     hostComponent.element.config.uiStyles.attributes.showExpandAll = true;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const expandAllndCollapseEle = debugElement.queryAll(By.css('.btn.btn-expand'));    
+    const expandAllndCollapseEle = debugElement.queryAll(
+      By.css('.btn.btn-expand')
+    );
     spyOn(hostComponent, 'openAll').and.callThrough();
     expandAllndCollapseEle[0].nativeElement.click();
     expect(hostComponent.openAll).toHaveBeenCalled();
   }));
 
-  it('Onclick of Collapse all button the closeAll() should be called',async(() => {
+  it('Onclick of Collapse all button the closeAll() should be called', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const expandAllndCollapseEle = debugElement.queryAll(By.css('.btn.btn-expand'));    
+    const expandAllndCollapseEle = debugElement.queryAll(
+      By.css('.btn.btn-expand')
+    );
     spyOn(hostComponent, 'closeAll').and.callThrough();
     expandAllndCollapseEle[1].nativeElement.click();
     expect(hostComponent.closeAll).toHaveBeenCalled();
   }));
 
-  it('p-accordion should not be created if element.visible is false',async(() => {
-      hostComponent.element.visible = false;
+  it('p-accordion should not be created if element.visible is false', async(() => {
+    hostComponent.element.visible = false;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const pAccordionEle = debugElement.query(By.css('p-accordion'));
     expect(pAccordionEle).toBeFalsy();
   }));
 
-  it('p-accordion should be created if element.visible is true',async(() => {
+  it('p-accordion should be created if element.visible is true', async(() => {
     hostComponent.element.visible = true;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -331,7 +384,7 @@ describe('Accordion', () => {
     expect(pAccordionEle).toBeTruthy();
   }));
 
-  it('p-accordionTab should be created if element.type.model.params[0].visible is true',async(() => {
+  it('p-accordionTab should be created if element.type.model.params[0].visible is true', async(() => {
     hostComponent.element.type.model.params[0].visible = true;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -339,44 +392,46 @@ describe('Accordion', () => {
     expect(pAccordionTab).toBeTruthy();
   }));
 
-  it('Label in header should be created on configuring @Label',async(() => {
+  it('Label in header should be created on configuring @Label', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const nmLabelEle = debugElement.query(By.css('nm-label'));
     expect(nmLabelEle).toBeTruthy();
   }));
 
-  it('Edit Button should be created if editable is configured',async(() => {
+  it('Edit Button should be created if editable is configured', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const editButtonEle = debugElement.query(By.css('.btn.btn-plain'));    
+    const editButtonEle = debugElement.query(By.css('.btn.btn-plain'));
     expect(editButtonEle).toBeTruthy();
     expect(editButtonEle.nativeElement.innerText.toString()).toEqual('Edit');
   }));
 
-  it('Onclick of edit button processOnClick() should be called',async(() => {
+  it('Onclick of edit button processOnClick() should be called', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const editButtonEle = debugElement.query(By.css('.btn.btn-plain'));    
+    const editButtonEle = debugElement.query(By.css('.btn.btn-plain'));
     spyOn(hostComponent, 'processOnClick').and.callThrough();
     editButtonEle.nativeElement.click();
     expect(hostComponent.processOnClick).toHaveBeenCalled();
-    expect(hostComponent.processOnClick).toHaveBeenCalledWith(accordionElementWithForm.type.model.params[0]);
+    expect(hostComponent.processOnClick).toHaveBeenCalledWith(
+      accordionElementWithForm.type.model.params[0]
+    );
   }));
 
-  it('If element.type.model.params[0].type.model.params[i] and form is defined then form group should be created',async(() => {
+  it('If element.type.model.params[0].type.model.params[i] and form is defined then form group should be created', async(() => {
     hostComponent.form = new FormGroup({
-        question123: new FormControl(),
-        txt1: new FormControl()
-     });
-    hostComponent.ngOnDestroy = () => {}
+      question123: new FormControl(),
+      txt1: new FormControl()
+    });
+    hostComponent.ngOnDestroy = () => {};
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const frmGrpEle = debugElement.query(By.css('nm-frm-grp'));
     expect(frmGrpEle).toBeTruthy();
   }));
 
-  it('If form is undefined and @ButtonGroup configured then button group should be created ',async(() => {
+  it('If form is undefined and @ButtonGroup configured then button group should be created ', async(() => {
     hostComponent.element = accordionElementWithNoForm as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -384,7 +439,7 @@ describe('Accordion', () => {
     expect(buttonGroupEle).toBeTruthy();
   }));
 
-  it('If form is undefined and @ButtonGroup is not configured then button group should not be created ',async(() => {
+  it('If form is undefined and @ButtonGroup is not configured then button group should not be created ', async(() => {
     hostComponent.element = accordionElementWithNoForm as Param;
     hostComponent.element.type.model.params[0].type.model.params[5].alias = '';
     fixture.detectChanges();
@@ -393,41 +448,41 @@ describe('Accordion', () => {
     expect(buttonGroupEle).toBeFalsy();
   }));
 
-  it('If form is undefined and @Link is configured then Link should be created ',async(() => {
+  it('If form is undefined and @Link is configured then Link should be created ', async(() => {
     hostComponent.element = accordionElementWithNoForm as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const linkEle = debugElement.query(By.css('nm-link'));
-    expect(linkEle).toBeTruthy()
+    expect(linkEle).toBeTruthy();
   }));
 
-  it('If form is undefined and @Link is not configured then Link should not be created ',async(() => {
+  it('If form is undefined and @Link is not configured then Link should not be created ', async(() => {
     hostComponent.element = accordionElementWithNoForm as Param;
     hostComponent.element.type.model.params[0].type.model.params[6].alias = '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const linkEle = debugElement.query(By.css('nm-link'));
-    expect(linkEle).toBeFalsy()
+    expect(linkEle).toBeFalsy();
   }));
 
-  it('If form is undefined and @Grid is configured then table should be created ',async(() => {
+  it('If form is undefined and @Grid is configured then table should be created ', async(() => {
     hostComponent.element = accordionElementWithNoForm as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const gridEle = debugElement.query(By.css('nm-table'));
-    expect(gridEle).toBeTruthy()
+    expect(gridEle).toBeTruthy();
   }));
 
-  it('If form is undefined and @Grid is not configured then table should not be created ',async(() => {
+  it('If form is undefined and @Grid is not configured then table should not be created ', async(() => {
     hostComponent.element = accordionElementWithNoForm as Param;
     hostComponent.element.type.model.params[0].type.model.params[7].alias = '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const gridEle = debugElement.query(By.css('nm-table'));
-    expect(gridEle).toBeFalsy()
+    expect(gridEle).toBeFalsy();
   }));
 
-  it('If form is undefined and @CardDetail is configured then cardDetail should be created ',async(() => {
+  it('If form is undefined and @CardDetail is configured then cardDetail should be created ', async(() => {
     hostComponent.element = accordionElementWithNoForm as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -435,7 +490,7 @@ describe('Accordion', () => {
     expect(cardDetailEle).toBeTruthy();
   }));
 
-  it('If form is undefined and @CardDetail is not configured then cardDetail should not be created ',async(() => {
+  it('If form is undefined and @CardDetail is not configured then cardDetail should not be created ', async(() => {
     hostComponent.element = accordionElementWithNoForm as Param;
     hostComponent.element.type.model.params[0].type.model.params[8].alias = '';
     fixture.detectChanges();
@@ -444,24 +499,28 @@ describe('Accordion', () => {
     expect(cardDetailEle).toBeFalsy();
   }));
 
-  it('If form is undefined and @CardDetailsGrid then cardDetailsGrid should be created ',async(() => {
+  it('If form is undefined and @CardDetailsGrid then cardDetailsGrid should be created ', async(() => {
     hostComponent.element = accordionElementWithNoForm as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const cardDetailsGridEle = debugElement.query(By.css('nm-card-details-grid'));
+    const cardDetailsGridEle = debugElement.query(
+      By.css('nm-card-details-grid')
+    );
     expect(cardDetailsGridEle).toBeTruthy();
   }));
 
-  it('If form is undefined and @CardDetailsGrid is not configured then cardDetailsGrid should not be created ',async(() => {
+  it('If form is undefined and @CardDetailsGrid is not configured then cardDetailsGrid should not be created ', async(() => {
     hostComponent.element = accordionElementWithNoForm as Param;
     hostComponent.element.type.model.params[0].type.model.params[9].alias = '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const cardDetailsGridEle = debugElement.query(By.css('nm-card-details-grid'));
+    const cardDetailsGridEle = debugElement.query(
+      By.css('nm-card-details-grid')
+    );
     expect(cardDetailsGridEle).toBeFalsy();
   }));
 
-  it('If form is undefined and form is configured in nested level then form should be created ',async(() => {
+  it('If form is undefined and form is configured in nested level then form should be created ', async(() => {
     hostComponent.element = accordionElementWithNoForm as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -469,7 +528,7 @@ describe('Accordion', () => {
     expect(formEle).toBeTruthy();
   }));
 
-  it('If form is undefined and form is not configured in nested level also then form should not be created ',async(() => {
+  it('If form is undefined and form is not configured in nested level also then form should not be created ', async(() => {
     hostComponent.element = accordionElementWithNoForm as Param;
     hostComponent.element.type.model.params[0].type.model.params[10].alias = '';
     fixture.detectChanges();
@@ -521,18 +580,23 @@ describe('Accordion', () => {
     const test = new Param(configService);
     hostComponent.processOnClick(test);
     expect(pageService.processEvent).toHaveBeenCalled();
-    expect(pageService.processEvent).toHaveBeenCalledWith(undefined, '$execute', null, 'POST');
+    expect(pageService.processEvent).toHaveBeenCalledWith(
+      undefined,
+      '$execute',
+      null,
+      'POST'
+    );
   }));
 
-it('Edit Button should not be created if editable attribute is configured as false',async(() => {
+  it('Edit Button should not be created if editable attribute is configured as false', async(() => {
     hostComponent.element.type.model.params[0].config.uiStyles.attributes.editable = false;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const editButtonEle = debugElement.query(By.css('.btn.btn-plain'));    
+    const editButtonEle = debugElement.query(By.css('.btn.btn-plain'));
     expect(editButtonEle).toBeFalsy();
-}));
+  }));
 
-it('If nested param object and form is undefined then form group should not be created',async(() => {
+  it('If nested param object and form is undefined then form group should not be created', async(() => {
     hostComponent.form = null;
     hostComponent.element.type.model.params[0].type.model.params = [];
     fixture.detectChanges();
@@ -541,38 +605,37 @@ it('If nested param object and form is undefined then form group should not be c
     expect(frmGrpEle).toBeFalsy();
   }));
 
-  it('nm-counter-message in pheader should be created if showMessages attribute is configured as true',async(() => {
+  it('nm-counter-message in pheader should be created if showMessages attribute is configured as true', async(() => {
     hostComponent.element.type.model.params[0].config.uiStyles.attributes.selected = true;
     hostComponent.element.config.uiStyles.attributes.showMessages = true;
     hostComponent.form = new FormGroup({
-        question123: new FormControl(),
-        txt1: new FormControl()
-     });
+      question123: new FormControl(),
+      txt1: new FormControl()
+    });
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const counterMessageEle = debugElement.query(By.css('nm-counter-message'));
     expect(counterMessageEle).toBeTruthy();
   }));
 
-  it('nm-counter-message in pheader should not be created if showMessages attribute is configured as false',async(() => {
+  it('nm-counter-message in pheader should not be created if showMessages attribute is configured as false', async(() => {
     hostComponent.element.type.model.params[0].config.uiStyles.attributes.selected = true;
     hostComponent.element.config.uiStyles.attributes.showMessages = false;
     hostComponent.form = new FormGroup({
-        question123: new FormControl(),
-        txt1: new FormControl()
-     });
+      question123: new FormControl(),
+      txt1: new FormControl()
+    });
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const counterMessageEle = debugElement.query(By.css('nm-counter-message'));
     expect(counterMessageEle).toBeFalsy();
   }));
 
-  it('Label in header should not be created on if element.type.model.params[] is empty',async(() => {
+  it('Label in header should not be created on if element.type.model.params[] is empty', async(() => {
     hostComponent.element.type.model.params = [];
-  fixture.detectChanges();
-  const debugElement = fixture.debugElement;
-  const nmLabelEle = debugElement.query(By.css('nm-label'));
-  expect(nmLabelEle).toBeFalsy();
-    }));
-
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const nmLabelEle = debugElement.query(By.css('nm-label'));
+    expect(nmLabelEle).toBeFalsy();
+  }));
 });

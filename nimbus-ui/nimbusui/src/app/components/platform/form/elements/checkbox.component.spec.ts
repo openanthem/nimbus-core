@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,13 +16,20 @@
  */
 
 'use strict';
-import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
+import {
+  HashLocationStrategy,
+  Location,
+  LocationStrategy
+} from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { async, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { By } from '@angular/platform-browser';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { checkboxElement } from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
@@ -33,7 +40,10 @@ import { LoaderService } from '../../../../services/loader.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';
-import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from '../../../../services/session.store';
 import { setup } from '../../../../setup.spec';
 import { Param } from '../../../../shared/param-state';
 import { TooltipComponent } from '../../../platform/tooltip/tooltip.component';
@@ -42,30 +52,26 @@ import { NmMessageService } from './../../../../services/toastmessage.service';
 import { WindowRefService } from './../../../../services/window-ref.service';
 import { CheckBox } from './checkbox.component';
 
-
 let param: Param;
 
 class MockLoggerService {
-  debug() { }
-  info() { }
-  error() { }
+  debug() {}
+  info() {}
+  error() {}
 }
 
-const declarations = [
-  CheckBox,
-  TooltipComponent
- ];
- const imports = [
+const declarations = [CheckBox, TooltipComponent];
+const imports = [
   FormsModule,
   HttpClientModule,
   HttpModule,
   StorageServiceModule
- ];
- const providers = [
+];
+const providers = [
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   { provide: 'JSNLOG', useValue: JL },
   { provide: LocationStrategy, useClass: HashLocationStrategy },
-  {provide: LoggerService, useClass: MockLoggerService},
+  { provide: LoggerService, useClass: MockLoggerService },
   Location,
   PageService,
   CustomHttpClient,
@@ -76,14 +82,12 @@ const declarations = [
   NmMessageService,
   WindowRefService,
   CounterMessageService
- ];
- let fixture, hostComponent;
+];
+let fixture, hostComponent;
 describe('CheckBox', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckBox);
@@ -127,6 +131,4 @@ describe('CheckBox', () => {
     const tooltipEle = debugElement.query(By.css('nm-tooltip'));
     expect(tooltipEle).toBeFalsy();
   }));
-
 });
-

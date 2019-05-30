@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,33 +23,28 @@ import { FooterConfig } from '../../../model/menu-meta.interface';
 /**
  * \@author Vinay.Kurva
  * Content specified in this tag will display in global footer
- * 
+ *
  */
 @Component({
-    selector: 'nm-footer-global',
-    templateUrl: './footer-global.component.html'
+  selector: 'nm-footer-global',
+  templateUrl: './footer-global.component.html'
 })
-
 export class FooterGlobal implements OnInit {
+  @Input() footerConfig = <FooterConfig>{};
+  state: string = 'closed';
+  display: string = 'Open';
 
-    @Input() footerConfig = <FooterConfig>{};
-    state: string = 'closed';
-    display: string = 'Open';
+  constructor() {}
 
-    constructor() {
+  ngOnInit() {}
+
+  toggleFooter() {
+    if (this.state == 'open') {
+      this.state = '';
+      this.display = 'Open';
+    } else {
+      this.state = 'open';
+      this.display = 'Close';
     }
-
-    ngOnInit() {
-    }
-
-    toggleFooter() {
-        if (this.state == 'open') {
-            this.state = '';
-            this.display = 'Open';
-        } else {
-            this.state = 'open';
-            this.display = 'Close';
-        }
-    }
-
+  }
 }

@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,49 +23,46 @@ import { setup } from '../../../setup.spec';
 import { LoaderService } from './../../../services/loader.service';
 import { LoaderComponent } from './loader.component';
 
-
 class MockLoaderService {
-    public loaderUpdate: Subject<any>;
-    constructor() {
-        this.loaderUpdate = new Subject<any>();
-    }
-    show() {
-        const message = {
-            show: true
-        };
-        this.loaderUpdate.next(message);
-    }
-
+  public loaderUpdate: Subject<any>;
+  constructor() {
+    this.loaderUpdate = new Subject<any>();
+  }
+  show() {
+    const message = {
+      show: true
+    };
+    this.loaderUpdate.next(message);
+  }
 }
 
 let loaderService;
 
-const declarations = [  LoaderComponent ];
-const providers = [      { provide: LoaderService, useClass: MockLoaderService }  ];
+const declarations = [LoaderComponent];
+const providers = [{ provide: LoaderService, useClass: MockLoaderService }];
 const imports = [];
 let fixture, hostComponent;
 describe('LoaderComponent', () => {
-
-    configureTestSuite(() => {
-        setup( declarations, imports, providers);
-    });
-    
+  configureTestSuite(() => {
+    setup(declarations, imports, providers);
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LoaderComponent);
     hostComponent = fixture.debugElement.componentInstance;
     loaderService = TestBed.get(LoaderService);
-    (hostComponent as any).subscription = {unsubscribe: () => {}} as Subscription;
+    (hostComponent as any).subscription = {
+      unsubscribe: () => {}
+    } as Subscription;
   });
 
   it('should create the LoaderComponent', () => {
-      expect(hostComponent).toBeTruthy();
+    expect(hostComponent).toBeTruthy();
   });
-  
-//   it('show property should be updated as true', () => {
-//     hostComponent.ngOnInit();
-//     loaderService.show();
-//     expect(hostComponent.show).toEqual(true);
-//   });
 
+  //   it('show property should be updated as true', () => {
+  //     hostComponent.ngOnInit();
+  //     loaderService.show();
+  //     expect(hostComponent.show).toEqual(true);
+  //   });
 });

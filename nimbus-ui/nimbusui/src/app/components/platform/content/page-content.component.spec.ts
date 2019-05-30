@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,16 +22,45 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Params, Route, UrlSegment } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ParamMap,
+  Params,
+  Route,
+  UrlSegment
+} from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { fieldValueParam } from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
 import { ChartModule } from 'primeng/chart';
 import { KeyFilterModule } from 'primeng/keyfilter';
-import { AccordionModule, AutoCompleteModule, CalendarModule, CheckboxModule, DataTableModule, DialogModule, DropdownModule, EditorModule, FileUploadModule, GrowlModule, InputMaskModule, InputSwitchModule, ListboxModule, PickListModule, RadioButtonModule, TabViewModule, TooltipModule, TreeTableModule } from 'primeng/primeng';
+import {
+  AccordionModule,
+  AutoCompleteModule,
+  CalendarModule,
+  CheckboxModule,
+  DataTableModule,
+  DialogModule,
+  DropdownModule,
+  EditorModule,
+  FileUploadModule,
+  GrowlModule,
+  InputMaskModule,
+  InputSwitchModule,
+  ListboxModule,
+  PickListModule,
+  RadioButtonModule,
+  TabViewModule,
+  TooltipModule,
+  TreeTableModule
+} from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { Observable, of as observableOf, Subject } from 'rxjs';
@@ -46,7 +75,10 @@ import { LoaderService } from '../../../services/loader.service';
 import { LoggerService } from '../../../services/logger.service';
 import { PageService } from '../../../services/page.service';
 import { PrintService } from '../../../services/print.service';
-import { CUSTOM_STORAGE, SessionStoreService } from '../../../services/session.store';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from '../../../services/session.store';
 import { setup } from '../../../setup.spec';
 import { CardDetailsFieldGroupComponent } from '../card/card-details-field-group.component';
 import { CardDetailsFieldComponent } from '../card/card-details-field.component';
@@ -57,7 +89,10 @@ import { FormElement } from '../form-element.component';
 import { FormErrorMessage } from '../form-error-message.component';
 import { FrmGroupCmp } from '../form-group.component';
 import { Form } from '../form.component';
-import { ActionDropdown, ActionLink } from '../form/elements/action-dropdown.component';
+import {
+  ActionDropdown,
+  ActionLink
+} from '../form/elements/action-dropdown.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
 import { Calendar } from '../form/elements/calendar.component';
 import { CheckBoxGroup } from '../form/elements/checkbox-group.component';
@@ -101,8 +136,6 @@ import { Paragraph } from './paragraph.component';
 import { StaticText } from './static-content.component';
 import { Tab } from './tab.component';
 
-
-
 let logger, pageService, param, printService;
 
 export class MockActivatedRoute implements ActivatedRoute {
@@ -123,15 +156,17 @@ export class MockActivatedRoute implements ActivatedRoute {
     page: {
       type: {
         model: {
-          params: [{
-            config: {
-              uiStyles: {
-                attributes: {
-                  alias: 'Tile'
+          params: [
+            {
+              config: {
+                uiStyles: {
+                  attributes: {
+                    alias: 'Tile'
+                  }
                 }
               }
             }
-          }]
+          ]
         }
       }
     }
@@ -145,7 +180,6 @@ export class MockActivatedRoute implements ActivatedRoute {
   selector: 'nm-button'
 })
 class Button {
-
   @Input() element: any;
   @Input() payload: string;
   @Input() form: any;
@@ -163,9 +197,9 @@ class Button {
 }
 
 class MockLoggerService {
-  debug() { }
-  info() { }
-  error() { }
+  debug() {}
+  info() {}
+  error() {}
 }
 
 class MockPageService {
@@ -247,8 +281,8 @@ const declarations = [
   Tab,
   NmChart,
   RichText
- ];
- const imports = [
+];
+const imports = [
   GrowlModule,
   DialogModule,
   FormsModule,
@@ -278,26 +312,25 @@ const declarations = [
   AutoCompleteModule,
   ChartModule,
   EditorModule
- ];
- const providers = [
-  {provide: ActivatedRoute, useClass: MockActivatedRoute},
+];
+const providers = [
+  { provide: ActivatedRoute, useClass: MockActivatedRoute },
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   { provide: 'JSNLOG', useValue: JL },
-  {provide: LoggerService, useClass: MockLoggerService},
-  {provide: PageService, useClass: MockPageService},
-  {provide: PrintService, useClass: MockPrintService},
+  { provide: LoggerService, useClass: MockLoggerService },
+  { provide: PageService, useClass: MockPageService },
+  { provide: PrintService, useClass: MockPrintService },
   AppInitService,
   NmMessageService,
   SessionStoreService,
   CustomHttpClient,
   LoaderService,
   ConfigService
- ];
- let fixture, hostComponent;
+];
+let fixture, hostComponent;
 describe('PageContent', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
 
   beforeEach(() => {
@@ -305,11 +338,11 @@ describe('PageContent', () => {
     hostComponent = fixture.debugElement.componentInstance;
     hostComponent.element = fieldValueParam;
     logger = TestBed.get(LoggerService);
-    pageService = TestBed.get(PageService)
+    pageService = TestBed.get(PageService);
     printService = TestBed.get(PrintService);
   });
 
-  it('should create the Header',  async(() => {
+  it('should create the Header', async(() => {
     expect(hostComponent).toBeTruthy();
   }));
 
@@ -326,5 +359,4 @@ describe('PageContent', () => {
   //   pageService.logError({message: 'test'});
   //   expect(hostComponent.errMsgArray).toEqual([{severity: 'error', summary: 'Error Message', detail: 'test', life: 10000}]);
   // }));
-
 });

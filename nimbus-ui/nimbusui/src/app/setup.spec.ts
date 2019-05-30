@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,8 +15,17 @@
  * limitations under the License.
  */
 
-import { APP_BASE_HREF, HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  APP_BASE_HREF,
+  HashLocationStrategy,
+  Location,
+  LocationStrategy
+} from '@angular/common';
+import {
+  HttpClient,
+  HttpClientModule,
+  HTTP_INTERCEPTORS
+} from '@angular/common/http';
 import { ErrorHandler } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -25,20 +34,42 @@ import { BrowserModule } from '@angular/platform-browser/';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { MessageService } from 'primeng/api';
 import { EditorModule } from 'primeng/editor';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { MessageModule } from 'primeng/message';
 import { MessagesModule } from 'primeng/messages';
-import { AccordionModule, CalendarModule, CheckboxModule, DataTableModule, DialogModule, DragDropModule, DropdownModule, FileUploadModule, GrowlModule, InputSwitchModule, ListboxModule, OverlayPanelModule, PickListModule, ProgressBarModule, ProgressSpinnerModule, RadioButtonModule, SharedModule, TreeTableModule } from 'primeng/primeng';
+import {
+  AccordionModule,
+  CalendarModule,
+  CheckboxModule,
+  DataTableModule,
+  DialogModule,
+  DragDropModule,
+  DropdownModule,
+  FileUploadModule,
+  GrowlModule,
+  InputSwitchModule,
+  ListboxModule,
+  OverlayPanelModule,
+  PickListModule,
+  ProgressBarModule,
+  ProgressSpinnerModule,
+  RadioButtonModule,
+  SharedModule,
+  TreeTableModule
+} from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { BreadcrumbService } from './components/platform/breadcrumb/breadcrumb.service';
 import { CustomBrowserXhr } from './custom.browserxhr';
 import { DateTimeFormatPipe } from './pipes/date.pipe';
-import { AppInitService } from "./services/app.init.service";
+import { AppInitService } from './services/app.init.service';
 import { AuthenticationService } from './services/authentication.service';
 import { ConfigService } from './services/config.service';
 import { ControlSubscribers } from './services/control-subscribers.service';
@@ -60,71 +91,93 @@ import { GridUtils } from './shared/grid-utils';
 
 'use strict';
 
-export const allproviders =  [ PageService, ConfigService, HttpClient, AppInitService,
-    CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
-    { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
-    { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService, Location,
-    { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
-    { provide: 'JSNLOG', useValue: JL },
-    { provide: ErrorHandler, useClass: CustomErrorHandler },
-    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE},
-    SessionStoreService, ControlSubscribers, 
-    AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 
-    RouteService, MessageService, GridUtils, DateTimeFormatPipe, NmMessageService]
+export const allproviders = [
+  PageService,
+  ConfigService,
+  HttpClient,
+  AppInitService,
+  CustomHttpClient,
+  { provide: BrowserXhr, useClass: CustomBrowserXhr },
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: CustomHttpClientInterceptor,
+    multi: true
+  },
+  { provide: LocationStrategy, useClass: HashLocationStrategy },
+  GridService,
+  Location,
+  { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: ErrorHandler, useClass: CustomErrorHandler },
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  SessionStoreService,
+  ControlSubscribers,
+  AuthenticationService,
+  BreadcrumbService,
+  LoaderService,
+  FileService,
+  LayoutService,
+  WindowRefService,
+  LoggerService,
+  RouteService,
+  MessageService,
+  GridUtils,
+  DateTimeFormatPipe,
+  NmMessageService
+];
 
 export const allimports = [
-        BrowserModule,
-        HttpClientModule,
-        ReactiveFormsModule,
-        HttpModule,
-        FormsModule,
-        DropdownModule,
-        DataTableModule,
-        TableModule,
-        TreeTableModule,
-        OverlayPanelModule,
-        PickListModule,
-        DragDropModule,
-        ListboxModule,
-        SharedModule,
-        FileUploadModule,
-        DialogModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        CheckboxModule,
-        CalendarModule,
-        RadioButtonModule,
-        ProgressBarModule,
-        ProgressSpinnerModule,
-        AccordionModule,
-        GrowlModule,
-        MessagesModule,
-        MessageModule,
-        KeyFilterModule,
-        StorageServiceModule,
-        AngularSvgIconModule,
-        ToastModule,
-        InputSwitchModule,
-        RouterTestingModule,
-        EditorModule
-    ]
-
+  BrowserModule,
+  HttpClientModule,
+  ReactiveFormsModule,
+  HttpModule,
+  FormsModule,
+  DropdownModule,
+  DataTableModule,
+  TableModule,
+  TreeTableModule,
+  OverlayPanelModule,
+  PickListModule,
+  DragDropModule,
+  ListboxModule,
+  SharedModule,
+  FileUploadModule,
+  DialogModule,
+  BrowserModule,
+  BrowserAnimationsModule,
+  CheckboxModule,
+  CalendarModule,
+  RadioButtonModule,
+  ProgressBarModule,
+  ProgressSpinnerModule,
+  AccordionModule,
+  GrowlModule,
+  MessagesModule,
+  MessageModule,
+  KeyFilterModule,
+  StorageServiceModule,
+  AngularSvgIconModule,
+  ToastModule,
+  InputSwitchModule,
+  RouterTestingModule,
+  EditorModule
+];
 
 export interface TestContext<H> {
-    fixture: ComponentFixture<H>;
-   hostComponent: H;
-    hostElement: any;
+  fixture: ComponentFixture<H>;
+  hostComponent: H;
+  hostElement: any;
 }
 
 export function setup(declarations: any[], imports?: any[], providers?: any[]) {
-    TestBed.configureTestingModule({
-        declarations: declarations,
-        providers: providers ? providers : allproviders,
-        imports:  imports ? imports : allimports
-        })
+  TestBed.configureTestingModule({
+    declarations: declarations,
+    providers: providers ? providers : allproviders,
+    imports: imports ? imports : allimports
+  });
 }
 export function instantiateComponent(testType: any) {
-    // fixture = TestBed.createComponent(testType);
-    // hostComponent = fixture.componentInstance;
-    // this.hostElement = fixture.nativeElement;
+  // fixture = TestBed.createComponent(testType);
+  // hostComponent = fixture.componentInstance;
+  // this.hostElement = fixture.nativeElement;
 }

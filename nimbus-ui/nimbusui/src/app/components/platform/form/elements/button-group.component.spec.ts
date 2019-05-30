@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,13 +28,11 @@ import { Image } from '../../image.component';
 import { SvgComponent } from '../../svg/svg.component';
 import { ButtonGroup } from './button-group.component';
 
-
 @Component({
   template: '<div></div>',
   selector: 'nm-button'
 })
 class Button {
-
   @Input() element: any;
   @Input() payload: string;
   @Input() form: any;
@@ -51,24 +49,15 @@ class Button {
   componentTypes;
 }
 
-const declarations = [
-  ButtonGroup,
-  Button,
-  SvgComponent,
-  Image
- ];
- const imports = [
-   AngularSvgIconModule
- ];
- const providers = []
- let fixture, hostComponent;
+const declarations = [ButtonGroup, Button, SvgComponent, Image];
+const imports = [AngularSvgIconModule];
+const providers = [];
+let fixture, hostComponent;
 describe('ButtonGroup', () => {
-
   configureTestSuite();
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ButtonGroup);
@@ -78,7 +67,7 @@ describe('ButtonGroup', () => {
     hostComponent.form = new FormGroup({
       question123: new FormControl(),
       txt1: new FormControl()
-   });
+    });
   });
 
   it('should create the ButtonGroup', async(() => {
@@ -118,6 +107,4 @@ describe('ButtonGroup', () => {
     const buttonEle = debugElement.query(By.css('nm-button'));
     expect(buttonEle).toBeFalsy();
   }));
-
 });
-

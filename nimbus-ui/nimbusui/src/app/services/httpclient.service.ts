@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,23 +28,27 @@ import { SessionStoreService } from './session.store';
 
 /**
  * \@author Swetha.Vemuri
- * \@whatItDoes 
- * 
- * \@howToUse 
- * 
+ * \@whatItDoes
+ *
+ * \@howToUse
+ *
  */
 
 const httpOptions = {
   headers: new HttpHeaders({
-    'Content-Type':  'application/json',
+    'Content-Type': 'application/json',
     'X-Csrf-Token': ''
   }),
-  params : new HttpParams()
+  params: new HttpParams()
 };
 
 @Injectable()
 export class CustomHttpClient {
-  constructor(public http: HttpClient, public customHttpClient: HttpClient, private sessionStore: SessionStoreService) {
+  constructor(
+    public http: HttpClient,
+    public customHttpClient: HttpClient,
+    private sessionStore: SessionStoreService
+  ) {
     this.http = http;
   }
 
@@ -53,23 +57,33 @@ export class CustomHttpClient {
   }
 
   post(url, data) {
-    return this.customHttpClient.post<ExecuteResponse>(url, data, this.buildOptions());
+    return this.customHttpClient.post<ExecuteResponse>(
+      url,
+      data,
+      this.buildOptions()
+    );
   }
 
   put(url, data) {
-    return this.customHttpClient.put<ExecuteResponse>(url, data, this.buildOptions());
+    return this.customHttpClient.put<ExecuteResponse>(
+      url,
+      data,
+      this.buildOptions()
+    );
   }
 
   buildOptions() {
-    let headers =  new HttpHeaders();
-    headers = headers.append('Content-Type','application/json');
-    headers = headers.append('Authorization',`Bearer ${this.sessionStore.get(ServiceConstants.AUTH_TOKEN_KEY)}` );
-    return {headers: headers};
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json');
+    headers = headers.append(
+      'Authorization',
+      `Bearer ${this.sessionStore.get(ServiceConstants.AUTH_TOKEN_KEY)}`
+    );
+    return { headers: headers };
   }
 
   postFileData(url, data) {
-    return this.http.post(url, data).pipe(
-      catchError(this.errorHandler));
+    return this.http.post(url, data).pipe(catchError(this.errorHandler));
   }
 
   getCookie(name) {
@@ -77,13 +91,15 @@ export class CustomHttpClient {
     let parts = value.split('; ' + name + '=');
 
     if (parts.length === 2) {
-      return parts.pop().split(';').shift();
+      return parts
+        .pop()
+        .split(';')
+        .shift();
     }
   }
 
-  errorHandler(error: Response){
+  errorHandler(error: Response) {
     console.error(error);
     return Observable.throw(error);
-
   }
 }

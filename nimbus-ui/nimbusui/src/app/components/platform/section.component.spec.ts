@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,13 +23,34 @@ import { async, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { fieldValueParam } from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
 import { ChartModule } from 'primeng/chart';
 import { KeyFilterModule } from 'primeng/keyfilter';
-import { AccordionModule, AutoCompleteModule, CalendarModule, CheckboxModule, DataTableModule, DropdownModule, EditorModule, FileUploadModule, GrowlModule, InputMaskModule, InputSwitchModule, ListboxModule, PickListModule, RadioButtonModule, TabViewModule, TooltipModule, TreeTableModule } from 'primeng/primeng';
+import {
+  AccordionModule,
+  AutoCompleteModule,
+  CalendarModule,
+  CheckboxModule,
+  DataTableModule,
+  DropdownModule,
+  EditorModule,
+  FileUploadModule,
+  GrowlModule,
+  InputMaskModule,
+  InputSwitchModule,
+  ListboxModule,
+  PickListModule,
+  RadioButtonModule,
+  TabViewModule,
+  TooltipModule,
+  TreeTableModule
+} from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { DisplayValueDirective } from '../../directives/display-value.directive';
@@ -55,7 +76,10 @@ import { Paragraph } from '../platform/content/paragraph.component';
 import { StaticText } from '../platform/content/static-content.component';
 import { FileUploadComponent } from '../platform/fileupload/file-upload.component';
 import { Form } from '../platform/form.component';
-import { ActionDropdown, ActionLink } from '../platform/form/elements/action-dropdown.component';
+import {
+  ActionDropdown,
+  ActionLink
+} from '../platform/form/elements/action-dropdown.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
 import { CheckBoxGroup } from '../platform/form/elements/checkbox-group.component';
@@ -94,13 +118,11 @@ import { Image } from './image.component';
 import { Section } from './section.component';
 import { SvgComponent } from './svg/svg.component';
 
-
 @Component({
   template: '<div></div>',
   selector: 'nm-button'
 })
 class Button {
-
   @Input() element: any;
   @Input() payload: string;
   @Input() form: any;
@@ -118,15 +140,13 @@ class Button {
 }
 
 class MockPageService {
-    processEvent() {
-
-    }
+  processEvent() {}
 }
 
 class MockLoggerService {
-  debug() { }
-  info() { }
-  error() { }
+  debug() {}
+  info() {}
+  error() {}
 }
 
 const declarations = [
@@ -184,7 +204,7 @@ const declarations = [
   Tab,
   NmChart,
   RichText
- ];
+];
 const imports = [
   FormsModule,
   DropdownModule,
@@ -213,50 +233,50 @@ const imports = [
   TabViewModule,
   ChartModule,
   EditorModule
- ];
+];
 const providers = [
   { provide: PageService, useClass: MockPageService },
   { provide: 'JSNLOG', useValue: JL },
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-  {provide: LoggerService, useClass: MockLoggerService},
+  { provide: LoggerService, useClass: MockLoggerService },
   CustomHttpClient,
   LoaderService,
   ConfigService,
   AppInitService
- ];
+];
 
- let fixture, hostComponent;
+let fixture, hostComponent;
 
 describe('Section', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(Section);
     hostComponent = fixture.debugElement.componentInstance;
-      hostComponent.element = fieldValueParam;
+    hostComponent.element = fieldValueParam;
   });
 
-  it('should create the Section',  async(() => {
+  it('should create the Section', async(() => {
     expect(hostComponent).toBeTruthy();
   }));
 
-  it('ngOnInit() should call pageSvc.processEvent()',  async(() => {
-   const service = TestBed.get(PageService);
-    hostComponent.element.config.initializeComponent = () => {return true};
+  it('ngOnInit() should call pageSvc.processEvent()', async(() => {
+    const service = TestBed.get(PageService);
+    hostComponent.element.config.initializeComponent = () => {
+      return true;
+    };
     spyOn(service, 'processEvent').and.callThrough();
     hostComponent.ngOnInit();
     expect(service.processEvent).toHaveBeenCalled();
   }));
 
-  it('ngOnInit() should not call pageSvc.processEvent()',  async(() => {
+  it('ngOnInit() should not call pageSvc.processEvent()', async(() => {
     const service = TestBed.get(PageService);
-    hostComponent.element = { } as Param;
+    hostComponent.element = {} as Param;
     spyOn(service, 'processEvent').and.callThrough();
     hostComponent.ngOnInit();
     expect(service.processEvent).not.toHaveBeenCalled();
   }));
-
 });

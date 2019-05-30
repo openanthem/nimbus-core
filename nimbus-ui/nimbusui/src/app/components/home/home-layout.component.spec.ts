@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,10 +22,20 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Params, Route, UrlSegment } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ParamMap,
+  Params,
+  Route,
+  UrlSegment
+} from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { Homelayout } from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
@@ -43,12 +53,18 @@ import { LayoutService } from '../../services/layout.service';
 import { LoaderService } from '../../services/loader.service';
 import { LoggerService } from '../../services/logger.service';
 import { PageService } from '../../services/page.service';
-import { CUSTOM_STORAGE, SessionStoreService } from '../../services/session.store';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from '../../services/session.store';
 import { setup } from '../../setup.spec';
 import { BreadcrumbService } from '../platform/breadcrumb/breadcrumb.service';
 import { Paragraph } from '../platform/content/paragraph.component';
 import { FooterGlobal } from '../platform/footer/footer-global.component';
-import { ActionDropdown, ActionLink } from '../platform/form/elements/action-dropdown.component';
+import {
+  ActionDropdown,
+  ActionLink
+} from '../platform/form/elements/action-dropdown.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
 import { InputLabel } from '../platform/form/elements/input-label.component';
 import { Value } from '../platform/form/elements/value.component';
@@ -79,7 +95,7 @@ export class NmPanelMenu {
   @Input() model: any[];
   @Input() style: any;
   @Input() styleClass: string;
-  @Input() multiple: boolean = true;  
+  @Input() multiple: boolean = true;
 }
 
 @Component({
@@ -87,7 +103,6 @@ export class NmPanelMenu {
   selector: 'nm-button'
 })
 class Button {
-
   @Input() element: any;
   @Input() payload: string;
   @Input() form: any;
@@ -111,19 +126,19 @@ class MockAuthenticationService {
   }
 }
 class MockPageService {
-    public config$: Subject<any>;
-  
-    constructor() {
-      this.config$ = new Subject();
-    }
-  
-    loadFlowConfig(a) {}
-    loadDefaultPageForConfig(a) {}
-    logError(a) {
-      this.config$.next(a);
-    }
-    traverseFlowConfig(a, b) {}
+  public config$: Subject<any>;
+
+  constructor() {
+    this.config$ = new Subject();
   }
+
+  loadFlowConfig(a) {}
+  loadDefaultPageForConfig(a) {}
+  logError(a) {
+    this.config$.next(a);
+  }
+  traverseFlowConfig(a, b) {}
+}
 class MockLayoutService {
   public layout$: Subject<any>;
 
@@ -139,9 +154,9 @@ class MockLayoutService {
 }
 
 class MockLoggerService {
-  debug() { }
-  info() { }
-  error() { }
+  debug() {}
+  info() {}
+  error() {}
 }
 
 export class MockActivatedRoute implements ActivatedRoute {
@@ -179,62 +194,60 @@ class MockSTOMPService {
 
 let layoutService, activatedRoute, pageService;
 
-const declarations= [
-    HomeLayoutCmp,
-    FooterGlobal,
-    HeaderGlobal,
-    Link,
-    Paragraph,
-    ComboBox,
-    KeysPipe,
-    Value,
-    SelectItemPipe,
-    TooltipComponent,
-    SvgComponent,
-    Button,
-    ActionDropdown,
-    InputLabel,
-    Image,
-    ActionLink,
-    NmPanelMenu,
-    ToastMessageComponent,
-    NmPanelMenuSub,
-    NavigationComponent
-  ];
-  const providers = [
-    { provide: AuthenticationService, useClass: MockAuthenticationService },
-    { provide: LayoutService, useClass: MockLayoutService },
-    { provide: ActivatedRoute, useClass: MockActivatedRoute },
-    { provide: PageService, useClass: MockPageService },
-    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-    { provide: 'JSNLOG', useValue: JL },
-    {provide: LoggerService, useClass: MockLoggerService},
-    CustomHttpClient,
-    LoaderService,
-    ConfigService,
-    BreadcrumbService,
-    NmMessageService,
-    SessionStoreService,
-    AppInitService
-  ];
-  const imports = [
-    RouterTestingModule,
-    FormsModule,
-    DropdownModule,
-    HttpClientModule,
-    HttpModule,
-    StorageServiceModule,
-    AngularSvgIconModule,
-    ToastModule
-  ];
+const declarations = [
+  HomeLayoutCmp,
+  FooterGlobal,
+  HeaderGlobal,
+  Link,
+  Paragraph,
+  ComboBox,
+  KeysPipe,
+  Value,
+  SelectItemPipe,
+  TooltipComponent,
+  SvgComponent,
+  Button,
+  ActionDropdown,
+  InputLabel,
+  Image,
+  ActionLink,
+  NmPanelMenu,
+  ToastMessageComponent,
+  NmPanelMenuSub,
+  NavigationComponent
+];
+const providers = [
+  { provide: AuthenticationService, useClass: MockAuthenticationService },
+  { provide: LayoutService, useClass: MockLayoutService },
+  { provide: ActivatedRoute, useClass: MockActivatedRoute },
+  { provide: PageService, useClass: MockPageService },
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: LoggerService, useClass: MockLoggerService },
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  BreadcrumbService,
+  NmMessageService,
+  SessionStoreService,
+  AppInitService
+];
+const imports = [
+  RouterTestingModule,
+  FormsModule,
+  DropdownModule,
+  HttpClientModule,
+  HttpModule,
+  StorageServiceModule,
+  AngularSvgIconModule,
+  ToastModule
+];
 
 let fixture, hostComponent;
 describe('HomeLayoutCmp', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HomeLayoutCmp);
@@ -244,18 +257,18 @@ describe('HomeLayoutCmp', () => {
     pageService = TestBed.get(PageService);
   });
 
-  it('should create the app',  async(() => {
+  it('should create the app', async(() => {
     expect(hostComponent).toBeTruthy();
   }));
 
-  it('ngOnInint() should get layout from layout service',  async(() => {
+  it('ngOnInint() should get layout from layout service', async(() => {
     spyOn(layoutService, 'getLayout').and.callThrough();
     hostComponent.ngOnInit();
     layoutService.parseLayoutConfig(Homelayout);
     expect(layoutService.getLayout).toHaveBeenCalled();
   }));
 
-  it('ngOnInint() should not get layout from layout service',  async(() => {
+  it('ngOnInint() should not get layout from layout service', async(() => {
     spyOn(layoutService, 'getLayout').and.callThrough();
     activatedRoute.data['value']['layout'] = null;
     hostComponent.ngOnInit();
@@ -263,7 +276,7 @@ describe('HomeLayoutCmp', () => {
     expect(layoutService.getLayout).not.toHaveBeenCalled();
   }));
 
-  it('ngOnInint() should update the class properties',  async(() => {
+  it('ngOnInint() should update the class properties', async(() => {
     hostComponent.ngOnInit();
     layoutService.parseLayoutConfig(Homelayout);
     const res: any = 'test';
@@ -271,7 +284,7 @@ describe('HomeLayoutCmp', () => {
     expect(hostComponent.topMenuItems).toEqual(Homelayout.topBar.headerMenus);
   }));
 
-  it('ngOnInint() should not update the class properties',  async(() => {
+  it('ngOnInint() should not update the class properties', async(() => {
     hostComponent.ngOnInit();
     const layout1 = {};
     layoutService.parseLayoutConfig(layout1);
@@ -279,26 +292,26 @@ describe('HomeLayoutCmp', () => {
     expect(hostComponent.branding).not.toEqual(res);
   }));
 
-  it('ngOnInint() should not update the class properties if layout is null',  async(() => {
+  it('ngOnInint() should not update the class properties if layout is null', async(() => {
     hostComponent.ngOnInit();
     layoutService.parseLayoutConfig();
     const res: any = 'test';
     expect(hostComponent.branding).not.toEqual(res);
   }));
 
-  it('toggelSideNav should update collapse property',  async(() => {
+  it('toggelSideNav should update collapse property', async(() => {
     hostComponent.collapse = true;
     hostComponent.toggelSideNav();
     expect(hostComponent.collapse).toEqual(false);
   }));
 
-  it('get activeTheme should return activeTheme property',  async(() => {
+  it('get activeTheme should return activeTheme property', async(() => {
     hostComponent.activeTheme = 'test';
     hostComponent.activeTheme = 'test';
     expect(hostComponent.activeTheme).toEqual('test');
   }));
 
-  it('on_next() should call pageService.traverseFlowConfig()',  async(() => {
+  it('on_next() should call pageService.traverseFlowConfig()', async(() => {
     const test1 = JSON.stringify({
       result: [
         {
@@ -317,7 +330,4 @@ describe('HomeLayoutCmp', () => {
     hostComponent.on_next(test);
     expect(pageService.traverseFlowConfig).toHaveBeenCalled();
   }));
-
 });
-
-

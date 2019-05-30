@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,13 +16,20 @@
  */
 
 'use strict';
-import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
+import {
+  HashLocationStrategy,
+  Location,
+  LocationStrategy
+} from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { async, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { By } from '@angular/platform-browser';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { calendarElement } from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
@@ -35,7 +42,10 @@ import { LoaderService } from '../../../../services/loader.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';
-import { CUSTOM_STORAGE, SessionStoreService } from '../../../../services/session.store';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from '../../../../services/session.store';
 import { setup } from '../../../../setup.spec';
 import { TooltipComponent } from '../../../platform/tooltip/tooltip.component';
 import { NmMessageService } from './../../../../services/toastmessage.service';
@@ -43,20 +53,15 @@ import { Param } from './../../../../shared/param-state';
 import { Calendar } from './calendar.component';
 import { InputLabel } from './input-label.component';
 
-
-const declarations = [
-  Calendar,
-  TooltipComponent,
-  InputLabel
- ];
- const imports = [
+const declarations = [Calendar, TooltipComponent, InputLabel];
+const imports = [
   CalendarModule,
   FormsModule,
   HttpModule,
   HttpClientModule,
   StorageServiceModule
- ];
- const providers = [
+];
+const providers = [
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   { provide: 'JSNLOG', useValue: JL },
   { provide: LocationStrategy, useClass: HashLocationStrategy },
@@ -70,14 +75,12 @@ const declarations = [
   SessionStoreService,
   AppInitService,
   CounterMessageService
- ];
- let fixture, hostComponent;
+];
+let fixture, hostComponent;
 describe('Calendar', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(Calendar);
@@ -114,7 +117,10 @@ describe('Calendar', () => {
   }));
 
   it('ngOnInit() should call applyDateConstraint()', async(() => {
-    const spy = spyOn((hostComponent as any), 'applyDateConstraint').and.returnValue('');
+    const spy = spyOn(
+      hostComponent as any,
+      'applyDateConstraint'
+    ).and.returnValue('');
     hostComponent.ngOnInit();
     expect(spy).toHaveBeenCalled();
   }));
@@ -128,5 +134,4 @@ describe('Calendar', () => {
     expect(hostComponent.minDate).toEqual(presentTime);
     expect(hostComponent.maxDate).toEqual(presentTime);
   }));
-
 });

@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { configureTestSuite } from 'ng-bullet';
 import { setup } from '../../../setup.spec';
-import { ActionDropdown, ActionLink } from '../../platform/form/elements/action-dropdown.component';
+import {
+  ActionDropdown,
+  ActionLink
+} from '../../platform/form/elements/action-dropdown.component';
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
 import { Paragraph } from '../content/paragraph.component';
@@ -31,7 +34,6 @@ import { Link } from '../link.component';
 import { BreadcrumbService } from './../breadcrumb/breadcrumb.service';
 import { HeaderGlobal } from './header-global.component';
 
-
 let breadcrumbService;
 
 @Component({
@@ -39,7 +41,6 @@ let breadcrumbService;
   selector: 'nm-button'
 })
 class Button {
-
   @Input() element: any;
   @Input() payload: string;
   @Input() form: any;
@@ -57,12 +58,12 @@ class Button {
 }
 
 class MockBreadcrumbService {
-    getHomeBreadcrumb() {
-        const test = {
-            url: 'testing'
-        }
-        return test;
-    }
+  getHomeBreadcrumb() {
+    const test = {
+      url: 'testing'
+    };
+    return test;
+  }
 }
 
 const declarations = [
@@ -75,18 +76,16 @@ const declarations = [
   Image,
   ActionLink,
   SvgComponent
-  ];
-  const imports = [ 
-    RouterTestingModule,
-    AngularSvgIconModule 
-  ];
-  const providers = [ { provide: BreadcrumbService, useClass: MockBreadcrumbService} ];
-  let fixture, hostComponent;
+];
+const imports = [RouterTestingModule, AngularSvgIconModule];
+const providers = [
+  { provide: BreadcrumbService, useClass: MockBreadcrumbService }
+];
+let fixture, hostComponent;
 describe(' HeaderGlobal', () => {
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HeaderGlobal);
@@ -95,7 +94,7 @@ describe(' HeaderGlobal', () => {
   });
 
   it('should create the HeaderGlobal', async(() => {
-      expect(hostComponent).toBeTruthy();
+    expect(hostComponent).toBeTruthy();
   }));
 
   it('get homeRoute() should get home route', async(() => {
@@ -114,7 +113,7 @@ describe(' HeaderGlobal', () => {
   //   hostComponent.mouseEventSubscription = mouseEventSubscription;
   //   spyOn(hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
   //   hostComponent.ngOnDestroy();
-  //   expect(hostComponent.mouseEventSubscription.unsubscribe).toHaveBeenCalled();  
+  //   expect(hostComponent.mouseEventSubscription.unsubscribe).toHaveBeenCalled();
   // }));
 
   it('toggleOpen() should call event.state as closedPanel and call mouseEventSubscription.unsubscribe()', async(() => {
@@ -125,11 +124,13 @@ describe(' HeaderGlobal', () => {
     };
     const dropdowns: any = {
       toArray: () => {
-        return [{
-          selectedItem: false,
-          isOpen: true,
-          state: ''
-        }]
+        return [
+          {
+            selectedItem: false,
+            isOpen: true,
+            state: ''
+          }
+        ];
       }
     };
     hostComponent.dropDowns = dropdowns;
@@ -138,10 +139,13 @@ describe(' HeaderGlobal', () => {
       unsubscribe: () => {}
     };
     hostComponent.mouseEventSubscription = mouseEventSubscription;
-    spyOn(hostComponent.mouseEventSubscription, 'unsubscribe').and.callThrough();
+    spyOn(
+      hostComponent.mouseEventSubscription,
+      'unsubscribe'
+    ).and.callThrough();
     hostComponent.toggleOpen(event);
     expect(event.state).toEqual('closedPanel');
-    expect(hostComponent.mouseEventSubscription.unsubscribe).toHaveBeenCalled();  
+    expect(hostComponent.mouseEventSubscription.unsubscribe).toHaveBeenCalled();
   }));
 
   it('toggleOpen() should call event.state as openPanel', async(() => {
@@ -152,7 +156,7 @@ describe(' HeaderGlobal', () => {
     };
     const dropDowns: any = {
       toArray: () => {
-        return []
+        return [];
       }
     };
     hostComponent.dropDowns = dropDowns;
@@ -162,8 +166,6 @@ describe(' HeaderGlobal', () => {
     };
     hostComponent.mouseEventSubscription = mouseEventSubscription;
     hostComponent.toggleOpen(event);
-    expect(event.state).toEqual('openPanel');  
+    expect(event.state).toEqual('openPanel');
   }));
-
 });
-

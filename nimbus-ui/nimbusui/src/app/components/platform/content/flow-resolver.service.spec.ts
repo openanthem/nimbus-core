@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,10 +16,21 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
 import { async, TestBed } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
-import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Params, Route, Router, UrlSegment } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ParamMap,
+  Params,
+  Route,
+  Router,
+  UrlSegment
+} from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of as observableOf, Subject } from 'rxjs';
 import { ConfigService } from '../../../services/config.service';
@@ -28,11 +39,10 @@ import { LoaderService } from '../../../services/loader.service';
 import { PageService } from '../../../services/page.service';
 import { FlowResolver } from './flow-resolver.service';
 
-
 let http, backend, service, pageservice, configservice, router, activatedroute;
 
 class MockRouter {
-  navigate() { }
+  navigate() {}
 }
 
 class MockPageService {
@@ -57,8 +67,8 @@ class MockPageService {
     this.config$.next(res);
   }
 
-  loadFlowConfig(a) { }
-  loadDefaultPageForConfig(a) { }
+  loadFlowConfig(a) {}
+  loadDefaultPageForConfig(a) {}
   loadDomainFlowConfig() {
     const res = {
       pageConfig: {
@@ -71,7 +81,6 @@ class MockPageService {
     };
     this.config$.next(res);
   }
-
 }
 
 class MockConfigService {
@@ -93,30 +102,25 @@ export class MockActivatedRoute implements ActivatedRoute {
   children: ActivatedRoute[];
   pathFromRoot: ActivatedRoute[];
   data = observableOf({
-          layout: 'test'
-    });
+    layout: 'test'
+  });
   paramMap: Observable<ParamMap>;
   queryParamMap: Observable<ParamMap>;
 }
-
 
 describe('FlowResolver', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-          {provide: Router, useClass: MockRouter},
-          {provide: PageService, useClass: MockPageService},
-          {provide: ConfigService, useClass: MockConfigService},
-          {provide: ActivatedRouteSnapshot, useValue: {root: ''}},
-          { provide: ActivatedRoute, useClass: MockActivatedRoute },
-          CustomHttpClient,
-          LoaderService
-        ],
-      imports: [ 
-          HttpClientTestingModule, 
-          HttpModule, 
-          RouterTestingModule 
-        ]
+        { provide: Router, useClass: MockRouter },
+        { provide: PageService, useClass: MockPageService },
+        { provide: ConfigService, useClass: MockConfigService },
+        { provide: ActivatedRouteSnapshot, useValue: { root: '' } },
+        { provide: ActivatedRoute, useClass: MockActivatedRoute },
+        CustomHttpClient,
+        LoaderService
+      ],
+      imports: [HttpClientTestingModule, HttpModule, RouterTestingModule]
     });
     http = TestBed.get(HttpClient);
     backend = TestBed.get(HttpTestingController);
@@ -124,7 +128,12 @@ describe('FlowResolver', () => {
     configservice = TestBed.get(ConfigService);
     router = TestBed.get(Router);
     activatedroute = TestBed.get(ActivatedRoute);
-    service = new FlowResolver(pageservice, configservice, activatedroute, router );
+    service = new FlowResolver(
+      pageservice,
+      configservice,
+      activatedroute,
+      router
+    );
   });
 
   it('should be created', async(() => {
@@ -136,7 +145,7 @@ describe('FlowResolver', () => {
       params: {
         flow: 'testFlow'
       }
-    }
+    };
     let state;
     spyOn(router, 'navigate').and.returnValue({});
     service.resolve(route, state);
@@ -149,7 +158,7 @@ describe('FlowResolver', () => {
       params: {
         flow: 'testFlow'
       }
-    }
+    };
     let state;
     spyOn(router, 'navigate').and.returnValue({});
     service.resolve(route, state);
@@ -157,18 +166,16 @@ describe('FlowResolver', () => {
     expect(router.navigate).toHaveBeenCalled();
   }));
 
-
   it('resolve() should not call pageservice.loadflowconfig()', async(() => {
     const route = {
       params: {
         flow: 'testFlow'
       }
-    }
+    };
     let state;
-    spyOn(service._configSvc, 'getFlowConfig').and.returnValue({test: 123});
+    spyOn(service._configSvc, 'getFlowConfig').and.returnValue({ test: 123 });
     spyOn(service._pageSvc, 'loadFlowConfig').and.callThrough();
     service.resolve(route, state);
     expect(service._pageSvc.loadFlowConfig).not.toHaveBeenCalled();
   }));
-
 });

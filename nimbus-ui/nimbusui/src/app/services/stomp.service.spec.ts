@@ -95,7 +95,6 @@
 //     expect(logger.error).toHaveBeenCalled();
 //   }));
 
-
 //   it('STOMPService.disconnect() should update state', async(() => {
 //     service.state.next(STOMPState.CLOSED);
 //     service.configure();
@@ -125,7 +124,7 @@
 //   it('STOMPService.on_error() should update state', fakeAsync(() => {
 //     service.on_error('Lost connection');
 //     tick (5100);
-//     expect(service.state.getValue()).toEqual(STOMPState.TRYING);   
+//     expect(service.state.getValue()).toEqual(STOMPState.TRYING);
 //   }));
 
 //   it('STOMPService.on_message() should update messages', async(() => {

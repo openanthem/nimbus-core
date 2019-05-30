@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,15 +17,26 @@
 
 'use strict';
 
-import { APP_BASE_HREF, HashLocationStrategy, LocationStrategy } from '@angular/common';
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  APP_BASE_HREF,
+  HashLocationStrategy,
+  LocationStrategy
+} from '@angular/common';
+import {
+  HttpClient,
+  HttpClientModule,
+  HTTP_INTERCEPTORS
+} from '@angular/common/http';
 import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserXhr, HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { MessageService } from 'primeng/api';
 import { ChartModule } from 'primeng/chart';
@@ -33,7 +44,30 @@ import { EditorModule } from 'primeng/editor';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { MessageModule } from 'primeng/message';
 import { MessagesModule } from 'primeng/messages';
-import { AccordionModule, AutoCompleteModule, CalendarModule, CheckboxModule, DataTableModule, DialogModule, DragDropModule, DropdownModule, FileUploadModule, GrowlModule, InputMaskModule, InputSwitchModule, ListboxModule, OverlayPanelModule, PickListModule, ProgressBarModule, ProgressSpinnerModule, RadioButtonModule, SharedModule, TabViewModule, TooltipModule, TreeTableModule } from 'primeng/primeng';
+import {
+  AccordionModule,
+  AutoCompleteModule,
+  CalendarModule,
+  CheckboxModule,
+  DataTableModule,
+  DialogModule,
+  DragDropModule,
+  DropdownModule,
+  FileUploadModule,
+  GrowlModule,
+  InputMaskModule,
+  InputSwitchModule,
+  ListboxModule,
+  OverlayPanelModule,
+  PickListModule,
+  ProgressBarModule,
+  ProgressSpinnerModule,
+  RadioButtonModule,
+  SharedModule,
+  TabViewModule,
+  TooltipModule,
+  TreeTableModule
+} from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { AppComponent } from './app.component';
@@ -73,7 +107,10 @@ import { FormElement } from './components/platform/form-element.component';
 import { FormErrorMessage } from './components/platform/form-error-message.component';
 import { FrmGroupCmp } from './components/platform/form-group.component';
 import { Form } from './components/platform/form.component';
-import { ActionDropdown, ActionLink } from './components/platform/form/elements/action-dropdown.component';
+import {
+  ActionDropdown,
+  ActionLink
+} from './components/platform/form/elements/action-dropdown.component';
 import { NmAutocomplete } from './components/platform/form/elements/autocomplete.component';
 import { ButtonGroup } from './components/platform/form/elements/button-group.component';
 import { Button } from './components/platform/form/elements/button.component';
@@ -109,7 +146,10 @@ import { Menu } from './components/platform/menu.component';
 import { MessageComponent } from './components/platform/message/message.component';
 import { ToastMessageComponent } from './components/platform/message/toastmessage.component';
 import { Modal } from './components/platform/modal/modal.component';
-import { NmPanelMenu, NmPanelMenuSub } from './components/platform/panelmenu.component';
+import {
+  NmPanelMenu,
+  NmPanelMenuSub
+} from './components/platform/panelmenu.component';
 import { Section } from './components/platform/section.component';
 import { SubHeaderCmp } from './components/platform/sub-header.component';
 import { SvgComponent } from './components/platform/svg/svg.component';
@@ -128,7 +168,7 @@ import { KeysPipe } from './pipes/app.pipe';
 import { DateTimeFormatPipe } from './pipes/date.pipe';
 import { LinkPipe } from './pipes/link.pipe';
 import { SelectItemPipe } from './pipes/select-item.pipe';
-import { AppInitService } from "./services/app.init.service";
+import { AppInitService } from './services/app.init.service';
 import { AuthenticationService } from './services/authentication.service';
 import { AutoCompleteService } from './services/autocomplete.service';
 import { ConfigService } from './services/config.service';
@@ -143,7 +183,7 @@ import { LoggerService } from './services/logger.service';
 import { PageService } from './services/page.service';
 import { PrintService } from './services/print.service';
 import { RouteService } from './services/route.service';
-import { ServiceConstants } from "./services/service.constants";
+import { ServiceConstants } from './services/service.constants';
 import { CUSTOM_STORAGE, SessionStoreService } from './services/session.store';
 import { STOMPStatusComponent } from './services/stomp-status.component';
 import { NmMessageService } from './services/toastmessage.service';
@@ -152,99 +192,211 @@ import { CustomErrorHandler } from './shared/custom.error.handler';
 import { GridUtils } from './shared/grid-utils';
 import { StyleGuideCmp } from './styleguide/style-guide.component';
 
-
-
-
-
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
- * \@whatItDoes 
- * 
- * \@howToUse 
- * 
+ * \@whatItDoes
+ *
+ * \@howToUse
+ *
  */
 
 export function init_app(appinitservice: AppInitService) {
-    return () => {
-        return appinitservice.loadConfig();
-    }
+  return () => {
+    return appinitservice.loadConfig();
+  };
 }
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        ReactiveFormsModule,
-        AppRoutingModule,
-        HttpModule,
-        FormsModule,
-        DropdownModule,
-        InputMaskModule,
-        AutoCompleteModule,
-        TabViewModule,
-        DataTableModule,
-        TableModule,
-        TreeTableModule,
-        TooltipModule,
-        OverlayPanelModule,
-        PickListModule,
-        DragDropModule,
-        ListboxModule,
-        SharedModule,
-        FileUploadModule,
-        DialogModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        CheckboxModule,
-        CalendarModule,
-        RadioButtonModule,
-        ProgressBarModule,
-        ProgressSpinnerModule,
-        AccordionModule,
-        GrowlModule,
-        MessagesModule,
-        MessageModule,
-        KeyFilterModule,
-        StorageServiceModule,
-        AngularSvgIconModule,
-        ToastModule,
-        InputSwitchModule,
-        ChartModule,
-        EditorModule
-    ],
-    declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
-        Tile, Section, Header, Form, FormElement, InputText, InputMaskComp, NmAutocomplete, Tab, ComboBox, RadioButton, Signature, CheckBoxGroup,
-        InPlaceEditorComponent, Paragraph, Value, BaseElement, FormGridFiller, 
-        MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldGroupComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
-        Accordion, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
-        STOMPStatusComponent, DataTable, SubHeaderCmp, TextArea, LandingPage, RichText,
-        LayoutService, ContentContainer,
-        DomainFlowCmp, HeaderGlobal, FooterGlobal,
-        BreadcrumbComponent, NavLinkRouter,
-        Modal, ActionDropdown, ActionLink,
-        GridMouseEventDirective, NmValidator,DisplayValueDirective, PrintDirective,
-        HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
-        KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
-        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, LoaderComponent, MessageComponent,
-        HeaderCheckBox, SvgComponent, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, NmChart, ToastMessageComponent,
-        MenuRouteLink, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage, BaseTableElement, EventPropagationDirective, TableHeader, NavigationComponent
-    ],
-    entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
-    providers: [ PageService, ConfigService, HttpClient,  HttpClientModule, AppInitService, CounterMessageService,
-         CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
-         { provide: APP_INITIALIZER, useFactory: init_app, deps: [AppInitService], multi: true },
-         { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
-         { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
-         { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
-         { provide: 'JSNLOG', useValue: JL },
-         { provide: ErrorHandler, useClass: CustomErrorHandler },
-         { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-         SessionStoreService,
-         AutoCompleteService,
-         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, NmMessageService,
-         RouteService, MessageService, GridUtils, DateTimeFormatPipe, PrintService],
-    bootstrap: [ AppComponent ]
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    AppRoutingModule,
+    HttpModule,
+    FormsModule,
+    DropdownModule,
+    InputMaskModule,
+    AutoCompleteModule,
+    TabViewModule,
+    DataTableModule,
+    TableModule,
+    TreeTableModule,
+    TooltipModule,
+    OverlayPanelModule,
+    PickListModule,
+    DragDropModule,
+    ListboxModule,
+    SharedModule,
+    FileUploadModule,
+    DialogModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    CheckboxModule,
+    CalendarModule,
+    RadioButtonModule,
+    ProgressBarModule,
+    ProgressSpinnerModule,
+    AccordionModule,
+    GrowlModule,
+    MessagesModule,
+    MessageModule,
+    KeyFilterModule,
+    StorageServiceModule,
+    AngularSvgIconModule,
+    ToastModule,
+    InputSwitchModule,
+    ChartModule,
+    EditorModule
+  ],
+  declarations: [
+    AppComponent,
+    STOMPStatusComponent,
+    FlowWrapper,
+    PageContent,
+    PageNotfoundComponent,
+    StaticText,
+    Tile,
+    Section,
+    Header,
+    Form,
+    FormElement,
+    InputText,
+    InputMaskComp,
+    NmAutocomplete,
+    Tab,
+    ComboBox,
+    RadioButton,
+    Signature,
+    CheckBoxGroup,
+    InPlaceEditorComponent,
+    Paragraph,
+    Value,
+    BaseElement,
+    FormGridFiller,
+    MultiselectCard,
+    Link,
+    Menu,
+    CardDetailsComponent,
+    CardDetailsFieldGroupComponent,
+    CardDetailsFieldComponent,
+    CardDetailsGrid,
+    FieldValue,
+    Accordion,
+    AccordionTab,
+    FrmGroupCmp,
+    Button,
+    ButtonGroup,
+    FilterButton,
+    OrderablePickList,
+    STOMPStatusComponent,
+    DataTable,
+    SubHeaderCmp,
+    TextArea,
+    LandingPage,
+    RichText,
+    LayoutService,
+    ContentContainer,
+    DomainFlowCmp,
+    HeaderGlobal,
+    FooterGlobal,
+    BreadcrumbComponent,
+    NavLinkRouter,
+    Modal,
+    ActionDropdown,
+    ActionLink,
+    GridMouseEventDirective,
+    NmValidator,
+    DisplayValueDirective,
+    PrintDirective,
+    HomeLayoutCmp,
+    LoginCmp,
+    LoginLayoutCmp,
+    StyleGuideCmp,
+    KeysPipe,
+    LinkPipe,
+    DateTimeFormatPipe,
+    SelectItemPipe,
+    MultiSelectListBox,
+    CheckBox,
+    FileUploadComponent,
+    BreadcrumbComponent,
+    TooltipComponent,
+    Calendar,
+    LoaderComponent,
+    MessageComponent,
+    HeaderCheckBox,
+    SvgComponent,
+    ActionTray,
+    SubDomainFlowCmp,
+    Image,
+    NmPanelMenu,
+    NmPanelMenuSub,
+    MenuRouterLinkActive,
+    NmChart,
+    ToastMessageComponent,
+    MenuRouteLink,
+    Label,
+    InputLabel,
+    InputSwitch,
+    TreeGrid,
+    InputLegend,
+    FormErrorMessage,
+    BaseTableElement,
+    EventPropagationDirective,
+    TableHeader,
+    NavigationComponent
+  ],
+  entryComponents: [
+    FlowWrapper,
+    PageContent,
+    PageNotfoundComponent,
+    LoginCmp,
+    HomeLayoutCmp,
+    SubDomainFlowCmp
+  ],
+  providers: [
+    PageService,
+    ConfigService,
+    HttpClient,
+    HttpClientModule,
+    AppInitService,
+    CounterMessageService,
+    CustomHttpClient,
+    { provide: BrowserXhr, useClass: CustomBrowserXhr },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: init_app,
+      deps: [AppInitService],
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CustomHttpClientInterceptor,
+      multi: true
+    },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    GridService,
+    { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
+    { provide: 'JSNLOG', useValue: JL },
+    { provide: ErrorHandler, useClass: CustomErrorHandler },
+    { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+    SessionStoreService,
+    AutoCompleteService,
+    AuthenticationService,
+    BreadcrumbService,
+    LoaderService,
+    FileService,
+    LayoutService,
+    WindowRefService,
+    LoggerService,
+    NmMessageService,
+    RouteService,
+    MessageService,
+    GridUtils,
+    DateTimeFormatPipe,
+    PrintService
+  ],
+  bootstrap: [AppComponent]
 })
-export class AppModule { }
-
+export class AppModule {}

@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,10 +16,16 @@
  */
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
 import { async, TestBed } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { CustomHttpClient } from './httpclient.service';
 import { LoaderService } from './loader.service';
@@ -27,12 +33,10 @@ import { LoggerService } from './logger.service';
 import { PrintService } from './print.service';
 import { CUSTOM_STORAGE, SessionStoreService } from './session.store';
 
-
-
 let http, backend, service;
 
 class MockLocation {
-  back() { }
+  back() {}
 }
 
 class MockLoggerService {
@@ -67,32 +71,42 @@ describe('PrintService', () => {
         { provide: LoggerService, useClass: MockLoggerService },
         { provide: SessionStoreService, useClass: MockSessionStoreService },
         { provide: LoaderService, useClass: MockLoaderService },
-        { provide: Location, useClass: MockLocation},
+        { provide: Location, useClass: MockLocation },
         PrintService,
         CustomHttpClient
       ],
-      imports: [HttpClientTestingModule, HttpModule, StorageServiceModule, HttpClientTestingModule]
+      imports: [
+        HttpClientTestingModule,
+        HttpModule,
+        StorageServiceModule,
+        HttpClientTestingModule
+      ]
     });
     http = TestBed.get(HttpClient);
     backend = TestBed.get(HttpTestingController);
     service = TestBed.get(PrintService);
   });
 
-    it('should be created', async(() => {
-        expect(service).toBeTruthy();
-    }));
+  it('should be created', async(() => {
+    expect(service).toBeTruthy();
+  }));
 
-    it('emitPrintEvent() should update the printClickUpdate subject', async(() => {
-        const printPath = 'printPth /ownerlandingview/vpOwners';
-        const uiEvent: any = { "isTrusted": true };
-        const printConfig: any = { "autoPrint": true, "closeAfterPrint": true, "delay": 300, "useAppStyles": false, "useDelay": true };
-        spyOn(service.printClickUpdate, 'next').and.callThrough();
-        service.emitPrintEvent(printPath, uiEvent, printConfig);
-        expect(service.printClickUpdate.next).toHaveBeenCalledWith({
-            path: printPath,
-            uiEvent: uiEvent,
-            printConfig: printConfig
-        });
-    }));
-
-}); 
+  it('emitPrintEvent() should update the printClickUpdate subject', async(() => {
+    const printPath = 'printPth /ownerlandingview/vpOwners';
+    const uiEvent: any = { isTrusted: true };
+    const printConfig: any = {
+      autoPrint: true,
+      closeAfterPrint: true,
+      delay: 300,
+      useAppStyles: false,
+      useDelay: true
+    };
+    spyOn(service.printClickUpdate, 'next').and.callThrough();
+    service.emitPrintEvent(printPath, uiEvent, printConfig);
+    expect(service.printClickUpdate.next).toHaveBeenCalledWith({
+      path: printPath,
+      uiEvent: uiEvent,
+      printConfig: printConfig
+    });
+  }));
+});
