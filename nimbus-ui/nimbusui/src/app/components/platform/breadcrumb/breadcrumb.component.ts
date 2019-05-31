@@ -18,7 +18,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd, Params, PRIMARY_OUTLET } from '@angular/router';
-import { of as observableOf,  Observable } from 'rxjs';
+import { of as observableOf,  Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { DomainFlowCmp } from './../../domain/domain-flow.component';
 import { BreadcrumbService } from './breadcrumb.service';
@@ -42,9 +42,11 @@ import { Breadcrumb } from './../../../model/breadcrumb.model';
         </div>
     `
 })
-export class BreadcrumbComponent implements OnInit {
+export class BreadcrumbComponent {
 
     public breadcrumbs: Breadcrumb[];
+    subscribers: Subscription[] = [];
+    loadHomeCrumb = true;
 
     constructor (private _activatedRoute: ActivatedRoute, 
         private _router: Router,
@@ -64,77 +66,51 @@ export class BreadcrumbComponent implements OnInit {
         });
     }
 
-    ngOnInit() {
-    }
-
-    /**
-     * Returns array of IBreadcrumb objects that represent the breadcrumb.
-     *
-     * @method getBreadcrumbs
-     * @param {ActivateRoute} route
-     * @param {string} url
-     * @param {IBreadcrumb[]} breadcrumbs
-     */
-    private getBreadcrumbs(route: ActivatedRoute, breadcrumbs: Breadcrumb[]=[]): Observable<Breadcrumb[]> {
-
-        //get the child routes, return if there are no more children
-        let children: ActivatedRoute[] = route.children;
-        if (children.length === 0) {
-            return observableOf(breadcrumbs);
-        }
-
-        //iterate over each children
-        for (let child of children) {
-
-            //verify primary route
-            if (child.outlet !== PRIMARY_OUTLET) {
-                continue;
-            }
-
-            // Check for param[0] in the route object.
-            // If there is a param object in the route, we will use it to identify the Param
-            // we are explicitely ignoring the domain flow
-            let params = child.snapshot.params;
-            if (child.component === DomainFlowCmp || !params || !params[Object.keys(params)[0]]) {
-                return this.getBreadcrumbs(child, breadcrumbs);
-            }
-
-            //get the pageId from the route
-            let pageId: string = params[Object.keys(params)[0]];
-
-            //add breadcrumb
-            let breadcrumb = this._breadcrumbService.getByPageId(pageId);
-            if (breadcrumb) {
-                breadcrumbs.push(breadcrumb);
-            }
-
-            //recursive until exit condition (no remaining route children)
-            return this.getBreadcrumbs(child, breadcrumbs);
+    ngOnDestroy() {
+        if (this.subscribers && this.subscribers.length > 0) {
+            this.subscribers.forEach(s => s.unsubscribe());
         }
     }
 
     private _loadBreadcrumbs(): void {
         // if activatedRoute is the "home" route, show no breadcrumbs
         if (!this._breadcrumbService.isHomeRoute(this._activatedRoute)) {
-
-            let root: ActivatedRoute = this._activatedRoute.root;
-            this.getBreadcrumbs(root).subscribe(breadcrumbs => {
-                
+            if(this.loadHomeCrumb) {
                 this.breadcrumbs = [];
-
-                // add home breadcrumb data
-                this.breadcrumbs.push(this._breadcrumbService.getHomeBreadcrumb());
-
-                // Push the result from the service into this.breadcrumbs
-                this.breadcrumbs.push.apply(this.breadcrumbs, breadcrumbs);
-
-                // update labels
-                // this.breadcrumbs.forEach(breadcrumb => this._wcs.getContent(breadcrumb.id));
-            });
+                let crumb = this._breadcrumbService.getHomeBreadcrumb();
+                if(crumb) {
+                    this.loadHomeCrumb = false;
+                    this.breadcrumbs.push(crumb);
+                }
+            }
+            let url = this._router.url.split('/');
+            let cr = null;
+            let ind = 0;
+            //check if the page to be navigated is already in the session store for bread crumbs
+            if(url.length > 3) {
+                cr = this._breadcrumbService.getByPageId(url[3].split('?')[0]);
+            }
+            //check if the domain of the page to be navigated is part of the breadcrumb already
+            if(this.breadcrumbs.length > 0) {
+                ind = this.breadcrumbs.findIndex(b => b.url.split('/')[2] == url[2])
+            }
+            //check if the navigation is via the menu link so that the breadcrumb can be set appropriately
+            if(cr && cr.url.indexOf('?') > 0) {
+                let index = this.breadcrumbs.findIndex(d => d.url.split('/')[2] == cr.url.split('/')[3].split('=')[1]);
+                if(index > -1)
+                    this.breadcrumbs.splice((index + 1),this.breadcrumbs.length - (index+1));
+            } else if(ind > -1) { //check if the navigation done via buttonclick/link etc has a domain already in breadcrumb
+                this.breadcrumbs.splice((ind+1), this.breadcrumbs.length - (ind+1));
+            }
+            if(cr) {
+                //add the crumb to the list
+                this.breadcrumbs.push(this._breadcrumbService.addBreadCrumb(cr));
+            }
         } else {
 
             // if it is the "home" route, reset the breadcrumbs
             this.breadcrumbs = [];
+            this.loadHomeCrumb = true;
         }
     }
 }

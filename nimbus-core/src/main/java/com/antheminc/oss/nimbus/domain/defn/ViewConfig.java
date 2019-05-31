@@ -2018,6 +2018,12 @@ public class ViewConfig {
 		 * component.
 		 */
 		String url() default "";
+		
+		/**
+		 * <p>{@code flow} attribute when given for breadcrumb navigation will be set appropriately.
+		 * flow needs to be the domain alias of which it is a sub process.
+		 */
+		String flow() default "";
 	}
 
 	/**
@@ -2196,6 +2202,9 @@ public class ViewConfig {
 		String route() default ""; // remove
 		
 		boolean fixLayout() default false;
+		
+		String breadcrumbLabel() default "";
+
 	}
 
 	/**
