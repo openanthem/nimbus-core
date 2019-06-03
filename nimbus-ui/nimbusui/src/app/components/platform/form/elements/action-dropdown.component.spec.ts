@@ -1,13 +1,13 @@
 /**
  * @license
- * Copyright 2016-2018 the original author or authors.
- * 
+ * Copyright 2016-2019 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,66 +15,75 @@
  * limitations under the License.
  */
 
-import { NmMessageService } from './../../../../services/toastmessage.service';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
+import {
+  HashLocationStrategy,
+  Location,
+  LocationStrategy
+} from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ElementRef } from '@angular/core';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-import { JL } from 'jsnlog';
-import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
+import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-
-import { ActionLink } from './action-dropdown.component';
-import { ActionDropdown } from './action-dropdown.component';
-import { PageService } from '../../../../services/page.service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import {
+  actionDropDownElement,
+  ActionDropDownLinkElement,
+  actionDropDownLinkParams,
+  actionDropDownParams,
+  actionDropDownRowData,
+  MockActionDropdownLink
+} from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { Subject } from 'rxjs';
+import { AppInitService } from '../../../../services/app.init.service';
+import { ConfigService } from '../../../../services/config.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
-import { Page } from '../../../../shared/app-config.interface';
+import { LoggerService } from '../../../../services/logger.service';
+import { PageService } from '../../../../services/page.service';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from '../../../../services/session.store';
+import { setup } from '../../../../setup.spec';
 import { ParamConfig } from '../../../../shared/param-config';
 import { Param } from '../../../../shared/param-state';
-import { LoggerService } from '../../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
-import { AppInitService } from '../../../../services/app.init.service';
 import { Image } from '../../image.component';
 import { Link } from '../../link.component';
 import { SvgComponent } from '../../svg/svg.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-import { actionDropDownRowData, actionDropDownElement, actionDropDownParams, ActionDropDownLinkElement, actionDropDownLinkParams, MockActionDropdownLink } from 'mockdata';
-import { ServiceConstants } from './../../../../services/service.constants';
-import { By } from '@angular/platform-browser';
-import { ComponentTypes } from './../../../../shared/param-annotations.enum';
-import { Subject } from 'rxjs';
 import { CounterMessageService } from './../../../../services/counter-message.service';
+import { ServiceConstants } from './../../../../services/service.constants';
+import { NmMessageService } from './../../../../services/toastmessage.service';
+import { ComponentTypes } from './../../../../shared/param-annotations.enum';
+import { ActionDropdown, ActionLink } from './action-dropdown.component';
+'use strict';
 
 let pageservice, configservice;
 
 class MockLoggerService {
-    debug() { }
-    info() { }
-    error() { }
+  debug() {}
+  info() {}
+  error() {}
 }
 
-const declarations = [
-  ActionLink,
-  Image,
-  Link,
-  SvgComponent
- ];
- const imports = [
-     HttpModule,
-     HttpClientTestingModule,
-     StorageServiceModule,
-     AngularSvgIconModule
- ];
- const providers = [
+const declarations = [ActionLink, Image, Link, SvgComponent];
+const imports = [
+  HttpModule,
+  HttpClientTestingModule,
+  StorageServiceModule,
+  AngularSvgIconModule
+];
+const providers = [
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   { provide: 'JSNLOG', useValue: JL },
-  {provide: LoggerService, useClass: MockLoggerService},
+  { provide: LoggerService, useClass: MockLoggerService },
   { provide: LocationStrategy, useClass: HashLocationStrategy },
   Location,
   PageService,
@@ -85,12 +94,11 @@ const declarations = [
   NmMessageService,
   AppInitService,
   CounterMessageService
- ];
- let fixture, hostComponent;
+];
+let fixture, hostComponent;
 describe('ActionLink', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
 
   beforeEach(() => {
@@ -127,7 +135,9 @@ describe('ActionLink', () => {
 
   it('should have a label set', async(() => {
     fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('a.mockLink')).nativeElement.innerText).toBe('Edit');
+    expect(
+      fixture.debugElement.query(By.css('a.mockLink')).nativeElement.innerText
+    ).toBe('Edit');
   }));
 
   it('should render an external link that opens a new page to google', async(() => {
@@ -151,7 +161,9 @@ describe('ActionLink', () => {
     let linkElement = fixture.debugElement.query(By.css('a.mockLink'));
     expect(linkElement.nativeElement.rel).toBe('nofollow');
     expect(linkElement.nativeElement.href).toBeFalsy();
-    expect(linkElement.nativeElement.classList.contains('disabled')).toBeTruthy();
+    expect(
+      linkElement.nativeElement.classList.contains('disabled')
+    ).toBeTruthy();
   }));
 
   it('should show nm-action-link when a link param visible property is true', async(() => {
@@ -169,25 +181,17 @@ describe('ActionLink', () => {
   }));
 });
 
-class MockElementRef {
-
-}
+class MockElementRef {}
 
 class MockPageService {
-    eventUpdate$: Subject<any>;
-    constructor() {
-        this.eventUpdate$ = new Subject();
-    }
-    processEvent(a, b, c) {}
+  eventUpdate$: Subject<any>;
+  constructor() {
+    this.eventUpdate$ = new Subject();
+  }
+  processEvent(a, b, c) {}
 }
 
-const declarations1 = [
-  ActionDropdown,
-  ActionLink,
-  Image,
-  Link,
-  SvgComponent
-];
+const declarations1 = [ActionDropdown, ActionLink, Image, Link, SvgComponent];
 const imports1 = [
   HttpModule,
   HttpClientTestingModule,
@@ -195,8 +199,8 @@ const imports1 = [
   AngularSvgIconModule
 ];
 const providers1 = [
-  {provide: ElementRef, useClass: MockElementRef},
-  {provide: PageService, useClass: MockPageService},
+  { provide: ElementRef, useClass: MockElementRef },
+  { provide: PageService, useClass: MockPageService },
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   { provide: 'JSNLOG', useValue: JL },
   { provide: LocationStrategy, useClass: HashLocationStrategy },
@@ -210,28 +214,28 @@ const providers1 = [
 
 describe('ActionDropdown', () => {
   configureTestSuite(() => {
-    setup( declarations1, imports1, providers1);
-  });  
-   
+    setup(declarations1, imports1, providers1);
+  });
+
   beforeEach(() => {
-      fixture = TestBed.createComponent(ActionDropdown);
-      hostComponent = fixture.debugElement.componentInstance;
-      hostComponent.element = actionDropDownElement as Param;
-      hostComponent.params = actionDropDownParams as ParamConfig[];
-      pageservice = TestBed.get(PageService);
-    });
-  
+    fixture = TestBed.createComponent(ActionDropdown);
+    hostComponent = fixture.debugElement.componentInstance;
+    hostComponent.element = actionDropDownElement as Param;
+    hostComponent.params = actionDropDownParams as ParamConfig[];
+    pageservice = TestBed.get(PageService);
+  });
+
   it('should create the ActionDropdown', async(() => {
     expect(hostComponent).toBeTruthy();
   }));
 
-  it('app should create elementRef property',async(() => {
+  it('app should create elementRef property', async(() => {
     expect(hostComponent.elementRef).toBeTruthy();
   }));
 
   it('toggleOpen() should call dropDownClick.emit()', async(() => {
     const eve: any = {
-      preventDefault: () => { }
+      preventDefault: () => {}
     };
     spyOn(eve, 'preventDefault').and.callThrough();
     spyOn(hostComponent.dropDownClick, 'emit').and.callThrough();
@@ -240,7 +244,7 @@ describe('ActionDropdown', () => {
     expect(hostComponent.dropDownClick.emit).toHaveBeenCalled();
   }));
 
-  it('processOnClick() should call pageservice.processEvent()',async(() => {
+  it('processOnClick() should call pageservice.processEvent()', async(() => {
     spyOn(pageservice, 'processEvent').and.callThrough();
     hostComponent.processOnClick('test');
     expect(pageservice.processEvent).toHaveBeenCalled();
@@ -271,27 +275,28 @@ describe('ActionDropdown', () => {
     expect(hostComponent.enabled).toEqual(true);
   }));
 
-  it('Button should be created if the element.visible is configured as true',async(() => {
+  it('Button should be created if the element.visible is configured as true', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const buttonEle = debugElement.query(By.css('button'));
-    expect(buttonEle).toBeTruthy();    
-    expect(buttonEle.nativeElement.classList[0].toString()).toEqual(hostComponent.element.config.uiStyles.attributes.cssClass);
+    expect(buttonEle).toBeTruthy();
+    expect(buttonEle.nativeElement.classList[0].toString()).toEqual(
+      hostComponent.element.config.uiStyles.attributes.cssClass
+    );
   }));
 
-
-  it('OnClick of the button the toggleOpen() should be called',async(() => {
+  it('OnClick of the button the toggleOpen() should be called', async(() => {
     hostComponent.params = actionDropDownLinkParams as ParamConfig[];
     hostComponent.element = actionDropDownElement as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     spyOn(hostComponent, 'toggleOpen').and.callThrough();
-    const buttonEle = debugElement.query(By.css('button'));    
+    const buttonEle = debugElement.query(By.css('button'));
     buttonEle.nativeElement.click();
-    expect(hostComponent.toggleOpen).toHaveBeenCalled();    
+    expect(hostComponent.toggleOpen).toHaveBeenCalled();
   }));
 
-  it('OnClick of the button the dropdownContent should be visible',async(() => {
+  it('OnClick of the button the dropdownContent should be visible', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const buttonEle = debugElement.query(By.css('button'));
@@ -300,55 +305,55 @@ describe('ActionDropdown', () => {
     expect(divContentEle).toBeTruthy();
   }));
 
-  it('Nm-image should be created if the imgSrc is configured',async(() => {
+  it('Nm-image should be created if the imgSrc is configured', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const nmImageEle = debugElement.query(By.css('nm-image'));
     expect(nmImageEle).toBeTruthy();
   }));
 
-  it('Nm-image should not be created if the imgSrc is not configured',async(() => {
-      hostComponent.element.config.uiStyles.attributes.imgSrc = '';
+  it('Nm-image should not be created if the imgSrc is not configured', async(() => {
+    hostComponent.element.config.uiStyles.attributes.imgSrc = '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const nmImageEle = debugElement.query(By.css('nm-image'));
     expect(nmImageEle).toBeFalsy();
   }));
 
-  it('If rowData is available then nm-action-link should be created',async(() => {
-      hostComponent.rowData = actionDropDownRowData;
+  it('If rowData is available then nm-action-link should be created', async(() => {
+    hostComponent.rowData = actionDropDownRowData;
     fixture.detectChanges();
-    const debugElement = fixture.debugElement;    
+    const debugElement = fixture.debugElement;
     const actionLinkEle = debugElement.query(By.css('nm-action-link'));
     expect(actionLinkEle).toBeTruthy();
   }));
 
-  it('If rowData is not available then nm-action-link should not be created',async(() => {
+  it('If rowData is not available then nm-action-link should not be created', async(() => {
     hostComponent.element = ActionDropDownLinkElement as Param;
     hostComponent.params = actionDropDownLinkParams as ParamConfig[];
-  fixture.detectChanges();
-  const debugElement = fixture.debugElement;    
-  const actionLinkEle = debugElement.query(By.css('nm-action-link'));
-  expect(actionLinkEle).toBeFalsy();
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const actionLinkEle = debugElement.query(By.css('nm-action-link'));
+    expect(actionLinkEle).toBeFalsy();
   }));
 
-  it('If rowData is available then nm-link should not be created',async(() => {
+  it('If rowData is available then nm-link should not be created', async(() => {
     fixture.detectChanges();
-    const debugElement = fixture.debugElement;    
+    const debugElement = fixture.debugElement;
     const linkEle = debugElement.query(By.css('nm-link'));
     expect(linkEle).toBeFalsy();
   }));
 
-  it('If rowData is not available then nm-link should be created',async(() => {
+  it('If rowData is not available then nm-link should be created', async(() => {
     hostComponent.element = ActionDropDownLinkElement as Param;
     hostComponent.params = actionDropDownLinkParams as ParamConfig[];
-  fixture.detectChanges();
-  const debugElement = fixture.debugElement;    
-  const linkEle = debugElement.query(By.css('nm-link'));
-  expect(linkEle).toBeTruthy();
-}));
+    fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const linkEle = debugElement.query(By.css('nm-link'));
+    expect(linkEle).toBeTruthy();
+  }));
 
-  it('Button should not be created if the element.visible is configured as false',async(() => {
+  it('Button should not be created if the element.visible is configured as false', async(() => {
     hostComponent.element.visible = false;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -356,9 +361,8 @@ describe('ActionDropdown', () => {
     expect(buttonEle).toBeFalsy();
   }));
 
-    it('enabled property should not be created', async(() => {
+  it('enabled property should not be created', async(() => {
     hostComponent.element.enabled = false;
     expect(hostComponent.enabled).toBeFalsy();
   }));
 });
-

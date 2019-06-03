@@ -1,13 +1,13 @@
 /**
  * @license
- * Copyright 2016-2018 the original author or authors.
- * 
+ * Copyright 2016-2019 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,66 +16,68 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { FileUploadModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
+import { async, TestBed } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
-import { Subject } from 'rxjs';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-
-import { FileUploadComponent } from './file-upload.component';
-import { FileService } from './../../../services/file.service';
-import { CustomHttpClient } from '../../../services/httpclient.service';
-import { LoggerService } from './../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from './../../../services/session.store';
-import { AppInitService } from './../../../services/app.init.service';
 import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
+import { FileUploadModule } from 'primeng/primeng';
+import { Subject } from 'rxjs';
+import { CustomHttpClient } from '../../../services/httpclient.service';
+import { setup } from '../../../setup.spec';
+import { AppInitService } from './../../../services/app.init.service';
 import { CounterMessageService } from './../../../services/counter-message.service';
+import { FileService } from './../../../services/file.service';
+import { LoggerService } from './../../../services/logger.service';
+import { CUSTOM_STORAGE } from './../../../services/session.store';
+import { FileUploadComponent } from './file-upload.component';
 
 let fileservice, param;
 
-let payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":true,\"name\":\"string\",\"collection\":false,\"model\": {"\params\":[{\"activeValidationGroups\":[], \"config\":{\"code\":\"nestedName\",\"desc\":{\"help\":\"nestedName\",\"hint\":\"nestedName\",\"label\":\"nestedName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/nestedName\"}]}},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';     
+let payload =
+  '{"activeValidationGroups":[], "config":{"code":"firstName","desc":{"help":"firstName","hint":"firstName","label":"firstName"},"validation":{"constraints":[{"name":"NotNull","value":null,"attribute":{"groups": []}}]},"values":[],"uiNatures":[],"enabled":true,"visible":true,"uiStyles":{"isLink":false,"isHidden":false,"name":"ViewConfig.TextBox","value":null,"attributes":{"hidden":false,"readOnly":false,"alias":"TextBox","labelClass":"anthem-label","type":"text","postEventOnChange":false,"controlId":""}},"postEvent":false},"type":{"nested":true,"name":"string","collection":false,"model": {"params":[{"activeValidationGroups":[], "config":{"code":"nestedName","desc":{"help":"nestedName","hint":"nestedName","label":"nestedName"},"validation":{"constraints":[{"name":"NotNull","value":null,"attribute":{"groups": []}}]},"values":[],"uiNatures":[],"enabled":true,"visible":true,"uiStyles":{"isLink":false,"isHidden":false,"name":"ViewConfig.TextBox","value":null,"attributes":{"hidden":false,"readOnly":false,"alias":"TextBox","labelClass":"anthem-label","type":"text","postEventOnChange":false,"controlId":""}},"postEvent":false},"type":{"nested":false,"name":"string","collection":false},"leafState":"testData","path":"/page/memberSearch/memberSearch/memberSearch/nestedName"}]}},"leafState":"testData","path":"/page/memberSearch/memberSearch/memberSearch/firstName"}';
 const fieldValueParam: any = JSON.parse(payload);
 
 class MockFileService {
-    public addFile$: Subject<any>;
-    public errorEmitter$: Subject<any>;
-    
-    metaData: any;
+  public addFile$: Subject<any>;
+  public errorEmitter$: Subject<any>;
 
-    constructor() {
-        this.addFile$ = new Subject<any>();
-        this.errorEmitter$ = new Subject<any>();
-    }
+  metaData: any;
 
-    uploadFile(a) {
-        this.addFile$.next({test: 123});
-    }
+  constructor() {
+    this.addFile$ = new Subject<any>();
+    this.errorEmitter$ = new Subject<any>();
+  }
+
+  uploadFile(a) {
+    this.addFile$.next({ test: 123 });
+  }
 }
 
-const declarations = [ FileUploadComponent ];
+const declarations = [FileUploadComponent];
 const imports = [
-   FileUploadModule,
-   HttpClientModule,
-   HttpModule,
-   StorageServiceModule
+  FileUploadModule,
+  HttpClientModule,
+  HttpModule,
+  StorageServiceModule
 ];
 const providers = [
-   {provide: FileService, useClass: MockFileService},
-   { provide: 'JSNLOG', useValue: JL },
-   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-   CustomHttpClient,
-   LoggerService,
-   AppInitService,
-   CounterMessageService
+  { provide: FileService, useClass: MockFileService },
+  { provide: 'JSNLOG', useValue: JL },
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+  CustomHttpClient,
+  LoggerService,
+  AppInitService,
+  CounterMessageService
 ];
 let fixture, hostComponent;
 describe('FileUploadComponent', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
 
   beforeEach(() => {
@@ -86,7 +88,7 @@ describe('FileUploadComponent', () => {
   });
 
   it('should create the FileUploadComponent', async(() => {
-      expect(hostComponent).toBeTruthy();
+    expect(hostComponent).toBeTruthy();
   }));
 
   it('get _value should return value', async(() => {
@@ -139,7 +141,9 @@ describe('FileUploadComponent', () => {
 
   it('addFiles() should update selectedFiles as []', () => {
     fixture.whenStable().then(() => {
-      const eve = { originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } } };
+      const eve = {
+        originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } }
+      };
       hostComponent.element.config.uiStyles.attributes.url = '/test.com';
       hostComponent.multipleFiles = false;
       spyOn(hostComponent, 'hasFile').and.returnValue('-1');
@@ -151,7 +155,9 @@ describe('FileUploadComponent', () => {
 
   it('addFiles() should update selectedFiles[]', () => {
     fixture.whenStable().then(() => {
-      const eve = { originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } } };
+      const eve = {
+        originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } }
+      };
       hostComponent.element.config.uiStyles.attributes.url = '/test.com';
       hostComponent.multipleFiles = true;
       hostComponent.selectedFiles = [];
@@ -165,7 +171,9 @@ describe('FileUploadComponent', () => {
 
   it('addFiles() should not call fileservice.uploadFile', () => {
     fixture.whenStable().then(() => {
-      const eve = { originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } } };
+      const eve = {
+        originalEvent: { dataTransfer: { files: [{ postUrl: '' }] } }
+      };
       hostComponent.element.config.uiStyles.attributes.url = '/test.com';
       spyOn(hostComponent, 'hasFile').and.returnValue('1');
       spyOn(fileservice, 'uploadFile').and.callThrough();
@@ -173,5 +181,4 @@ describe('FileUploadComponent', () => {
       expect(fileservice.uploadFile).not.toHaveBeenCalled();
     });
   });
-
 });
