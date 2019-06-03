@@ -51,7 +51,9 @@ export class PageResolver implements Resolve<Param> {
         return this._pageSvc.getPageConfigById(pageId, flow).then(page => {
             if (page) {
                 let labelText = ParamUtils.getLabelText(page);
-                if (!labelText || labelText.length === 0) {
+                if(page.config && page.config.uiStyles && page.config.uiStyles.attributes && page.config.uiStyles.attributes.breadcrumbLabel) {
+                    labelText = page.config.uiStyles.attributes.breadcrumbLabel;
+                } else if (!labelText || labelText.length === 0) {
                     labelText = page.config.code;
                 }
                 // Push the home breadcrumb into memory under the domain name.

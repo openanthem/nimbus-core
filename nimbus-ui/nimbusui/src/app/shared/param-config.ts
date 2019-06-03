@@ -246,7 +246,9 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     toolTipPosition: string;
     tooltipStyleClass: string;
     escape: boolean;
-
+    flow: string;
+    breadcrumbLabel: string;
+    
     deserialize( inJson ) {
         let obj = this;
         obj = Converter.convert(inJson, obj, { includeArrays: true });
