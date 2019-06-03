@@ -100,7 +100,7 @@ export class BreadcrumbComponent {
                 if(index > -1)
                     this.breadcrumbs.splice((index + 1),this.breadcrumbs.length - (index+1));
             } else if(ind > -1) { //check if the navigation done via buttonclick/link etc has a domain already in breadcrumb
-                this.breadcrumbs.splice((ind+1), this.breadcrumbs.length - (ind+1));
+                this.breadcrumbs.splice(ind, this.breadcrumbs.length - ind);
             }
             if(cr) {
                 //add the crumb to the list
