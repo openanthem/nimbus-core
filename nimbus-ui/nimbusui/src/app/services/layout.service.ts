@@ -248,7 +248,8 @@ export class LayoutService {
             let menuItem = this.createMenuItem(element);
             if (element.config.uiStyles.attributes.alias=== ViewComponent.menulink.toString()) {
                 menuItem.routerLink =  this.createRouterLink(element);
-                menuItem.queryParams = {p: param.config.uiStyles.attributes.flow};
+                if(param.config && param.config.uiStyles && param.config.uiStyles.attributes && param.config.uiStyles.attributes.flow)
+                    menuItem.queryParams = {p: param.config.uiStyles.attributes.flow};
                 menuItem.command = (event: Event) => { this.processClick(event, menuItem)};
                 menuItem.code = element.config.code;
                // menuItem.routerLinkActiveOptions = {'exact':true};
@@ -270,7 +271,8 @@ export class LayoutService {
             if (element.config.uiStyles.attributes.alias === ViewComponent.menulink.toString()) {
                 item.command = (event: Event) => { this.processClick(event, item)};
                 item.routerLink =  this.createRouterLink(element, true);
-                item.queryParams = {p:param.config.uiStyles.attributes.flow};
+                if(param.config && param.config.uiStyles && param.config.uiStyles.attributes && param.config.uiStyles.attributes.flow)
+                    item.queryParams = {p:param.config.uiStyles.attributes.flow};
                 subMenuItems.push(item);
             } else if (element.config.uiStyles.attributes.alias ===ViewComponent.menupanel.toString()){
                 this.buildSubMenu(element, item);
