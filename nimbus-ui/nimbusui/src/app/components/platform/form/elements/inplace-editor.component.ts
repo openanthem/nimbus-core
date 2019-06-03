@@ -16,7 +16,6 @@
  */
 'use strict';
 import { BaseElement } from './../../base-element.component';
-import { WebContentSvc } from './../../../../services/content-management.service';
 import { PageService } from './../../../../services/page.service';
 import { ComponentFactoryResolver, ViewChild,
     ComponentRef, ViewContainerRef } from '@angular/core';
@@ -69,7 +68,6 @@ export const InputComponents = [
         </div>
     `,
     providers: [
-        WebContentSvc,
         {provide: NG_VALUE_ACCESSOR,
         useExisting: forwardRef(() => InPlaceEditorComponent),
         multi: true
@@ -111,8 +109,8 @@ export class InPlaceEditorComponent extends BaseElement implements OnInit {
         }
     }
 
-    constructor(public componentFactoryResolver: ComponentFactoryResolver, private pageService: PageService, private _wcs: WebContentSvc) {
-        super(_wcs);
+    constructor(public componentFactoryResolver: ComponentFactoryResolver, private pageService: PageService) {
+        super();
     }
 
     ngOnInit() {

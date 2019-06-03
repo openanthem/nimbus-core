@@ -83,7 +83,6 @@ import { DisplayValueDirective } from '../../directives/display-value.directive'
 import { InputLabel } from './form/elements/input-label.component';
 import { Label } from './content/label.component';
 import { CardDetailsFieldGroupComponent } from './card/card-details-field-group.component';
-import { WebContentSvc } from '../../services/content-management.service';
 import { InputLegend } from './form/elements/input-legend.component';
 import { Param } from '../../shared/param-state';
 import { By } from '@angular/platform-browser';
@@ -249,7 +248,6 @@ const declarations = [
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     {provide: LoggerService, useClass: MockLoggerService},
     Location,
-    WebContentSvc,
     PageService,
     CustomHttpClient,
     SessionStoreService,

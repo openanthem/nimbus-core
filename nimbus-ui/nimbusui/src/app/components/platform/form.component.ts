@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 'use strict';
-import { WebContentSvc } from './../../services/content-management.service';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
 import { FormGroup, ValidatorFn } from '@angular/forms';
 import { FormElementsService } from './form-builder.service';
@@ -45,7 +44,7 @@ var uniqueId = 0;
         `
     ],
     templateUrl: './form.component.html',
-    providers: [ FormElementsService, WebContentSvc]
+    providers: [ FormElementsService ]
 })
 export class Form extends BaseElement implements OnInit, OnChanges {
     @Input() element: Param;
@@ -66,9 +65,8 @@ export class Form extends BaseElement implements OnInit, OnChanges {
 
     constructor(private service: FormElementsService, 
         private pageSvc: PageService, 
-        private wcsv: WebContentSvc, 
         private logger: LoggerService) {
-            super(wcsv);
+            super();
     }
 
     toggle() {

@@ -18,7 +18,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Param } from '../../../../shared/param-state';
 import { FormGroup } from '@angular/forms';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from './../../../../services/service.constants';
 import { BaseElement } from '../../base-element.component';
@@ -33,7 +32,6 @@ import { ComponentTypes } from '../../../../shared/param-annotations.enum';
  */
 @Component({
     selector: 'nm-filter-button',
-    providers: [WebContentSvc],
     template:`
         <button class="{{fbutton.config?.uiStyles?.attributes?.cssClass}}" (click)="emitEvent(this)" type="button">
             {{label}}
@@ -54,8 +52,8 @@ export class FilterButton extends BaseElement{
    private imagesPath: string;
    componentTypes = ComponentTypes;
 
-   constructor(private pageService: PageService, private _wcs: WebContentSvc) {
-       super(_wcs);
+   constructor(private pageService: PageService) {
+       super();
    }
 
    ngOnInit() {

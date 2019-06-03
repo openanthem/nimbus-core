@@ -21,7 +21,6 @@ import { LocationStrategy } from '@angular/common';
 import { ExecuteException } from '../../../shared/app-config.interface';
 import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
-import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
 import { LoggerService } from '../../../services/logger.service';
 
@@ -34,10 +33,7 @@ import { LoggerService } from '../../../services/logger.service';
  */
 @Component({
     selector: 'nm-page-content',
-    templateUrl: './page-content.component.html',
-    providers: [
-        WebContentSvc
-    ],
+    templateUrl: './page-content.component.html'
 })
 
 export class PageContent extends BaseElement{
@@ -47,14 +43,13 @@ export class PageContent extends BaseElement{
     labelSize: string;
     position: number = 0;
 
-    constructor(private router: Router, private route: ActivatedRoute, 
-        private _wcs : WebContentSvc, 
+    constructor(private router: Router, private route: ActivatedRoute,
         private pageSvc: PageService,
         private cd: ChangeDetectorRef,
         private ls: LocationStrategy,
         private _logger: LoggerService
     ) {
-        super(_wcs);
+        super();
         this.ls.onPopState(() => {
             this.isPopState = true;
         });

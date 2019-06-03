@@ -25,7 +25,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of as observableOf,  Observable } from 'rxjs';
 
 import { BaseControl } from './base-control.component';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
 import { PageService } from '../../../../services/page.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
@@ -45,8 +44,8 @@ let changeDetectorRef, controlSubscribers;
  })
 class BaseControlClass extends BaseControl<any> {
     @ViewChild(NgModel) model: NgModel;
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef, counterMessageService: CounterMessageService) {
-        super(controlService, wcs, cd, counterMessageService);
+    constructor(controlService: ControlSubscribers, cd:ChangeDetectorRef, counterMessageService: CounterMessageService) {
+        super(controlService, cd, counterMessageService);
     }
     ngOnInit() { 
         super.ngOnInit();
@@ -70,10 +69,6 @@ class MockControlSubscribers {
     onChangeEventSubscriber(a) { }
 }
 
-class MockWebContentSvc {
-
-}
-
 class MockValidationUtils {
     applyelementStyle(a) {
         return '';
@@ -93,7 +88,6 @@ const declarations = [
  const providers = [
   {provide: ChangeDetectorRef, useClass: MockChangeDetectorRef},
   {provide: ControlSubscribers, useClass: MockControlSubscribers},
-  {provide: WebContentSvc, useClass: MockWebContentSvc},
   PageService,
   CustomHttpClient,
   LoaderService,

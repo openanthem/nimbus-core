@@ -20,7 +20,6 @@ import { trigger,state,style,transition,animate,keyframes } from '@angular/anima
 import { Component, Input, ViewChild, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
 import { LabelConfig } from './../../../../shared/param-config';
 import { Behavior } from './../../../../shared/command.enum';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { ParamConfig } from '../../../../shared/param-config';
 import { Param } from '../../../../shared/param-state';
@@ -96,7 +95,7 @@ export class ActionDropdown {
 
     @Output() dropDownClick: EventEmitter<any> = new EventEmitter();
 
-    constructor(private _wcs: WebContentSvc, private pageSvc: PageService, private _elementRef: ElementRef) {
+    constructor(private pageSvc: PageService, private _elementRef: ElementRef) {
     }
 
     get elementRef(){
@@ -135,9 +134,6 @@ export class ActionDropdown {
 
 @Component({
     selector: 'nm-action-link',
-    providers: [
-        WebContentSvc
-    ],
     template: `
         <ng-template [ngIf]="visible">
             <ng-template [ngIf]="value == componentTypes.external.toString()">
@@ -180,8 +176,8 @@ export class ActionLink extends BaseElement{
         protected url:string;
         componentTypes = ComponentTypes;
 
-        constructor(private _wcs: WebContentSvc, private pageSvc: PageService) {
-            super(_wcs);
+        constructor(private pageSvc: PageService) {
+            super();
         }
     
         ngOnInit() {

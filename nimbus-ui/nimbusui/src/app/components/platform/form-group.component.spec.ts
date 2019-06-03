@@ -64,7 +64,6 @@ import { Form } from '../platform/form.component';
 import { Link } from '../platform/link.component';
 import { CardDetailsFieldComponent } from '../platform/card/card-details-field.component';
 import { InPlaceEditorComponent } from '../platform/form/elements/inplace-editor.component';
-import { WebContentSvc } from '../../services/content-management.service';
 import { Signature } from '../platform/form/elements/signature.component'
 import { DataTable } from './grid/table.component';
 import { HeaderCheckBox } from '../platform/form/elements/header-checkbox.component';
@@ -104,10 +103,6 @@ import { NmAutocomplete } from './form/elements/autocomplete.component';
 import { CounterMessageService } from './../../services/counter-message.service';
 
 let param: Param;
-
-class MockWebContentSvc {
-
-}
 
 @Component({
   template: '<div></div>',
@@ -223,7 +218,6 @@ const declarations = [
      EditorModule
  ];
  const providers = [
-     { provide: WebContentSvc, useClass: MockWebContentSvc },
      { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
      {provide: LoggerService, useClass: MockLoggerService},
      { provide: LocationStrategy, useClass: HashLocationStrategy },

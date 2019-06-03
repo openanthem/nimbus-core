@@ -27,7 +27,6 @@ import { FormArrayName } from '@angular/forms/src/directives/reactive_directives
 import { Param } from '../../../shared/param-state';
 import { FileService } from './../../../services/file.service';
 import { BaseElement } from '../base-element.component';
-import { WebContentSvc } from './../../../services/content-management.service';
 import { LoggerService } from './../../../services/logger.service';
 import { Message } from '../../../shared/message';
 import { ServiceConstants } from './../../../services/service.constants';
@@ -49,7 +48,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
 	selector: 'nm-upload',
-	providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
+	providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR ],
 	styles: [
 	],
 	encapsulation: ViewEncapsulation.None,
@@ -76,8 +75,8 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 	@ViewChild('pfu') pfu;
 	sendEvent: boolean = true;
 
-	constructor(private fileService: FileService, private _wcs: WebContentSvc, private logger: LoggerService, private counterMessageService: CounterMessageService) {
-		super(_wcs);
+	constructor(private fileService: FileService, private logger: LoggerService, private counterMessageService: CounterMessageService) {
+		super();
 	}
 
 	public onChange: any = (_) => { /*Empty*/ }

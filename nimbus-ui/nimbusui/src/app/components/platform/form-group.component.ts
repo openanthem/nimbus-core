@@ -17,7 +17,6 @@
 'use strict';
 import { Component, Input, forwardRef } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { WebContentSvc } from '../../services/content-management.service';
 import { ViewComponent } from '../../shared/param-annotations.enum';
 import { BaseElement } from './base-element.component';
 import { Param } from './../../shared/param-state';
@@ -38,7 +37,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 */
 @Component({
     selector: 'nm-frm-grp',
-    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc],
+    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR],
     template: `
         <span [hidden]="!element.visible" [ngClass]="formElementGroupCss?formElementGroupCss:''">
             <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias == viewComponent.formElementGroup.toString()">
@@ -95,10 +94,6 @@ export class FrmGroupCmp extends BaseElement {
     @Input() parentElement: Param;
     formElementGroupCss: String = '';
     viewComponent = ViewComponent;
-
-    constructor(private wcsv: WebContentSvc) {
-        super(wcsv);
-    }
 
     ngOnInit() {
         super.ngOnInit();

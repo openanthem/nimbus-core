@@ -105,7 +105,6 @@ import { CustomHttpClient } from './../../../../services/httpclient.service';
 import { BreadcrumbService } from './../../breadcrumb/breadcrumb.service';
 import { PageService } from './../../../../services/page.service';
 import { PageResolver } from './../../content/page-resolver.service';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { autocompleteElement } from './../../../../mockdata/autocomplete.component.mockdata.spec';
 import { CounterMessageService } from '../../../../services/counter-message.service';
 
@@ -223,7 +222,6 @@ const providers = [
     LoggerService,
     AppInitService,
     SessionStoreService,
-    WebContentSvc,
     ControlSubscribers,
     CounterMessageService
 

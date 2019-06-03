@@ -22,7 +22,6 @@ import { BaseControlValueAccessor } from './control-value-accessor.component';
 import { Input, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NgModel } from '@angular/forms';
 import { Param } from '../../../../shared/param-state';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { ValidationUtils } from '../../validators/ValidationUtils';
 import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
 import { Subscription } from 'rxjs';
@@ -58,7 +57,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
 
     sendEvent = true;
     
-    constructor(protected controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef, private counterMessageService: CounterMessageService) {
+    constructor(protected controlService: ControlSubscribers, private cd: ChangeDetectorRef, private counterMessageService: CounterMessageService) {
         super();
     }
 

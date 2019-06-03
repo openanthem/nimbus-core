@@ -18,7 +18,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Param } from '../../../shared/param-state';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 import { PageService } from '../../../services/page.service';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
@@ -32,7 +31,6 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
  */
 @Component( {
     selector: 'nm-accordion-tab',
-    providers: [WebContentSvc],
     template: `
         <p-accordionTab [selected]="element?.config?.uiStyles?.attributes?.selected" *ngIf="element?.visible">
             <p-header>
@@ -111,8 +109,8 @@ export class AccordionTab  extends BaseElement {
     componentTypes = ComponentTypes;
     viewComponent = ViewComponent;
 
-    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
-        super(wcsvc);
+    constructor(private pageSvc: PageService) {
+        super();
     }
 
     ngOnInit() {

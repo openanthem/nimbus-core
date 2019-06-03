@@ -29,7 +29,6 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { PageResolver } from './page-resolver.service';
 import { PageService } from '../../../services/page.service';
-import { WebContentSvc } from './../../../services/content-management.service';
 import { BreadcrumbService } from './../breadcrumb/breadcrumb.service'
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
@@ -74,10 +73,6 @@ class MockPageService {
             }
         );
     }
-
-}
-
-class MockWebContentSvc {
 
 }
 
@@ -126,7 +121,6 @@ describe('PageResolver', () => {
         ],
       providers: [
         {provide: PageService, useClass: MockPageService},
-        {provide: WebContentSvc, useClass: MockWebContentSvc},
         {provide: BreadcrumbService, useValue: breadcrumpservice},
         {provide: Router, useClass: MockRouter},
         { provide: 'JSNLOG', useValue: JL },
@@ -144,11 +138,10 @@ describe('PageResolver', () => {
     http = TestBed.get(HttpClient);
     backend = TestBed.get(HttpTestingController);
     pageservice = TestBed.get(PageService);
-    wcservice = TestBed.get(WebContentSvc);
     router = TestBed.get(Router);
     loggerService = TestBed.get(LoggerService);
     activatedRoute = TestBed.get(ActivatedRoute);
-    service = new PageResolver(pageservice, router, breadcrumpservice, wcservice, activatedRoute, loggerService );
+    service = new PageResolver(pageservice, router, breadcrumpservice, activatedRoute, loggerService );
   });
 
   it('should be created', async(() => {

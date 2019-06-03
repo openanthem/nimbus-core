@@ -20,7 +20,6 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
 import { BaseTableElement } from './../base-table-element.component';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { ParamConfig } from '../../../shared/param-config';
 import { PageService } from '../../../services/page.service';
 import { GenericDomain } from '../../../model/generic-domain.model';
@@ -40,7 +39,6 @@ import { CounterMessageService } from './../../../services/counter-message.servi
  */
 @Component({
     selector: 'nm-treegrid',
-    providers: [WebContentSvc],
     templateUrl: './tree-grid.component.html'
 })
 export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
@@ -75,12 +73,11 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
     }
 
     constructor(
-        protected _wcs: WebContentSvc,
         private pageSvc: PageService,
         private gridUtils: GridUtils,
         protected cd: ChangeDetectorRef, 
         private counterMessageService: CounterMessageService) {
-        super(_wcs, cd);
+        super(cd);
     }
 
     ngOnInit() {

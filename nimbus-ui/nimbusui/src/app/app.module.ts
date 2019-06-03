@@ -117,7 +117,6 @@ import { ToastMessageComponent } from './components/platform/message/toastmessag
 import { NavigationComponent } from './components/navigation/navigation.component';
 
 // Services
-import { WebContentSvc } from './services/content-management.service';
 import { STOMPStatusComponent } from './services/stomp-status.component';
 import { AuthenticationService } from './services/authentication.service';
 import { FileService } from './services/file.service';
@@ -243,7 +242,7 @@ export function init_app(appinitservice: AppInitService) {
         MenuRouteLink, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage, BaseTableElement, EventPropagationDirective, TableHeader, NavigationComponent
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
-    providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService, CounterMessageService,
+    providers: [ PageService, ConfigService, HttpClient,  HttpClientModule, AppInitService, CounterMessageService,
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
          { provide: APP_INITIALIZER, useFactory: init_app, deps: [AppInitService], multi: true },
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },

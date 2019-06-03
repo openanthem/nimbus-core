@@ -17,7 +17,6 @@
 'use strict';
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { Param } from '../../shared/param-state';
-import { WebContentSvc } from '../../services/content-management.service';
 import { BaseElement } from './base-element.component';
 
 /**
@@ -29,7 +28,6 @@ import { BaseElement } from './base-element.component';
  */
 @Component({
     selector: 'nm-subheader',
-    providers: [WebContentSvc],
     template:`           
         <ng-template [ngIf]="!param?.config?.type?.nested">
            <div class="{{param?.config?.uiStyles?.attributes?.cssClass}}">
@@ -48,9 +46,5 @@ import { BaseElement } from './base-element.component';
 export class SubHeaderCmp extends BaseElement{
 
     @Input() param: Param;
-    
-    constructor(private _wcs: WebContentSvc) {
-        super(_wcs);
-    }
     
 }

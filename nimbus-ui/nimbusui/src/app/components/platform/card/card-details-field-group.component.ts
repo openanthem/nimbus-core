@@ -19,7 +19,6 @@ import { Component, Input } from '@angular/core';
 import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
-import { WebContentSvc } from '../../../services/content-management.service';
 
 /**
  * \@author Dinakar.Meda
@@ -54,10 +53,5 @@ import { WebContentSvc } from '../../../services/content-management.service';
 
 export class CardDetailsFieldGroupComponent extends BaseElement {
     componentTypes = ComponentTypes;
-
-    constructor(private _wcs: WebContentSvc) {
-        super(_wcs);
-    }
-
 }
 

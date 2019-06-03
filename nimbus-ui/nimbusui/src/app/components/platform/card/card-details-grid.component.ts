@@ -22,7 +22,6 @@ import { PageService } from '../../../services/page.service';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { Param } from '../../../shared/param-state';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
-import { WebContentSvc } from './../../../services/content-management.service';
 
 /**
  * \@author Dinakar.Meda
@@ -40,8 +39,8 @@ export class CardDetailsGrid extends BaseElement {
 
     public componentTypes = ComponentTypes;
 
-    constructor(private pageSvc : PageService, private wcsv: WebContentSvc) {
-        super(wcsv);
+    constructor(private pageSvc : PageService) {
+        super();
     }
 
     ngOnInit() {

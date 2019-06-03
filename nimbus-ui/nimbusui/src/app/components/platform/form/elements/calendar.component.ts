@@ -17,7 +17,6 @@
 'use strict';
 import { NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
 import { Component, forwardRef, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { ValidationConstraint } from '../../../../shared/validationconstraints.enum';
@@ -43,7 +42,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-input-calendar',
-  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc, ControlSubscribers],
+  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, ControlSubscribers],
   template: `
         <nm-input-label *ngIf="!isLabelEmpty"
             [element]="element"     
@@ -74,8 +73,8 @@ export class Calendar extends BaseControl<Date> {
     maxDate : Date;
     @ViewChild(NgModel) model: NgModel;
 
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef, cms: CounterMessageService) {
-        super(controlService,wcs,cd,cms);
+    constructor(controlService: ControlSubscribers, cd:ChangeDetectorRef, cms: CounterMessageService) {
+        super(controlService,cd,cms);
     }
 
     ngOnInit() {

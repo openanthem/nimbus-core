@@ -19,8 +19,6 @@ import { ControlValueAccessor } from '@angular/forms/src/directives';
 import { Param, Values } from '../../../../shared/param-state';
 import { Component, forwardRef, Input, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR, ValidatorFn } from '@angular/forms';
-
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { PickList } from 'primeng/primeng';
 import { BaseElement } from '../../base-element.component';
@@ -48,7 +46,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 @Component({
     selector: 'nm-pickList',
     providers: [
-        CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc
+        CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR
     ],
     template: `
         <nm-input-label
@@ -106,8 +104,8 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
 
     set disabled(value) { this._disabled = value; }
 
-    constructor(private _wcs: WebContentSvc, private pageService: PageService, private counterMessageService: CounterMessageService) {
-        super(_wcs);
+    constructor(private pageService: PageService, private counterMessageService: CounterMessageService) {
+        super();
     }
 
     ngOnInit() {

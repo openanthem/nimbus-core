@@ -17,7 +17,6 @@ import { ParamUtils } from './../../../shared/param-utils';
  */
 'use strict';
 import { Component, Input } from '@angular/core';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { TableComponentConstants } from './table.component.constants';
 import { Param } from '../../../shared/param-state';
 import { ParamConfig } from '../../../shared/param-config';
@@ -32,16 +31,11 @@ import { ParamConfig } from '../../../shared/param-config';
   selector: 'nm-th',
   template: `
    {{label}}
-   `,
-  providers: [WebContentSvc]
+   `
 })
 export class TableHeader {
     @Input() element: Param;
     @Input() paramConfig: ParamConfig;
-
-    constructor(private _wcs: WebContentSvc) {
-
-    }
     
     ngOnInit() {
         this.paramConfig['field'] = this.paramConfig.code;

@@ -27,7 +27,6 @@ import { EventEmitter, Input, Component } from '@angular/core';
 import { CheckBoxGroup } from './checkbox-group.component';
 import { TooltipComponent } from '../../../platform/tooltip/tooltip.component';
 import { PageService } from '../../../../services/page.service';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
 import { ConfigService } from '../../../../services/config.service';
@@ -100,7 +99,6 @@ HttpClientTestingModule
 ];
 const providers = [
 {provide: PageService, useClass: MockPageService},
-WebContentSvc,
 CustomHttpClient,
 LoaderService,
 ConfigService,

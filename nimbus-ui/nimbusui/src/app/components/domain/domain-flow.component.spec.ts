@@ -48,7 +48,6 @@ import { DomainFlowCmp } from './domain-flow.component';
 import { SubHeaderCmp } from '../platform/sub-header.component';
 import { DateTimeFormatPipe } from '../../pipes/date.pipe';
 import { CustomHttpClient } from '../../services/httpclient.service';
-import { WebContentSvc } from '../../services/content-management.service';
 import { PageService } from '../../services/page.service';
 import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
@@ -426,7 +425,6 @@ export class MockActivatedRoute implements ActivatedRoute {
      {provide: LoggerService, useClass: MockLoggerService},
      CustomHttpClient,
      NmMessageService,
-     WebContentSvc,
      LoaderService,
      ConfigService,
      BreadcrumbService,
@@ -556,7 +554,6 @@ const secondProviders = [
     { provide: 'JSNLOG', useValue: JL },
     {provide: LoggerService, useClass: MockLoggerService},
     CustomHttpClient,
-    WebContentSvc,
     LoaderService,
     ConfigService,
     NmMessageService,

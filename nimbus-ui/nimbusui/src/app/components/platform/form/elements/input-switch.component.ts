@@ -17,7 +17,6 @@
 'use strict';
 import { ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { BaseControl } from './base-control.component';
 import { CounterMessageService } from './../../../../services/counter-message.service';
@@ -52,7 +51,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 };
  @Component({
     selector: 'nm-input-switch',
-    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
+    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, ControlSubscribers],
     template: ` 
                 <nm-input-label *ngIf="!isLabelEmpty && (hidden != true)"
                     [element]="element" 
@@ -71,8 +70,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 export class InputSwitch extends BaseControl<boolean> {
 
      @ViewChild(NgModel) model: NgModel;
-     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef, cms: CounterMessageService) {
-        super(controlService,wcs,cd, cms);
+     constructor(controlService: ControlSubscribers, cd:ChangeDetectorRef, cms: CounterMessageService) {
+        super(controlService,cd, cms);
       }
      get orientation(): string {
          let style = this.element.config.uiStyles.attributes.orientation;

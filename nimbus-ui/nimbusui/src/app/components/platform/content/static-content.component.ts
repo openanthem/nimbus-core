@@ -17,7 +17,6 @@
 'use strict';
 import { Component, Input } from '@angular/core';
 import { Param } from '../../../shared/param-state';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BaseElement } from '../base-element.component';
 
@@ -30,7 +29,6 @@ import { BaseElement } from '../base-element.component';
  */
 @Component({
   selector: 'nm-static-text',
-  providers: [WebContentSvc],
   template: `
     <div class="{{cssClass}}" [innerHTML]="label"></div>
    `
@@ -39,8 +37,8 @@ export class StaticText extends BaseElement{
     @Input() element: Param;
     private _htmlContent: string;
 
-    constructor(private _wcs: WebContentSvc, private _sanitizer: DomSanitizer) {
-         super(_wcs);
+    constructor(private _sanitizer: DomSanitizer) {
+         super();
     }
 
     public get htmlContent() : SafeHtml {

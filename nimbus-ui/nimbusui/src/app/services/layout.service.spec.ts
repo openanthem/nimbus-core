@@ -27,7 +27,6 @@ import { Router } from '@angular/router';
 
 import { LayoutService } from './layout.service';
 import { CustomHttpClient } from './httpclient.service';
-import { WebContentSvc } from './content-management.service';
 import { PageService } from './page.service';
 import { ConfigService } from './config.service';
 import { LoggerService } from './logger.service';
@@ -37,7 +36,7 @@ import { configServiceFlowConfigs, configServiceParamConfigs, layoutServicePageP
 import { GenericDomain } from '../model/generic-domain.model';
 import { URLUtils } from './../shared/url-utils';
 
-let http, backend, service, configService, sessionStoreService, mockHttpClient, logger, pageService, webContentSvc;
+let http, backend, service, configService, sessionStoreService, mockHttpClient, logger, pageService;
 
 class MockHttpClient {
   get(a) {
@@ -128,7 +127,6 @@ describe('LayoutService', () => {
           { provide: PageService, useClass: MockPageService},
           {provide: Router, useClass: MockRouter},
           LayoutService,
-          WebContentSvc,
           LoaderService,
           SessionStoreService
         ],
@@ -146,7 +144,6 @@ describe('LayoutService', () => {
     mockHttpClient = TestBed.get(CustomHttpClient);
     logger = TestBed.get(LoggerService);
     pageService = TestBed.get(PageService);
-    webContentSvc = TestBed.get(WebContentSvc);
   });
 
   it('should be created', async(() => {

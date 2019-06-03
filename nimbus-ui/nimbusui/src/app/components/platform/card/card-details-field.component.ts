@@ -18,7 +18,6 @@
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { Param } from '../../../shared/param-state';
 import { Component, Input, forwardRef } from '@angular/core';
-import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from './../base-element.component';
 import {DateTimeFormatPipe} from '../../../pipes/date.pipe';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
@@ -46,7 +45,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 @Component({
     selector: 'nm-card-details-field',
     providers: [
-        WebContentSvc, CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR
+        CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR
     ],
     templateUrl: './card-details-field.component.html'
 })
@@ -57,10 +56,6 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
     private fieldClass: string = 'col-sm-3'; // occupies 1 col of 4
     componentTypes = ComponentTypes;
     toolTip: UiNature;
-
-    constructor(private _wcs: WebContentSvc) {
-        super(_wcs);
-    }
 
     ngOnInit() {
         super.ngOnInit();

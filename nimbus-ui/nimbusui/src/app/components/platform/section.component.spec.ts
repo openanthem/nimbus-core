@@ -64,7 +64,6 @@ import { RadioButton } from '../platform/form/elements/radio.component';
 import { Calendar } from '../platform/form/elements/calendar.component';
 import { Signature } from '../platform/form/elements/signature.component'
 import { Header } from '../platform/content/header.component';
-import { WebContentSvc } from '../../services/content-management.service';
 import { PageService } from '../../services/page.service';
 import { CustomHttpClient } from '../../services/httpclient.service';
 import { LoaderService } from '../../services/loader.service';
@@ -222,7 +221,6 @@ const providers = [
   { provide: 'JSNLOG', useValue: JL },
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   {provide: LoggerService, useClass: MockLoggerService},
-  WebContentSvc,
   CustomHttpClient,
   LoaderService,
   ConfigService,

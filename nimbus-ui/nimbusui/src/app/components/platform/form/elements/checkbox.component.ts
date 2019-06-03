@@ -17,7 +17,6 @@
 'use strict';
 import { ViewChild, Component, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { CounterMessageService } from './../../../../services/counter-message.service';
@@ -45,15 +44,15 @@ import { CounterMessageService } from './../../../../services/counter-message.se
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => CheckBox),
       multi: true
-    }, WebContentSvc, ControlSubscribers
+    }, ControlSubscribers
   ]
 })
 export class CheckBox extends BaseControl<boolean> {
 
     @ViewChild(NgModel) model: NgModel;
 
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef, cms: CounterMessageService) {
-      super(controlService,wcs,cd, cms);
+    constructor(controlService: ControlSubscribers, cd:ChangeDetectorRef, cms: CounterMessageService) {
+      super(controlService, cd, cms);
     }
 
 }

@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 'use strict';
-import { WebContentSvc } from './content-management.service';
 import { Component, EventEmitter, Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -47,18 +46,14 @@ import { URLUtils } from './../shared/url-utils';
 @Component({
     selector: 'nm-layout',
     //conflict jit-aot,  below line has to be commented out for gulp-build
-    template: '',
-    providers: [
-        WebContentSvc
-    ]
+    template: ''
 })
 @Injectable()
 export class LayoutService {
 
     layout$: EventEmitter<any>;
 
-    constructor(public http: CustomHttpClient, 
-        private wcs: WebContentSvc,
+    constructor(public http: CustomHttpClient,
         private pageSvc: PageService,
         private configSvc: ConfigService,
         private logger: LoggerService,  

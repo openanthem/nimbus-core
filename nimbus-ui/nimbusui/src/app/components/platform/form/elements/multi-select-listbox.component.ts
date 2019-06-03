@@ -18,7 +18,6 @@
 import { Param } from '../../../../shared/param-state';
 import { Component, forwardRef, Input,Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NgModel} from '@angular/forms';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import {SelectItem} from 'primeng/primeng';
 import { GenericDomain } from '../../../../model/generic-domain.model';
@@ -38,9 +37,6 @@ import { CounterMessageService } from './../../../../services/counter-message.se
  */
 @Component({
     selector: 'nm-multi-select-listbox',
-    providers: [
-        WebContentSvc
-    ],
     template: `
         <div [formGroup]="form"  [hidden]="!element?.visible">
             <nm-input-label
@@ -67,8 +63,8 @@ export class MultiSelectListBox extends BaseElement{
     private targetList: any[];
     sendEvent: boolean = true;
 
-    constructor(private _wcs: WebContentSvc, private pageService: PageService, private cd: ChangeDetectorRef, private counterMessageService: CounterMessageService) {
-       super(_wcs);
+    constructor(private pageService: PageService, private cd: ChangeDetectorRef, private counterMessageService: CounterMessageService) {
+       super();
     }
 
     ngOnInit() {

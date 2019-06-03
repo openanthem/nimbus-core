@@ -27,7 +27,6 @@ import { Link } from '../platform/link.component';
 import { LoginLayoutCmp } from './login-layout.component';
 import { Paragraph } from '../platform/content/paragraph.component';
 import { CustomHttpClient } from '../../services/httpclient.service';
-import { WebContentSvc } from '../../services/content-management.service';
 import { PageService } from '../../services/page.service';
 import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
@@ -59,7 +58,6 @@ const imports = [RouterTestingModule, HttpClientModule, HttpModule];
 const providers = [
   {provide: LayoutService, useClass: MockLayoutService},
   CustomHttpClient,
-  WebContentSvc,
   PageService,
   LoaderService,
   ConfigService

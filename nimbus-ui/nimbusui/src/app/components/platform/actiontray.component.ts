@@ -18,7 +18,6 @@
 import { Component, Input, QueryList, ViewChildren } from '@angular/core';
 import { Param } from './../../shared/param-state';
 import { BaseElement } from './base-element.component';
-import { WebContentSvc } from '../../services/content-management.service';
 import { PageService } from '../../services/page.service';
 import { LoggerService } from '../../services/logger.service';
 import { LayoutService } from '../../services/layout.service';
@@ -34,7 +33,6 @@ import { HostListener } from '@angular/core';
  */
 @Component({
     selector: 'nm-actiontray',
-    providers: [WebContentSvc],
     template:
         `
     <div 
@@ -71,8 +69,8 @@ export class ActionTray extends BaseElement {
 
     @ViewChildren('actionButton') actionButtons: QueryList<any>;
 
-    constructor(private wcsvc: WebContentSvc, private pageService: PageService, private _logger: LoggerService, private layoutSvc: LayoutService) {
-        super(wcsvc);
+    constructor(private pageService: PageService, private _logger: LoggerService, private layoutSvc: LayoutService) {
+        super();
     }
 
     @HostListener("window:scroll", [])

@@ -18,7 +18,6 @@
 import { BaseElement } from './base-element.component';
 import { Component, Input } from '@angular/core';
 import { Param } from '../../shared/param-state';
-import { WebContentSvc } from '../../services/content-management.service';
 import { PageService } from '../../services/page.service';
 import { GenericDomain } from './../../model/generic-domain.model';
 import { ServiceConstants } from './../../services/service.constants';
@@ -34,9 +33,6 @@ import { ComponentTypes } from '../../shared/param-annotations.enum';
  */
 @Component({
     selector: 'nm-link',
-    providers: [
-        WebContentSvc
-    ],
     template: `
         <ng-template [ngIf]="imgSrc && element?.visible == true">
             <a href="{{url}}" class='{{cssClass}}'>
@@ -106,8 +102,8 @@ export class Link extends BaseElement {
     componentTypes = ComponentTypes;
 
 
-    constructor(private _wcs: WebContentSvc, private pageSvc: PageService) {
-        super(_wcs);
+    constructor(private pageSvc: PageService) {
+        super();
     }
 
     ngOnInit() {

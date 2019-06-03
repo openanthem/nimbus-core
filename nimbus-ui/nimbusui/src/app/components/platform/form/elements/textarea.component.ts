@@ -17,7 +17,6 @@
 'use strict';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, ViewChild, forwardRef, ChangeDetectorRef } from '@angular/core';
-import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
@@ -40,7 +39,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-input-textarea',
-  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
+  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, ControlSubscribers],
   template: `
     <div class='textarea-holder' [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
     <div class="number" *ngIf="element.config?.uiStyles?.attributes?.controlId!=''">{{element.config?.uiStyles?.attributes?.controlId}}</div>
@@ -69,8 +68,8 @@ export class TextArea extends BaseControl<String> {
   @ViewChild(NgModel) model: NgModel;
   maxlength: number;
 
-  constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef, cms: CounterMessageService) {
-    super(controlService, wcs, cd, cms);
+  constructor(controlService: ControlSubscribers, cd: ChangeDetectorRef, cms: CounterMessageService) {
+    super(controlService, cd, cms);
   }
 
   ngOnInit() {

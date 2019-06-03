@@ -16,7 +16,6 @@
  */
 'use strict';
 
-import { WebContentSvc } from './../../../services/content-management.service';
 import { BaseElement } from './../base-element.component';
 import { Param } from '../../../shared/param-state';
 import { Component, Input } from '@angular/core';
@@ -52,9 +51,6 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
             transition('openPanel => closedPanel', [animate('500ms ease-in')])
 
         ]),
-    ],
-    providers: [
-        WebContentSvc
     ]
 })
 export class CardDetailsComponent extends BaseElement {
@@ -77,8 +73,8 @@ export class CardDetailsComponent extends BaseElement {
         return this._state;
     }
 
-    constructor(private pageSvc: PageService, private _wcs: WebContentSvc) {
-        super(_wcs);
+    constructor(private pageSvc: PageService) {
+        super();
     }
 
     ngOnInit() {
