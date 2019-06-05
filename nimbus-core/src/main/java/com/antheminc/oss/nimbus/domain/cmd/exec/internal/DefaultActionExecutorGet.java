@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -108,6 +109,10 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 			entity = instantiateEntity(eCtx, rootDomainConfig);
 		}
 
+		if (null == entity) {
+			throw new FrameworkRuntimeException("Entity not found for " + eCtx);
+		}
+		
 		if(rootDomainConfig.isMapped()) 
 			return handleMapped(rootDomainConfig, eCtx, entity, Action._get);
 		
