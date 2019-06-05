@@ -96,7 +96,7 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 		
 		// db - entity
 		if(Repo.Database.exists(repo) ) {
-			if (refId != null) { // root (view or core) is persistent
+			if (refId != null || Repo.Database.rep_ws.equals(repo.value())) { // root (view or core) is persistent
 				entity = getRepositoryFactory().get(rootDomainConfig.getRepo())
 						._get(refId, rootDomainConfig.getReferredClass(), resolvedRepAlias, eCtx.getCommandMessage().getCommand().getAbsoluteUri());
 			} else {
