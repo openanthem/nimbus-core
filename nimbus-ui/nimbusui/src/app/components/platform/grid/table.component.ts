@@ -987,19 +987,14 @@ export class DataTable extends BaseTableElement
     index: number,
     targetLineItem: any
   ): boolean {
-    if (
-      collectionParams[index]['expandedRowContent']['alias'] ==
-        ViewComponent.gridRowBody.toString() &&
-      collectionParams[index]['expandedRowContent']['path'] ==
-        `${this.element.path}/${index}/${
-          collectionParams[index]['expandedRowContent'].config.code
-        }`
-    ) {
-      targetLineItem['nestedElement'] =
-        collectionParams[index]['expandedRowContent'];
-      return true;
-    }
-
+    Object.values(collectionParams[index]).forEach(p=> {
+      if(p.alias == ViewComponent.gridRowBody.toString() && p.path ==  `${this.element.path}/${index}/${
+        p.config.code
+      }`) {
+        targetLineItem['nestedElement'] = p;
+        return true;
+      }
+    });
     return false;
   }
 }
