@@ -76,17 +76,22 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 	
 	@Override
 	public <ID extends Serializable, T> T _get(ID id, Class<T> referredClass, String alias, String url) {
-		URI uri = createUriForAlias(alias, url);
-		if(uri == null)
-			return null;
-	
-		try {
-			ResponseEntity<T> responseEntity = getRestTemplate().exchange(new RequestEntity<T>(HttpMethod.GET, uri), referredClass);
-			return Optional.ofNullable(responseEntity).map((response) -> response.getBody()).orElse(null);
-		} catch(Exception e) {
-			handleException(e,uri);
+		if (null != id) {
+			logit.warn(() -> "A refId of \"" + id + "\" was provided for a _get on alias \"" + alias
+					+ "\". DefaultWSModelRepository does explicitely handle external object retrieval by using the refId. Consider removing refId.");
 		}
-		return null;	
+		URI uri = createUriForAlias(alias, null);
+		if (uri == null)
+			return null;
+
+		try {
+			ResponseEntity<T> responseEntity = getRestTemplate().exchange(new RequestEntity<T>(HttpMethod.GET, uri),
+					referredClass);
+			return Optional.ofNullable(responseEntity).map((response) -> response.getBody()).orElse(null);
+		} catch (Exception e) {
+			handleException(e, uri);
+		}
+		return null;
 	}
 	
 	@Override
@@ -118,15 +123,18 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 	
 	private URI createUriForAlias(String alias, String url) {
 		
-		if(MapUtils.isEmpty(this.getTargetUrl()) || StringUtils.isBlank(this.getTargetUrl().get(alias)))
+		if(MapUtils.isEmpty(this.getTargetUrl())) {
 			return null;
-		
-		String urlToConctruct = StringUtils.startsWith(url, "/") ? url : "/".concat(url);
-		
-		urlToConctruct = this.getTargetUrl().get(alias).concat(urlToConctruct);
+		}
+		String urlToConstruct = this.getTargetUrl().get(alias);
+		if(StringUtils.isEmpty(urlToConstruct)) {
+			return null;
+		}
+		if (!StringUtils.isEmpty(url)) {
+			urlToConstruct = urlToConstruct.concat(url);
+		}
 		try {
-			URI uri = new URI(urlToConctruct);
-			return uri;
+			return new URI(urlToConstruct);
 		} catch (URISyntaxException e) {
 			throw new FrameworkRuntimeException("Cannot create URI from supplied url: "+url);
 		}
