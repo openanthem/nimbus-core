@@ -106,7 +106,7 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 			} else {
 				Optional<Class<?>> hierarchyclass = exceptions.keySet()
 						.stream()
-						.filter(c -> c.isAssignableFrom(pEx.getClass()))
+						.filter(c -> null != c && c.isAssignableFrom(pEx.getClass()))
 						.findFirst();
 			
 				if (hierarchyclass.isPresent()) 

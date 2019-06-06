@@ -74,7 +74,10 @@ public class DomainConfigBuilder {
 	
 	public ModelConfig<?> getRootDomainOrThrowEx(String rootAlias) {
 		return Optional.ofNullable(getRootDomain(rootAlias))
-				.orElseThrow(()->new InvalidConfigException("Domain model config not found for root-alias: "+rootAlias));
+				.orElseThrow(() -> new InvalidConfigException("Domain model config not found for root-alias \""
+						+ rootAlias + "\".\n -> (1) Has the Java class for the domain entity been declared with @"
+						+ Domain.class.getSimpleName() + "(value = \"" + rootAlias + "\")?"
+						+ "\n -> (2) Has the package that includes the domain entity been defined in ${domain.model.basePackages}?"));
 	}
 
 
