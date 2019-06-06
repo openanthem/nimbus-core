@@ -85,6 +85,7 @@ import { RouteService } from './services/route.service';
 import { ServiceConstants } from './services/service.constants';
 import { CUSTOM_STORAGE, SessionStoreService } from './services/session.store';
 import { NmMessageService } from './services/toastmessage.service';
+import { NmValidator } from './directives/validateInput.directive';
 import { WindowRefService } from './services/window-ref.service';
 import { CustomErrorHandler } from './shared/custom.error.handler';
 import { GridUtils } from './shared/grid-utils';
@@ -126,6 +127,7 @@ export const allproviders = [
   NmMessageService
 ];
 
+export const commonComponents = [NmValidator];
 export const allimports = [
   BrowserModule,
   HttpClientModule,
@@ -170,6 +172,12 @@ export interface TestContext<H> {
 }
 
 export function setup(declarations: any[], imports?: any[], providers?: any[]) {
+    declarations = declarations.concat(commonComponents)
+    TestBed.configureTestingModule({
+        declarations: declarations,
+        providers: providers ? providers : allproviders,
+        imports:  imports ? imports : allimports
+        })
   TestBed.configureTestingModule({
     declarations: declarations,
     providers: providers ? providers : allproviders,
