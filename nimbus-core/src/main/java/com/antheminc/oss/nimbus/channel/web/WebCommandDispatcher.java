@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,9 +20,10 @@ package com.antheminc.oss.nimbus.channel.web;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.antheminc.oss.nimbus.channel.CommandDispatcher;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
@@ -34,15 +35,18 @@ import lombok.Getter;
  */
 @Getter
 @EnableLoggingInterceptor
-public class WebCommandDispatcher extends CommandDispatcher {
+public class WebCommandDispatcher {
 
 	private final WebCommandBuilder builder;
 
-	public WebCommandDispatcher(BeanResolverStrategy beanResolver) {
-		super(beanResolver);
-		this.builder = beanResolver.get(WebCommandBuilder.class);
-	}
+	private final CommandExecutorGateway gateway;
 
+	public WebCommandDispatcher(BeanResolverStrategy beanResolver) {
+		this.builder = beanResolver.get(WebCommandBuilder.class);
+		this.gateway = beanResolver.get(CommandExecutorGateway.class);
+		
+	}
+	
 	public Object handle(HttpServletRequest httpReq, ModelEvent<String> event) {
 		Command cmd = getBuilder().build(httpReq, event);
 		return handle(cmd, event.getPayload());
@@ -51,5 +55,9 @@ public class WebCommandDispatcher extends CommandDispatcher {
 	public Object handle(HttpServletRequest httpReq, String json) {
 		Command cmd = getBuilder().build(httpReq);
 		return handle(cmd, json);
+	}
+
+	public MultiOutput handle(Command cmd, String payload) {
+		return getGateway().execute(cmd, payload);
 	}
 }

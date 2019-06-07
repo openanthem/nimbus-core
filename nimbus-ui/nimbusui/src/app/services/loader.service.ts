@@ -21,32 +21,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
 'use strict';
-import { LoaderState } from './../components/platform/loader/loader.state';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { LoaderState } from './../components/platform/loader/loader.state';
 
 /**
  * \@author reference https://github.com/ivanderbu2/angular-redux
- * \@whatItDoes 
- * 
- * \@howToUse 
- * 
+ * \@whatItDoes
+ *
+ * \@howToUse
+ *
  */
 
 @Injectable()
 export class LoaderService {
+  loaderUpdate = new Subject<LoaderState>();
+  loaderUpdate$ = this.loaderUpdate.asObservable();
 
-loaderUpdate = new Subject<LoaderState>();
-loaderUpdate$ = this.loaderUpdate.asObservable();
+  constructor() {}
 
-constructor() { }
+  show() {
+    this.loaderUpdate.next(<LoaderState>{ show: true });
+  }
 
-show() {
-        this.loaderUpdate.next(<LoaderState>{show: true});
-    }
-
-hide() {
-        this.loaderUpdate.next(<LoaderState>{show: false});
-    }
-
+  hide() {
+    this.loaderUpdate.next(<LoaderState>{ show: false });
+  }
 }

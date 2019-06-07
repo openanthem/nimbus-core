@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 package com.antheminc.oss.nimbus.domain.cmd.exec;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
@@ -86,14 +88,26 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		return alias;
 	}
 	
-	protected <T> T getOrInstantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
-		Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+	protected <T> T getEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
 		ModelRepository mRepo = getRepositoryFactory().get(mConfig);
-		
-		return mRepo != null
-				? refId != null ? mRepo._get(eCtx.getCommandMessage().getCommand(), mConfig)
-						: mRepo._new(eCtx.getCommandMessage().getCommand(), mConfig)
-				: javaBeanHandler.instantiate(mConfig.getReferredClass());
+		if (mRepo == null) {
+			return null;
+		}
+		final Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		if (Repo.Database.isRefIdRequired(mConfig.getRepo()) && null == refId) {
+			throw new InvalidConfigException("Get call received for domain - " + mConfig.getAlias() + " without a refId. Execution Context: " + eCtx);
+		}
+		return mRepo._get(eCtx.getCommandMessage().getCommand(), mConfig);
+	}
+	
+	protected <T> T getOrInstantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
+		ModelRepository mRepo = getRepositoryFactory().get(mConfig);
+		if (null == mRepo) {
+			return javaBeanHandler.instantiate(mConfig.getReferredClass());
+		}
+		Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		return refId != null ? mRepo._get(eCtx.getCommandMessage().getCommand(), mConfig)
+						: mRepo._new(eCtx.getCommandMessage().getCommand(), mConfig);
 	}
 	
 	public interface RepoDBCallback<T> {

@@ -21,39 +21,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
 'use strict';
-import { LoaderState } from './loader.state';
-import { LoaderService } from './../../../services/loader.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+
+import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { LoaderService } from './../../../services/loader.service';
+import { LoaderState } from './loader.state';
 
 /**
- * 
+ *
  * \@author reference https://github.com/ivanderbu2/angular-redux
- * \@whatItDoes 
- * 
- * \@howToUse 
- * 
+ * \@whatItDoes
+ *
+ * \@howToUse
+ *
  */
 @Component({
-    selector: 'app-loader',
-    templateUrl: 'loader.component.html'
+  selector: 'app-loader',
+  templateUrl: 'loader.component.html'
 })
-
 export class LoaderComponent implements OnInit {
+  show = false;
+  private subscription: Subscription;
 
-show = false;
-private subscription: Subscription;
+  constructor(private loaderService: LoaderService) {}
 
-constructor(private loaderService: LoaderService) { }
+  ngOnInit() {
+    this.subscription = this.loaderService.loaderUpdate.subscribe(
+      (state: LoaderState) => {
+        this.show = state.show;
+      }
+    );
+  }
 
-ngOnInit() { 
-        this.subscription = this.loaderService.loaderUpdate
-            .subscribe((state: LoaderState) => {
-                this.show = state.show;
-            });
-    }
-
-ngOnDestroy() {
-        this.subscription.unsubscribe();
-    }
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 }

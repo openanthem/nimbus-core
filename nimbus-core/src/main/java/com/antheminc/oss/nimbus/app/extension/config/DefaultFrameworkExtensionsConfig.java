@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.Valida
 import com.antheminc.oss.nimbus.domain.model.config.extension.GridStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.config.extension.LabelStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.config.extension.ToolTipStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.config.extension.TreeGridStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AccessConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ActivateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AuditStateChangeHandler;
@@ -70,6 +71,11 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean
 	public GridStateLoadHandler gridStateLoadHandler(CommandPathVariableResolver cmdPathResolver, LabelStateEventHandler labelStateLoadHandler) {
 		return new GridStateLoadHandler(cmdPathResolver, labelStateLoadHandler);
+	}
+	
+	@Bean
+	public TreeGridStateLoadHandler treeGridStateLoadHandler(CommandPathVariableResolver cmdPathResolver, LabelStateEventHandler labelStateLoadHandler) {
+		return new TreeGridStateLoadHandler(cmdPathResolver, labelStateLoadHandler);
 	}
 	
 	@Bean

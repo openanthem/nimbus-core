@@ -1,10 +1,10 @@
-<div class="buttonGroup right clearfix" *ngIf="element.config?.uiStyles?.attributes?.addRow">
+<div class="buttonGroup tableHeaderButton clearfix" *ngIf="element.config?.uiStyles?.attributes?.addRow">
     <button class="btn-plain fa fa-plus" (click)="addRow()">
         <span class="pl-2">add row</span>
     </button>
 </div>
 
-<div id="{{id}}"  class="scrollGrid" [hidden]="!element?.visible">
+<div id="{{id}}"  class="scrollGrid" [hidden]="!element?.visible" [ngClass]="element.config?.uiStyles?.attributes?.addRow ? 'withAddRow' : ''">
     <div class="ui-datatable-header ui-widget-header" *ngIf="element.config?.uiStyles?.attributes?.showHeader == true">
         <p-header>
             <caption>{{label}}</caption>
@@ -105,10 +105,44 @@
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
                     <td *ngIf="showColumn(col)" [ngClass]="getColumnStyle(col)">
                             <p-cellEditor>
+                                     <ng-template pTemplate="input" [ngIf]="element?.config?.uiStyles?.attributes?.editRow && showValue(col)">
 
-                                     <ng-template pTemplate="input">
-                                        <input [title]="rowData[col.code]" *ngIf="showValue(col)" [value]="rowData[col.code]" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code">
-                                        <input *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true" pInputText type="text" [(ngModel)]="rowData[col.code]" [name]="col.code">
+                                        <nm-input  
+                                        *ngIf="gridMode == 'add' 
+                                        && gridModeRow == ''
+                                        && !rowData.elemId
+                                        && TableComponentConstants.allowedInlineEditColumnStylesAlias.includes(col.uiStyles.attributes.alias)"
+                                        [nmValidator]="getViewParamInEditRow(col, rowData['elemId'])"
+                                        (nmValidate)="updateValidation($event)"
+                                         [hideLabel]=true
+                                        [element]="getViewParamInEditRow(col, rowData['elemId'])" 
+                                        [(ngModel)]="rowData[col.code]"
+                                       [attr.id]="col.code"></nm-input>
+
+                                    <ng-template 
+                                    [ngIf]="gridMode == 'edit' && 
+                                    TableComponentConstants.allowedInlineEditNmInputComponents.includes(col.uiStyles.attributes.alias)
+                                    && gridModeRow == rowData.elemId">
+                                        <nm-input  
+                                        [nmValidator]="getViewParamInEditRow(col, rowData['elemId'])"
+                                        (nmValidate)="updateValidation($event)"
+                                        [hideLabel]=true
+                                        [element]="getViewParamInEditRow(col, rowData['elemId'])" 
+                                        [(ngModel)]="rowData[col.code]"></nm-input>
+                                    </ng-template>
+
+
+                                        <nm-comboBox 
+                                        *ngIf="gridMode == 'edit' && col?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString() && gridModeRow == rowData.elemId" 
+                                        [hideLabel]=true
+                                        [element]="getViewParamInEditRow(col, rowData['elemId'])" 
+                                        [(ngModel)]="rowData[col.code]" ></nm-comboBox>
+
+
+                                        <div *ngFor="let error of getAddValErr(col.code)">
+                                            {{error}}
+                                        </div>
+
                                      </ng-template>
                                     <ng-template pTemplate="output">
                                             <span title="{{getCellDisplayValue(rowData, col)}}" *ngIf="showValue(col)" [nmDisplayValue]='getCellDisplayValue(rowData, col)' [config]='col'>
@@ -116,28 +150,28 @@
                                                 </span>
                                                 <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.link.toString()">
                                                     <nm-link
-                                                        id="{{getViewParam(col, rowData['elemId']).config?.code}}" 
-                                                        [element] = "getViewParam(col, rowData['elemId'])"
+                                                        id="{{element.tableBasedData.collectionParams[rowData['elemId']][col.code].config?.code}}" 
+                                                        [element] = "element.tableBasedData.collectionParams[rowData['elemId']][col.code]"
                                                         [rowData]="rowData">                                
                                                     </nm-link>
                                                 </span>
                                                 <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true">
                                                     <nm-link
-                                                        id="{{getViewParam(col, rowData['elemId']).config?.code}}"  
-                                                        [element] = "getViewParam(col, rowData['elemId'])">
+                                                        id="{{element.tableBasedData.collectionParams[rowData['elemId']][col.code].config?.code}}"  
+                                                        [element] = "element.tableBasedData.collectionParams[rowData['elemId']][col.code]">
                                                     </nm-link>
                                                 </span>
                                                 <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.button.toString()">
                                                     <nm-button
-                                                        id="{{getViewParam(col, rowData['elemId']).config?.code}}" 
-                                                        [element] = "getViewParam(col, rowData['elemId'])">
+                                                        id="{{element.tableBasedData.collectionParams[rowData['elemId']][col.code].config?.code}}" 
+                                                        [element] = "element.tableBasedData.collectionParams[rowData['elemId']][col.code]">
                                                     </nm-button>
                                                 </span>
                                                 <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.linkMenu.toString()">
                                                     <nm-action-dropdown #dropDown 
                                                         *ngIf = "rowData['elemId']"
-                                                        id="{{getViewParam(col, rowData['elemId'])?.config?.code}}{{rowIndex}}" 
-                                                        [element]="getViewParam(col, rowData['elemId'])" 
+                                                        id="{{element.tableBasedData.collectionParams[rowData['elemId']][col.code]?.config?.code}}{{rowIndex}}" 
+                                                        [element]="element.tableBasedData.collectionParams[rowData['elemId']][col.code]" 
                                                         [params]="col?.type?.model?.paramConfigs" 
                                                         [rowData]="rowData" 
                                                         [elementPath]="getRowPath(col, rowData)" 

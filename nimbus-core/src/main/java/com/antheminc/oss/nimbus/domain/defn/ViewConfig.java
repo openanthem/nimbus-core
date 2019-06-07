@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -627,6 +627,13 @@ public class ViewConfig {
 
 		boolean dataEntryField() default true;
 
+		/**
+		 * <p>When non-empty, add a default selection item to the top of the
+		 * rendered combo box with the provided value displayed as the label
+		 * text. The default value will always be {@code null}.
+		 */
+		String defaultLabel() default "";
+		
 		String help() default "";
 
 		String labelClass() default "anthem-label";
@@ -1170,8 +1177,16 @@ public class ViewConfig {
 	 * is treated as the definition for row item data in the final rendered
 	 * grid. This is referred to as the <i>collection element type</i>. The
 	 * following components may be used to decorate fields in the collection
-	 * element type: <ul> <li>{@link LinkMenu}</li> <li>{@link GridColumn}</li>
-	 * <li>{@link GridRowBody}</li> </ul>
+	 * element type: <ul> <li>{@link ComboBox}</li> <li>{@link GridColumn}</li>
+	 * <li>{@link GridRowBody}</li> <li>{@link LinkMenu}</li> <li>{@link Link}</li> </ul>
+	 * 
+	 * <p>Grid supports in-line editing. When in editable mode, {@link GridColumn} 
+	 * components will be rendered as {@link TextBox} components. Other supported 
+	 * components that need to use different UI components to capture editable 
+	 * information will use an appropriate UI component in editable mode. 
+	 * (e.g. a collection element field decorated with {@link ComboBox} will be 
+	 * rendered as a {@link GridColumn} in non-editable mode, but as a {@link ComboBox} 
+	 * when in editable mode.) 
 	 * 
 	 * @since 1.0
 	 */
@@ -1207,22 +1222,38 @@ public class ViewConfig {
 
 		boolean pagination() default true;
 
+		/**
+		 * <p>Render a button below the rendered grid that when clicked, submits
+		 * an HTTP POST request with a payload containing the selected indexes
+		 */
 		boolean postButton() default false;
 
-		String postButtonAlias() default "";
-
+		/**
+		 * <p>Set the label of the button rendered by {@link #postButton()}
+		 */
 		String postButtonLabel() default "";
 
+		/**
+		 * <p>Set the key to be used for the JSON object of selected index that
+		 * is sent as a payload
+		 * @see #postButton()
+		 */
 		String postButtonTargetPath() default "";
 		
 		/**
-		 * Represents the relative path of the postButton on a rowselection Grid. 
-		 * Can use similar notation as url attribute of @Config for relative path to param i.e, '../', <!#this!>
+		 * <p>A parameter path relative to the decorated this decorated field on
+		 * which to invoke an HTTP POST
+		 * @see #postButton()
 		 */
 		String postButtonUri() default "";	
 
 		boolean postEventOnChange() default false;
 
+		/**
+		 * <p>Renders a checkbox at the beginning of each row in the table,
+		 * intended to be used for row selection and in conjunction with
+		 * {@link #postButtonUri()}, {@link #postButtonTargetPath()}
+		 */
 		boolean rowSelection() default false;
 
 		boolean showHeader() default true;
@@ -1230,11 +1261,10 @@ public class ViewConfig {
 		String url() default "";
 		
 		/**
-		 * @Since 1.1.11
-		 * Setting this to true will enable to select all the records in the dataset i.e across all pages 
-		 * within a table when selectAll checkbox in the header is checked. 
-		 * Default behavior is to select all the records only within the current  
-		 * page of the table when the table is paginated.
+		 * <p>When {@code true}, selecting the "select all" checkbox in the
+		 * header of the rendered grid will select all the records in the
+		 * dataset across all pages. When {@code false}, only within the current
+		 * page items will be selected.
 		 */
 		boolean headerCheckboxToggleAllPages() default false;
 		
@@ -1945,9 +1975,38 @@ public class ViewConfig {
 			 */
 			INTERNAL;
 		}
-
+		
+		/**
+		 * <p>Orientation properties for a {@link MenuPanel} instance.
+		 * @author Tony Lopez
+		 *
+		 */
+		public static enum Align {
+			
+			/**
+			 * <p>Let the parent component containing this {@link MenuPanel} decide the orientation.
+			 */
+			DEFAULT,
+			
+			/**
+			 * <p>Set the orientation for this {@link MenuPanel} from left to right.
+			 */
+			HORIZONTAL,
+			
+			/**
+			 * <p>Set the orientation for this {@link MenuPanel} from top to bottom.
+			 */
+			VERTICAL;
+		}
+		
+		
 		String alias() default "MenuPanel";
 
+		/**
+		 * <p>Control the orientation of the rendered menu items.
+		 */
+		Align align() default Align.DEFAULT;
+		
 		/**
 		 * <p>CSS classes added here will be added to a container element
 		 * surrounding this component. <p>This can be used to apply additional
@@ -1989,6 +2048,12 @@ public class ViewConfig {
 		 * component.
 		 */
 		String url() default "";
+		
+		/**
+		 * <p>{@code flow} attribute when given for breadcrumb navigation will be set appropriately.
+		 * flow needs to be the domain alias of which it is a sub process.
+		 */
+		String flow() default "";
 	}
 
 	/**
@@ -2167,6 +2232,9 @@ public class ViewConfig {
 		String route() default ""; // remove
 		
 		boolean fixLayout() default false;
+		
+		String breadcrumbLabel() default "";
+
 	}
 
 	/**
@@ -3073,6 +3141,7 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
+	@OnStateLoad
 	public @interface TreeGrid {
 		String alias() default "TreeGrid";
 

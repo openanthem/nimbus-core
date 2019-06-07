@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,19 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.model.config.extension;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.collections.CollectionUtils;
-
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
-import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
-import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 
 import lombok.Getter;
 
@@ -36,32 +25,10 @@ import lombok.Getter;
  *
  */
 @Getter
-public class GridStateLoadHandler extends AbstractConfigEventHandler implements OnStateLoadHandler<Grid> {
+public class GridStateLoadHandler extends TableBasedStateLoadEventHandler<Grid> {
 
-	private final LabelStateEventHandler labelStateLoadHandler;
-	
-	public GridStateLoadHandler(CommandPathVariableResolver cmdPathResolver, LabelStateEventHandler labelStateLoadHandler) {
-		super(cmdPathResolver);
-		this.labelStateLoadHandler = labelStateLoadHandler;
+	public GridStateLoadHandler(CommandPathVariableResolver cmdPathResolver,
+			LabelStateEventHandler labelStateLoadHandler) {
+		super(cmdPathResolver, labelStateLoadHandler);
 	}
-
-	public void onStateLoad(Grid configuredAnnotation, Param<?> param) {
-		// set the labels retrieved from collection elements
-		Map<String, Set<LabelState>> elemLabels = new HashMap<>();
-		ParamConfig<?> p = param.getConfig().getType().findIfCollection().getElementConfig();
-
-		if (!p.isLeaf()) {
-			for (ParamConfig<?> colElemParamConfig : p.getType().findIfNested().getModelConfig().getParamConfigs()) {
-				if (CollectionUtils.isNotEmpty(colElemParamConfig.getLabels())) {
-					Set<LabelState> listParamLabels = new HashSet<>();
-					colElemParamConfig.getLabels()
-							.forEach((label) -> listParamLabels.add(getLabelStateLoadHandler().convert(label, param)));
-					elemLabels.put(colElemParamConfig.getId(), listParamLabels);
-				}
-			}
-		}
-
-		param.findIfCollection().setElemLabels(elemLabels);
-	}
-
 }

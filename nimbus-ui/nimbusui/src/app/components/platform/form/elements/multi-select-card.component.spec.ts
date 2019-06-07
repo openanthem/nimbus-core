@@ -1,13 +1,13 @@
 /**
  * @license
- * Copyright 2016-2018 the original author or authors.
- * 
+ * Copyright 2016-2019 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,67 +15,72 @@
  * limitations under the License.
  */
 
-import { Param } from './../../../../shared/param-state';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { async, TestBed } from '@angular/core/testing';
+import {
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { By } from '@angular/platform-browser';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
+import { multiselectCardElement } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
 import { Subject } from 'rxjs';
-import { of as observableOf,  Observable } from 'rxjs';
-
-import { MultiselectCard } from './multi-select-card.component';
-import { PageService } from '../../../../services/page.service';
+import { AppInitService } from '../../../../services/app.init.service';
+import { ConfigService } from '../../../../services/config.service';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
-import { AppInitService } from '../../../../services/app.init.service';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-import { FormGroup, ValidatorFn, Validators, FormControl } from '@angular/forms';
-import { multiselectCardElement } from 'mockdata';
-import { By } from '@angular/platform-browser';
+import { PageService } from '../../../../services/page.service';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from '../../../../services/session.store';
+import { setup } from '../../../../setup.spec';
+import { MultiselectCard } from './multi-select-card.component';
+'use strict';
 
 let param, pageService;
 
 class MockPageService {
-    eventUpdate$: Subject<any>;
+  eventUpdate$: Subject<any>;
 
-    constructor() {
-        this.eventUpdate$ = new Subject();
-    }
-    postOnChange(a, b, c) { }
-    logError(a) {
-        this.eventUpdate$.next(a);
-    }
+  constructor() {
+    this.eventUpdate$ = new Subject();
+  }
+  postOnChange(a, b, c) {}
+  logError(a) {
+    this.eventUpdate$.next(a);
+  }
 }
 
-const declarations = [  MultiselectCard];
-const imports = [
-   HttpModule,
-   HttpClientTestingModule,
-   StorageServiceModule
-];
+const declarations = [MultiselectCard];
+const imports = [HttpModule, HttpClientTestingModule, StorageServiceModule];
 const providers = [
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   { provide: 'JSNLOG', useValue: JL },
-  {provide: PageService, useClass: MockPageService},
-   CustomHttpClient,
-   LoaderService,
-   ConfigService,
-   LoggerService,
-   AppInitService,
-   SessionStoreService
+  { provide: PageService, useClass: MockPageService },
+  CustomHttpClient,
+  LoaderService,
+  ConfigService,
+  LoggerService,
+  AppInitService,
+  SessionStoreService,
+  CounterMessageService
 ];
 let fixture, hostComponent;
 
 describe('MultiselectCard', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
 
   beforeEach(() => {
@@ -84,7 +89,10 @@ describe('MultiselectCard', () => {
     const fg = new FormGroup({});
     const checks: ValidatorFn[] = [];
     checks.push(Validators.required);
-    fg.addControl(multiselectCardElement.config.code, new FormControl(multiselectCardElement.leafState, checks));
+    fg.addControl(
+      multiselectCardElement.config.code,
+      new FormControl(multiselectCardElement.leafState, checks)
+    );
     hostComponent.form = fg;
     hostComponent.element = multiselectCardElement;
     pageService = TestBed.get(PageService);
@@ -105,16 +113,21 @@ describe('MultiselectCard', () => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const allSpanEles = debugElement.queryAll(By.css('span'));
-    expect(allSpanEles[1].nativeElement.innerText).toEqual('testing multi select card label');
+    expect(allSpanEles[1].nativeElement.innerText).toEqual(
+      'testing multi select card label'
+    );
   }));
 
   it('onClick of anchor tag should call selectOption()', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const anchorEle = debugElement.query(By.css('a'));
-    spyOn(hostComponent, 'selectOption').and.callThrough()
+    spyOn(hostComponent, 'selectOption').and.callThrough();
     anchorEle.nativeElement.click();
-    expect(hostComponent.selectOption).toHaveBeenCalledWith('testingmulticard', hostComponent);
+    expect(hostComponent.selectOption).toHaveBeenCalledWith(
+      'testingmulticard',
+      hostComponent
+    );
   }));
 
   it('set value() should update the value property', async(() => {
@@ -177,14 +190,19 @@ describe('MultiselectCard', () => {
       hostComponent.element.leafState = '';
       hostComponent.element.path = 'test';
       spyOn(hostComponent, 'setState').and.returnValue('');
-      spyOn(hostComponent.form.controls.firstName, 'setValue').and.callThrough();
-      const eve = { config: { code: 'firstName' }, path: 'test', leafState: '' };
+      spyOn(
+        hostComponent.form.controls.firstName,
+        'setValue'
+      ).and.callThrough();
+      const eve = {
+        config: { code: 'firstName' },
+        path: 'test',
+        leafState: ''
+      };
       hostComponent.ngOnInit();
       pageService.logError(eve);
       expect((hostComponent as any).selectedOptions).toEqual('');
       expect(hostComponent.form.controls.firstName.setValue).toHaveBeenCalled();
     });
   });
-    
 });
-

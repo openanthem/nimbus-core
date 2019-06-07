@@ -1,13 +1,13 @@
 /**
  * @license
- * Copyright 2016-2018 the original author or authors.
- * 
+ * Copyright 2016-2019 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,38 +15,37 @@
  * limitations under the License.
  */
 
-
-import { NmMessageService } from './../../../services/toastmessage.service';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { async, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
 import {
-  Router,
   ActivatedRoute,
-  Route,
   ActivatedRouteSnapshot,
-  UrlSegment,
+  ParamMap,
   Params,
-  Data,
-  ParamMap
+  Route,
+  Router,
+  UrlSegment
 } from '@angular/router';
-import { of as observableOf,  Observable } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-
-import { FlowWrapper } from './flow-wrapper.component';
-import { PageService } from '../../../services/page.service';
+import { configureTestSuite } from 'ng-bullet';
+import { Observable, of as observableOf, Subject } from 'rxjs';
+import { AppInitService } from '../../../services/app.init.service';
+import { ConfigService } from '../../../services/config.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
-import { ConfigService } from '../../../services/config.service';
-import { Subject } from 'rxjs';
 import { LoggerService } from '../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
-import { AppInitService } from '../../../services/app.init.service';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
+import { PageService } from '../../../services/page.service';
+import { CUSTOM_STORAGE } from '../../../services/session.store';
+import { setup } from '../../../setup.spec';
+import { NmMessageService } from './../../../services/toastmessage.service';
+import { FlowWrapper } from './flow-wrapper.component';
+'use strict';
 
 let pageService, configService, router;
 
@@ -99,7 +98,12 @@ class MockRouter {
 }
 
 const declarations = [FlowWrapper];
-const imports = [RouterTestingModule, HttpModule, HttpClientTestingModule, StorageServiceModule];
+const imports = [
+  RouterTestingModule,
+  HttpModule,
+  HttpClientTestingModule,
+  StorageServiceModule
+];
 const providers = [
   { provide: PageService, useClass: MockPageService },
   { provide: ConfigService, useClass: MockConfigService },
@@ -115,11 +119,9 @@ const providers = [
 ];
 let fixture, hostComponent;
 describe('FlowWrapper', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FlowWrapper);
@@ -129,7 +131,7 @@ describe('FlowWrapper', () => {
     router = TestBed.get(Router);
   });
 
-  it('should create the FlowWrapper',  async(() => {
+  it('should create the FlowWrapper', async(() => {
     expect(hostComponent).toBeTruthy();
   }));
 
@@ -153,5 +155,4 @@ describe('FlowWrapper', () => {
   //   expect(router.navigate).toHaveBeenCalled();
   //   expect(pageService.loadFlowConfig).toHaveBeenCalled();
   // }));
-
 });

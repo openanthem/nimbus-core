@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
+import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -133,7 +134,13 @@ public class DefaultMongoModelRepository implements ModelRepository {
 				update.unset(path);
 			else
 				update.set(path, state);
-			getMongoOps().upsert(query, update, param.getRootDomain().getConfig().getRepoAlias());
+			
+			String repoAlias = param.getRootDomain().getConfig().getRepoAlias();
+			if (StringUtils.isBlank(repoAlias)) {
+				throw new InvalidConfigException("Core Persistent entity must be configured with "
+						+ Domain.class.getSimpleName() + " annotation. Not found for root model: " + param.getRootDomain());
+			}
+			getMongoOps().upsert(query, update, repoAlias);
 		} 
 		
 		return state;

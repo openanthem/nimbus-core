@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -185,12 +185,12 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	
 	@Test
 	public void t3_testGet_Ext() {
-		final String requestUri = "piedpiper/encryption_3.9/p/ext_client:7/_get";
+		final String requestUri = "piedpiper/encryption_3.9/p/ext_client/_get";
 		Command cmd = CommandUtils.prepareCommand(requestUri);
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
-		this.mockServerDefaultWs.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerDefaultWs.expect(requestTo("http://localhost:9095"))
 			.andRespond(withSuccess("{\"client\": {\"code\":\"example23\"}}", MediaType.APPLICATION_JSON));
 
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
@@ -205,26 +205,26 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		assertEquals("example23", param.findParamByPath("/client/code").getState());
 	}
 	
-	// TODO - Set client object in db.
-	@Ignore
 	@Test
-	public void t4_testGet() {
-		final String requestUri = "piedpiper/encryption_3.9/p/client:7/_get";
+	public void testExternalGetWithRefId() {
+		final String requestUri = "piedpiper/encryption_3.9/p/ext_client:42/_get";
 		Command cmd = CommandUtils.prepareCommand(requestUri);
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
-		this.mockServerDefaultWs.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerDefaultWs.expect(requestTo("http://localhost:9095"))
 			.andRespond(withSuccess("{\"client\": {\"code\":\"example23\"}}", MediaType.APPLICATION_JSON));
-		
+
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		
-		Param<?> param = (Param<?>) multiOp.getSingleResult();
+		Param<?> param = (Param<?>)multiOp.getSingleResult();
 		
-		assertNotNull("Param (Client) cannot be null", param.findParamByPath("/"));
-		assertNotNull("Param (client.code) cannot ne null", param.findParamByPath("/code"));
-		assertNotNull("ParamState (Client.code) cannot be null", param.findParamByPath("/code").getState());
+		assertNotNull("Param (ExtClient) cannot be null", param.findParamByPath("/"));
+		assertNotNull("Param (ExtClient.client.code) cannot ne null", param.findParamByPath("/client/code"));
+		assertNotNull("ParamState (ExtClient.Client.code) cannot be null", param.findParamByPath("/client/code").getState());
 		
+
+		assertEquals("example23", param.findParamByPath("/client/code").getState());
 	}
 
 	@Test

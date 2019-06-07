@@ -1,13 +1,13 @@
 /**
  * @license
- * Copyright 2016-2018 the original author or authors.
- * 
+ * Copyright 2016-2019 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,70 +15,58 @@
  * limitations under the License.
  */
 
-
-import { NmMessageService } from './../../../services/toastmessage.service';
 'use strict';
-import { PageService } from './../../../services/page.service';
-import { TestBed, async } from '@angular/core/testing';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
-import { Subject } from 'rxjs';
+
+import { async, TestBed } from '@angular/core/testing';
 import { JL } from 'jsnlog';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { chartMockParam } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
 import { ChartModule } from 'primeng/chart';
 import { TooltipModule } from 'primeng/primeng';
-import { WebContentSvc } from './../../../services/content-management.service';
+import { Subject } from 'rxjs';
 import { CustomHttpClient } from '../../../services/httpclient.service';
-import { LoggerService } from './../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from './../../../services/session.store';
-import { AppInitService } from './../../../services/app.init.service';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
-import { NmChart } from './chart.component';
-import { chartMockParam } from 'mockdata';
-import { TooltipComponent } from './../tooltip/tooltip.component';
+import { setup } from '../../../setup.spec';
 import { InputLabel } from '../form/elements/input-label.component';
+import { AppInitService } from './../../../services/app.init.service';
+import { LoggerService } from './../../../services/logger.service';
+import { PageService } from './../../../services/page.service';
+import { NmMessageService } from './../../../services/toastmessage.service';
+import { TooltipComponent } from './../tooltip/tooltip.component';
+import { NmChart } from './chart.component';
 
-let  param;
+let param;
 
 class MockPageService {
-    gridValueUpdate$: Subject<any>;
-    validationUpdate$: Subject<any>;
-    eventUpdate$: Subject<any>;
+  gridValueUpdate$: Subject<any>;
+  validationUpdate$: Subject<any>;
+  eventUpdate$: Subject<any>;
 
-    constructor() {
-        this.gridValueUpdate$ = new Subject();
-        this.validationUpdate$ = new Subject();
-        this.eventUpdate$ = new Subject();
+  constructor() {
+    this.gridValueUpdate$ = new Subject();
+    this.validationUpdate$ = new Subject();
+    this.eventUpdate$ = new Subject();
+  }
 
-    }
-
-    emitMockEventUpdate(a) {
-        this.eventUpdate$.next(a);
-    }
-}
-
-class MockWebContentSvc {
-
+  emitMockEventUpdate(a) {
+    this.eventUpdate$.next(a);
+  }
 }
 
 let fixture, hostComponent, pageService;
-const declarations = [ NmChart, InputLabel, TooltipComponent ];
+const declarations = [NmChart, InputLabel, TooltipComponent];
 const imports = [ChartModule, TooltipModule];
 const providers = [
-   CustomHttpClient,
-   {provide: PageService, useClass: MockPageService},
-   { provide: WebContentSvc, useClass: MockWebContentSvc },
-   { provide: 'JSNLOG', useValue: JL },
-   LoggerService,
-   NmMessageService,
-   AppInitService
+  CustomHttpClient,
+  { provide: PageService, useClass: MockPageService },
+  { provide: 'JSNLOG', useValue: JL },
+  LoggerService,
+  NmMessageService,
+  AppInitService
 ];
 
 describe('ChartComponent', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
 
   beforeEach(() => {
@@ -88,11 +76,11 @@ describe('ChartComponent', () => {
     pageService = TestBed.get(PageService);
   });
 
-  it('should create the Section',  async(() => {
+  it('should create the Section', async(() => {
     expect(hostComponent).toBeTruthy();
   }));
 
-  it('Convert to chart datastructure',  async(() => {
+  it('Convert to chart datastructure', async(() => {
     hostComponent.ngOnInit();
     fixture.detectChanges();
     pageService.emitMockEventUpdate(chartMockParam);
@@ -103,5 +91,4 @@ describe('ChartComponent', () => {
     expect(hostComponent.data.datasets[0].label).toEqual('SEARCH action');
     expect(hostComponent.data.datasets[1].label).toEqual('NEW action');
   }));
-
 });

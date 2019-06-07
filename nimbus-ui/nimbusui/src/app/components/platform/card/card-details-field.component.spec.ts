@@ -1,13 +1,13 @@
 /**
  * @license
- * Copyright 2016-2018 the original author or authors.
- * 
+ * Copyright 2016-2019 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,41 +15,54 @@
  * limitations under the License.
  */
 
-
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import { DropdownModule, TooltipModule } from 'primeng/primeng';
+
+import {
+  HashLocationStrategy,
+  Location,
+  LocationStrategy
+} from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { Component, Input, ViewChild } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { By } from '@angular/platform-browser';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
-import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
-import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
-
-import { PageService } from './../../../services/page.service';
-import { CardDetailsFieldComponent } from './card-details-field.component';
-import { InputText } from '../form/elements/textbox.component';
-import { TextArea } from '../form/elements/textarea.component';
-import { ComboBox } from '../form/elements/combobox.component';
-import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
-import { TooltipComponent } from '../tooltip/tooltip.component';
-import { SelectItemPipe } from '../../../pipes/select-item.pipe';
-import { CustomHttpClient } from '../../../services/httpclient.service';
-import { DisplayValueDirective } from '../../../directives/display-value.directive';
-import { InputLabel } from '../../platform/form/elements/input-label.component';
+import {
+  cardDetailsFieldInputLabel,
+  cardDetailsFieldInputLabelNoDate,
+  cardDetailsFieldNmDisplayValueParam,
+  cardDetailsFieldParam
+} from 'mockdata';
 import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
-import * as data from '../../../payload.json';
-import { Values, Param } from '../../../shared/param-state';
-import { SessionStoreService, CUSTOM_STORAGE } from './../../../services/session.store';
-import { LoaderService } from './../../../services/loader.service';
-import { ConfigService } from './../../../services/config.service';
-import { LoggerService } from '../../../services/logger.service';
+import { DropdownModule, TooltipModule } from 'primeng/primeng';
+import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
+import { SelectItemPipe } from '../../../pipes/select-item.pipe';
 import { AppInitService } from '../../../services/app.init.service';
-import { cardDetailsFieldInputLabel, cardDetailsFieldInputLabelNoDate, cardDetailsFieldParam, cardDetailsFieldNmDisplayValueParam } from 'mockdata';
+import { CustomHttpClient } from '../../../services/httpclient.service';
+import { LoggerService } from '../../../services/logger.service';
+import { setup } from '../../../setup.spec';
+import { Values } from '../../../shared/param-state';
+import { InputLabel } from '../../platform/form/elements/input-label.component';
+import { ComboBox } from '../form/elements/combobox.component';
+import { TextArea } from '../form/elements/textarea.component';
+import { InputText } from '../form/elements/textbox.component';
+import { TooltipComponent } from '../tooltip/tooltip.component';
+import { ConfigService } from './../../../services/config.service';
+import { LoaderService } from './../../../services/loader.service';
+import { PageService } from './../../../services/page.service';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from './../../../services/session.store';
 import { NmMessageService } from './../../../services/toastmessage.service';
+import { CardDetailsFieldComponent } from './card-details-field.component';
 
 @Component({
   template: '<div></div>',
@@ -65,7 +78,7 @@ class InPlaceEditorComponent {
 
   private componentRef: any;
   @ViewChild('container')
-  private container: any
+  private container: any;
   private inputInstance: any;
   @Input() element: any;
 }
@@ -82,27 +95,33 @@ const declarations = [
   DisplayValueDirective,
   InputLabel
 ];
-const imports = [FormsModule, DropdownModule, TooltipModule, HttpClientModule, HttpModule, StorageServiceModule];
+const imports = [
+  FormsModule,
+  DropdownModule,
+  TooltipModule,
+  HttpClientModule,
+  HttpModule,
+  StorageServiceModule
+];
 const providers = [
-  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE }, 
+  { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   { provide: 'JSNLOG', useValue: JL },
   { provide: LocationStrategy, useClass: HashLocationStrategy },
   Location,
-  SessionStoreService, 
-  CustomHttpClient, 
+  SessionStoreService,
+  CustomHttpClient,
   PageService,
   NmMessageService,
-  LoaderService, 
-  ConfigService, 
+  LoaderService,
+  ConfigService,
   LoggerService,
   AppInitService
 ];
 let fixture, hostComponent;
 
 describe('CardDetailsFieldComponent', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
 
   beforeEach(() => {
@@ -111,11 +130,11 @@ describe('CardDetailsFieldComponent', () => {
     hostComponent.element = cardDetailsFieldParam;
   });
 
-  it('should create the CardDetailsFieldComponent',  async(() => {
+  it('should create the CardDetailsFieldComponent', async(() => {
     expect(hostComponent).toBeTruthy();
   }));
 
-    it('inplaceEditor should be created', async(() => {
+  it('inplaceEditor should be created', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const inplaceEditorEle = debugElement.query(By.css('inplace-editor'));
@@ -176,7 +195,7 @@ describe('CardDetailsFieldComponent', () => {
     expect(inputLabelEle).toBeFalsy();
   }));
 
-  it('ngOnInit() should update fieldClass property for cols:6',  async(() => {
+  it('ngOnInit() should update fieldClass property for cols:6', async(() => {
     fixture.whenStable().then(() => {
       hostComponent.element.config.uiStyles.attributes.cols = '6';
       hostComponent.ngOnInit();
@@ -184,7 +203,7 @@ describe('CardDetailsFieldComponent', () => {
     });
   }));
 
-  it('ngOnInit() should update fieldClass property for cols:4',  async(() => {
+  it('ngOnInit() should update fieldClass property for cols:4', async(() => {
     fixture.whenStable().then(() => {
       hostComponent.element.config.uiStyles.attributes.cols = '4';
       hostComponent.ngOnInit();
@@ -192,7 +211,7 @@ describe('CardDetailsFieldComponent', () => {
     });
   }));
 
-  it('ngOnInit() should update fieldClass property for cols:3',  async(() => {
+  it('ngOnInit() should update fieldClass property for cols:3', async(() => {
     fixture.whenStable().then(() => {
       hostComponent.element.config.uiStyles.attributes.cols = '3';
       hostComponent.ngOnInit();
@@ -200,7 +219,7 @@ describe('CardDetailsFieldComponent', () => {
     });
   }));
 
-  it('ngOnInit() should update fieldClass property for cols:2',  async(() => {
+  it('ngOnInit() should update fieldClass property for cols:2', async(() => {
     fixture.whenStable().then(() => {
       hostComponent.element.config.uiStyles.attributes.cols = '2';
       hostComponent.ngOnInit();
@@ -208,7 +227,7 @@ describe('CardDetailsFieldComponent', () => {
     });
   }));
 
-  it('ngOnInit() should update fieldClass property for cols:1',  async(() => {
+  it('ngOnInit() should update fieldClass property for cols:1', async(() => {
     fixture.whenStable().then(() => {
       hostComponent.element.config.uiStyles.attributes.cols = '1';
       hostComponent.ngOnInit();
@@ -216,14 +235,14 @@ describe('CardDetailsFieldComponent', () => {
     });
   }));
 
-  it('value property should be updated with element.leafstate',  async(() => {
+  it('value property should be updated with element.leafstate', async(() => {
     hostComponent.element.leafState = 'test';
     hostComponent.element.values = [];
     hostComponent.value = '';
     expect(hostComponent.value).toEqual('test');
   }));
 
-  it('value property should be updated with element.values.label',  async(() => {
+  it('value property should be updated with element.values.label', async(() => {
     hostComponent.element.leafState = 'test';
     const testValue = new Values();
     testValue.code = 'test';
@@ -233,7 +252,7 @@ describe('CardDetailsFieldComponent', () => {
     expect(hostComponent.value).toEqual('tLabel');
   }));
 
-  it('value property should be updated with element.leafstate based on code',  async(() => {
+  it('value property should be updated with element.leafstate based on code', async(() => {
     hostComponent.element.leafState = 'test';
     const testValue = new Values();
     testValue.code = 'test1';
@@ -243,7 +262,7 @@ describe('CardDetailsFieldComponent', () => {
     expect(hostComponent.value).toEqual('test');
   }));
 
-  it('registerOnChange() should update the onChange property',  async(() => {
+  it('registerOnChange() should update the onChange property', async(() => {
     const test = () => {
       return true;
     };
@@ -251,7 +270,7 @@ describe('CardDetailsFieldComponent', () => {
     expect(hostComponent.onChange).toEqual(test);
   }));
 
-  it('writeValue() shouls call onChange()',  async(() => {
+  it('writeValue() shouls call onChange()', async(() => {
     hostComponent.element.leafState = 'test';
     hostComponent.element.values = [];
     spyOn(hostComponent, 'onChange').and.callThrough();
@@ -259,8 +278,8 @@ describe('CardDetailsFieldComponent', () => {
     hostComponent.writeValue(undefined);
     expect(hostComponent.onChange).toHaveBeenCalled();
   }));
-  
-  it('registerOnTouched() should update the onTouched property',  async(() => {
+
+  it('registerOnTouched() should update the onTouched property', async(() => {
     const test = () => {
       return true;
     };
@@ -268,12 +287,12 @@ describe('CardDetailsFieldComponent', () => {
     expect(hostComponent.onTouched).toEqual(test);
   }));
 
-  it('value getter() should return _value property value',  async(() => {
+  it('value getter() should return _value property value', async(() => {
     hostComponent.value = 'test';
     expect(hostComponent._value).toEqual('test');
   }));
 
-  it('set value() should update the value property',  async(() => {
+  it('set value() should update the value property', async(() => {
     hostComponent.element.leafState = 'test';
     const testValue = new Values();
     testValue.code = 'test1';
@@ -286,10 +305,14 @@ describe('CardDetailsFieldComponent', () => {
     hostComponent.element = cardDetailsFieldNmDisplayValueParam;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const divNmDisplayValueDivEle = debugElement.query(By.css('.textWrapBreakWord'));    
-    expect(divNmDisplayValueDivEle.nativeElement.classList[1]).toEqual(hostComponent.element.leafState);
-    expect(divNmDisplayValueDivEle.nativeElement.classList[2]).toEqual(hostComponent.element.config.code);
+    const divNmDisplayValueDivEle = debugElement.query(
+      By.css('.textWrapBreakWord')
+    );
+    expect(divNmDisplayValueDivEle.nativeElement.classList[1]).toEqual(
+      hostComponent.element.leafState
+    );
+    expect(divNmDisplayValueDivEle.nativeElement.classList[2]).toEqual(
+      hostComponent.element.config.code
+    );
   }));
-
 });
-
