@@ -1,3 +1,4 @@
+import { Dropdown } from 'primeng/primeng';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -45,7 +46,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         [required]="requiredCss">
 
     </nm-input-label>
-    <p-dropdown 
+    <p-dropdown #cb
         [options]="element.values | selectItemPipe" 
         [(ngModel)] = "value"
         [disabled]="disabled"
@@ -61,9 +62,18 @@ export class ComboBox extends BaseControl<String> {
     @ViewChild(NgModel) model: NgModel;
     @Input() autoWidth: boolean = false;
     @Input() placeholder: string = 'Please Select...';
-
+    @ViewChild('cb') cb: Dropdown;
     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
         super(controlService,wcs,cd);
     }
-
+    ngOnInit() {
+      this.cb.updateSelectedOption = (val: any): void =>{
+        this.cb.selectedOption = this.cb.findOption(val?val.toString():val, this.cb.optionsToDisplay);
+        if (this.cb.autoDisplayFirst && !this.placeholder && !this.cb.selectedOption && this.cb.optionsToDisplay && this.cb.optionsToDisplay.length && !this.cb.editable) {
+            this.cb.selectedOption = this.cb.optionsToDisplay[0];
+        }
+        this.cb.selectedOptionUpdated = true;
+      }
+    }
+    
 }
