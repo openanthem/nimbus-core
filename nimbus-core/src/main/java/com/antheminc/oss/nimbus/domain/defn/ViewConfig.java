@@ -3304,9 +3304,17 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Write javadoc-->
+	 * <p>A low-level framework annotation that is used to decorate other
+	 * annotations as holding supplemental information that should provided
+	 * alongside a view parameter.
+	 * 
+	 * <p>Decorating an annotation with {@link ViewParamBehavior} will result in
+	 * the decorated annotation's metadata being added to the resulting
+	 * parameter object as an {@link AnnotationConfig}, accessible via
+	 * {@link ParamConfig#getUiNatures()}.
 	 *
 	 * @since 1.0
+	 * @see com.antheminc.oss.nimbus.domain.model.config.builder.internal.AbstractEntityConfigBuilder
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value = { ElementType.ANNOTATION_TYPE })
