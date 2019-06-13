@@ -1616,7 +1616,16 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Write javadoc-->
+	 * <p>Informs the UI framework to invoke a {@link Action#_get} call to the
+	 * parameter created for the decorated field once the page has been fully
+	 * rendered. {@link Initialize} is commonly used as a way to trigger
+	 * {@link Config} executions only after the page has loaded.
+	 * 
+	 * <p>This annotation is only supported when decorating fields that are also
+	 * decorated with the following: <ul> <li>{@link Section}</li></ul>
+	 *
+	 * <p>Decorating other fields will not result in an error, but no action
+	 * will occur.
 	 *
 	 * @since 1.0
 	 */
