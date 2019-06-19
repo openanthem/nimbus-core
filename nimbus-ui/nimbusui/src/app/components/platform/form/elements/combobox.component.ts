@@ -28,6 +28,7 @@ import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { CounterMessageService } from './../../../../services/counter-message.service';
 import { BaseControl } from './base-control.component';
+import { Dropdown } from 'primeng/primeng';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -54,7 +55,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
       [required]="requiredCss"
     >
     </nm-input-label>
-    <p-dropdown
+    <p-dropdown #cb
       [options]="element.values | selectItemPipe: element"
       [(ngModel)]="value"
       [disabled]="disabled"
@@ -69,6 +70,7 @@ export class ComboBox extends BaseControl<String> {
   @ViewChild(NgModel) model: NgModel;
   @Input() autoWidth: boolean = false;
   @Input() placeholder: string = 'Please Select...';
+  @ViewChild('cb') cb: Dropdown;
 
   constructor(
     controlService: ControlSubscribers,
@@ -76,5 +78,15 @@ export class ComboBox extends BaseControl<String> {
     cms: CounterMessageService
   ) {
     super(controlService, cd, cms);
+  }
+
+  ngOnInit() {
+    this.cb.updateSelectedOption = (val: any): void =>{
+      this.cb.selectedOption = this.cb.findOption(val?val.toString():val, this.cb.optionsToDisplay);
+      if (this.cb.autoDisplayFirst && !this.placeholder && !this.cb.selectedOption && this.cb.optionsToDisplay && this.cb.optionsToDisplay.length && !this.cb.editable) {
+          this.cb.selectedOption = this.cb.optionsToDisplay[0];
+      }
+      this.cb.selectedOptionUpdated = true;
+    }
   }
 }
