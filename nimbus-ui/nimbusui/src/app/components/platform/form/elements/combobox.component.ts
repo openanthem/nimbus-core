@@ -88,5 +88,6 @@ export class ComboBox extends BaseControl<String> {
       }
       this.cb.selectedOptionUpdated = true;
     }
+    super.ngOnInit();
   }
 }
