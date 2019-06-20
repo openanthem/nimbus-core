@@ -30,7 +30,8 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
+import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection.LogLevel;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -40,8 +41,9 @@ import lombok.Setter;
  * @author Jayant Chaudhuri
  *
  */
-@EnableLoggingInterceptor
+
 @Getter 
+@EnableAPIMetricCollection(args = LogLevel.info)
 public class CommandExecutorTaskDelegate implements JavaDelegate{
 	
 	CommandExecutorGateway commandGateway;
