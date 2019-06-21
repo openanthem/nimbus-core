@@ -46,10 +46,11 @@ export class TableComponentConstants {
   public static readonly allowedInlineEditColumnStylesAlias: string[] = [
     ViewComponent.gridcolumn.toString(),
     ComponentTypes.textBox.toString(),
-    ComponentTypes.comboBox.toString()
+    ComponentTypes.comboBox.toString(),
+    'Calendar' // TODO replace with component types
   ];
 
-  public static readonly allowedInlineEditNmInputComponents: string[] = [
+  public static readonly componentsEditableAsText: string[] = [
     ViewComponent.gridcolumn.toString(),
     ComponentTypes.textBox.toString()
   ];

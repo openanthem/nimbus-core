@@ -1177,16 +1177,16 @@ public class ViewConfig {
 	 * is treated as the definition for row item data in the final rendered
 	 * grid. This is referred to as the <i>collection element type</i>. The
 	 * following components may be used to decorate fields in the collection
-	 * element type: <ul> <li>{@link ComboBox}</li> <li>{@link GridColumn}</li>
-	 * <li>{@link GridRowBody}</li> <li>{@link LinkMenu}</li> <li>{@link Link}</li> </ul>
+	 * element type: <ul> <li>{@link Calendar}</li> <li>{@link ComboBox}</li>
+	 * <li>{@link GridColumn}</li> <li>{@link GridRowBody}</li>
+	 * <li>{@link LinkMenu}</li> <li>{@link Link}</li> </ul>
 	 * 
-	 * <p>Grid supports in-line editing. When in editable mode, {@link GridColumn} 
-	 * components will be rendered as {@link TextBox} components. Other supported 
-	 * components that need to use different UI components to capture editable 
-	 * information will use an appropriate UI component in editable mode. 
-	 * (e.g. a collection element field decorated with {@link ComboBox} will be 
-	 * rendered as a {@link GridColumn} in non-editable mode, but as a {@link ComboBox} 
-	 * when in editable mode.) 
+	 * <p><b>Configuring inline editing</b>
+	 * 
+	 * <p>Grid supports in-line editing for the first-level fields of each row
+	 * item (editing expanded row content fields are not supported). When in
+	 * editable mode, acceptable UI components will be rendered with respect to
+	 * the type of annotation decorating each editable field.
 	 * 
 	 * @since 1.0
 	 */
@@ -1195,6 +1195,14 @@ public class ViewConfig {
 	@ViewStyle
 	@OnStateLoad
 	public @interface Grid {
+		/**
+		 * <p>Add an add row button to that allows for adding a new element to
+		 * be added to this decorated parameter using the in-line editing
+		 * feature.
+		 * @see #onAdd()
+		 */
+		boolean addRow() default false;
+
 		String alias() default "Grid";
 
 		boolean clearAllFilters() default false;
@@ -1208,13 +1216,47 @@ public class ViewConfig {
 
 		boolean dataEntryField() default true;
 
+		/**
+		 * <p>Add an edit button to each record that allows for in-line editing.
+		 * @see #onEdit()
+		 */
+		boolean editRow() default false;
+
 		boolean expandableRows() default false;
 
 		boolean export() default false;
 
+		/**
+		 * <p>When {@code true}, selecting the "select all" checkbox in the
+		 * header of the rendered grid will select all the records in the
+		 * dataset across all pages. When {@code false}, only within the current
+		 * page items will be selected.
+		 */
+		boolean headerCheckboxToggleAllPages() default false;
+
 		boolean isTransient() default false;
 
 		boolean lazyLoad() default false;
+
+		/**
+		 * <p>A param path relative to the Grid param created by this decorated
+		 * field, on which to invoke an {@link Action._get} call whenever a new
+		 * grid record is added. The {@link #addRow()} feature must be enabled
+		 * for this behavior to occur. <p>This mandates that a field having the
+		 * same value as {@code onAdd} must be defined as a sibling parameter to
+		 * this decorated field.
+		 */
+		String onAdd() default "../_action_onAdd";
+
+		/**
+		 * <p>A param path relative to the collection element param being edited
+		 * on which to invoke an {@link Action._get} call whenever a grid record
+		 * is edited. The {@link #editRow()} feature must be enabled for this
+		 * behavior to occur. <p>This mandates that a field having the same name
+		 * as {@code onEdit} must be defined in the generic type of the
+		 * decorated collection parameter.
+		 */
+		String onEdit() default "_action_onEdit";
 
 		boolean onLoad() default false;
 
@@ -1239,13 +1281,13 @@ public class ViewConfig {
 		 * @see #postButton()
 		 */
 		String postButtonTargetPath() default "";
-		
+
 		/**
 		 * <p>A parameter path relative to the decorated this decorated field on
 		 * which to invoke an HTTP POST
 		 * @see #postButton()
 		 */
-		String postButtonUri() default "";	
+		String postButtonUri() default "";
 
 		boolean postEventOnChange() default false;
 
@@ -1259,48 +1301,6 @@ public class ViewConfig {
 		boolean showHeader() default true;
 
 		String url() default "";
-		
-		/**
-		 * <p>When {@code true}, selecting the "select all" checkbox in the
-		 * header of the rendered grid will select all the records in the
-		 * dataset across all pages. When {@code false}, only within the current
-		 * page items will be selected.
-		 */
-		boolean headerCheckboxToggleAllPages() default false;
-		
-		/**
-		 * <p>Add an edit button to each record that allows for in-line editing.
-		 * @see #onEdit()
-		 */
-		boolean editRow() default false;
-
-		/**
-		 * <p>Add an add row button to that allows for adding a new element to
-		 * be added to this decorated parameter using the in-line editing
-		 * feature.
-		 * @see #onAdd()
-		 */
-		boolean addRow() default false;
-		
-		/**
-		 * <p>A param path relative to the collection element param being edited
-		 * on which to invoke an {@link Action._get} call whenever a grid record
-		 * is edited. The {@link #editRow()} feature must be enabled for this
-		 * behavior to occur. <p>This mandates that a field having the same name
-		 * as {@code onEdit} must be defined in the generic type of the
-		 * decorated collection parameter.
-		 */
-		String onEdit() default "_action_onEdit";
-		
-		/**
-		 * <p>A param path relative to the Grid param created by this decorated
-		 * field, on which to invoke an {@link Action._get} call whenever a new
-		 * grid record is added. The {@link #addRow()} feature must be enabled
-		 * for this behavior to occur. <p>This mandates that a field having the
-		 * same value as {@code onAdd} must be defined as a sibling parameter to
-		 * this decorated field.
-		 */
-		String onAdd() default "../_action_onAdd";
 	}
 
 	/**
