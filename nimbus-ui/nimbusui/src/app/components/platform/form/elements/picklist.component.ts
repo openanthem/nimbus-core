@@ -355,14 +355,13 @@ export class OrderablePickList extends BaseElement
    * passed as @Input("selectedValues") to the component.
    * This particularly comes into picture when the component is rendered in edit mode with pre loaded values
    */
-  public getDesc(itm: any): string {
-    let displayVal: string;
+  public getDesc(itm : any) : string {
     const values = this.selectedvalues;
-    displayVal = values.find(value => value && value.code === itm).label;
-    if (displayVal === undefined) {
+    let displayVal = values.find(value => (value && value.code === itm));
+    if (!displayVal || displayVal.label === undefined) {
       displayVal = itm;
     }
-    return displayVal;
+    return displayVal.label;
   }
 
   /**
