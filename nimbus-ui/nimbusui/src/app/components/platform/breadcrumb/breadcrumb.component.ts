@@ -73,44 +73,54 @@ export class BreadcrumbComponent {
     }
 
     private _loadBreadcrumbs(): void {
-        // if activatedRoute is the "home" route, show no breadcrumbs
-        if (!this._breadcrumbService.isHomeRoute(this._activatedRoute)) {
-            if(this.loadHomeCrumb) {
-                this.breadcrumbs = [];
-                let crumb = this._breadcrumbService.getHomeBreadcrumb();
-                if(crumb) {
-                    this.loadHomeCrumb = false;
-                    this.breadcrumbs.push(crumb);
-                }
-            }
-            let url = this._router.url.split('/');
-            let cr = null;
-            let ind = 0;
-            //check if the page to be navigated is already in the session store for bread crumbs
-            if(url.length > 3) {
-                cr = this._breadcrumbService.getByPageId(url[3].split('?')[0]);
-            }
-            //check if the domain of the page to be navigated is part of the breadcrumb already
-            if(this.breadcrumbs.length > 0) {
-                ind = this.breadcrumbs.findIndex(b => b.url.split('/')[2] == url[2])
-            }
-            //check if the navigation is via the menu link so that the breadcrumb can be set appropriately
-            if(cr && cr.url.indexOf('?') > 0) {
-                let index = this.breadcrumbs.findIndex(d => d.url.split('/')[2] == cr.url.split('/')[3].split('=')[1]);
-                if(index > -1)
-                    this.breadcrumbs.splice((index + 1),this.breadcrumbs.length - (index+1));
-            } else if(ind > -1) { //check if the navigation done via buttonclick/link etc has a domain already in breadcrumb
-                this.breadcrumbs.splice(ind, this.breadcrumbs.length - ind);
-            }
-            if(cr) {
-                //add the crumb to the list
-                this.breadcrumbs.push(this._breadcrumbService.addBreadCrumb(cr));
-            }
-        } else {
-
-            // if it is the "home" route, reset the breadcrumbs
-            this.breadcrumbs = [];
-            this.loadHomeCrumb = true;
+      // if activatedRoute is the "home" route, show no breadcrumbs
+      if (!this._breadcrumbService.isHomeRoute(this._activatedRoute)) {
+        if (this.loadHomeCrumb) {
+          this.breadcrumbs = [];
+          let crumb = this._breadcrumbService.getHomeBreadcrumb();
+          if (crumb) {
+           this.loadHomeCrumb = false;
+            this.breadcrumbs.push(crumb);
+          }
         }
+        let url = this._router.url.split('/');
+        let cr = null;
+        let ind = 0;
+        //check if the page to be navigated is already in the session store for bread crumbs
+        if (url.length > 3) {
+          cr = this._breadcrumbService.getByPageId(url[3].split('?')[0]);
+        }
+        //check if the domain of the page to be navigated is part of the breadcrumb already
+        if (this.breadcrumbs.length > 0 && this.breadcrumbs.length != 1 ) {
+          ind = this.breadcrumbs.findIndex(b => b.url.split('/')[2] == url[2]);
+        }
+        //check if the navigation is via the menu link so that the breadcrumb can be set appropriately
+        if (cr && cr.url.indexOf('?') > 0) {
+          let index = this.breadcrumbs.findIndex(
+            d => d.url.split('/')[2] == cr.url.split('/')[3].split('=')[1]
+          );
+          if (index > -1)
+            this.breadcrumbs.splice(
+              index + 1,
+              this.breadcrumbs.length - (index + 1)
+            );
+        } else if (ind > 0) {
+          //check if the navigation done via buttonclick/link etc has a domain already in breadcrumb
+          this.breadcrumbs.splice(ind, this.breadcrumbs.length - ind);
+        }
+        if (cr) {
+          // check if the breadcrumb already exists
+          let crumbExists = this.breadcrumbs.findIndex(x => x.id == cr.id);
+          if (crumbExists === -1) {
+            this.breadcrumbs.push(cr);
+          } else {
+            this.breadcrumbs.splice(crumbExists + 1);
+          }
+        }
+      } else {
+        // if it is the "home" route, reset the breadcrumbs
+        this.breadcrumbs = [];
+        this.loadHomeCrumb = true;
+      }
     }
 }
