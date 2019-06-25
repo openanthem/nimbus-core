@@ -357,12 +357,9 @@ export class OrderablePickList extends BaseElement
    */
   public getDesc(itm : any) : string {
     const values = this.selectedvalues;
-    let displayVal = values.find(value => (value && value.code === itm));
-    if (!displayVal || displayVal.label === undefined) {
-      displayVal = itm;
-    }
-    return displayVal.label;
-  }
+    let val = values.find(value => (value && value.code === itm));
+    return val ? val.label : itm;
+ }
 
   /**
    * This method validates if there are duplicate values in both source and target.
