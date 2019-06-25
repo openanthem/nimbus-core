@@ -116,6 +116,10 @@ public class VPSampleViewPageGreen {
 		@Values(url = "a/b/p/sampletask/_search?fn=lookup&orderby=sampletask.taskName.asc()&projection.mapsTo=code:id,label:taskName")
 		private List<String> sortedDynamicValues;
 		
+		@ComboBox
+		@Values(url = "a/b/p/sampletask/_search?fn=lookup&projection.mapsTo=code:taskName,label:taskName")
+		private String comboboxWithStringId;
+		
 		@TextBox(postEventOnChange = true)
 		@Path
 		@ActivateConditional(when = "state == 'showit'", targetPath = "/../unmappedNested")
