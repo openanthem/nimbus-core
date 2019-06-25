@@ -138,7 +138,7 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 				Object code = this.expressionEvaluator.getValue(cd, model);
 				Object label = this.expressionEvaluator.getValue(lb, model);
 				if(code!= null && label !=null) {
-					paramValues.add(new ParamValue(code.toString(), label.toString()));
+					paramValues.add(new ParamValue(code, label.toString()));
 				}
 			}
 			return sortIfApplicable(paramValues, mConfig, cmd);

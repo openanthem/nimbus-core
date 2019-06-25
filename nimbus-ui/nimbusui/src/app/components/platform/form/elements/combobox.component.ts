@@ -82,7 +82,7 @@ export class ComboBox extends BaseControl<String> {
 
   ngOnInit() {
     this.cb.updateSelectedOption = (val: any): void =>{
-      this.cb.selectedOption = this.cb.findOption(val?val.toString():val, this.cb.optionsToDisplay);
+      this.cb.selectedOption = this.cb.findOption(val, this.cb.optionsToDisplay);
       if (this.cb.autoDisplayFirst && !this.placeholder && !this.cb.selectedOption && this.cb.optionsToDisplay && this.cb.optionsToDisplay.length && !this.cb.editable) {
           this.cb.selectedOption = this.cb.optionsToDisplay[0];
       }
