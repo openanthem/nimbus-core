@@ -66,14 +66,4 @@ export class ComboBox extends BaseControl<String> {
   constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
       super(controlService,wcs,cd);
   }
-  
-  ngOnInit() {
-    this.cb.updateSelectedOption = (val: any): void =>{
-      this.cb.selectedOption = this.cb.findOption(val, this.cb.optionsToDisplay);
-      if (this.cb.autoDisplayFirst && !this.placeholder && !this.cb.selectedOption && this.cb.optionsToDisplay && this.cb.optionsToDisplay.length && !this.cb.editable) {
-          this.cb.selectedOption = this.cb.optionsToDisplay[0];
-      }
-      super.ngOnInit();
-    }
-  } 
 }
