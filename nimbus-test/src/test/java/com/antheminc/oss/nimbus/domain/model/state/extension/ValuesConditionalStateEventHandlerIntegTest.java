@@ -59,6 +59,7 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 		//AtomicInteger counter = new AtomicInteger(0);
 		final SampleCoreEntity core = new SampleCoreEntity();
 		core.setId(new Random().nextLong());
+		core.set_tenantId(TENANT_ID);
 		mongo.insert(core, "sample_core");
 		REF_ID = core.getId();
 		assertNotNull(REF_ID);

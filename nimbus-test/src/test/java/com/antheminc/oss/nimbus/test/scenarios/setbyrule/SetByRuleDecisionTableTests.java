@@ -53,6 +53,7 @@ public class SetByRuleDecisionTableTests extends AbstractFrameworkIngerationPers
 	public void setup() {		
 		final DecisionTableTestCoreModel core = new DecisionTableTestCoreModel();
 		core.setId(new Random().nextLong());
+		core.set_tenantId(TENANT_ID);
 		core.setStateCheckParameter("Complete");
 		mongo.insert(core, ASSOCIATED_PARAM_CORE);
 		ASSOCIATED_PARAM_ID = core.getId();
@@ -67,6 +68,7 @@ public class SetByRuleDecisionTableTests extends AbstractFrameworkIngerationPers
 		
 		final SampleSetByRuleCore core = new SampleSetByRuleCore();
 		core.setId(new Random().nextLong());
+		core.set_tenantId(TENANT_ID);
 		core.setAssociatedParamId(ASSOCIATED_PARAM_ID);
 		mongo.insert(core, ENTITY_CORE_ALIAS);
 		REF_ID = core.getId();

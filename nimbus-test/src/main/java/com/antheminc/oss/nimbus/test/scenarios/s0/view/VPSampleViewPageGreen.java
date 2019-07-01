@@ -109,11 +109,11 @@ public class VPSampleViewPageGreen {
 		private SampleForm view_nc_form;
 		
 		@ComboBox
-		@Values(url = "a/b/p/sampletask/_search?fn=lookup&projection.mapsTo=code:id,label:taskName")
+		@Values(url = "/p/sampletask/_search?fn=lookup&projection.mapsTo=code:id,label:taskName")
 		private List<String> unsortedDynamicValues;
 		
 		@ComboBox
-		@Values(url = "a/b/p/sampletask/_search?fn=lookup&orderby=sampletask.taskName.asc()&projection.mapsTo=code:id,label:taskName")
+		@Values(url = "/p/sampletask/_search?fn=lookup&orderby=sampletask.taskName.asc()&projection.mapsTo=code:id,label:taskName")
 		private List<String> sortedDynamicValues;
 		
 		@TextBox(postEventOnChange = true)

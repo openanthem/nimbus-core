@@ -57,6 +57,7 @@ public class RuleStateEventHandlerTest extends AbstractStateEventHandlerTests {
 		
 		final SampleCoreEntity core = new SampleCoreEntity();
 		core.setId(new Random().nextLong());
+		core.set_tenantId(TENANT_ID);
 		mongo.insert(core, ENTITY_CORE);
 		REF_ID = core.getId();
 		assertNotNull(REF_ID);

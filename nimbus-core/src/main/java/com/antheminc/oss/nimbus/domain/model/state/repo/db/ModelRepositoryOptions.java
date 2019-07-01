@@ -15,6 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
+
 /**
  * <p>A simple encapsulation for common options across {@link ModelRepository}
  * implementations.
@@ -24,4 +26,25 @@ package com.antheminc.oss.nimbus.domain.model.state.repo.db;
  */
 public interface ModelRepositoryOptions {
 
+	/**
+	 * <p> A strategy definition used to determine the read/write control in
+	 * relation to tenancy.
+	 * 
+	 * @author Tony Lopez
+	 *
+	 */
+	public enum TenancyStrategy {
+
+		/**
+		 * <p> Default strategy that implies no tenancy strategy should be used.
+		 */
+		NONE,
+	}
+
+	/**
+	 * <p> Get the strategy that should be used to determine how data should be
+	 * handled in regards to tenancy.
+	 * @return the {@link TenancyStrategy} object
+	 */
+	TenancyStrategy getTenancyStrategy();
 }

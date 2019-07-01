@@ -57,6 +57,7 @@ public class ModalStateEventHandlerTest extends AbstractStateEventHandlerTests {
 		AtomicInteger counter = new AtomicInteger(0);
 		final SampleCoreEntity core = new SampleCoreEntity();
 		core.setId(Long.valueOf(counter.getAndIncrement()));
+		core.set_tenantId(TENANT_ID);
 		mongo.insert(core, "sample_core");
 		REF_ID = core.getId();
 		assertNotNull(REF_ID);

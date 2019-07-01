@@ -58,6 +58,7 @@ public class ParamValuesContextPathResolverTest extends AbstractFrameworkIntegra
 	public void t00_paramvalues_static_context_resolve() {
 		S7C_CoreMain s7c_main_1 = new S7C_CoreMain();
 		s7c_main_1.setId(CORE_REF_ID_1);
+		s7c_main_1.set_tenantId(TENANT_ID);
 		s7c_main_1.setAttr1_clone("test_0");
 		mongo.insert(s7c_main_1, "s7c_main");
 		
@@ -83,6 +84,7 @@ public class ParamValuesContextPathResolverTest extends AbstractFrameworkIntegra
 	public void t01_paramvalues_dynamic_context_resolve_conditional() {
 		S7C_CoreMain s7c_main_1 = new S7C_CoreMain();
 		s7c_main_1.setId(CORE_REF_ID_2);
+		s7c_main_1.set_tenantId(TENANT_ID);
 		s7c_main_1.setAttr1_clone("test_1");
 		mongo.insert(s7c_main_1, "s7c_main");
 		
@@ -108,6 +110,7 @@ public class ParamValuesContextPathResolverTest extends AbstractFrameworkIntegra
 	public void t02_paramvalues_dynamic_context_resolve_get() {
 		S7C_CoreMain s7c_main_1 = new S7C_CoreMain();
 		s7c_main_1.setId(CORE_REF_ID_3);
+		s7c_main_1.set_tenantId(TENANT_ID);
 		s7c_main_1.setAttr1_clone("test_2");
 		mongo.insert(s7c_main_1, "s7c_main");
 		
@@ -132,6 +135,7 @@ public class ParamValuesContextPathResolverTest extends AbstractFrameworkIntegra
 	public void t03_paramvalues_static_new() {
 		S7C_CoreStatic coreStatic = new S7C_CoreStatic();
 		coreStatic.setId(new Random().nextLong());
+		coreStatic.set_tenantId(TENANT_ID);
 		coreStatic.setStaticAttr("test_01");
 		mongo.insert(coreStatic, "s7c_corestatic");
 		

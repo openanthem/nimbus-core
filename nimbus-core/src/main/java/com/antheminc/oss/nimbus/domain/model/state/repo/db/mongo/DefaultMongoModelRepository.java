@@ -31,6 +31,7 @@ import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
@@ -39,6 +40,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.MongoIdSequenceRepository;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.ModelRepositoryOptions.TenancyStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositoryOptions;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBSearchOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
@@ -54,6 +56,8 @@ import lombok.Getter;
 @Getter
 public class DefaultMongoModelRepository implements ModelRepository {
 
+	public static final String FIELD_NAME_MONGO_ID = "_id";
+	
 	private final MongoOperations mongoOps;
 	private final IdSequenceRepository idSequenceRepo;
 	private final JavaBeanHandler beanHandler;
@@ -64,7 +68,6 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		this.mongoOps = mongoOps;
 		this.beanHandler = beanResolver.get(JavaBeanHandler.class);
 		this.options = options;
-		
 		this.idSequenceRepo = new MongoIdSequenceRepository(mongoOps);
 	}
 	
@@ -78,12 +81,18 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	public <T> T _new(Command cmd, ModelConfig<T> mConfig, T newState) {
 		// detect id paramConfig
 		ParamConfig<?> pId = Optional.ofNullable(mConfig.getIdParamConfig())
-								.orElseThrow(()->new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param."));
-		
+				.orElseThrow(() -> new InvalidConfigException(
+						"Persistable Entity: " + mConfig.getReferredClass() + " must be configured with @Id param."));
+
 		Long id = getIdSequenceRepo().getNextSequenceId(mConfig.getRepoAlias());
-		
+
 		ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(), pId.getCode());
 		getBeanHandler().setValue(va, newState, id);
+
+		Long tenantId = cmd.acquireTenantId();
+		va = JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(),
+				Constants.FIELD_NAME_TENANT_ID.code);
+		getBeanHandler().setValue(va, newState, tenantId);
 		
 		return newState;
 	}
@@ -97,8 +106,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	@Override
 	public <T> T _get(Command cmd, ModelConfig<T> mConfig) {
 		Long id = cmd.getRefId(Type.DomainAlias);
-		T state = getMongoOps().findById(id, mConfig.getReferredClass(), mConfig.getRepoAlias());
-		return state;
+		return getMongoOps().findById(id, mConfig.getReferredClass(), mConfig.getRepoAlias());
 	}
 	
 	private String resolvePath(String path) {
@@ -112,7 +120,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		// TODO Soham: Refactor
 		String path = resolvePath(param.getBeanPath());
 	  
-		Query query = new Query(Criteria.where("_id").is(param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias)));
+		Query query = new Query(Criteria.where(FIELD_NAME_MONGO_ID).is(param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias)));
 		Update update = new Update();
 		if(StringUtils.isBlank(path) || StringUtils.equalsIgnoreCase(path, "/c")) {
 			getMongoOps().save(state, param.getRootDomain().getConfig().getRepoAlias());
@@ -169,9 +177,8 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		Class<T> referredClass = (Class<T>)param.getRootDomain().getConfig().getReferredClass();
 		String alias = param.getRootDomain().getConfig().getRepoAlias();
 		
-		Query query = new Query(Criteria.where("_id").is(id));
-		T state = getMongoOps().findAndRemove(query, referredClass, alias);
-		return state;
+		Query query = new Query(Criteria.where(FIELD_NAME_MONGO_ID).is(id));
+		return getMongoOps().findAndRemove(query, referredClass, alias);
 	}
 
 	@Override

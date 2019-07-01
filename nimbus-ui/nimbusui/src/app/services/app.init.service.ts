@@ -56,7 +56,7 @@ export class AppInitService {
     /*Initially populate the APP_COMMAND_URL with a default value - 
         which may be overwritten with the clientprovided command url in the landing page */
     if (ServiceConstants.APP_COMMAND_URL === undefined) {
-      ServiceConstants.APP_COMMAND_URL = '/client/org/app';
+      ServiceConstants.APP_COMMAND_URL = '/client/1/app';
     }
 
     const docObj = {

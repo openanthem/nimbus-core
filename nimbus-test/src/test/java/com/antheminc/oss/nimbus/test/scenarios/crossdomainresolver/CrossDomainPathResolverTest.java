@@ -325,6 +325,7 @@ public class CrossDomainPathResolverTest extends AbstractStateEventHandlerTests 
 		Long id = new Random().nextLong();
 		SampleCoreEntity sample_core = new SampleCoreEntity();
 		sample_core.setId(id);
+		sample_core.set_tenantId(TENANT_ID);
 		sample_core.setAttr_String("orange");
 		mongo.insert(sample_core, "sample_core");
 		
@@ -350,6 +351,7 @@ public class CrossDomainPathResolverTest extends AbstractStateEventHandlerTests 
 		Long id = new Random().nextLong();
 		SampleCoreEntity sample_core = new SampleCoreEntity();
 		sample_core.setId(id);
+		sample_core.set_tenantId(TENANT_ID);
 		sample_core.setAttr_String("orange");
 		mongo.insert(sample_core, "sample_core");
 		

@@ -83,7 +83,7 @@ public class QuadModelCollectionsTest extends AbstractFrameworkTest {
 		Command c = new Command(PLATFORM_ROOT + "/view_simplecase/_new");
 
 		c.createRoot(Type.ClientAlias, CLIENT_ID)
-			.createNext(Type.ClientOrgAlias, ORG_ID)
+			.createNext(Type.TENANT_ID, String.valueOf(TENANT_ID))
 			.createNext(Type.AppAlias, APP_ID)
 			.createNext(Type.PlatformMarker, "p")
 			.createNext(Type.DomainAlias, "view_simplecase")

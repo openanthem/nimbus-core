@@ -98,6 +98,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		expectedValues.add(new ParamValue("code1", "label1", "desc1"));
 		final StaticCodeValue expected = new StaticCodeValue("/status0", expectedValues);
 		expected.setId(new Random().nextLong());
+		expected.set_tenantId(TENANT_ID);
 		this.mongoOps.insert(expected, Constants.STATIC_CODE_VALUE.code);
 		
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/status0')");
@@ -129,6 +130,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		expectedValues.add(new ParamValue(Long.valueOf(2), "label2", "desc2"));
 		final StaticCodeValue expected = new StaticCodeValue("/status1", expectedValues);
 		expected.setId(new Random().nextLong());
+		expected.set_tenantId(TENANT_ID);
 		this.mongoOps.insert(expected, Constants.STATIC_CODE_VALUE.code);
 		
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/status1')&orderby=code.desc()");
@@ -162,6 +164,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		expectedValues.add(new ParamValue(Long.valueOf(2), "slabel2", "sdesc2"));
 		final StaticCodeValue expected = new StaticCodeValue("/status1", expectedValues);
 		expected.setId(new Random().nextLong());
+		expected.set_tenantId(TENANT_ID);
 		this.mongoOps.insert(expected, Constants.STATIC_CODE_VALUE.code);
 		
 		final List<ParamValue> expectedValues2 = new ArrayList<>();
@@ -169,6 +172,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		expectedValues2.add(new ParamValue(Long.valueOf(2), "clabel2", "cdesc2"));
 		final StaticCodeValue expected2 = new StaticCodeValue("/category", expectedValues);
 		expected2.setId(new Random().nextLong());
+		expected2.set_tenantId(TENANT_ID);
 		this.mongoOps.insert(expected2, Constants.STATIC_CODE_VALUE.code);
 		
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=query&orderby=staticCodeValue.paramCode.desc()");
@@ -204,6 +208,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		expectedValues.add(new ParamValue("ACL", "Anticardiolpin Antibodies", null));
 		final StaticCodeValue expected = new StaticCodeValue("anything", expectedValues);
 		expected.setId(new Random().nextLong());
+		expected.set_tenantId(TENANT_ID);
 		this.mongoOps.insert(expected, Constants.STATIC_CODE_VALUE.code);
 		
 		assertEquals("Anticardiolpin Antibodies", this.labelConverter.serialize("ACL"));
@@ -282,6 +287,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		expectedValues.add(new ParamValue("code1", "label1", "desc1"));
 		final StaticCodeValue expected = new StaticCodeValue("/status", expectedValues);
 		expected.setId(new Random().nextLong());
+		expected.set_tenantId(TENANT_ID);
 		this.mongoOps.insert(expected, Constants.STATIC_CODE_VALUE.code);
 		
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&projection.alias=vstaticCodeValue");
@@ -301,6 +307,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		SampleDomain entity1 = new SampleDomain();
 		SampleNestedDomain nestedEntity1 = new SampleNestedDomain();
 		entity1.setId(2L);
+		entity1.set_tenantId(TENANT_ID);
 		entity1.setAttr_String("searchString");
 		nestedEntity1.setNested_attr_String("nestedAttribute1");
 		entity1.setAttr_NestedEntity(nestedEntity1);
@@ -308,6 +315,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		SampleDomain entity2 = new SampleDomain();
 		SampleNestedDomain nestedEntity2 = new SampleNestedDomain();
 		entity2.setId(3L);
+		entity2.set_tenantId(TENANT_ID);
 		entity2.setAttr_String("searchString1");
 		nestedEntity2.setNested_attr_String("nestedAttribute2");
 		entity2.setAttr_NestedEntity(nestedEntity2);
@@ -367,6 +375,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		SampleDomain entity1 = new SampleDomain();
 		SampleNestedDomain nestedEntity1 = new SampleNestedDomain();
 		entity1.setId(2L);
+		entity1.set_tenantId(TENANT_ID);
 		entity1.setAttr_String("searchString");
 		nestedEntity1.setNested_attr_String("nestedAttribute1");
 		entity1.setAttr_NestedEntity(nestedEntity1);
@@ -374,6 +383,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		SampleDomain entity2 = new SampleDomain();
 		SampleNestedDomain nestedEntity2 = new SampleNestedDomain();
 		entity2.setId(3L);
+		entity2.set_tenantId(TENANT_ID);
 		entity2.setAttr_String("searchString1");
 		nestedEntity2.setNested_attr_String("nestedAttribute2");
 		entity2.setAttr_NestedEntity(nestedEntity2);
@@ -411,6 +421,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		SampleDomain entity1 = new SampleDomain();
 		SampleNestedDomain nestedEntity1 = new SampleNestedDomain();
 		entity1.setId(2L);
+		entity1.set_tenantId(TENANT_ID);
 		entity1.setAttr_String("searchString");
 		nestedEntity1.setNested_attr_String("nestedAttribute1");
 		entity1.setAttr_NestedEntity(nestedEntity1);
@@ -418,6 +429,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		SampleDomain entity2 = new SampleDomain();
 		SampleNestedDomain nestedEntity2 = new SampleNestedDomain();
 		entity2.setId(3L);
+		entity2.set_tenantId(TENANT_ID);
 		entity2.setAttr_String("searchString1");
 		nestedEntity2.setNested_attr_String("nestedAttribute2");
 		entity2.setAttr_NestedEntity(nestedEntity2);
@@ -448,8 +460,10 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		this.mongoOps.dropCollection(Constants.STATIC_CODE_VALUE.code);
 		StaticCodeValue scv = new StaticCodeValue("/status", null);
 		scv.setId(new Random().nextLong());
+		scv.set_tenantId(TENANT_ID);
 		StaticCodeValue scv2 = new StaticCodeValue("/status", null);
 		scv2.setId(new Random().nextLong());
+		scv2.set_tenantId(TENANT_ID);
 		this.mongoOps.insert(scv, Constants.STATIC_CODE_VALUE.code);
 		this.mongoOps.insert(scv2, Constants.STATIC_CODE_VALUE.code);
 		
@@ -730,6 +744,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	public void t20_tt() {
 		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
 		scea.setId(1L);
+		scea.set_tenantId(TENANT_ID);
 		scea.setAttr_String("test1_string1");
 		scea.setAttr_String2("test2_string2");
 		scea.setAttr_LocalDate1(LocalDate.now());
@@ -739,6 +754,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
 		scea2.setId(2L);
+		scea2.set_tenantId(TENANT_ID);
 		scea2.setAttr_String("test1_string1");
 		scea2.setAttr_String2("test2_string2");
 		scea2.setAttr_LocalDate1(LocalDate.now().plusYears(1));
@@ -818,6 +834,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		for(int i=0; i < attr_String.length; i++) {
 			SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
 			scea.setId(new Random().nextLong());
+			scea.set_tenantId(TENANT_ID);
 			scea.setAttr_String(attr_String[i]);
 			if(attr_String2 != null && attr_String2.length > 0 && i <= attr_String2.length) {
 				scea.setAttr_String2(attr_String2[i]);
@@ -866,12 +883,14 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		Client c = new Client();
 		c.setId(new Random().nextLong());
+		c.set_tenantId(TENANT_ID);
 		c.setName("client");
 		c.setCode("c");
 		mongoOps.insert(c, "client");
 		
 		Client c1 = new Client();
 		c1.setId(new Random().nextLong());
+		c1.set_tenantId(TENANT_ID);
 		c1.setName("client1");
 		c1.setCode("c1");
 		mongoOps.insert(c1, "client");
@@ -883,20 +902,24 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		ClientUser clientUser = new ClientUser();
 		clientUser.setId(new Random().nextLong());
+		clientUser.set_tenantId(TENANT_ID);
 		clientUser.setDisplayName("U1");
 		clientUser.setLoginId("casemanager");
 		
 		
 		ClientUser clientUser2 = new ClientUser();
+		clientUser2.set_tenantId(TENANT_ID);
 		clientUser2.setId(new Random().nextLong());
 		clientUser2.setDisplayName("U2");
 		
 		ClientUser clientUser3 = new ClientUser();
 		clientUser3.setId(new Random().nextLong());
+		clientUser3.set_tenantId(TENANT_ID);
 		clientUser3.setDisplayName("U3");
 		
 		ClientUser clientUser4 = new ClientUser();
 		clientUser4.setId(new Random().nextLong());
+		clientUser4.set_tenantId(TENANT_ID);
 		clientUser4.setDisplayName("U4");
 		
 		mongoOps.save(clientUser, "clientuser");
@@ -910,20 +933,24 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		ClientUserGroup userGroup = new ClientUserGroup();
 		userGroup.setId(new Random().nextLong());
+		userGroup.set_tenantId(TENANT_ID);
 		userGroup.setName("UG1");
 		
 		List<GroupUser> groupUsers = new ArrayList<>();
 		GroupUser groupUser = new GroupUser();
 		groupUser.setUserId("casemanager");
+		groupUser.set_tenantId(TENANT_ID);
 		groupUsers.add(groupUser);
 		
 		GroupUser groupUser22 = new GroupUser();
 		groupUser22.setUserId("U3");
+		groupUser22.set_tenantId(TENANT_ID);
 		groupUser22.setAdmin(true);
 		groupUsers.add(groupUser22);
 		
 		GroupUser groupUser33 = new GroupUser();
 		groupUser33.setUserId("U4");
+		groupUser33.set_tenantId(TENANT_ID);
 		groupUser33.setAdmin(true);
 		groupUsers.add(groupUser33);
 		
@@ -961,6 +988,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		Queue queue = new Queue();
 		queue.setId(new Random().nextLong());
+		queue.set_tenantId(TENANT_ID);
 		queue.setName("Q1");
 		
 		ClientUser cu = mongoOps.findOne(new Query(Criteria.where("displayName").is("U1")), ClientUser.class, "clientuser");
@@ -969,6 +997,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		Queue queue2 = new Queue();
 		queue2.setId(new Random().nextLong());
+		queue2.set_tenantId(TENANT_ID);
 		queue2.setName("Q2");
 		
 		ClientUserGroup cug = mongoOps.findOne(new Query(Criteria.where("name").is("UG1")), ClientUserGroup.class, "clientusergroup");
@@ -977,6 +1006,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		Queue queue3 = new Queue();
 		queue3.setId(new Random().nextLong());
+		queue3.set_tenantId(TENANT_ID);
 		queue3.setName("Q3");
 		
 		ClientUserGroup cug2 = mongoOps.findOne(new Query(Criteria.where("name").is("UG1")), ClientUserGroup.class, "clientusergroup");
@@ -985,6 +1015,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		Queue queue4 = new Queue();
 		queue4.setId(new Random().nextLong());
+		queue4.set_tenantId(TENANT_ID);
 		queue4.setName("Q4");
 		
 		ClientUserGroup cug3 = mongoOps.findOne(new Query(Criteria.where("name").is("UG2")), ClientUserGroup.class, "clientusergroup");
@@ -993,6 +1024,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		Queue queue5 = new Queue();
 		queue5.setId(new Random().nextLong());
+		queue5.set_tenantId(TENANT_ID);
 		queue5.setName("Q5");
 		
 		

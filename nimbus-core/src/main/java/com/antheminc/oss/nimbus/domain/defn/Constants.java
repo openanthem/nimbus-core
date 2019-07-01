@@ -21,6 +21,7 @@ package com.antheminc.oss.nimbus.domain.defn;
  */
 public enum Constants {
 	
+	FIELD_NAME_TENANT_ID("_tenantId"),
 	FIELD_NAME_VERSION("version"),
 	
 	MARKER_URI_PLATFORM("p"),

@@ -13,20 +13,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.test.domain.support;
+package com.antheminc.oss.nimbus.domain.model.state.multitenancy;
 
-import com.antheminc.oss.nimbus.domain.defn.Constants;
+import java.util.Map;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
+ * <p>Holds configured properties related to multitenancy.
+ * 
  * @author Tony Lopez
+ * @since 2.0
  *
  */
-public abstract class AbstractFrameworkTest {
+@Getter
+@Setter
+@ToString
+@ConfigurationProperties("nimbus.multitenancy")
+public class MultitenancyProperties {
 
-	protected static final String CLIENT_ID = "hooli";
-	protected static final Long TENANT_ID = 1L;
-	protected static final String APP_ID = "thebox";
-	protected static final String CMD_PREFIX = "/" + CLIENT_ID + "/" + TENANT_ID + "/" + APP_ID;
-	protected static final String PLATFORM_ROOT = CMD_PREFIX + "/"
-			+ Constants.MARKER_URI_PLATFORM.code;
+	@Getter
+	@Setter
+	public static class TenantDetail {
+		private String description;
+		private String prefix;
+	}
+
+	private Map<Long, TenantDetail> tenants;
 }

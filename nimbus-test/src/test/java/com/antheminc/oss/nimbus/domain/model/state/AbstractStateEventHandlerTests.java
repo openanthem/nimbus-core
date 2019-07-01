@@ -35,6 +35,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.internal.BaseStateEventListener;
+import com.antheminc.oss.nimbus.domain.model.state.multitenancy.TenantRepository;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
 
@@ -50,6 +51,9 @@ public abstract class AbstractStateEventHandlerTests extends AbstractFrameworkIn
 	//@Autowired QuadModelBuilder quadModelBuilder;
 	@Autowired 
 	protected ExecutionContextLoader executionContextLoader;
+	
+	@Autowired
+	protected TenantRepository tenantRepository;
 	
 	protected Command _cmd;
 	
