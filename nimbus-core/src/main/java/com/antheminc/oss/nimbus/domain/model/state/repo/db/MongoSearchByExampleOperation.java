@@ -53,8 +53,8 @@ public class MongoSearchByExampleOperation extends MongoDBSearchOperation {
 	}
 
 	@Override
-	public <T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria) {
-		Query query = buildQuery(referredClass, alias, criteria.getWhere());
+	public <T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria, ModelRepositoryOptions options) {
+		Query query = buildQuery(referredClass, alias, criteria.getWhere(), options);
 		
 		if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(),Constants.SEARCH_REQ_AGGREGATE_COUNT.code)){
 			return getMongoOps().count(query, referredClass, alias);
@@ -72,7 +72,7 @@ public class MongoSearchByExampleOperation extends MongoDBSearchOperation {
 		
 	}
 
-	private <T> Query buildQuery(Class<?> referredClass, String alias, T criteria) {
+	private <T> Query buildQuery(Class<?> referredClass, String alias, T criteria, ModelRepositoryOptions options) {
 		if(criteria == null) 
 			return new Query();
 		

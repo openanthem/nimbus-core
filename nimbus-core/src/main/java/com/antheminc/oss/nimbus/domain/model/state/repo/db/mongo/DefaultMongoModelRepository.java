@@ -183,6 +183,6 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		if (!searchOperation.isPresent()) {
 			throw new FrameworkRuntimeException("Unable to determine search operation for search criteria: " + sc);
 		}
-		return searchOperation.get().search(referredClass, alias, sc);
+		return searchOperation.get().search(referredClass, alias, sc, this.options);
 	}
 }

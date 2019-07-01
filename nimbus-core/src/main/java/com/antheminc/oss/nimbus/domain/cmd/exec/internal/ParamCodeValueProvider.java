@@ -15,28 +15,23 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
-import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutor;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.HierarchyMatch;
-import com.antheminc.oss.nimbus.entity.AbstractEntity;
 import com.antheminc.oss.nimbus.entity.StaticCodeValue;
 
 import lombok.Getter;
@@ -51,7 +46,6 @@ public class ParamCodeValueProvider implements HierarchyMatch, CommandExecutor<L
 	
 	private static final String DEFAULT_KEY_ATTRIBUTE = "id";
 	private static final String KEY_VALUE_SEPERATOR = "&";
-	public static final String STATIC_CODE_VALUE = "staticCodeValue";
 	
 	DefaultActionExecutorSearch searchExecutor;
 	
@@ -76,7 +70,7 @@ public class ParamCodeValueProvider implements HierarchyMatch, CommandExecutor<L
 	public Output<List<ParamValue>> execute(Input input) {
 		CommandMessage cmdMsg = input.getContext().getCommandMessage();
 		final List<ParamValue> codeValues;
-		if(StringUtils.equalsIgnoreCase(cmdMsg.getCommand().getElementSafely(Type.DomainAlias).getAlias(), STATIC_CODE_VALUE)) {
+		if(StringUtils.equalsIgnoreCase(cmdMsg.getCommand().getElementSafely(Type.DomainAlias).getAlias(), Constants.STATIC_CODE_VALUE.code)) {
 			codeValues = getStaticCodeValue(input);
 		}
 		else{

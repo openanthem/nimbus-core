@@ -15,14 +15,11 @@
  */
 package com.antheminc.oss.nimbus.support;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
-import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.google.common.base.Enums;
 
 /**
@@ -67,14 +64,6 @@ public final class CommandUtils {
 			return defaultValue;
 		}
 		return (T) Enums.getIfPresent(defaultValue.getClass(), sRequestParamValue.toUpperCase()).or(defaultValue);
-	}
-
-	public static Command prepareCommand(String uri, Behavior... behaviors) {
-		final Command command = CommandBuilder.withUri(uri).getCommand();
-		if (behaviors != null) {
-			Arrays.asList(behaviors).forEach((b) -> command.templateBehaviors().add(b));
-		}
-		return command;
 	}
 
 	private CommandUtils() {

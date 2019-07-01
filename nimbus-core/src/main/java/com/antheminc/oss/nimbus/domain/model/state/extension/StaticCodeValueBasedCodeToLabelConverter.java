@@ -52,7 +52,7 @@ public class StaticCodeValueBasedCodeToLabelConverter implements ParamConverter<
 	@Override
 	public String serialize(String input) {
 		//TODO - need to make this generic
-		Command cmd = CommandBuilder.withUri("Anthem/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramValues.any().code.eq('"+input+"')").getCommand();
+		Command cmd = CommandBuilder.withUri("hooli/1/thebox/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramValues.any().code.eq('"+input+"')").getCommand();
 		cmd.setAction(Action._search);
 		
 		CommandMessage cmdMsg = new CommandMessage();

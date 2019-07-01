@@ -127,16 +127,16 @@ public class MongoSearchByQueryOperation extends MongoDBSearchOperation {
 	}
 	
 	@Override
-	public <T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria) {
+	public <T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria, ModelRepositoryOptions options) {
 		String where = (String) criteria.getWhere();
 		if(StringUtils.isNotBlank(where) && AGGREGATION_QUERY_REGEX_PATTERN.matcher(where).matches()) {
-			return searchByAggregation(referredClass, alias, criteria);
+			return searchByAggregation(referredClass, alias, criteria, options);
 		}
-		return searchByQuery(referredClass, alias, criteria);
+		return searchByQuery(referredClass, alias, criteria, options);
 	}
 	
 	
-	private <T> Object searchByQuery(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
+	private <T> Object searchByQuery(Class<?> referredClass, String alias, SearchCriteria<T> criteria, ModelRepositoryOptions options) {
 		Class<?> outputClass = findOutputClass(criteria, referredClass);
 		
 		AbstractMongodbQuery query = new QueryBuilder(getMongoOps(), outputClass, alias)
@@ -185,7 +185,7 @@ public class MongoSearchByQueryOperation extends MongoDBSearchOperation {
 		return paths.toArray(new PathBuilder[paths.size()]);
 	}
 	
-	private  <T> Object searchByAggregation(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
+	private  <T> Object searchByAggregation(Class<?> referredClass, String alias, SearchCriteria<T> criteria, ModelRepositoryOptions options) {
 		List<?> output = new ArrayList();
 		String cr = (String)criteria.getWhere();
 		Document query = Document.parse(cr);

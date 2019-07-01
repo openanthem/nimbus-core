@@ -43,6 +43,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
@@ -54,7 +55,6 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput.CmdExecuteOutput.H
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput.GenericExecute;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.entity.client.ExtClient;
-import com.antheminc.oss.nimbus.support.CommandUtils;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
 import com.antheminc.oss.nimbus.test.scenarios.repo.remote.core.SampleRemoteRepo;
 import com.antheminc.oss.nimbus.test.scenarios.repo.remote.core.SampleRemoteRepo.SampleRepoNested;
@@ -103,7 +103,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	@Test
 	public void t1_testSearchByExample_Ext() {
 		final String requestUri = "piedpiper/encryption_3.9/p/ext_client/_search?fn=example";
-		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Command cmd = CommandBuilder.withUri(requestUri).getCommand();
 		final String jsonPayload = "{\"client\": {\"code\":\"example\"}}";
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
@@ -137,7 +137,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	@Test
 	public void t2_testSearchByQuery_Ext() {
 		final String requestUri = "piedpiper/encryption_3.9/p/ext_client/_search?fn=query&where=ext_client.client.code.eq('7')";
-		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Command cmd = CommandBuilder.withUri(requestUri).getCommand();
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
@@ -163,7 +163,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	@Ignore //TODO in DefaultWS
 	public void t2_testSearchByQuery_fetch1_Ext() {
 		final String requestUri = "piedpiper/encryption_3.9/p/ext_client/_search?fn=query&where=ext_client.client.code.eq('7')&fetch=1";
-		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Command cmd = CommandBuilder.withUri(requestUri).getCommand();
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
@@ -186,7 +186,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	@Test
 	public void t3_testGet_Ext() {
 		final String requestUri = "piedpiper/encryption_3.9/p/ext_client/_get";
-		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Command cmd = CommandBuilder.withUri(requestUri).getCommand();
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
@@ -208,7 +208,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	@Test
 	public void testExternalGetWithRefId() {
 		final String requestUri = "piedpiper/encryption_3.9/p/ext_client:42/_get";
-		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Command cmd = CommandBuilder.withUri(requestUri).getCommand();
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
@@ -230,7 +230,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	@Test
 	public void t5_get_remote() throws JsonProcessingException {
 		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo:12/_get";
-		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Command cmd = CommandBuilder.withUri(requestUri).getCommand();
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
@@ -255,7 +255,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	@Test
 	public void t6_testSearchByQuery_remote() throws JsonProcessingException {
 		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo/_search?fn=query&where=remote_repo.attr1.eq('example1')";
-		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Command cmd = CommandBuilder.withUri(requestUri).getCommand();
 //		Map<String, String[]> requestParams = new HashMap<>();
 //		requestParams.put("fn", new String[]{"query"});
 //		requestParams.put("where", new String[]{"remote_repo.attr1.eq('example1')"});
@@ -285,7 +285,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	@Test
 	public void t7_testSearchByQuery_fetch1_remote() {
 		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo/_search?fn=query&where=remote_repo.attr1.eq('example1')&fetch=1";
-		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Command cmd = CommandBuilder.withUri(requestUri).getCommand();
 //		Map<String, String[]> requestParams = new HashMap<>();
 //		requestParams.put("fn", new String[]{"query"});
 //		requestParams.put("where", new String[]{"remote_repo.attr1.eq('example1')"});
@@ -316,7 +316,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	@Test
 	public void t8_testSearchByExample_remote() {
 		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo/_search?fn=example";
-		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Command cmd = CommandBuilder.withUri(requestUri).getCommand();
 //		Map<String, String[]> requestParams = new HashMap<>();
 //		requestParams.put("fn", new String[]{"example"});
 //		cmd.setRequestParams(requestParams);
@@ -345,7 +345,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	@Test
 	public void t9_new_remote() throws JsonProcessingException {
 		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo/_new?b=$executeAnd$state";
-		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Command cmd = CommandBuilder.withUri(requestUri).getCommand();
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
@@ -374,7 +374,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	public void t10_delete_root_remote() throws JsonProcessingException {
 		t5_get_remote();
 		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo:12/_delete";
-		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Command cmd = CommandBuilder.withUri(requestUri).getCommand();
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
@@ -402,7 +402,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	@Test
 	public void t12_delete_nested_remote() throws JsonProcessingException {
 		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo:12/attr2/0/_delete";
-		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Command cmd = CommandBuilder.withUri(requestUri).getCommand();
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
@@ -430,7 +430,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	@Test
 	public void t13_remote_withExecConfigs_mapped() throws JsonProcessingException {
 		String requestUri = "piedpiper/encryption_3.9/p/vr_remote_repo/_new";
-		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Command cmd = CommandBuilder.withUri(requestUri).getCommand();
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
@@ -455,7 +455,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		this.mockServerRemoteWs.reset();
 		
 		requestUri = "piedpiper/encryption_3.9/p/vr_remote_repo:1/vr_attr2/_get";
-		cmd = CommandUtils.prepareCommand(requestUri);
+		cmd = CommandBuilder.withUri(requestUri).getCommand();
 		cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		

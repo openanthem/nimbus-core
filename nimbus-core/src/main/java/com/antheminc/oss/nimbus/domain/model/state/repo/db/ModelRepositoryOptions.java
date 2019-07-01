@@ -16,6 +16,9 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 /**
+ * <p>A simple encapsulation for common options across {@link ModelRepository}
+ * implementations.
+ * 
  * @author Tony Lopez
  *
  */

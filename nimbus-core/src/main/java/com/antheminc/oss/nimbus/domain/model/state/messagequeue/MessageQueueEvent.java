@@ -18,15 +18,16 @@ package com.antheminc.oss.nimbus.domain.model.state.messagequeue;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractEvent;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author Tony Lopez
  *
  */
-@Data
+@Getter @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class MessageQueueEvent extends AbstractEvent<String, String> {

@@ -23,5 +23,5 @@ public interface DBSearchOperation {
 	
 	boolean shouldAllow(SearchCriteria<?> criteria);
 	
-	<T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria);
+	<T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria, ModelRepositoryOptions options);
 }

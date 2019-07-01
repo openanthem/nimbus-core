@@ -25,7 +25,7 @@ import lombok.Getter;
  *
  */
 @Getter
-public class MongoDBModelRepositoryOptions {
+public class MongoDBModelRepositoryOptions implements ModelRepositoryOptions {
 
 	public static class Builder {
 

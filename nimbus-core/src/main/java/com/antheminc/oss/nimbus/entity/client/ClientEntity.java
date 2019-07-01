@@ -57,7 +57,6 @@ public class ClientEntity extends AbstractEntity.IdLong {
 	
 	
 	@NotNull
-	//@Model.Param.Values(url="Anthem/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/orgType')")
     private Type type;
 	
 	private String code;
@@ -67,7 +66,6 @@ public class ClientEntity extends AbstractEntity.IdLong {
 	
 	
 	@NotNull
-	//@Model.Param.Values(url="Anthem/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/orgStatus')")
 	private Status status;
 	
 	private String description;

@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.support.fi.util;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
@@ -25,6 +26,40 @@ import com.antheminc.oss.nimbus.support.fi.ThrowingSupplier;
  *
  */
 public class SupplierUtils {
+
+	public static final String REQUIRE_ERROR_MSG = "Field must not be null.";
+
+	/**
+	 * <p> Get the value given from the provided supplier or throw a
+	 * {@link FrameworkRuntimeException}.
+	 * @param s the supplier to retrieve
+	 * @return the supplier value
+	 */
+	public static <T> T acquire(Supplier<T> s) {
+		return acquire(s, REQUIRE_ERROR_MSG);
+	}
+
+	/**
+	 * <p> Get the value given from the provided supplier or throw a
+	 * {@link RuntimeException}.
+	 * @param s the supplier to retrieve
+	 * @param errorMsg the error message to use in the thrown exception
+	 * @return the supplier value
+	 */
+	public static <T> T acquire(Supplier<T> s, RuntimeException e) {
+		return Optional.ofNullable(s.get()).orElseThrow(() -> e);
+	}
+
+	/**
+	 * <p> Get the value given from the provided supplier or throw a
+	 * {@link FrameworkRuntimeException}.
+	 * @param s the supplier to retrieve
+	 * @param errorMsg the error message to use in the thrown exception
+	 * @return the supplier value
+	 */
+	public static <T> T acquire(Supplier<T> s, String errorMsg) {
+		return acquire(s, new FrameworkRuntimeException(errorMsg));
+	}
 
 	/**
 	 * <p>Convenience method for handling suppliers that wraps any thrown
@@ -65,5 +100,8 @@ public class SupplierUtils {
 				throw e;
 			}
 		};
+	}
+
+	private SupplierUtils() {
 	}
 }
