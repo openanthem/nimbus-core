@@ -191,6 +191,7 @@ import { WindowRefService } from './services/window-ref.service';
 import { CustomErrorHandler } from './shared/custom.error.handler';
 import { GridUtils } from './shared/grid-utils';
 import { StyleGuideCmp } from './styleguide/style-guide.component';
+import { CookieService } from './services/cookie.service';
 
 /**
  * \@author Dinakar.Meda
@@ -395,7 +396,8 @@ export function init_app(appinitservice: AppInitService) {
     MessageService,
     GridUtils,
     DateTimeFormatPipe,
-    PrintService
+    PrintService,
+    CookieService
   ],
   bootstrap: [AppComponent]
 })

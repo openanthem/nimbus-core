@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.entity.client.user;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.annotation.ReadOnlyProperty;
 
@@ -25,7 +26,6 @@ import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.entity.client.Client;
-import com.antheminc.oss.nimbus.entity.client.ClientEntity;
 import com.antheminc.oss.nimbus.entity.client.access.ClientAccessEntity;
 import com.antheminc.oss.nimbus.entity.client.access.ClientUserRole;
 import com.antheminc.oss.nimbus.entity.user.AbstractUser;
@@ -52,6 +52,7 @@ public class ClientUser extends AbstractUser<ClientUserRole> {
 	@Ignore 
 	private Client client;
 
+	private Set<Long> tenantIds;
 	private List<UserRole> roles;
 	private List<UserStatus> userStatuses;
 	

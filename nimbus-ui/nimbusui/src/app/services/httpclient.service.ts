@@ -25,6 +25,7 @@ import { catchError } from 'rxjs/operators';
 import { ExecuteResponse } from '../shared/app-config.interface';
 import { ServiceConstants } from './service.constants';
 import { SessionStoreService } from './session.store';
+import { CookieService } from './cookie.service';
 
 /**
  * \@author Swetha.Vemuri
@@ -47,7 +48,8 @@ export class CustomHttpClient {
   constructor(
     public http: HttpClient,
     public customHttpClient: HttpClient,
-    private sessionStore: SessionStoreService
+    private sessionStore: SessionStoreService,
+    private cookieService: CookieService
   ) {
     this.http = http;
   }
@@ -87,15 +89,7 @@ export class CustomHttpClient {
   }
 
   getCookie(name) {
-    let value = '; ' + document.cookie;
-    let parts = value.split('; ' + name + '=');
-
-    if (parts.length === 2) {
-      return parts
-        .pop()
-        .split(';')
-        .shift();
-    }
+    return this.cookieService.getCookieValue(name);
   }
 
   errorHandler(error: Response) {

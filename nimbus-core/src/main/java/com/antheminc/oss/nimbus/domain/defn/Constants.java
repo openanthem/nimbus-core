@@ -20,6 +20,8 @@ package com.antheminc.oss.nimbus.domain.defn;
  *
  */
 public enum Constants {
+
+	ACTIVE_TENANT_COOKIE("NIMBUS_ACTIVE_TENANT_PREFIX"),
 	
 	FIELD_NAME_TENANT_ID("_tenantId"),
 	FIELD_NAME_VERSION("version"),

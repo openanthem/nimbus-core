@@ -27,6 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import javax.servlet.http.Cookie;
+
 import org.hamcrest.core.IsNull;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
@@ -77,6 +79,7 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 
 		mvc.perform(post(req.getRequestURI()).content("{}")
 				.with(csrf())
+				.cookie(new Cookie(Constants.ACTIVE_TENANT_COOKIE.code, CMD_PREFIX))
 				.contentType(APPLICATION_JSON_UTF8))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.result.0.result.outputs[0].value", IsNull.notNullValue())).andReturn()
@@ -293,7 +296,7 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 		createClientUser();
 		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addAction(Action._new).getMock();
 
-		mvc.perform(post(req.getRequestURI())
+		mvc.perform(post(req.getRequestURI()).cookie(new Cookie(Constants.ACTIVE_TENANT_COOKIE.code, CMD_PREFIX))
 				.with(csrf()).content("{}").contentType(APPLICATION_JSON_UTF8))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.result.0.result.outputs[0].value", IsNull.notNullValue())).andReturn()
@@ -301,7 +304,7 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 
 		Assert.assertEquals(1, mongo.getCollection("sample_core").count());
 
-		mvc.perform(post(req.getRequestURI())
+		mvc.perform(post(req.getRequestURI()).cookie(new Cookie(Constants.ACTIVE_TENANT_COOKIE.code, CMD_PREFIX))
 				.with(csrf()).content("{}").contentType(APPLICATION_JSON_UTF8))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.result.0.result.outputs[0].value", IsNull.notNullValue())).andReturn()
