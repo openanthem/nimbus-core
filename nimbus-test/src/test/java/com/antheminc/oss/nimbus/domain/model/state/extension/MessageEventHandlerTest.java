@@ -85,7 +85,7 @@ public class MessageEventHandlerTest extends AbstractFrameworkIngerationPersista
 		Message msg = testWarningTextBox_p.getMessages().stream()
 			.filter(m -> StringUtils.equalsIgnoreCase("This is a Test Warning Message", m.getText())).findFirst().get();		
 		assertEquals("This is a Test Warning Message",msg.getText());
-		
+		createClientUser();
 		// to simulate the _get call with JsonSerializer
 		mvc.perform(get(createRequest(uri, Action._get).getRequestURI())
 				.contentType(APPLICATION_JSON_UTF8))
@@ -104,6 +104,7 @@ public class MessageEventHandlerTest extends AbstractFrameworkIngerationPersista
 	@WithMockUser(username="user", password="pwd")
 	public void t02_messageState_json_onload() throws Exception{
 		MockHttpServletRequest home_newReq = createRequest(VIEW_PARAM_ROOT, Action._new);
+		createClientUser();
 		mvc.perform(get(home_newReq.getRequestURI())
 				.contentType(APPLICATION_JSON_UTF8))
                	.andExpect(status().isOk())

@@ -46,8 +46,7 @@ public class ActivateParamRuleTest  extends AbstractStateEventHandlerTests {
 	private static final String CORE_PARAM_PATH_q2Level1_nested_attr_String = CORE_PARAM_PATH_q2Level1 + "/nested_attr_String";
 
 	protected Command createCommand() {
-		Command cmd = CommandBuilder.withUri(CORE_PARAM_ROOT + "/_new").getCommand();
-		return cmd;
+		return CommandBuilder.withUri(CORE_PARAM_ROOT + "/_new").getCommand();
 	}
 	
 	protected String getSourceParamPath() {

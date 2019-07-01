@@ -49,7 +49,7 @@ public class DefaultListParamStateTest extends AbstractFrameworkIngerationPersis
 	
 	@Test
 	public void t1_add_validateSize() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view/_new").getCommand();
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/sample_view/_new").getCommand();
 		
 		QuadModel<?, ?> q = quadBuilder.build(cmd);
 		assertNotNull(q);

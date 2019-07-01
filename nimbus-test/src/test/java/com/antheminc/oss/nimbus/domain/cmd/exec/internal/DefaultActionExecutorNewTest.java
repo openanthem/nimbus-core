@@ -68,10 +68,11 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 	
 	@Autowired
 	private MockMvc mvc;
-
+	
 	@WithMockUser(username="user", password="pwd")
 	@Test
 	public void t00_json() throws Exception {
+		createClientUser();
 		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addAction(Action._new).getMock();
 
 		mvc.perform(post(req.getRequestURI()).content("{}")
@@ -289,16 +290,19 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 	@WithMockUser(username="user", password="pwd")
 	@Test
 	public void testSuccessiveNewCalls() throws Exception {
+		createClientUser();
 		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addAction(Action._new).getMock();
 
-		mvc.perform(post(req.getRequestURI()).with(csrf()).content("{}").contentType(APPLICATION_JSON_UTF8))
+		mvc.perform(post(req.getRequestURI())
+				.with(csrf()).content("{}").contentType(APPLICATION_JSON_UTF8))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.result.0.result.outputs[0].value", IsNull.notNullValue())).andReturn()
 				.getResponse().getContentAsString();
 
 		Assert.assertEquals(1, mongo.getCollection("sample_core").count());
 
-		mvc.perform(post(req.getRequestURI()).with(csrf()).content("{}").contentType(APPLICATION_JSON_UTF8))
+		mvc.perform(post(req.getRequestURI())
+				.with(csrf()).content("{}").contentType(APPLICATION_JSON_UTF8))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.result.0.result.outputs[0].value", IsNull.notNullValue())).andReturn()
 				.getResponse().getContentAsString();

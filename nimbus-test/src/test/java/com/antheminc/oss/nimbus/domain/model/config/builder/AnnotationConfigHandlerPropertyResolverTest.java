@@ -128,7 +128,7 @@ public class AnnotationConfigHandlerPropertyResolverTest extends AbstractFramewo
 	
 	@Test
 	public void t04_config() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_expr/_new").getCommand();
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/sample_expr/_new").getCommand();
 		
 		QuadModel<?, ?> q = quadBuilder.build(cmd);
 		assertNotNull(q);

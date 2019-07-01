@@ -43,7 +43,6 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo.Type;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;

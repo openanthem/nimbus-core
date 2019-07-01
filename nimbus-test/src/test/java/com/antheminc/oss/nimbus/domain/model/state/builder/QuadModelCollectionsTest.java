@@ -58,6 +58,7 @@ import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
+import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkTest;
 import com.antheminc.oss.nimbus.test.scenarios.s3.core.ServiceLine;
 import com.antheminc.oss.nimbus.test.scenarios.s3.core.ServiceLine.AuditInfo;
 import com.antheminc.oss.nimbus.test.scenarios.s3.core.SimpleCase;
@@ -72,18 +73,18 @@ import com.antheminc.oss.nimbus.test.scenarios.s3.view.VRSimpleCaseFlow;
 @SpringBootTest(classes=FrameworkIntegrationTestScenariosApplication.class)
 @ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class QuadModelCollectionsTest {
+public class QuadModelCollectionsTest extends AbstractFrameworkTest {
 	
 	@Autowired QuadModelBuilder quadModelBuilder;
 	@Autowired SessionProvider sessionProvider;
 	
 	public static Command create_view_main() {
 
-		Command c = new Command("/hooli/comm/thebox/p/view_simplecase/_new");
+		Command c = new Command(PLATFORM_ROOT + "/view_simplecase/_new");
 
-		c.createRoot(Type.ClientAlias, "hooli")
-			.createNext(Type.ClientOrgAlias, "compression")
-			.createNext(Type.AppAlias, "icr")
+		c.createRoot(Type.ClientAlias, CLIENT_ID)
+			.createNext(Type.ClientOrgAlias, ORG_ID)
+			.createNext(Type.AppAlias, APP_ID)
 			.createNext(Type.PlatformMarker, "p")
 			.createNext(Type.DomainAlias, "view_simplecase")
 			;//.createNext(Type.Action, Action._new.name());

@@ -47,6 +47,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.extension.StaticCodeValueBasedCodeToLabelConverter;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
@@ -76,7 +77,6 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	protected static final String CLIENT_USER_ALIAS = "clientuser";
 	protected static final String CLIENT_USER_GROUP_ALIAS = "clientusergroup";
 	protected static final String QUEUE_ALIAS = "queue";
-	protected static final String STATIC_CODE_VALUE_ALIAS = "staticCodeValue";
 	
 	private static final String[] COLLECTIONS = {QUEUE_ALIAS, CLIENT_USER_ALIAS, CLIENT_USER_GROUP_ALIAS,SAMPLE_CORE_ENTITY_ACCESS_ALIAS};
 	
@@ -92,13 +92,13 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	
 	@Test
 	public void t1_testSearchByLookupStaticCodeValue() {
-		this.mongoOps.dropCollection("staticCodeValue");
+		this.mongoOps.dropCollection(Constants.STATIC_CODE_VALUE.code);
 		
 		final List<ParamValue> expectedValues = new ArrayList<>();
 		expectedValues.add(new ParamValue("code1", "label1", "desc1"));
 		final StaticCodeValue expected = new StaticCodeValue("/status0", expectedValues);
 		expected.setId(new Random().nextLong());
-		this.mongoOps.insert(expected, "staticCodeValue");
+		this.mongoOps.insert(expected, Constants.STATIC_CODE_VALUE.code);
 		
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/status0')");
 		
@@ -122,14 +122,14 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	 */
 	@Test
 	public void t0_testSearchByLookupStaticCodeValue_inMemorySorted() {
-		this.mongoOps.dropCollection("staticCodeValue");
+		this.mongoOps.dropCollection(Constants.STATIC_CODE_VALUE.code);
 		
 		final List<ParamValue> expectedValues = new ArrayList<>();
 		expectedValues.add(new ParamValue(Long.valueOf(1), "label1", "desc1"));
 		expectedValues.add(new ParamValue(Long.valueOf(2), "label2", "desc2"));
 		final StaticCodeValue expected = new StaticCodeValue("/status1", expectedValues);
 		expected.setId(new Random().nextLong());
-		this.mongoOps.insert(expected, "staticCodeValue");
+		this.mongoOps.insert(expected, Constants.STATIC_CODE_VALUE.code);
 		
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/status1')&orderby=code.desc()");
 		
@@ -155,21 +155,21 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	 */
 	@Test
 	public void testSearchByLookupStaticCodeValue_dbsorted() {
-		this.mongoOps.dropCollection("staticCodeValue");
+		this.mongoOps.dropCollection(Constants.STATIC_CODE_VALUE.code);
 		
 		final List<ParamValue> expectedValues = new ArrayList<>();
 		expectedValues.add(new ParamValue(Long.valueOf(1), "slabel1", "sdesc1"));
 		expectedValues.add(new ParamValue(Long.valueOf(2), "slabel2", "sdesc2"));
 		final StaticCodeValue expected = new StaticCodeValue("/status1", expectedValues);
 		expected.setId(new Random().nextLong());
-		this.mongoOps.insert(expected, "staticCodeValue");
+		this.mongoOps.insert(expected, Constants.STATIC_CODE_VALUE.code);
 		
 		final List<ParamValue> expectedValues2 = new ArrayList<>();
 		expectedValues2.add(new ParamValue(Long.valueOf(1), "clabel1", "cdesc1"));
 		expectedValues2.add(new ParamValue(Long.valueOf(2), "clabel2", "cdesc2"));
 		final StaticCodeValue expected2 = new StaticCodeValue("/category", expectedValues);
 		expected2.setId(new Random().nextLong());
-		this.mongoOps.insert(expected2, "staticCodeValue");
+		this.mongoOps.insert(expected2, Constants.STATIC_CODE_VALUE.code);
 		
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=query&orderby=staticCodeValue.paramCode.desc()");
 		
@@ -199,12 +199,12 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	
 	@Test
 	public void t11_testSearchByLookupStaticCodeValueElemMatch() {
-		this.mongoOps.dropCollection("staticCodeValue");
+		this.mongoOps.dropCollection(Constants.STATIC_CODE_VALUE.code);
 		final List<ParamValue> expectedValues = new ArrayList<>();
 		expectedValues.add(new ParamValue("ACL", "Anticardiolpin Antibodies", null));
 		final StaticCodeValue expected = new StaticCodeValue("anything", expectedValues);
 		expected.setId(new Random().nextLong());
-		this.mongoOps.insert(expected, "staticCodeValue");
+		this.mongoOps.insert(expected, Constants.STATIC_CODE_VALUE.code);
 		
 		assertEquals("Anticardiolpin Antibodies", this.labelConverter.serialize("ACL"));
 	}
@@ -277,12 +277,12 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 
 	@Test
 	public void t5_testSearchByQueryWithProjection() {
-		this.mongoOps.dropCollection("staticCodeValue");
+		this.mongoOps.dropCollection(Constants.STATIC_CODE_VALUE.code);
 		final List<ParamValue> expectedValues = new ArrayList<>();
 		expectedValues.add(new ParamValue("code1", "label1", "desc1"));
 		final StaticCodeValue expected = new StaticCodeValue("/status", expectedValues);
 		expected.setId(new Random().nextLong());
-		this.mongoOps.insert(expected, "staticCodeValue");
+		this.mongoOps.insert(expected, Constants.STATIC_CODE_VALUE.code);
 		
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&projection.alias=vstaticCodeValue");
 		
@@ -445,13 +445,13 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	
 	@Test
 	public void t6_testSearchByQueryWithCountAggregation() {
-		this.mongoOps.dropCollection("staticCodeValue");
+		this.mongoOps.dropCollection(Constants.STATIC_CODE_VALUE.code);
 		StaticCodeValue scv = new StaticCodeValue("/status", null);
 		scv.setId(new Random().nextLong());
 		StaticCodeValue scv2 = new StaticCodeValue("/status", null);
 		scv2.setId(new Random().nextLong());
-		this.mongoOps.insert(scv, "staticCodeValue");
-		this.mongoOps.insert(scv2, "staticCodeValue");
+		this.mongoOps.insert(scv, Constants.STATIC_CODE_VALUE.code);
+		this.mongoOps.insert(scv2, Constants.STATIC_CODE_VALUE.code);
 		
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&aggregate=count");
 		

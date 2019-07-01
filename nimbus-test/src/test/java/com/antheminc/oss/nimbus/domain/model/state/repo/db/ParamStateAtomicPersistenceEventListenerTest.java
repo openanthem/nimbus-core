@@ -50,7 +50,7 @@ public class ParamStateAtomicPersistenceEventListenerTest extends AbstractFramew
 
 	@Test
 	public void testDomainRepoAliasMismatchPersistence() throws JsonProcessingException {
-		final String requestUri = "app/org/p/sample_repo_diff_alias/_new";
+		final String requestUri = PLATFORM_ROOT + "/sample_repo_diff_alias/_new";
 		final String expectedCollectionName = "person_of_interest";
 		SampleRepoDifferentAlias expected = new SampleRepoDifferentAlias("Oscar", "Grouch");
 

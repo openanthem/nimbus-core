@@ -44,9 +44,8 @@ public class DetachedQuadModelCollectionsTest extends AbstractFrameworkIntegrati
 	@Autowired QuadModelBuilder quadModelBuilder;
 	@Autowired SessionProvider sessionProvider;
 	
-	private static Command getCommand() {
-		Command cmd = CommandBuilder.withUri("/hooli/compressopm/thebox/p/v_simpledashboard/_new").getCommand();
-		return cmd;
+	private Command getCommand() {
+		return CommandBuilder.withUri(PLATFORM_ROOT + "/v_simpledashboard/_new").getCommand();
 	}
 	
 	@Before

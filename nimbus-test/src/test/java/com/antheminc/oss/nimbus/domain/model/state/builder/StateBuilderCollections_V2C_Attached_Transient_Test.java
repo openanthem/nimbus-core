@@ -41,6 +41,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedTransientPa
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
+import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkTest;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
@@ -56,17 +57,16 @@ import com.antheminc.oss.nimbus.test.scenarios.s0.view.VRSampleViewRootEntity;
 @SpringBootTest(classes=FrameworkIntegrationTestScenariosApplication.class)
 @ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class StateBuilderCollections_V2C_Attached_Transient_Test {
+public class StateBuilderCollections_V2C_Attached_Transient_Test extends AbstractFrameworkTest {
 
 	private static final String CORE_PARAM_PATH = "/sample_core/attr_list_2_NestedEntity";
-
 	private static final String VIEW_PARAM_MAPPED_PATH = "/sample_view/page_blue/tile/vm_attached_convertedList";
 	private static final String VIEW_PARAM_TRANSIENT_PATH = "/sample_view/page_red/tile/vt_attached_convertedNestedEntity";
 
 	@Autowired QuadModelBuilder quadModelBuilder;
-
-	protected static Command createCommand() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view/_new").getCommand();
+	
+	protected Command createCommand() {
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/sample_view/_new").getCommand();
 		return cmd;
 	}
 	

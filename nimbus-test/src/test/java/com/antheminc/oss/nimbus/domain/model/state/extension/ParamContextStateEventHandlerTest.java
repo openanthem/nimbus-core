@@ -44,8 +44,7 @@ public class ParamContextStateEventHandlerTest extends AbstractStateEventHandler
 	
 	@Override
 	protected Command createCommand() {
-		final Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view:"+REF_ID+"/_get").getCommand();
-		return cmd;
+		return CommandBuilder.withUri(PLATFORM_ROOT + "/sample_view:"+REF_ID+"/_get").getCommand();
 	}
 
 	private SampleCoreEntity createOrGetCore() {

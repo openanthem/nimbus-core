@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runners.MethodSorters;
 
+import com.antheminc.oss.nimbus.AbstractFrameworkTest;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 
@@ -34,83 +35,79 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class CommandTest {
-
+public class CommandTest extends AbstractFrameworkTest {
+	
 	@Rule
 	public ExpectedException expectedEx = ExpectedException.none();
 	
 	@Test
-	public void t0_relativeUri_complete() {
-		Command in = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
+	public void testRelativeUriComplete() {
+		Command in = CommandBuilder.withUri(PLATFORM_ROOT + "/umcase_view/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
 		
-		String configUri = "/anthem/fep/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/requestType')";
+		String configUri = PLATFORM_ROOT + "/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/requestType')";
 		String out = in.getRelativeUri(configUri);
 		assertEquals(configUri, out);
 	}
 	
 	@Test
-	public void t0_relativeUri_domainRoot_provided_1() {
-		Command in = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
+	public void testRelativeUriDomainRootProvided1() {
+		Command in = CommandBuilder.withUri(PLATFORM_ROOT + "/umcase_view/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
 		
 		String configUri = "/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/requestType')";
 		String out = in.getRelativeUri(configUri);
-		System.out.println(out);
-		assertEquals("/anthem/fep/icr"+configUri, out);
+		assertEquals(CMD_PREFIX + configUri, out);
 	}
 	
 	@Test
-	public void t0_relativeUri_domainRoot_provided_2() {
-		Command in = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
+	public void testRelativeUriDomainRootProvided2() {
+		Command in = CommandBuilder.withUri(PLATFORM_ROOT + "/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
 		
 		String configUri = "/p/staticCodeValue:200/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/requestType')";
 		String out = in.getRelativeUri(configUri);
-		System.out.println(out);
-		assertEquals("/anthem/fep/icr"+configUri, out);
+		assertEquals(CMD_PREFIX + configUri, out);
 	}
 	
 	@Test
-	public void t0_relativeUri_domainRoot_relative_1() {
-		Command in = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
+	public void testRelativeUriDomainRootRelative1() {
+		Command in = CommandBuilder.withUri(PLATFORM_ROOT + "/umcase_view/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
 		
 		String configUri = "/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/requestType')";
 		String out = in.getRelativeUri(configUri);
-		System.out.println(out);
-		assertEquals("/anthem/fep/icr/p/umcase_view"+configUri, out);
+		assertEquals(PLATFORM_ROOT + "/umcase_view"+configUri, out);
 	}
 	
 	@Test
-	public void t0_relativeUri_domainRoot_relative_2() {
-		Command in = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
+	public void testRelativeUriDomainRootRelative2() {
+		Command in = CommandBuilder.withUri(PLATFORM_ROOT + "/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
 		
 		String configUri = "/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/requestType')";
 		String out = in.getRelativeUri(configUri);
-		System.out.println(out);
-		assertEquals("/anthem/fep/icr/p/umcase_view:100"+configUri, out);
+		assertEquals(PLATFORM_ROOT + "/umcase_view:100"+configUri, out);
 	}
 	
 	@Test
 	public void testToUri() {
-		Command cmd = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
-		assertEquals("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get?b=$execute", cmd.toUri());
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
+		assertEquals(PLATFORM_ROOT + "/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get?b=$execute", cmd.toUri());
 	}
 	
 	@Test
 	public void testToUriMultipleBehaviors() {
-		Command cmd = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
 		cmd.getBehaviors().add(Behavior.$nav);
-		assertEquals("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get?b=$executeAnd$nav", cmd.toUri());
+		assertEquals(PLATFORM_ROOT + "/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get?b=$executeAnd$nav", cmd.toUri());
 	}
 	
 	@Test
 	public void testToUriWithEvent() {
-		Command cmd = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get").getCommand();
 		cmd.setEvent("someEvent");
-		assertEquals("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get/someEvent?b=$execute", cmd.toUri());
+		assertEquals(PLATFORM_ROOT + "/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get/someEvent?b=$execute", cmd.toUri());
 	}
 	
 	@Test
 	public void testToUriWithQueryParams() {
-		Command cmd = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get?b=$state&abc=cba&abc=xyz&pqr=mnc").getCommand();
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get?b=$state&abc=cba&abc=xyz&pqr=mnc").getCommand();
 		String uriWithQueryParams = cmd.toUri();
 		Command cmd2 = CommandBuilder.withUri(uriWithQueryParams).getCommand();
 		assertThat(cmd.getRequestParams().size()).isEqualTo(cmd2.getRequestParams().size());
@@ -118,7 +115,7 @@ public class CommandTest {
 	
 	@Test
 	public void testToUriWithDefaultBehaviorAndQueryParams() {
-		Command cmd = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get?abc=cba&abc=xyz&pqr=mnc").getCommand();
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/umcase_view:100/pageCreateCaseInfo/tileCreateCaseInfo/sectionUMCaseInfo/formUMCaseInfo/_get?abc=cba&abc=xyz&pqr=mnc").getCommand();
 		String uriWithQueryParams = cmd.toUri();
 		Command cmd2 = CommandBuilder.withUri(uriWithQueryParams).getCommand();
 		assertThat(cmd.getRequestParams().size()).isLessThan(cmd2.getRequestParams().size());
@@ -126,18 +123,18 @@ public class CommandTest {
 	
 	@Test
 	public void testBuildRemoteUri() {
-		String uri = "/client_xyz/app_abc/p/domainRoot_alias/nestedDomain/abc/_new?b=$executeAnd$save&criteria=customer.name.eq(\"John\")";
+		String uri = PLATFORM_ROOT + "/domainRoot_alias/nestedDomain/abc/_new?b=$executeAnd$save&criteria=customer.name.eq(\"John\")";
 		Command cmd = CommandBuilder.withUri(uri).getCommand();
 		assertNotNull(cmd);
 		
 		String buildUri = cmd.toRemoteUri(Type.ParamName, Action._new, Behavior.$execute);
 		
-		assertThat(buildUri).isEqualTo("/client_xyz/app_abc/p/domainRoot_alias/nestedDomain/abc/_new?b=$execute");
+		assertThat(buildUri).isEqualTo(PLATFORM_ROOT + "/domainRoot_alias/nestedDomain/abc/_new?b=$execute");
 	}
 	
 	@Test
 	public void testConstructor() {
-		Command cmd = CommandBuilder.withUri("/anthem/fep/icr/p/umcase_view:100/pageCreateCaseInfo/_get").getCommand();
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/umcase_view:100/pageCreateCaseInfo/_get").getCommand();
 		Command cloned = new Command(cmd);
 		assertNotEquals(cmd, cloned);
 		assertEquals(cmd.getAbsoluteUri(), cloned.getAbsoluteUri());
@@ -149,35 +146,43 @@ public class CommandTest {
 	}
 	
 	@Test
-	public void testInvalidCommandMissingAction() throws Exception {
+	public void testInvalidCommandMissingAction() {
 		expectedEx.expect(InvalidConfigException.class);
-		expectedEx.expectMessage("Command with URI: /anthem/p/umcase_view:100 cannot have null Action.");
-		Command cmd = CommandBuilder.withUri("/anthem/p/umcase_view:100").getCommand();
+		expectedEx.expectMessage("Command with URI: /hooli/1/thebox/p/umcase_view:100 cannot have null Action.");
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/umcase_view:100").getCommand();
 		cmd.validate();
 	}
 	
 	@Test
-	public void testInvalidCommandMissingBehavior() throws Exception {
+	public void testInvalidCommandMissingBehavior() {
 		expectedEx.expect(InvalidConfigException.class);
-		expectedEx.expectMessage("Command with URI: /anthem/org/fep/p/umcase_view:100/_get cannot have null Behavior.");
-		Command cmd = CommandBuilder.withUri("/anthem/org/fep/p/umcase_view:100/_get").getCommand();
+		expectedEx.expectMessage("Command with URI: /hooli/1/thebox/p/umcase_view:100/_get cannot have null Behavior.");
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/umcase_view:100/_get").getCommand();
 		cmd.setBehaviors(null);
 		cmd.validate();
 	}
 	
 	@Test
-	public void testInvalidCommandMissingAppAlias() throws Exception {
+	public void testInvalidCommandMissingTenantId() {
 		expectedEx.expect(InvalidConfigException.class);
-		expectedEx.expectMessage("Command with URI: /anthem/p/umcase_view:100/_get cannot have null AppAlias.");
-		Command cmd = CommandBuilder.withUri("/anthem/p/umcase_view:100/_get").getCommand();
+		expectedEx.expectMessage("Command with URI: /hooli/p/umcase_view:100/_get cannot have null TenantId.");
+		Command cmd = CommandBuilder.withUri("/hooli/p/umcase_view:100/_get").getCommand();
 		cmd.validate();
 	}
 	
 	@Test
-	public void testInvalidCommandMissingDomainAlias() throws Exception {
+	public void testInvalidCommandMissingAppAlias() {
 		expectedEx.expect(InvalidConfigException.class);
-		expectedEx.expectMessage("Command with URI: /anthem/org/fep/p/_get cannot have null DomainAlias.");
-		Command cmd = CommandBuilder.withUri("/anthem/org/fep/p/_get").getCommand();
+		expectedEx.expectMessage("Command with URI: /hooli/1/thebox/p/_get cannot have null AppAlias.");
+		Command cmd = CommandBuilder.withUri("/hooli/1/p/umcase_view:100/_get").getCommand();
+		cmd.validate();
+	}
+	
+	@Test
+	public void testInvalidCommandMissingDomainAlias() {
+		expectedEx.expect(InvalidConfigException.class);
+		expectedEx.expectMessage("Command with URI: /hooli/1/thebox/p/_get cannot have null DomainAlias.");
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/_get").getCommand();
 		cmd.validate();
 	}
 }

@@ -30,14 +30,15 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.internal.BaseStateEventListener;
+import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkTest;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
 /**
  * @author Soham Chakravarti
  *
  */
-public abstract class ActivateParamBaseTest {
-
+public abstract class ActivateParamBaseTest extends AbstractFrameworkTest {
+	
 	@Autowired QuadModelBuilder quadModelBuilder;
 	
 	protected Command _cmd;
@@ -48,9 +49,8 @@ public abstract class ActivateParamBaseTest {
 	
 	protected BaseStateEventListener _stateEventListener;
 	
-	protected static Command createCommand() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_core/_new").getCommand();
-		return cmd;
+	protected Command createCommand() {
+		return CommandBuilder.withUri(PLATFORM_ROOT + "/sample_core/_new").getCommand();
 	}
 	
 	protected abstract String getSourceParamPath();

@@ -27,7 +27,6 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTests;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
-import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState.LeafState;
 import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultParamState.MappedLeafState;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
@@ -41,9 +40,7 @@ public class MessageConditionalEventHandlerTest extends AbstractStateEventHandle
 
 	@Override
 	protected Command createCommand() {
-
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view/_new").getCommand();
-		return cmd;
+		return CommandBuilder.withUri(PLATFORM_ROOT + "/sample_view/_new").getCommand();
 	}
 	
 	@Test
@@ -114,7 +111,7 @@ public class MessageConditionalEventHandlerTest extends AbstractStateEventHandle
 	public <T, M> void t02_testOnStateLoadMessageWithSpelMessage_4() throws IOException {
 		
 		JacksonTester.initFields(this, om);
-		MockHttpServletRequest req = MockHttpRequestBuilder.withUri("Anthem/fep/p/sample_view/")
+		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(PLATFORM_ROOT + "/sample_view/")
 				.addAction(Action._new)
 				.getMock();
 

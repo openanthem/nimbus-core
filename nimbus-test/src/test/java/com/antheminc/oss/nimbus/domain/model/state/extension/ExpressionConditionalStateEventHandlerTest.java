@@ -80,7 +80,7 @@ public class ExpressionConditionalStateEventHandlerTest extends AbstractFramewor
 	
 	@Test
 	public void t01_onLoad() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_expr/_new").getCommand();
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/sample_expr/_new").getCommand();
 		
 		QuadModel<?, ?> q = quadBuilder.build(cmd);
 		assertNotNull(q);
@@ -97,7 +97,7 @@ public class ExpressionConditionalStateEventHandlerTest extends AbstractFramewor
 	
 	@Test
 	public void t02_onChange() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_expr/_new").getCommand();
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/sample_expr/_new").getCommand();
 		
 		QuadModel<?, ?> q = quadBuilder.build(cmd);
 		assertNotNull(q);

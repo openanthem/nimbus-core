@@ -46,8 +46,7 @@ public class RuleStateEventHandlerTest extends AbstractStateEventHandlerTests {
 	
 	@Override
 	protected Command createCommand() {
-		final Command cmd = CommandBuilder.withUri("/hooli/thebox/p/" + ENTITY_VIEW + ":"+REF_ID+"/_get").getCommand();
-		return cmd;
+		return CommandBuilder.withUri(PLATFORM_ROOT + "/" + ENTITY_VIEW + ":"+REF_ID+"/_get").getCommand();
 	}
 
 	private SampleCoreEntity createOrGetCore() {

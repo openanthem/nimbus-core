@@ -65,17 +65,17 @@ public class DefaultActionExecutorConfigTest extends AbstractFrameworkIngeration
 	@WithMockUser(username="user", password="pwd")
 	public void t00_json() throws Exception {
 
-		
+		createClientUser();
 		mvc.perform(post(createRequest(VIEW_PARAM_ROOT, Action._config).getRequestURI())
 				.with(csrf())
-					.content("{}")
-					.contentType(APPLICATION_JSON_UTF8))
-	               	.andExpect(status().isOk())
-	               	.andExpect(jsonPath("$.result.0.result.outputs[0].value", IsNull.notNullValue()))
-	               	.andReturn()
-	               	.getResponse()
-	               	.getContentAsString()
-	               ;
+				.content("{}")
+				.contentType(APPLICATION_JSON_UTF8))
+               	.andExpect(status().isOk())
+               	.andExpect(jsonPath("$.result.0.result.outputs[0].value", IsNull.notNullValue()))
+               	.andReturn()
+               	.getResponse()
+               	.getContentAsString()
+               ;
 	}
 	
 	@Test

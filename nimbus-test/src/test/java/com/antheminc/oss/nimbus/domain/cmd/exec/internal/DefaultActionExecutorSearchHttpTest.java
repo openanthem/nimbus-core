@@ -554,7 +554,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 			i++;
 		}
 		
-		final MockHttpServletRequest fetchAuthorities = MockHttpRequestBuilder.withUri("/hooli/thebox/p/authorities")
+		final MockHttpServletRequest fetchAuthorities = MockHttpRequestBuilder.withUri(PLATFORM_ROOT + "/authorities")
 				.addAction(Action._search)
 				.addParam("fn", "query")
 				.addParam("where", "authorities.code.in("+sb2.toString()+")")

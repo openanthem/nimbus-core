@@ -15,15 +15,13 @@
  */
 package com.antheminc.oss.nimbus.domain.bpm.activiti;
 
-import java.util.ArrayList;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.antheminc.oss.nimbus.AbstractFrameworkTest;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.ProcessEngineContext;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -32,7 +30,6 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
@@ -44,7 +41,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
  * @author Tony Lopez
  *
  */
-public class CommandExecutorTaskDelegateUnitTest {
+public class CommandExecutorTaskDelegateUnitTest extends AbstractFrameworkTest {
 
 	private CommandExecutorTaskDelegate testee;
 	private BeanResolverStrategy beanResolver;
@@ -59,8 +56,8 @@ public class CommandExecutorTaskDelegateUnitTest {
 		this.commandGateway = Mockito.mock(CommandExecutorGateway.class);
 		this.pathVariableResolver = Mockito.mock(CommandPathVariableResolver.class);
 		this.activitiExpressionManager = Mockito.mock(ActivitiExpressionManager.class);
-		this.expression = Mockito.mock(Expression.class);
-		
+		this.expression = Mockito.mock(Expression.class); 
+				
 		Mockito.when(this.beanResolver.find(CommandExecutorGateway.class)).thenReturn(this.commandGateway);
 		Mockito.when(this.beanResolver.find(CommandPathVariableResolver.class)).thenReturn(this.pathVariableResolver);
 		Mockito.when(this.beanResolver.find(ActivitiExpressionManager.class)).thenReturn(this.activitiExpressionManager);
@@ -71,9 +68,9 @@ public class CommandExecutorTaskDelegateUnitTest {
 	
 	@Test
 	public void testExecuteSingleOutput() {
-		String expressionText = "/app/org/client/p/<!/.m/entity!>_view/p1";
+		String expressionText = PLATFORM_ROOT + "/<!/.m/entity!>_view/p1";
 		String[] commandUrls = expressionText.split("\\r?\\n");
-		String resolvedCommandUrl0 = "/app/org/client/p/sample_view/p1";
+		String resolvedCommandUrl0 = PLATFORM_ROOT + "/sample_view/p1";
 		MultiOutput expectedOutput0 = new MultiOutput(resolvedCommandUrl0, getMockExecutionContext(), Action._get, Behavior.$execute);
 		
 		ProcessEngineContext context = Mockito.mock(ProcessEngineContext.class);

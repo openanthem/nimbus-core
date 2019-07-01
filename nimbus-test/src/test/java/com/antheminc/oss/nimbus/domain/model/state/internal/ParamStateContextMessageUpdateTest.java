@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -48,7 +47,7 @@ public class ParamStateContextMessageUpdateTest extends AbstractStateEventHandle
 
 	@Override
 	protected Command createCommand() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_expr/_new").getCommand();
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/sample_expr/_new").getCommand();
 		return cmd;
 	}
 

@@ -33,6 +33,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkTest;
 import com.antheminc.oss.nimbus.test.scenarios.multidb.core.SampleMultiDbDefaultEntity;
 import com.antheminc.oss.nimbus.test.scenarios.multidb.core.SampleMultiDbDomainPrimary;
 import com.antheminc.oss.nimbus.test.scenarios.multidb.core.SampleMultiDbDomainSecondary;
@@ -44,11 +45,11 @@ import com.antheminc.oss.nimbus.test.scenarios.multidb.core.SampleMultiDbDomainS
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MultipleMongoDBTestApplication.class)
 @ActiveProfiles("test-multi-db")
-public class MultipleMongoDBTest {
+public class MultipleMongoDBTest extends AbstractFrameworkTest {
 
-	public final static String PRIMARY_ALIAS = "sample_multidb_primary";
-	public final static String SECONDARY_ALIAS = "sample_multidb_secondary";
-	public final static String DEFAULT_ALIAS = "sample_multidb_default";
+	public static final String PRIMARY_ALIAS = "sample_multidb_primary";
+	public static final String SECONDARY_ALIAS = "sample_multidb_secondary";
+	public static final String DEFAULT_ALIAS = "sample_multidb_default";
 
 	protected QuadModel<?, SampleMultiDbDomainPrimary> _qPrimary;
 	protected QuadModel<?, SampleMultiDbDomainSecondary> _qSecondary;
@@ -68,13 +69,13 @@ public class MultipleMongoDBTest {
 	@SuppressWarnings("unchecked")
 	@Before
 	public void init() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/" + PRIMARY_ALIAS + "/_new").getCommand();
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/" + PRIMARY_ALIAS + "/_new").getCommand();
 		_qPrimary = (QuadModel<?, SampleMultiDbDomainPrimary>) executionContextLoader.load(cmd).getQuadModel();
 
-		cmd = CommandBuilder.withUri("/hooli/thebox/p/" + SECONDARY_ALIAS + "/_new").getCommand();
+		cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/" + SECONDARY_ALIAS + "/_new").getCommand();
 		_qSecondary = (QuadModel<?, SampleMultiDbDomainSecondary>) executionContextLoader.load(cmd).getQuadModel();
 
-		cmd = CommandBuilder.withUri("/hooli/thebox/p/" + DEFAULT_ALIAS + "/_new").getCommand();
+		cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/" + DEFAULT_ALIAS + "/_new").getCommand();
 		_qDefault = (QuadModel<?, SampleMultiDbDefaultEntity>) executionContextLoader.load(cmd).getQuadModel();
 	}
 

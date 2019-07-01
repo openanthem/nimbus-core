@@ -25,6 +25,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
+import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkTest;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.view.VRSampleViewRootEntity;
 
@@ -35,13 +36,12 @@ import com.antheminc.oss.nimbus.test.scenarios.s0.view.VRSampleViewRootEntity;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=FrameworkIntegrationTestScenariosApplication.class)
 @ActiveProfiles("test")
-public abstract class AbstractStateBuilderCollectionScenariosTest {
-
+public abstract class AbstractStateBuilderCollectionScenariosTest extends AbstractFrameworkTest {
+	
 	@Autowired QuadModelBuilder quadModelBuilder;
-
-	protected static Command createCommand() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view/_new").getCommand();
-		return cmd;
+	
+	protected Command createCommand() {
+		return CommandBuilder.withUri(PLATFORM_ROOT + "/sample_view/_new").getCommand();
 	}
 	
 	protected QuadModel<VRSampleViewRootEntity, SampleCoreEntity> buildQuad() {

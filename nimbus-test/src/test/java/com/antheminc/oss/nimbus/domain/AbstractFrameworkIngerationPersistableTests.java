@@ -17,10 +17,16 @@ package com.antheminc.oss.nimbus.domain;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.HashSet;
+
 import org.junit.After;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
+import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
@@ -88,6 +94,9 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 	
 	protected static Long sampleEntity_refId;
 	
+	@Autowired
+	private SessionProvider sessionProvider;
+	
 	public synchronized Long createOrGetDomainRoot_RefId() {
 		if(domainRoot_refId!=null) 
 			return domainRoot_refId;
@@ -131,5 +140,10 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 		super.tearDown();
 		
 		domainRoot_refId = null;
+	}
+	
+	public void createClientUser() {
+		ClientUser clientUser = new ClientUser();
+    	sessionProvider.setLoggedInUser(clientUser);
 	}
 }

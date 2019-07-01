@@ -36,7 +36,7 @@ public class HierarchyMatchBasedBeanFinderTest extends AbstractFrameworkIntegrat
 
 	@Test
 	public void test() {
-		final Command command = CommandBuilder.withUri("/Acme/admin/p/testmappedmodel/_process?fn=_set&b=$execute").getCommand();
+		final Command command = CommandBuilder.withUri(PLATFORM_ROOT + "/testmappedmodel/_process?fn=_set&b=$execute").getCommand();
 		assertNotNull(hierarchyMatchBasedBeanFinder.findMatchingBean(SetFunctionHandler.class, this.constructFunctionHandlerKey(command)));
 	}
 	
