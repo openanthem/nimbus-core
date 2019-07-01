@@ -26,11 +26,13 @@ import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.ModelRepositoryOptions.TenancyStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositoryOptions;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByExampleOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByQueryOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
 import com.antheminc.oss.nimbus.support.mongo.MongoConvertersBuilder;
+import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 
 /**
  * @author Soham Chakravrati
@@ -51,10 +53,11 @@ public class DefaultMongoConfig {
 	}
 	
 	@Bean
-	public MongoDBModelRepositoryOptions defaultMongoDBModelRepositoryOptions(MongoOperations mongoOps, DomainConfigBuilder domainConfigBuilder) {
+	public MongoDBModelRepositoryOptions defaultMongoDBModelRepositoryOptions(MongoOperations mongoOps, DomainConfigBuilder domainConfigBuilder, JavaBeanHandler beanHandler) {
 		return MongoDBModelRepositoryOptions.builder()
-			.addSearchOperation(new MongoSearchByExampleOperation(mongoOps, domainConfigBuilder))
+			.addSearchOperation(new MongoSearchByExampleOperation(mongoOps, domainConfigBuilder, beanHandler))
 			.addSearchOperation(new MongoSearchByQueryOperation(mongoOps, domainConfigBuilder))
+			.tenancyStrategy(TenancyStrategy.RECORD)
 			.build();
 	}
 }

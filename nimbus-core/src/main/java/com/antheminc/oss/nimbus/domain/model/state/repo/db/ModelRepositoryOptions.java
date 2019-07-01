@@ -39,6 +39,12 @@ public interface ModelRepositoryOptions {
 		 * <p> Default strategy that implies no tenancy strategy should be used.
 		 */
 		NONE,
+
+		/**
+		 * <p> Record level based strategy that mandates tenant information is
+		 * stored and read as part of the domain entity.
+		 */
+		RECORD;
 	}
 
 	/**

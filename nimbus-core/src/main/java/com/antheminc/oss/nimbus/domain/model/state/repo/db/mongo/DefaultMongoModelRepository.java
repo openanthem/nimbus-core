@@ -89,11 +89,13 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(), pId.getCode());
 		getBeanHandler().setValue(va, newState, id);
 
-		Long tenantId = cmd.acquireTenantId();
-		va = JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(),
-				Constants.FIELD_NAME_TENANT_ID.code);
-		getBeanHandler().setValue(va, newState, tenantId);
-		
+		if (TenancyStrategy.RECORD == this.options.getTenancyStrategy()) {
+			Long tenantId = cmd.acquireTenantId();
+			va = JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(),
+					Constants.FIELD_NAME_TENANT_ID.code);
+			getBeanHandler().setValue(va, newState, tenantId);
+		}
+
 		return newState;
 	}
 
@@ -106,7 +108,18 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	@Override
 	public <T> T _get(Command cmd, ModelConfig<T> mConfig) {
 		Long id = cmd.getRefId(Type.DomainAlias);
-		return getMongoOps().findById(id, mConfig.getReferredClass(), mConfig.getRepoAlias());
+		if (TenancyStrategy.NONE == this.options.getTenancyStrategy()) {
+			return getMongoOps().findById(id, mConfig.getReferredClass(), mConfig.getRepoAlias());
+		}
+
+		if (TenancyStrategy.RECORD == this.options.getTenancyStrategy()) {
+			Long tenantId = cmd.acquireTenantId();
+			Query query = new Query().addCriteria(Criteria.where(FIELD_NAME_MONGO_ID).is(id))
+					.addCriteria(Criteria.where(Constants.FIELD_NAME_TENANT_ID.code).is(tenantId));
+			return getMongoOps().findOne(query, mConfig.getReferredClass(), mConfig.getRepoAlias());
+		}
+
+		throw new UnsupportedOperationException("Unable to determine data retrieval strategy.");
 	}
 	
 	private String resolvePath(String path) {

@@ -38,6 +38,7 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.ModelRepositoryOptions.TenancyStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.LookupSearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.QuerySearchCriteria;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
@@ -139,8 +140,20 @@ public class MongoSearchByQueryOperation extends MongoDBSearchOperation {
 	private <T> Object searchByQuery(Class<?> referredClass, String alias, SearchCriteria<T> criteria, ModelRepositoryOptions options) {
 		Class<?> outputClass = findOutputClass(criteria, referredClass);
 		
+		String where = (String) criteria.getWhere();
+		if (TenancyStrategy.RECORD == options.getTenancyStrategy()) {
+			Long tenantId = criteria.getCmd().acquireTenantId();
+			String tenantClause = new StringBuilder(alias).append(".").append(Constants.FIELD_NAME_TENANT_ID.code)
+					.append(".eq(").append(tenantId).append(")").toString();
+			if (StringUtils.isEmpty(where) || "null".equals(where)) {
+				where = tenantClause;
+			} else {
+				where += ".and(" + tenantClause + ")";
+			}
+		}
+		
 		AbstractMongodbQuery query = new QueryBuilder(getMongoOps(), outputClass, alias)
-										.buildPredicate((String)criteria.getWhere(), referredClass, alias)
+										.buildPredicate(where, referredClass, alias)
 										.buildOrderBy((String)criteria.getOrderby(), referredClass, alias)
 										.get();
 		

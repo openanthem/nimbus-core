@@ -35,8 +35,11 @@ import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.SearchNature.StartsWith;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.ModelRepositoryOptions.TenancyStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
+import com.antheminc.oss.nimbus.entity.AbstractEntity;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
+import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 
 import lombok.Getter;
 
@@ -48,13 +51,16 @@ import lombok.Getter;
 @Getter
 public class MongoSearchByExampleOperation extends MongoDBSearchOperation {
 
-	public MongoSearchByExampleOperation(MongoOperations mongoOps, DomainConfigBuilder domainConfigBuilder) {
+	private final JavaBeanHandler beanHandler;
+	
+	public MongoSearchByExampleOperation(MongoOperations mongoOps, DomainConfigBuilder domainConfigBuilder, JavaBeanHandler beanHandler) {
 		super(mongoOps, domainConfigBuilder);
+		this.beanHandler = beanHandler;
 	}
 
 	@Override
 	public <T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria, ModelRepositoryOptions options) {
-		Query query = buildQuery(referredClass, alias, criteria.getWhere(), options);
+		Query query = buildQuery(referredClass, alias, criteria, options);
 		
 		if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(),Constants.SEARCH_REQ_AGGREGATE_COUNT.code)){
 			return getMongoOps().count(query, referredClass, alias);
@@ -72,11 +78,21 @@ public class MongoSearchByExampleOperation extends MongoDBSearchOperation {
 		
 	}
 
-	private <T> Query buildQuery(Class<?> referredClass, String alias, T criteria, ModelRepositoryOptions options) {
-		if(criteria == null) 
-			return new Query();
+	private <T> Query buildQuery(Class<?> referredClass, String alias, SearchCriteria<T> sc, ModelRepositoryOptions options) {
+		T criteria = sc.getWhere();
+		if (criteria == null) {
+			if (TenancyStrategy.RECORD == options.getTenancyStrategy()) {
+				criteria = (T) this.beanHandler.instantiate(referredClass);
+			} else {
+				return new Query();
+			}
+		}
 		
-		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues().withIgnorePaths("version");
+		if (TenancyStrategy.RECORD == options.getTenancyStrategy()) {
+			((AbstractEntity<?>) criteria).set_tenantId(sc.getCmd().acquireTenantId());
+		}
+		
+		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues().withIgnorePaths(Constants.FIELD_NAME_VERSION.code);
 		
 		matcher = recurseAllFieldsAndBuildMatcher(referredClass, criteria, matcher);
 		
