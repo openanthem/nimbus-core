@@ -39,7 +39,7 @@ import { BaseControl } from './base-control.component';
 @Component({
   selector: 'nm-single-checkbox',
   template: `
-    <label class="custom-control custom-check">
+    <label class="custom-control custom-check" [ngClass]="{ required: requiredCss, '': !requiredCss }">
       <input
         type="checkbox"
         [disabled]="disabled"
@@ -51,7 +51,6 @@ import { BaseControl } from './base-control.component';
       <span class="custom-control-indicator"></span>
       <span
         class="custom-control-description"
-        [ngClass]="{ required: requiredCss, '': !requiredCss }"
         >{{ label }}
         <nm-tooltip *ngIf="helpText" [helpText]="helpText"></nm-tooltip>
       </span>
