@@ -810,7 +810,7 @@ export class PageService {
     colElemParamsJSON: string[],
     gridParam: Param
   ): TableBasedData {
-    return TableBasedData.from(
+    return TableBasedData.fromJson(
       this.configService,
       gridParam,
       colElemParamsJSON
