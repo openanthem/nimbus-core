@@ -176,8 +176,8 @@
                                                 <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.linkMenu.toString()">
                                                     <nm-action-dropdown #dropDown 
                                                         *ngIf = "rowData['elemId']"
-                                                        id="{{element.tableBasedData.collectionParams[rowData['elemId']][col.code]?.config?.code}}{{rowIndex}}" 
-                                                        [element]="element.tableBasedData.collectionParams[rowData['elemId']][col.code]" 
+                                                        id="{{element?.tableBasedData?.collectionParams[rowData['elemId']][col.code]?.config?.code}}{{rowIndex}}" 
+                                                        [element]="element?.tableBasedData?.collectionParams[rowData['elemId']][col.code]" 
                                                         [params]="col?.type?.model?.paramConfigs" 
                                                         [rowData]="rowData" 
                                                         [elementPath]="getRowPath(col, rowData)" 
