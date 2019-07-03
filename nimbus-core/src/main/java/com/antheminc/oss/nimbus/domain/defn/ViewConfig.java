@@ -2238,7 +2238,16 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Write javadoc-->
+	 * <p>PageHeader is a {@link ViewParamBehavior} that provides a way to
+	 * customize certain features of a header.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>PageHeader data will be used/rendered when annotating a field nested
+	 * under a {@link Section} with a value of {@link Section.Type#HEADER}.
+	 * 
+	 * <p>PageHeader will render nested components in accordance with the
+	 * configured value. See {@link PageHeader.Property} for specific details.
 	 * 
 	 * @since 1.0
 	 */
@@ -2247,7 +2256,102 @@ public class ViewConfig {
 	@ViewParamBehavior
 	public @interface PageHeader {
 		public enum Property {
-			APPTITLE, DEFAULT, HELP, LOGO, LOGOUT, MENU, NOTIFICATIONS, NUMBEROFNOTIFICATIONS, SETTINGS, SUBHEADER, SUBTITLE, TITLE, USERNAME, USERROLE;
+
+			/**
+			 * <p>Adds the application title name in the header. This should
+			 * decorate alongside a {@link Paragraph} component.
+			 */
+			APPTITLE,
+
+			/**
+			 * <p>An empty default value. Not used by the UI framework, but used
+			 * as a marker TODO This should be removed in the future.
+			 */
+			DEFAULT,
+
+			/**
+			 * <p>Adds a link to point to a help page. This should decorate
+			 * alongside a {@link Link} component.
+			 */
+			HELP,
+
+			/**
+			 * <p>Adds a image to the header. This should decorate alongside a
+			 * {@link Link} component using the {@code imgSrc} attribute.
+			 */
+			LOGO,
+
+			/**
+			 * <p>Adds a link to point to a logout page. This should decorate
+			 * alongside a {@link Link} component.
+			 */
+			LOGOUT,
+
+			/**
+			 * <p>Not used by the UI framework. Will likely be removed in the
+			 * future.
+			 */
+			@Deprecated
+			MENU,
+
+			/**
+			 * <p>Adds clickable notification components that can be used to
+			 * display additional information to the user. This should decorate
+			 * a nested class that may contain one or more of the following
+			 * components:
+			 * <ul><li>{@link Button}</li><li>{@link Link}</li><li>{@link LinkMenu}</li></ul>
+			 */
+			NOTIFICATIONS,
+
+			/**
+			 * <p>Not used by the UI framework. Will likely be removed in the
+			 * future.
+			 */
+			@Deprecated
+			NUMBEROFNOTIFICATIONS,
+
+			/**
+			 * <p>Not used by the UI framework. Will likely be removed in the
+			 * future.
+			 */
+			@Deprecated
+			SETTINGS,
+
+			/**
+			 * <p>Not used by the UI framework. Will likely be removed in the
+			 * future.
+			 */
+			@Deprecated
+			SUBHEADER,
+
+			/**
+			 * <p>Adds the subtitle name in the header. This should decorate
+			 * alongside a {@link Paragraph} component.
+			 * @see #APPTITLE
+			 */
+			SUBTITLE,
+
+			/**
+			 * <p>Sets the HTML document title. This should decorate alongside a
+			 * {@link Label} component.
+			 */
+			TITLE,
+
+			/**
+			 * <p>Renders a user's username in the header. This should decorate
+			 * a field with type String. The {@code leafState} of the generated
+			 * param for the field decorated by this annotation will be used as
+			 * the rendered value.
+			 */
+			USERNAME,
+
+			/**
+			 * <p>Renders a user's role name in the header. This should decorate
+			 * a field with type String. The {@code leafState} of the generated
+			 * param for the field decorated by this annotation will be used as
+			 * the rendered value.
+			 */
+			USERROLE;
 		}
 
 		Property value() default Property.DEFAULT;
