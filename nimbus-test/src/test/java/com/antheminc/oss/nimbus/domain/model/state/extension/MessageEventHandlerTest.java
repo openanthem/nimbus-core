@@ -23,6 +23,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.servlet.http.Cookie;
+
 import org.apache.commons.lang.StringUtils;
 import org.hamcrest.core.IsNull;
 import org.junit.FixMethodOrder;
@@ -36,6 +38,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.Message;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
@@ -85,9 +88,10 @@ public class MessageEventHandlerTest extends AbstractFrameworkIngerationPersista
 		Message msg = testWarningTextBox_p.getMessages().stream()
 			.filter(m -> StringUtils.equalsIgnoreCase("This is a Test Warning Message", m.getText())).findFirst().get();		
 		assertEquals("This is a Test Warning Message",msg.getText());
-		
+		createClientUser();
 		// to simulate the _get call with JsonSerializer
 		mvc.perform(get(createRequest(uri, Action._get).getRequestURI())
+				.cookie(new Cookie(Constants.ACTIVE_TENANT_COOKIE.code, CMD_PREFIX))
 				.contentType(APPLICATION_JSON_UTF8))
                	.andExpect(status().isOk())
                	.andExpect(jsonPath("$.result.0.result.outputs[0].value.type.model.params[4].type.model.params[0].type.model.params[0].type.model.params[0].type.model.params[0].message[0].text", IsNull.notNullValue()))
@@ -104,7 +108,9 @@ public class MessageEventHandlerTest extends AbstractFrameworkIngerationPersista
 	@WithMockUser(username="user", password="pwd")
 	public void t02_messageState_json_onload() throws Exception{
 		MockHttpServletRequest home_newReq = createRequest(VIEW_PARAM_ROOT, Action._new);
+		createClientUser();
 		mvc.perform(get(home_newReq.getRequestURI())
+				.cookie(new Cookie(Constants.ACTIVE_TENANT_COOKIE.code, CMD_PREFIX))
 				.contentType(APPLICATION_JSON_UTF8))
                	.andExpect(status().isOk())
                	.andExpect(jsonPath("$.result.0.result.outputs[0].value.type.model.params[4].type.model.params[0].type.model.params[0].type.model.params[0].type.model.params[9].message[0].text", IsNull.notNullValue()))

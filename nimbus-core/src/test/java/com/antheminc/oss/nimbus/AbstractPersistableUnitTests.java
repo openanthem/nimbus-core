@@ -37,7 +37,7 @@ import cz.jirutka.spring.embedmongo.EmbeddedMongoFactoryBean;
  * @author Soham Chakravarti
  *
  */
-public abstract class AbstractPersistableUnitTests {
+public abstract class AbstractPersistableUnitTests extends AbstractFrameworkTest {
 	
     private static final String MONGO_DB_URL = "localhost";
     private static final String MONGO_DB_NAME = "embeded_db";

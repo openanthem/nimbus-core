@@ -48,8 +48,7 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 	
 	@Override
 	protected Command createCommand() {
-		final Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view:"+REF_ID+"/_get").getCommand();
-		return cmd;
+		return CommandBuilder.withUri(PLATFORM_ROOT + "/sample_view:"+REF_ID+"/_get").getCommand();
 	}
 
 	private SampleCoreEntity createOrGetCore() {
@@ -60,6 +59,7 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 		//AtomicInteger counter = new AtomicInteger(0);
 		final SampleCoreEntity core = new SampleCoreEntity();
 		core.setId(new Random().nextLong());
+		core.set_tenantId(TENANT_ID);
 		mongo.insert(core, "sample_core");
 		REF_ID = core.getId();
 		assertNotNull(REF_ID);

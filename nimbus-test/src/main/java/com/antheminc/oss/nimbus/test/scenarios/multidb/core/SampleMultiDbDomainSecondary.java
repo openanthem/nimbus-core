@@ -40,6 +40,7 @@ public class SampleMultiDbDomainSecondary {
 	private String _class = this.getClass().getName(); 
 	@Id
 	private Long id;
+	private Long _tenantId;
 	private String secondaryField1;
 	private String secondaryField2;
 	

@@ -72,6 +72,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		
 		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
 		scea.setId(1L);
+		scea.set_tenantId(TENANT_ID);
 		scea.setAttr_String("test1_string1");
 		scea.setAttr_String2("test2_string2");
 		scea.setAttr_LocalDate1(LocalDate.now());
@@ -82,6 +83,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		
 		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
 		scea2.setId(2L);
+		scea2.set_tenantId(TENANT_ID);
 		scea2.setAttr_String("test2_string1");
 		scea2.setAttr_String2("test2_string2");
 		scea2.setAttr_LocalDate1(LocalDate.now());
@@ -131,6 +133,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		
 		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
 		scea.setId(1L);
+		scea.set_tenantId(TENANT_ID);
 		scea.setAttr_String("test1_string1");
 		scea.setAttr_String2("test2_string2");
 		scea.setAttr_LocalDate1(LocalDate.now());
@@ -141,6 +144,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		
 		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
 		scea2.setId(2L);
+		scea2.set_tenantId(TENANT_ID);
 		scea2.setAttr_String("test2_string1");
 		scea2.setAttr_String2("test2_string2");
 		scea2.setAttr_LocalDate1(LocalDate.now());
@@ -193,6 +197,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		
 		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
 		scea.setId(1L);
+		scea.set_tenantId(TENANT_ID);
 		scea.setAttr_String("test1_string1");
 		scea.setAttr_String2("test2_string2");
 		scea.setAttr_LocalDate1(LocalDate.now());
@@ -203,6 +208,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		
 		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
 		scea2.setId(2L);
+		scea2.set_tenantId(TENANT_ID);
 		scea2.setAttr_String("test2_string1");
 		scea2.setAttr_String2("test2_string2");
 		scea2.setAttr_LocalDate1(LocalDate.now().plusDays(1));
@@ -258,6 +264,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		
 		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
 		scea.setId(1L);
+		scea.set_tenantId(TENANT_ID);
 		scea.setAttr_String("test1_string1");
 		scea.setAttr_String2("test2_string2");
 		scea.setAttr_LocalDate1(LocalDate.now());
@@ -268,6 +275,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		
 		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
 		scea2.setId(2L);
+		scea2.set_tenantId(TENANT_ID);
 		scea2.setAttr_String("test2_string1");
 		scea2.setAttr_String2("test2_string2");
 		scea2.setAttr_LocalDate1(LocalDate.now());
@@ -320,6 +328,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		
 		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
 		scea.setId(1L);
+		scea.set_tenantId(TENANT_ID);
 		scea.setAttr_String("test1_string1");
 		scea.setAttr_String2("test2_string2");
 		scea.setAttr_LocalDate1(LocalDate.now());
@@ -330,6 +339,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		
 		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
 		scea2.setId(2L);
+		scea2.set_tenantId(TENANT_ID);
 		scea2.setAttr_String("test2_string1");
 		scea2.setAttr_String2("test2_string2");
 		scea2.setAttr_LocalDate1(LocalDate.now().plusDays(2));
@@ -383,6 +393,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		
 		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
 		scea.setId(1L);
+		scea.set_tenantId(TENANT_ID);
 		scea.setAttr_String("test1_string1");
 		scea.setAttr_String2("test2_string2");
 		scea.setAttr_LocalDate1(LocalDate.now());
@@ -393,6 +404,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		
 		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
 		scea2.setId(2L);
+		scea2.set_tenantId(TENANT_ID);
 		scea2.setAttr_String("test2_string1");
 		scea2.setAttr_String2("test2_string2");
 		scea2.setAttr_LocalDate1(LocalDate.now().plusDays(2));
@@ -443,9 +455,11 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 	public void testLookupSort() {
 		SampleTask task1 = new SampleTask();
 		task1.setId(1L);
+		task1.set_tenantId(TENANT_ID);
 		task1.setTaskName("Play");
 		SampleTask task2 = new SampleTask();
 		task2.setId(2L);
+		task2.set_tenantId(TENANT_ID);
 		task2.setTaskName("Groom");
 		mongo.insert(task1, "sampletask");
 		mongo.insert(task2, "sampletask");
@@ -554,7 +568,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 			i++;
 		}
 		
-		final MockHttpServletRequest fetchAuthorities = MockHttpRequestBuilder.withUri("/hooli/thebox/p/authorities")
+		final MockHttpServletRequest fetchAuthorities = MockHttpRequestBuilder.withUri(PLATFORM_ROOT + "/authorities")
 				.addAction(Action._search)
 				.addParam("fn", "query")
 				.addParam("where", "authorities.code.in("+sb2.toString()+")")
@@ -572,6 +586,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 	private String createClientUserWithRoles(String loginId, String... roles) {
 		ClientUser cu = new ClientUser();
 		cu.setId(new Random().nextLong());
+		cu.set_tenantId(TENANT_ID);
 		cu.setLoginId(loginId);
 		
 		List<UserRole> userRoles = new ArrayList<>();
@@ -579,6 +594,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 			
 			ClientUserRole userRole = new ClientUserRole();
 			userRole.setId(new Random().nextLong());
+			userRole.set_tenantId(TENANT_ID);
 			userRole.setCode(r);
 			userRole.setEffectiveDate(LocalDate.now());
 			
@@ -586,6 +602,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 			
 			ClientAccessEntity accessEntity = new ClientAccessEntity();
 			accessEntity.setId(new Random().nextLong());
+			accessEntity.set_tenantId(TENANT_ID);
 			accessEntity.setCode("member_management");
 			
 			mongo.save(accessEntity, "authorities");

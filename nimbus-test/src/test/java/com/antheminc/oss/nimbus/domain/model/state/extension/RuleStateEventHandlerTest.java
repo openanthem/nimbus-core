@@ -46,8 +46,7 @@ public class RuleStateEventHandlerTest extends AbstractStateEventHandlerTests {
 	
 	@Override
 	protected Command createCommand() {
-		final Command cmd = CommandBuilder.withUri("/hooli/thebox/p/" + ENTITY_VIEW + ":"+REF_ID+"/_get").getCommand();
-		return cmd;
+		return CommandBuilder.withUri(PLATFORM_ROOT + "/" + ENTITY_VIEW + ":"+REF_ID+"/_get").getCommand();
 	}
 
 	private SampleCoreEntity createOrGetCore() {
@@ -58,6 +57,7 @@ public class RuleStateEventHandlerTest extends AbstractStateEventHandlerTests {
 		
 		final SampleCoreEntity core = new SampleCoreEntity();
 		core.setId(new Random().nextLong());
+		core.set_tenantId(TENANT_ID);
 		mongo.insert(core, ENTITY_CORE);
 		REF_ID = core.getId();
 		assertNotNull(REF_ID);

@@ -20,10 +20,10 @@ package com.antheminc.oss.nimbus.channel.web;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.antheminc.oss.nimbus.channel.CommandDispatcher;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
@@ -35,16 +35,13 @@ import lombok.Getter;
  */
 @Getter
 @EnableLoggingInterceptor
-public class WebCommandDispatcher {
+public class WebCommandDispatcher extends CommandDispatcher {
 
 	private final WebCommandBuilder builder;
-
-	private final CommandExecutorGateway gateway;
-
+	
 	public WebCommandDispatcher(BeanResolverStrategy beanResolver) {
+		super(beanResolver);
 		this.builder = beanResolver.get(WebCommandBuilder.class);
-		this.gateway = beanResolver.get(CommandExecutorGateway.class);
-		
 	}
 	
 	public Object handle(HttpServletRequest httpReq, ModelEvent<String> event) {
@@ -55,9 +52,5 @@ public class WebCommandDispatcher {
 	public Object handle(HttpServletRequest httpReq, String json) {
 		Command cmd = getBuilder().build(httpReq);
 		return handle(cmd, json);
-	}
-
-	public MultiOutput handle(Command cmd, String payload) {
-		return getGateway().execute(cmd, payload);
 	}
 }

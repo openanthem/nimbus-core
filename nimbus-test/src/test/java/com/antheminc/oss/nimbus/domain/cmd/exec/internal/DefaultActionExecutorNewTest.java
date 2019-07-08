@@ -27,6 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import javax.servlet.http.Cookie;
+
 import org.hamcrest.core.IsNull;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
@@ -68,14 +70,16 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 	
 	@Autowired
 	private MockMvc mvc;
-
+	
 	@WithMockUser(username="user", password="pwd")
 	@Test
 	public void t00_json() throws Exception {
+		createClientUser();
 		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addAction(Action._new).getMock();
 
 		mvc.perform(post(req.getRequestURI()).content("{}")
 				.with(csrf())
+				.cookie(new Cookie(Constants.ACTIVE_TENANT_COOKIE.code, CMD_PREFIX))
 				.contentType(APPLICATION_JSON_UTF8))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.result.0.result.outputs[0].value", IsNull.notNullValue())).andReturn()
@@ -289,16 +293,19 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 	@WithMockUser(username="user", password="pwd")
 	@Test
 	public void testSuccessiveNewCalls() throws Exception {
+		createClientUser();
 		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addAction(Action._new).getMock();
 
-		mvc.perform(post(req.getRequestURI()).with(csrf()).content("{}").contentType(APPLICATION_JSON_UTF8))
+		mvc.perform(post(req.getRequestURI()).cookie(new Cookie(Constants.ACTIVE_TENANT_COOKIE.code, CMD_PREFIX))
+				.with(csrf()).content("{}").contentType(APPLICATION_JSON_UTF8))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.result.0.result.outputs[0].value", IsNull.notNullValue())).andReturn()
 				.getResponse().getContentAsString();
 
 		Assert.assertEquals(1, mongo.getCollection("sample_core").count());
 
-		mvc.perform(post(req.getRequestURI()).with(csrf()).content("{}").contentType(APPLICATION_JSON_UTF8))
+		mvc.perform(post(req.getRequestURI()).cookie(new Cookie(Constants.ACTIVE_TENANT_COOKIE.code, CMD_PREFIX))
+				.with(csrf()).content("{}").contentType(APPLICATION_JSON_UTF8))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.result.0.result.outputs[0].value", IsNull.notNullValue())).andReturn()
 				.getResponse().getContentAsString();

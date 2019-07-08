@@ -63,8 +63,7 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 	
 	@Override
 	protected Command createCommand() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view/_new").getCommand();
-		return cmd;
+		return CommandBuilder.withUri(PLATFORM_ROOT + "/sample_view/_new").getCommand();
 	}
 	
 	private Param<String> getCore_audit_string() {

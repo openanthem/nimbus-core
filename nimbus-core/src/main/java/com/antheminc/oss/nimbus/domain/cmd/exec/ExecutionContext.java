@@ -57,7 +57,7 @@ public class ExecutionContext implements Serializable {
 	}
 	
 	public String getId() {
-		return getCommandMessage().getCommand().getRootDomainUri();
+		return getCommandMessage().getCommand().getAbsoluteAliasUntilRootDomain(true);
 	}
 	
 	public boolean equalsId(Command cmd) {

@@ -230,6 +230,7 @@ public class S4_MappedTransientTest extends AbstractFrameworkIntegrationTests {
 		
 		S4C_CoreMain core = new S4C_CoreMain();
 		core.setId(K_DB_REFID);
+		core.set_tenantId(TENANT_ID);
 		core.setAnotherModeList(Arrays.asList(formEntity));
 		
 		// save: call

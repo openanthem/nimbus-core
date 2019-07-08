@@ -93,10 +93,12 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		
 		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
 		scea.setId(1L);
+		scea.set_tenantId(TENANT_ID);
 		scea.setAttr_String("test1");
 		
 		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
 		scea2.setId(2L);
+		scea2.set_tenantId(TENANT_ID);
 		scea2.setAttr_String("test2");
 		mongo.save(scea, "sample_core_access");
 		mongo.save(scea2, "sample_core_access");
@@ -239,7 +241,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 			
 		}
 		
-		final MockHttpServletRequest fetchAuthorities = MockHttpRequestBuilder.withUri("/hooli/thebox/p/authorities")
+		final MockHttpServletRequest fetchAuthorities = MockHttpRequestBuilder.withUri(PLATFORM_ROOT + "/authorities")
 				.addAction(Action._search)
 				.addParam("fn", "query")
 				.addParam("where", "authorities.code.in("+sb2.toString()+")")
@@ -260,6 +262,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 	private String createClientUserWithRoles(String loginId, String... roles) {
 		ClientUser cu = new ClientUser();
 		cu.setId(new Random().nextLong());
+		cu.set_tenantId(TENANT_ID);
 		cu.setLoginId(loginId);
 		
 		List<UserRole> userRoles = new ArrayList<>();
@@ -267,6 +270,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 			
 			ClientUserRole userRole = new ClientUserRole();
 			userRole.setId(new Random().nextLong());
+			userRole.set_tenantId(TENANT_ID);
 			userRole.setCode(r);
 			userRole.setEffectiveDate(LocalDate.now());
 			
@@ -274,6 +278,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 			
 			ClientAccessEntity accessEntity = new ClientAccessEntity();
 			accessEntity.setId(new Random().nextLong());
+			accessEntity.set_tenantId(TENANT_ID);
 			accessEntity.setCode("member_management");
 			
 			mongo.save(accessEntity, "authorities");

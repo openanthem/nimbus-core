@@ -37,6 +37,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
+import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkTest;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
 /**
@@ -47,14 +48,14 @@ import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 @SpringBootTest(classes=FrameworkIntegrationTestScenariosApplication.class)
 @ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class MappedDefaultParamStateTest {
+public class MappedDefaultParamStateTest extends AbstractFrameworkTest {
 	
 	@Autowired QuadModelBuilder quadModelBuilder;
 	
 	protected QuadModel<?, SampleCoreEntity> _q;
 	
-	protected static Command createCommand() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view/_new").getCommand();
+	protected Command createCommand() {
+		Command cmd = CommandBuilder.withUri(PLATFORM_ROOT + "/sample_view/_new").getCommand();
 		return cmd;
 	}
 

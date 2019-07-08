@@ -15,8 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
-import java.util.Locale;
-
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -26,7 +24,6 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTests;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 
 /**
  * @author Tony Lopez
@@ -169,7 +166,6 @@ public class LabelConditionalStateEventHandlerTest extends AbstractStateEventHan
 
 	@Override
 	protected Command createCommand() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view/_new").getCommand();
-		return cmd;
+		return CommandBuilder.withUri(PLATFORM_ROOT + "/sample_view/_new").getCommand();
 	}
 }

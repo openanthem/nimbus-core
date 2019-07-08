@@ -46,8 +46,7 @@ public class ModalStateEventHandlerTest extends AbstractStateEventHandlerTests {
 	
 	@Override
 	protected Command createCommand() {
-		final Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view:"+REF_ID+"/_get").getCommand();
-		return cmd;
+		return CommandBuilder.withUri(PLATFORM_ROOT + "/sample_view:"+REF_ID+"/_get").getCommand();
 	}
 
 	private SampleCoreEntity createOrGetCore() {
@@ -58,6 +57,7 @@ public class ModalStateEventHandlerTest extends AbstractStateEventHandlerTests {
 		AtomicInteger counter = new AtomicInteger(0);
 		final SampleCoreEntity core = new SampleCoreEntity();
 		core.setId(Long.valueOf(counter.getAndIncrement()));
+		core.set_tenantId(TENANT_ID);
 		mongo.insert(core, "sample_core");
 		REF_ID = core.getId();
 		assertNotNull(REF_ID);

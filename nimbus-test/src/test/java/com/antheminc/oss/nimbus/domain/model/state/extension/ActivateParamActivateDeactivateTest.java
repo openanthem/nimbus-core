@@ -47,8 +47,7 @@ public class ActivateParamActivateDeactivateTest extends AbstractStateEventHandl
 
 	@Override
 	protected Command createCommand() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view/_new").getCommand();
-		return cmd;
+		return CommandBuilder.withUri(PLATFORM_ROOT + "/sample_view/_new").getCommand();
 	}
 	
 	protected String getSourceParamPath() {

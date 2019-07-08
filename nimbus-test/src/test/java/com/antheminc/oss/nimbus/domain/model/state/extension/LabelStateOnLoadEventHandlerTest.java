@@ -43,7 +43,6 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo.Type;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
@@ -78,6 +77,7 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 	private Object prepareParam(String viewRoot) {
 		Sample_Core_Label_Entity sc_main = new Sample_Core_Label_Entity();
 		sc_main.setId(CORE_REF_ID_1);
+		sc_main.set_tenantId(TENANT_ID);
 		sc_main.setAttr1("Green");
 		mongo.insert(sc_main, "sample_core_label");
 		
@@ -248,6 +248,7 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 	public void t06_label_nested_coll_multiple_withstate() {
 		Sample_Core_Label_Entity sc_main = new Sample_Core_Label_Entity();
 		sc_main.setId(new Long(2));
+		sc_main.set_tenantId(TENANT_ID);
 		Nested_Attr nested_1 = new Nested_Attr();
 		nested_1.setAttr_nested_1("nested attr1");
 		Nested_Attr_Level2 attr_level2 = new Nested_Attr_Level2();
@@ -299,6 +300,7 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 	public void t07_label_state_nested_attr() {
 		Sample_Core_Label_Entity sc_main = new Sample_Core_Label_Entity();
 		sc_main.setId(new Long(3));
+		sc_main.set_tenantId(TENANT_ID);
 		Nested_Attr nested_1 = new Nested_Attr();
 		nested_1.setAttr_nested_1("nested attr1");
 		sc_main.setAttr_nested(nested_1);
@@ -415,6 +417,7 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 		
 		Sample_Core_Label_Entity sc_main = new Sample_Core_Label_Entity();
 		sc_main.setId(new Long(5));
+		sc_main.set_tenantId(TENANT_ID);
 		sc_main.setAttr2("test");
 		
 		mongo.insert(sc_main, "sample_core_label");

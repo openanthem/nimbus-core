@@ -51,11 +51,11 @@ import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CrossDomainPathResolverTest extends AbstractStateEventHandlerTests {
 	
-	private final static String ENG_LANG = "English";
-	private final static String FRENCH_LANG = "French";
-	private final static String SAMPLE_VIEW_ROOT = "sample_crossdomain_pathresolver";
+	private static final String ENG_LANG = "English";
+	private static final String FRENCH_LANG = "French";
+	private static final String SAMPLE_VIEW_ROOT = "sample_crossdomain_pathresolver";
 	protected static final String SAMPLE_VIEW_PARAM_ROOT = PLATFORM_ROOT + "/" + SAMPLE_VIEW_ROOT;
-	private final static String SAMPLE_VIEW_MULTI_ROOT = "sample_multi_domain";
+	private static final String SAMPLE_VIEW_MULTI_ROOT = "sample_multi_domain";
 	protected static final String SAMPLE_VIEW_MULTI_PARAM_ROOT = PLATFORM_ROOT + "/" + SAMPLE_VIEW_MULTI_ROOT;
 	
 	@Autowired
@@ -63,8 +63,7 @@ public class CrossDomainPathResolverTest extends AbstractStateEventHandlerTests 
 	
 	@Override
 	protected Command createCommand() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_crossdomain_pathresolver/_new").getCommand();
-		return cmd;
+		return CommandBuilder.withUri(PLATFORM_ROOT + "/sample_crossdomain_pathresolver/_new").getCommand();
 	}
 	
 	private MockHttpServletRequest createRequest(String domainPath, Action a) {
@@ -326,6 +325,7 @@ public class CrossDomainPathResolverTest extends AbstractStateEventHandlerTests 
 		Long id = new Random().nextLong();
 		SampleCoreEntity sample_core = new SampleCoreEntity();
 		sample_core.setId(id);
+		sample_core.set_tenantId(TENANT_ID);
 		sample_core.setAttr_String("orange");
 		mongo.insert(sample_core, "sample_core");
 		
@@ -351,6 +351,7 @@ public class CrossDomainPathResolverTest extends AbstractStateEventHandlerTests 
 		Long id = new Random().nextLong();
 		SampleCoreEntity sample_core = new SampleCoreEntity();
 		sample_core.setId(id);
+		sample_core.set_tenantId(TENANT_ID);
 		sample_core.setAttr_String("orange");
 		mongo.insert(sample_core, "sample_core");
 		

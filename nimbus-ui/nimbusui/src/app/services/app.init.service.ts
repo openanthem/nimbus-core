@@ -22,6 +22,7 @@ import { Headers, Http, RequestOptions } from '@angular/http';
 import { DOCUMENT } from '@angular/platform-browser';
 import { timeout } from 'rxjs/operators';
 import { ServiceConstants } from './service.constants';
+import { CookieService } from './cookie.service';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes
@@ -35,7 +36,7 @@ export class AppInitService {
   options: RequestOptions;
   logOptions: any;
 
-  constructor(@Inject(DOCUMENT) private document: any, private http: Http) {
+  constructor(@Inject(DOCUMENT) private document: any, private http: Http, private cookieService: CookieService) {
     this.headers = new Headers({ 'Content-Type': 'application/json' });
     this.options = new RequestOptions({
       headers: this.headers,
@@ -53,10 +54,9 @@ export class AppInitService {
       .splice(1, 1);
     ServiceConstants.LOCALE_LANGUAGE = 'en-US'; //TODO This locale should be read dynamically. Currently defaulting to en-US
     ServiceConstants.APP_PROTOCOL = this.document.location.protocol;
-    /*Initially populate the APP_COMMAND_URL with a default value - 
-        which may be overwritten with the clientprovided command url in the landing page */
+    ServiceConstants.APP_COMMAND_URL = this.cookieService.getCookieValue(ServiceConstants.TENANT_PREFIX_COOKIE);
     if (ServiceConstants.APP_COMMAND_URL === undefined) {
-      ServiceConstants.APP_COMMAND_URL = '/client/org/app';
+      throw new Error('Command URL tenant prefix was undefined. Please check configurations ensure the tenant settings have been set.');
     }
 
     const docObj = {

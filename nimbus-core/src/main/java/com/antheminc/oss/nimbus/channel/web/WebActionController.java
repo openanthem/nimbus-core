@@ -37,27 +37,29 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
-import com.antheminc.oss.nimbus.domain.cmd.exec.FileImportGateway;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.support.LoggingLevelService;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * STEPS to follow with examples. <br>
  * 
  * <p>EXAMPLES:</p>
- * Ex 1:  /anthem/icr/member/_search - POST operation which contains criteria <br>
- * Ex 2:  /anthem/icr/member/{id} - GET operation which has member id as path variable <br>
- * Ex 3:  /anthem/acmp/member/{id}/_info - GET operation which contains member id as path variable, but also contains an action 'info' to return less data <br>
- * Ex 4:  /anthem/acmp/um/case/{cid}/member/address/{aid} - GET operation to return one address from the collection <br>
- * Ex 5:  /anthem/acmp/um/case/{cid}/member/address		- POST operation to create new address <br>
- * Ex 6:  /anthem/icr/um/case/{cid}/member/address/{aid}?version=n - PUT operation to update a given address. This would be a complete model update <br>
- * Ex 7:  /anthem/icr/um/case/{cid}/member/address/{aid}?version=n - PATCH operation to update a given address. This would be a partial model update <br>
- * Ex 8:  /anthem/icr/member/_search$validate - POST operation which contains criteria which will be validated and response provided per field <br>
- * Ex 9:  /anthem/hrs/member/_search$config	 - GET operation that returns static meta data created for 'member/_search' process <br>
- * Ex 10: /anthem/hrs/um/case/{cid}/member/address$validate - POST operation that contains address field populated which will be validated at each field level <br>
- * Ex 11: /anthem/hrs/address$validate - POST operation
+ * Ex 1:  /hooli/1/thebox/p/member/_search - POST operation which contains criteria <br>
+ * Ex 2:  /hooli/1/thebox/p/member/{id} - GET operation which has member id as path variable <br>
+ * Ex 3:  /hooli/1/thebox/p/member/{id}/_info - GET operation which contains member id as path variable, but also contains an action 'info' to return less data <br>
+ * Ex 4:  /hooli/1/thebox/p/case/{cid}/member/address/{aid} - GET operation to return one address from the collection <br>
+ * Ex 5:  /hooli/1/thebox/p/case/{cid}/member/address		- POST operation to create new address <br>
+ * Ex 6:  /hooli/1/thebox/p/case/{cid}/member/address/{aid}?version=n - PUT operation to update a given address. This would be a complete model update <br>
+ * Ex 7:  /hooli/1/thebox/p/case/{cid}/member/address/{aid}?version=n - PATCH operation to update a given address. This would be a partial model update <br>
+ * Ex 8:  /hooli/1/thebox/p/member/_search$validate - POST operation which contains criteria which will be validated and response provided per field <br>
+ * Ex 9:  /hooli/1/thebox/p/member/_search$config	 - GET operation that returns static meta data created for 'member/_search' process <br>
+ * Ex 10: /hooli/1/thebox/p/case/{cid}/member/address$validate - POST operation that contains address field populated which will be validated at each field level <br>
+ * Ex 11: /hooli/1/thebox/p//address$validate - POST operation
  * <br>
  * <br>
  * <p>STEPS:</p>
@@ -93,7 +95,7 @@ import com.antheminc.oss.nimbus.support.LoggingLevelService;
  *
  */
 @RestController
-//@EnableResourceServer
+@Getter @Setter
 public class WebActionController {
 	
 	public static final String URI_PATTERN_P = "/{clientCode}/**/p";

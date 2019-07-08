@@ -17,6 +17,7 @@ package com.antheminc.oss.nimbus.converter.writer;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.converter.RowProcessable.RowProcessingHandler;
+import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
@@ -36,6 +37,7 @@ public class ModelRepositoryBeanWriter<T> implements RowProcessingHandler<T> {
 
 	private final DomainConfigBuilder domainConfigBuilder;
 	private final ModelRepositoryFactory modelRepositoryFactory;
+	private final Command command;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -45,7 +47,7 @@ public class ModelRepositoryBeanWriter<T> implements RowProcessingHandler<T> {
 			throw new FrameworkRuntimeException("Unable to find model config for " + bean);
 		}
 		ModelRepository modelRepository = getModelRepositoryFactory().get(modelConfig.getRepo());
-		T newState = modelRepository._new(null, modelConfig, bean);
+		T newState = modelRepository._new(command, modelConfig, bean);
 		modelRepository._save(modelConfig.getAlias(), newState);
 	}
 

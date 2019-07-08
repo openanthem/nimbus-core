@@ -39,7 +39,7 @@ abstract public class CommandElement implements Serializable {
 	public enum Type {
 		
 		ClientAlias("ClientAlias", false),
-		ClientOrgAlias("ClientOrgAlias", false),
+		TENANT_ID("TenantId", false),
 		AppAlias("AppAlias", false),
 		PlatformMarker("PlatformMarker", false),
 		DomainAlias("DomainAlias", true),

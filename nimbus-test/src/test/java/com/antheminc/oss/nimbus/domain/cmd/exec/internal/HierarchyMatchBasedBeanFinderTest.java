@@ -24,9 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.SetFunctionHandler;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
-import com.antheminc.oss.nimbus.support.CommandUtils;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -36,7 +36,7 @@ public class HierarchyMatchBasedBeanFinderTest extends AbstractFrameworkIntegrat
 
 	@Test
 	public void test() {
-		final Command command = CommandUtils.prepareCommand("/Acme/admin/p/testmappedmodel/_process?fn=_set", Behavior.$execute);
+		final Command command = CommandBuilder.withUri(PLATFORM_ROOT + "/testmappedmodel/_process?fn=_set&b=$execute").getCommand();
 		assertNotNull(hierarchyMatchBasedBeanFinder.findMatchingBean(SetFunctionHandler.class, this.constructFunctionHandlerKey(command)));
 	}
 	

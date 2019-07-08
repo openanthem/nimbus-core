@@ -157,3 +157,10 @@ search:
     inMemory:
       sortThreshold: 100
       exceptionIfOverSortThreshold: true   
+      
+nimbus:
+  multitenancy: 
+    tenants:
+      1: 
+        description: DEFAULT
+        prefix: /hooli/1/thebox

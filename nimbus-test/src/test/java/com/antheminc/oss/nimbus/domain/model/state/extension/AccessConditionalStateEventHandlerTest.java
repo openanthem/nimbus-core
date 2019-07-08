@@ -67,8 +67,7 @@ public class AccessConditionalStateEventHandlerTest extends AbstractStateEventHa
 	
 	@Override
 	protected Command createCommand() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_core_access/_new").getCommand();
-		return cmd;
+		return CommandBuilder.withUri(PLATFORM_ROOT + "/sample_core_access/_new").getCommand();
 	}
 	
 	@Override

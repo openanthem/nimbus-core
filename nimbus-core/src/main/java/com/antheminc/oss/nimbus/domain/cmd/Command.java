@@ -32,6 +32,7 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
+import com.antheminc.oss.nimbus.support.fi.util.SupplierUtils;
 import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -103,6 +104,7 @@ public class Command implements Serializable {
 			throw new InvalidConfigException(String.format(MISSING_COMMAND_ARGUMENTS_MSG, getAbsoluteUri(), "Behavior"));
 		
 		validateCommandArgument(Type.ClientAlias);
+		validateCommandArgument(Type.TENANT_ID);
 		validateCommandArgument(Type.AppAlias);
 		validateCommandArgument(Type.PlatformMarker);
 		validateCommandArgument(Type.DomainAlias);
@@ -121,7 +123,7 @@ public class Command implements Serializable {
 	}
 	
 	private String getMissingArgumentErrorMsg(Type type) {
-		return String.format(MISSING_COMMAND_ARGUMENTS_MSG, getAbsoluteUri(), type);
+		return String.format(MISSING_COMMAND_ARGUMENTS_MSG, getAbsoluteUri(), type.getDesc());
 	}
 	
 	public boolean isRootDomainOnly() {
@@ -201,6 +203,14 @@ public class Command implements Serializable {
 		return getAlias(Type.AppAlias);
 	}
 	
+	public Long getTenantId() {
+		try {
+			return Long.valueOf(getAlias(Type.TENANT_ID));
+		} catch (NumberFormatException e) {
+			throw new FrameworkRuntimeException("Tenant ID must be of type Long.");
+		}
+	}
+	
 	public String getRootClientAlias() {
 		return getAlias(Type.ClientAlias);
 	}
@@ -226,7 +236,7 @@ public class Command implements Serializable {
 	 * 
 	 * <p>
 	 * <b>Examples:</b>
-	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/domain/ef/gh/_process?fn=_set</i> then getAbsoluteDomainAlias() returns <i>/domain</i></li>
+	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/p/domain/ef/gh/_process?fn=_set</i> then getAbsoluteDomainAlias() returns <i>/domain</i></li>
 	 * @return the absolute domain alias of this command.
 	 */
 	public String getAbsoluteDomainAlias() {
@@ -239,12 +249,24 @@ public class Command implements Serializable {
 	 * 
 	 * <p>
 	 * <b>Examples:</b>
-	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/domain/ef/gh/_process?fn=_set</i> then getAbsoluteDomainAlias() returns <i>/domain/ef/gh</i></li>
+	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/p/domain/ef/gh/_process?fn=_set</i> then getAbsoluteDomainAlias() returns <i>/domain/ef/gh</i></li>
 	 * @return the absolute domain URI of this command.
 	 */
 	public String getAbsoluteDomainUri() {
 		String u = buildUri(root().findFirstMatch(Type.DomainAlias));
 		return u;
+	}
+	
+	/**
+	 * Returns the prefix of this command.
+	 * 
+	 * <p> <b>Examples:</b> <p>When
+	 * {@code absoluteUri = "/Acme/ab/cd/p/domain/ef/gh/_process?fn=_set"} then
+	 * {@link #getPrefix()} returns {@code "/Acme/ab/cd"}.
+	 * @return the absolute domain URI of this command.
+	 */
+	public String getPrefix() {
+		return buildUri(Type.AppAlias);
 	}
 
 	
@@ -264,7 +286,7 @@ public class Command implements Serializable {
 	 * 
 	 * <p>
 	 * <b>Examples:</b>
-	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/domain/ef/gh/_process?fn=_set</i> then getAbsoluteAlias() returns <i>/Acme/ab/cd/domain/ef/gh</i></li>
+	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/p/domain/ef/gh/_process?fn=_set</i> then getAbsoluteAlias() returns <i>/Acme/ab/cd/domain/ef/gh</i></li>
 	 * @return the absolute alias of this command.
 	 */
 	public String getAbsoluteAlias() {
@@ -277,7 +299,7 @@ public class Command implements Serializable {
 	 * 
 	 * <p>
 	 * <b>Examples:</b>
-	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/domain/ef/gh/_process?fn=_set</i> then getAbsoluteDomainAlias() returns <i>/domain/ef/gh/_process</i></li>
+	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/p/domain/ef/gh/_process?fn=_set</i> then getAbsoluteDomainAlias() returns <i>/domain/ef/gh/_process</i></li>
 	 * @return the absolute alias with only the action included of this command.
 	 */
 	public String getAbsoluteAliasWithAction() {
@@ -291,13 +313,25 @@ public class Command implements Serializable {
 	 * 
 	 * <p>
 	 * <b>Examples:</b>
-	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/domain/ef/gh/_process?fn=_set</i> then getAbsoluteAliasTillRootDomain() returns <i>/Acme/ab/cd/domain</i></li>
+	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/p/domain/ef/gh/_process?fn=_set</i> then getAbsoluteAliasTillRootDomain() returns <i>/Acme/ab/cd/domain</i></li>
+	 * @return the absolute alias up to the root domain of this command.
+	 */
+	public String getAbsoluteAliasUntilRootDomain(boolean includeRefId) {
+		return buildAlias(root(), Type.DomainAlias, includeRefId);
+	}
+	
+	/**
+	 * Returns the absolute alias up to the root domain of this command with the ref id included
+	 * 
+	 * <p>
+	 * <b>Examples:</b>
+	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/p/domain:42/ef/gh/_process?fn=_set</i> then getAbsoluteAliasTillRootDomain() returns <i>/Acme/ab/cd/domain:42</i></li>
 	 * @return the absolute alias up to the root domain of this command.
 	 */
 	public String getAbsoluteAliasTillRootDomain() {
-		String a = buildAlias(root(), Type.DomainAlias);
-		return a;
+		return getAbsoluteAliasUntilRootDomain(false);
 	}
+	
 /* TODO Refactor -- END -- */
 	
 	public String buildAlias(CommandElementLinked startElem) {
@@ -305,6 +339,11 @@ public class Command implements Serializable {
 	}
 	public String buildAlias(Type endWhentype) {
 		return traverseElements(root(), endWhentype, (cmdElem, sb) -> sb.append(cmdElem.getAliasUri()));
+	}
+	public String buildAlias(CommandElementLinked startElem, Type endWhentype, boolean includeRefId) {
+		BiConsumer<CommandElement, StringBuilder> withRefId = (cmdElem, sb) -> sb.append(cmdElem.getUri());
+		BiConsumer<CommandElement, StringBuilder> withoutRefId = (cmdElem, sb) -> sb.append(cmdElem.getAliasUri());
+		return traverseElements(startElem, endWhentype, includeRefId ? withRefId : withoutRefId);
 	}
 	public String buildAlias(CommandElementLinked startElem, Type endWhentype) {
 		return traverseElements(startElem, endWhentype, (cmdElem, sb) -> sb.append(cmdElem.getAliasUri()));
@@ -438,4 +477,7 @@ public class Command implements Serializable {
 		return requestParams != null && requestParams.containsKey(Constants.KEY_FUNCTION.code);
 	}
 	
+	public Long acquireTenantId() {
+		return SupplierUtils.acquire(this::getTenantId, "Tenant id must not be null for command: " + this);
+	}
 }

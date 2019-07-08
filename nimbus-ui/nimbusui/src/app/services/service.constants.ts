@@ -221,7 +221,11 @@ export class ServiceConstants {
   } // this should come from the node server
   public static get LANDING_ROUTE(): string {
     return 'authlanding';
-  } // this should come from the node server and set in app.init.service
+  }
+  public static get TENANT_PREFIX_COOKIE(): string {
+    return 'NIMBUS_ACTIVE_TENANT_PREFIX';
+  }
+  // this should come from the node server and set in app.init.service
 
   // public static get LOG_APPENDER_OPTIONS() : any {
   //     var obj;

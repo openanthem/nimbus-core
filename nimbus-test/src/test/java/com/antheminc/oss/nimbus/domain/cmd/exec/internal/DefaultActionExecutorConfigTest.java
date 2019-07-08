@@ -23,6 +23,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.servlet.http.Cookie;
+
 import org.hamcrest.core.IsNull;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -36,6 +38,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
@@ -65,17 +68,18 @@ public class DefaultActionExecutorConfigTest extends AbstractFrameworkIngeration
 	@WithMockUser(username="user", password="pwd")
 	public void t00_json() throws Exception {
 
-		
+		createClientUser();
 		mvc.perform(post(createRequest(VIEW_PARAM_ROOT, Action._config).getRequestURI())
 				.with(csrf())
-					.content("{}")
-					.contentType(APPLICATION_JSON_UTF8))
-	               	.andExpect(status().isOk())
-	               	.andExpect(jsonPath("$.result.0.result.outputs[0].value", IsNull.notNullValue()))
-	               	.andReturn()
-	               	.getResponse()
-	               	.getContentAsString()
-	               ;
+				.cookie(new Cookie(Constants.ACTIVE_TENANT_COOKIE.code, CMD_PREFIX))
+				.content("{}")
+				.contentType(APPLICATION_JSON_UTF8))
+               	.andExpect(status().isOk())
+               	.andExpect(jsonPath("$.result.0.result.outputs[0].value", IsNull.notNullValue()))
+               	.andReturn()
+               	.getResponse()
+               	.getContentAsString()
+               ;
 	}
 	
 	@Test

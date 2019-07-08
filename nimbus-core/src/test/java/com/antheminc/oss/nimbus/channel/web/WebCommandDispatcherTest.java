@@ -18,12 +18,10 @@ package com.antheminc.oss.nimbus.channel.web;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import com.antheminc.oss.nimbus.AbstractFrameworkTest;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
@@ -39,23 +37,24 @@ import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
  * @author Tony Lopez
  *
  */
-@RunWith(MockitoJUnitRunner.class)
-public class WebCommandDispatcherTest {
+public class WebCommandDispatcherTest extends AbstractFrameworkTest {
 	
 	private WebCommandDispatcher testee;
+
+	private BeanResolverStrategy beanResolver;
 	
-	@Mock
 	private WebCommandBuilder builder;
 
-	@Mock
 	private CommandExecutorGateway gateway;
 	
 	@Before
 	public void init() {
-		final BeanResolverStrategy beanResolver = Mockito.mock(BeanResolverStrategy.class);
+		this.beanResolver = Mockito.mock(BeanResolverStrategy.class);
+		this.gateway = Mockito.mock(CommandExecutorGateway.class);
+		this.builder = Mockito.mock(WebCommandBuilder.class);
 		Mockito.when(beanResolver.get(WebCommandBuilder.class)).thenReturn(this.builder);
 		Mockito.when(beanResolver.get(CommandExecutorGateway.class)).thenReturn(this.gateway);
-		this.testee = new WebCommandDispatcher(beanResolver);
+		this.testee = new WebCommandDispatcher(this.beanResolver);
 		Mockito.verify(beanResolver, Mockito.times(1)).get(WebCommandBuilder.class);
 		Mockito.verify(beanResolver, Mockito.times(1)).get(CommandExecutorGateway.class);
 	}
@@ -72,7 +71,7 @@ public class WebCommandDispatcherTest {
 		final ModelEvent<String> event = new ModelEvent<>();
 		event.setPayload("{}");
 		
-		final String commandUri = "/Acme/abc/def/p/home/_new&execute";
+		final String commandUri = PLATFORM_ROOT + "/home/_new&execute";
 		final Command expectedCommand = CommandBuilder.withUri(commandUri).getCommand();
 		final MultiOutput expected = new MultiOutput(commandUri, new ExecutionContext(expectedCommand), Action._new, Behavior.$execute);
 		
@@ -90,7 +89,7 @@ public class WebCommandDispatcherTest {
 		final MockHttpServletRequest request = new MockHttpServletRequest();
 		final String payload = "{}";
 		
-		final String commandUri = "/Acme/abc/def/p/home/_new&execute";
+		final String commandUri = PLATFORM_ROOT + "/home/_new&execute";
 		final Command expectedCommand = CommandBuilder.withUri(commandUri).getCommand();
 		final MultiOutput expected = new MultiOutput(commandUri, new ExecutionContext(expectedCommand), Action._new, Behavior.$execute);
 		
@@ -106,7 +105,7 @@ public class WebCommandDispatcherTest {
 	@Test
 	public void testHandleViaJsonAndProvidedCommand() {
 		final String payload = "{}";
-		final String commandUri = "/Acme/abc/def/p/home/_new&execute";
+		final String commandUri = PLATFORM_ROOT + "/home/_new&execute";
 		final Command command = CommandBuilder.withUri(commandUri).getCommand();
 		final MultiOutput expected = new MultiOutput(commandUri, new ExecutionContext(command), Action._new, Behavior.$execute);
 		

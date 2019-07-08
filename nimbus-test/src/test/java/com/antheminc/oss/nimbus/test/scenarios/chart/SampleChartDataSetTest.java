@@ -104,7 +104,9 @@ public class SampleChartDataSetTest  extends AbstractFrameworkIntegrationTests {
 		mongo.dropCollection("samplechartaggregateview");
 		
 		DataGroup dg1 = new DataGroup();
+		dg1.set_tenantId(TENANT_ID);
 		DataGroup dg2 = new DataGroup();
+		dg2.set_tenantId(TENANT_ID);
 		dg1.setLegend("_search");
 		dg2.setLegend("_new");
 		

@@ -23,9 +23,9 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
-import com.antheminc.oss.nimbus.support.CommandUtils;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
 import com.antheminc.oss.nimbus.test.scenarios.repo.core.SampleRepoDifferentAlias;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -50,11 +50,11 @@ public class ParamStateAtomicPersistenceEventListenerTest extends AbstractFramew
 
 	@Test
 	public void testDomainRepoAliasMismatchPersistence() throws JsonProcessingException {
-		final String requestUri = "app/org/p/sample_repo_diff_alias/_new";
+		final String requestUri = PLATFORM_ROOT + "/sample_repo_diff_alias/_new";
 		final String expectedCollectionName = "person_of_interest";
 		SampleRepoDifferentAlias expected = new SampleRepoDifferentAlias("Oscar", "Grouch");
 
-		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Command cmd = CommandBuilder.withUri(requestUri).getCommand();
 		final String jsonPayload = this.om.writeValueAsString(expected);
 		CommandMessage cmdMsg = new CommandMessage(cmd, jsonPayload);
 		this.commandGateway.execute(cmdMsg);

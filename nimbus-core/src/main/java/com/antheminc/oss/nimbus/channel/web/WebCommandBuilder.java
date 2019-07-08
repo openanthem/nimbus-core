@@ -27,10 +27,14 @@ import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Soham Chakravarti
  *
  */
+@Getter @Setter
 public class WebCommandBuilder {
 
 	private JustLogit logit = new JustLogit(this.getClass());
@@ -57,13 +61,11 @@ public class WebCommandBuilder {
 		}
 		
 		
-		Command cmd = handleInternal(constructedUri, request.getParameterMap());
-		return cmd;
+		return handleInternal(constructedUri, request.getParameterMap());
 	}
 	
 	public Command handleInternal(String uri, Map<String, String[]> rParams) {
-		Command cmd = CommandBuilder.withUri(uri).addParams(rParams).getCommand();
-		return cmd;
+		return CommandBuilder.withUri(uri).addParams(rParams).getCommand();
 	} 
 	
 	private String constructRequestUri(HttpServletRequest request) {

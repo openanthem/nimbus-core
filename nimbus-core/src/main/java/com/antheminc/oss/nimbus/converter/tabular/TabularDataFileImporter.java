@@ -99,7 +99,7 @@ public class TabularDataFileImporter implements Importer {
 		if (WriteStrategy.COMMAND_DSL == writeStrategy) {
 			onRowProcess = new CommandHandlingBeanWriter(getOm(), getCommandGateway(), command);
 		} else if (WriteStrategy.MODEL_REPOSITORY == writeStrategy) {
-			onRowProcess = new ModelRepositoryBeanWriter<Object>(getDomainConfigBuilder(), getModelRepositoryFactory());
+			onRowProcess = new ModelRepositoryBeanWriter<>(getDomainConfigBuilder(), getModelRepositoryFactory(), command);
 		} else {
 			throw new UnsupportedOperationException("Write strategy for" + writeStrategy + " is not supported.");
 		}

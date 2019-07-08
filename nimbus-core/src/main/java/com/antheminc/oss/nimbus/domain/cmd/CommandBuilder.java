@@ -92,7 +92,8 @@ public class CommandBuilder {
 		tmpCmd.getRootDomainElement().setAlias(replaceDomainRootAlias);
 		
 		String newAbsoluteUri = tmpCmd.buildUri(Type.DomainAlias);
-		return withUri(newAbsoluteUri);
+		CommandBuilder cb = withUri(newAbsoluteUri);
+		return cb;
 	}
 	
 	public CommandBuilder stripRequestParams() {
@@ -175,7 +176,7 @@ public class CommandBuilder {
 			startingIndex = 1;
 		}
 		
-		Type type = Type.ClientOrgAlias;
+		Type type = Type.TENANT_ID;
 		
 		for(int i=startingIndex; i<uriSplit.length; i++) {
 			String val = uriSplit[i];

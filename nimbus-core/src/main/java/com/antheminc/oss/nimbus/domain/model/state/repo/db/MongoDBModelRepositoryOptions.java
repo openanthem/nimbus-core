@@ -25,11 +25,12 @@ import lombok.Getter;
  *
  */
 @Getter
-public class MongoDBModelRepositoryOptions {
+public class MongoDBModelRepositoryOptions implements ModelRepositoryOptions {
 
 	public static class Builder {
 
 		private final List<MongoDBSearchOperation> searchOperations = new ArrayList<>();
+		private TenancyStrategy tenancyStrategy = TenancyStrategy.NONE;
 
 		public Builder() {
 
@@ -41,6 +42,11 @@ public class MongoDBModelRepositoryOptions {
 
 		public Builder addSearchOperation(MongoDBSearchOperation searchOperation) {
 			this.searchOperations.add(searchOperation);
+			return this;
+		}
+		
+		public Builder tenancyStrategy(TenancyStrategy tenancyStrategy) {
+			this.tenancyStrategy = tenancyStrategy;
 			return this;
 		}
 
@@ -58,8 +64,10 @@ public class MongoDBModelRepositoryOptions {
 	}
 
 	private final List<MongoDBSearchOperation> searchOperations;
+	private final TenancyStrategy tenancyStrategy;
 
 	public MongoDBModelRepositoryOptions(Builder builder) {
 		this.searchOperations = builder.searchOperations;
+		this.tenancyStrategy = builder.tenancyStrategy;
 	}
 }

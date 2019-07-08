@@ -81,6 +81,9 @@ public abstract class AbstractEntity<ID extends Serializable> implements Seriali
     //@Version
 	@Setter private long version;
 	
+	@Ignore
+	@Setter
+	private Long _tenantId;
 	
 	@JsonIgnore
 	public <T extends AbstractEntityBehavior<M, ID>, M extends AbstractEntity<ID>> T newBehaviorInstance(Class<T> clazz) {
