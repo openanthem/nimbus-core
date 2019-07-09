@@ -31,4 +31,5 @@ THE SOFTWARE.*/
  */
 export interface LoaderState {
   show: boolean;
+  path: string;
 }

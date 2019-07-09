@@ -1216,12 +1216,37 @@ public class ViewConfig {
 
 		boolean lazyLoad() default false;
 
+		/**
+		 * <p>When set with fontawesome animated icon, shows the loading icon until the grid results are fetched from server
+		 */
+		String loaderIcon() default "fa fa fa-spinner";
+
+		/**
+		 * <p>A param path relative to the Grid param created by this decorated
+		 * field, on which to invoke an {@link Action._get} call whenever a new
+		 * grid record is added. The {@link #addRow()} feature must be enabled
+		 * for this behavior to occur. <p>This mandates that a field having the
+		 * same value as {@code onAdd} must be defined as a sibling parameter to
+		 * this decorated field.
+		 */
+		String onAdd() default "../_action_onAdd";
+
+		/**
+		 * <p>A param path relative to the collection element param being edited
+		 * on which to invoke an {@link Action._get} call whenever a grid record
+		 * is edited. The {@link #editRow()} feature must be enabled for this
+		 * behavior to occur. <p>This mandates that a field having the same name
+		 * as {@code onEdit} must be defined in the generic type of the
+		 * decorated collection parameter.
+		 */
+		String onEdit() default "_action_onEdit";
+
 		boolean onLoad() default false;
 
 		String pageSize() default "25";
 
 		boolean pagination() default true;
-
+		
 		/**
 		 * <p>Render a button below the rendered grid that when clicked, submits
 		 * an HTTP POST request with a payload containing the selected indexes
@@ -1281,26 +1306,6 @@ public class ViewConfig {
 		 * @see #onAdd()
 		 */
 		boolean addRow() default false;
-		
-		/**
-		 * <p>A param path relative to the collection element param being edited
-		 * on which to invoke an {@link Action._get} call whenever a grid record
-		 * is edited. The {@link #editRow()} feature must be enabled for this
-		 * behavior to occur. <p>This mandates that a field having the same name
-		 * as {@code onEdit} must be defined in the generic type of the
-		 * decorated collection parameter.
-		 */
-		String onEdit() default "_action_onEdit";
-		
-		/**
-		 * <p>A param path relative to the Grid param created by this decorated
-		 * field, on which to invoke an {@link Action._get} call whenever a new
-		 * grid record is added. The {@link #addRow()} feature must be enabled
-		 * for this behavior to occur. <p>This mandates that a field having the
-		 * same value as {@code onAdd} must be defined as a sibling parameter to
-		 * this decorated field.
-		 */
-		String onAdd() default "../_action_onAdd";
 	}
 
 	/**
