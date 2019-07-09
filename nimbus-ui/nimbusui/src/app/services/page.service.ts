@@ -584,7 +584,7 @@ export class PageService {
   }
 
   executeHttp(url: string, method: string, model: any, paramPath?: string) {
-    this.showLoader();
+    this.showLoader(paramPath);
     this.logger.info('http call' + url + 'started');
     if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
       this.executeHttpGet(url, paramPath);
@@ -594,7 +594,7 @@ export class PageService {
     ) {
       this.executeHttpPost(url, model, paramPath);
     } else {
-      this.invokeFinally(url);
+      this.invokeFinally(url, paramPath);
       this.logger.error('http method not supported');
     }
   }
@@ -647,20 +647,20 @@ export class PageService {
     this.handleResponse(response, url, paramPath, onSuccess, onFailure);
   }
 
-  processError(err: any, paramPath?: string) {
+  processError(err: any, paramPath: string) {
     if (paramPath) {
       this.postResponseProcessing.next(paramPath);
     }
     this.logError(err);
-    this.hideLoader();
+    this.hideLoader(paramPath);
   }
 
-  invokeFinally(url: string, paramPath?: string) {
+  invokeFinally(url: string, paramPath: string) {
     if (paramPath) {
       this.postResponseProcessing.next(paramPath);
     }
     this.logger.info('http response for ' + url + ' processed successsfully');
-    this.hideLoader();
+    this.hideLoader(paramPath);
   }
 
   postOnChange(path: string, payloadAttr: string, payloadValue: string) {
@@ -1104,14 +1104,14 @@ export class PageService {
   /*
    * show the loader icon the page
    */
-  private showLoader(): void {
-    this.loaderService.show();
+  private showLoader(paramPath: string): void {
+    this.loaderService.show(paramPath);
   }
 
   /*
    * hide the loader icon the page
    */
-  private hideLoader(): void {
-    this.loaderService.hide();
+  private hideLoader(paramPath: string): void {
+    this.loaderService.hide(paramPath);
   }
 }
