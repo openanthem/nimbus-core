@@ -400,7 +400,8 @@ export class DataTable extends BaseTableElement
           '$execute',
           new GenericDomain(),
           'GET',
-          queryString
+          queryString,
+          true
         );
       }
     }
@@ -952,7 +953,8 @@ export class DataTable extends BaseTableElement
       '$execute',
       payload,
       HttpMethod.POST.value,
-      queryString
+      queryString,
+      true
     );
   }
 
