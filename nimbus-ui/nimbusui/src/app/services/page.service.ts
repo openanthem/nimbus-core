@@ -544,7 +544,8 @@ export class PageService {
     behavior: string,
     model: GenericDomain,
     method: string,
-    queryParams?: string
+    queryParams?: string, 
+    showGridLoader?: boolean
   ) {
     let path = processUrl;
     processUrl = processUrl + '/' + Action._get.value;
@@ -580,7 +581,7 @@ export class PageService {
       let flowNameWithId = flowName.concat(':' + rootDomainId);
       url = url.replace(flowName, flowNameWithId);
     }
-    this.executeHttp(url, method, model, path);
+    this.executeHttp(url, method, model, showGridLoader?path:null);
   }
 
   executeHttp(url: string, method: string, model: any, paramPath?: string) {
