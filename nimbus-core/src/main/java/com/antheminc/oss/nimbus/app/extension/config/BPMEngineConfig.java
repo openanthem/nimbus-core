@@ -193,8 +193,7 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	    	}
     }
    
-
-    @Bean("default.processJdbcTemplate")
+    @Bean
     public JdbcTemplate jdbcTemplate(@Qualifier("processDataSource")DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }

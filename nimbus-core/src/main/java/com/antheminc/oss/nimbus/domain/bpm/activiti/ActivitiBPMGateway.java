@@ -33,7 +33,6 @@ import org.activiti.engine.task.Task;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.app.extension.config.ActivitiProcessDefinitionCache;
@@ -59,6 +58,7 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection.LogLevel;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 
@@ -84,8 +84,6 @@ public class ActivitiBPMGateway implements BPMGateway {
 	private DomainConfigBuilder domainConfigBuilder;
 	private CommandExecutorGateway commandGateway;
 	private CommandPathVariableResolver pathVariableResolver;
-	private JdbcTemplate activitiJdbcTemplate;
-    private static final String ACT_TSK_LKUP_QRY = "select task_def_key_ from act_ru_task where proc_inst_id_=?"; 
 	
 	public ActivitiBPMGateway (BeanResolverStrategy beanResolver,Boolean supportStatefulProcesses) {
 		this.expressionEvaluator = beanResolver.find(ExpressionEvaluator.class);
@@ -97,7 +95,6 @@ public class ActivitiBPMGateway implements BPMGateway {
 		this.domainConfigBuilder = beanResolver.find(DomainConfigBuilder.class);	
 		this.commandGateway = beanResolver.find(CommandExecutorGateway.class);
 		this.pathVariableResolver = beanResolver.find(CommandPathVariableResolver.class);
-		this.activitiJdbcTemplate = beanResolver.find(JdbcTemplate.class, "processJdbcTemplate");
 	}
 	
 	@Override
@@ -134,8 +131,8 @@ public class ActivitiBPMGateway implements BPMGateway {
 	
 	@Override
 	public Object continueBusinessProcessExecution(Param<?> param, String processExecutionId) {
-		String[] args = new String[] {processExecutionId};
-		List<String> activeTasks = activitiJdbcTemplate.queryForList(ACT_TSK_LKUP_QRY,args,String.class);
+		ActivitiProcessFlow processFlow = (ActivitiProcessFlow)((ExecutionEntity<?,?>)param.getRootExecution().getState()).getFlow();
+		List<String> activeTasks = processFlow.getActiveTasks();
 		ProcessEngineContext context = new ProcessEngineContext(param);
 		Map<String, Object> executionVariables = new HashMap<String, Object>();
 		executionVariables.put(Constants.KEY_EXECUTE_PROCESS_CTX.code, context);		
