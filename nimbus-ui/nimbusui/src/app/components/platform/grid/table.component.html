@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <p-table #dt [value]="value" [columns]="params" 
+    <p-table #dt [value]="value" [loading]="loading" [loadingIcon]="element.config?.uiStyles?.attributes?.loaderIcon" [columns]="params" 
         [dataKey]="'elemId'"
         [(selection)]="selectedRows"
         [rows]="element.config?.uiStyles?.attributes?.pageSize"

@@ -1239,6 +1239,11 @@ public class ViewConfig {
 		boolean lazyLoad() default false;
 
 		/**
+		 * <p>When set with fontawesome animated icon, shows the loading icon until the grid results are fetched from server
+		 */
+		String loaderIcon() default "fa fa fa-spinner";
+
+		/**
 		 * <p>A param path relative to the Grid param created by this decorated
 		 * field, on which to invoke an {@link Action._get} call whenever a new
 		 * grid record is added. The {@link #addRow()} feature must be enabled
@@ -1263,7 +1268,7 @@ public class ViewConfig {
 		String pageSize() default "25";
 
 		boolean pagination() default true;
-
+		
 		/**
 		 * <p>Render a button below the rendered grid that when clicked, submits
 		 * an HTTP POST request with a payload containing the selected indexes
