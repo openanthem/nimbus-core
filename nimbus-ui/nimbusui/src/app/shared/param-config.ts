@@ -387,11 +387,28 @@ export class Attribute implements Serializable<Attribute, string> {
   max: any;
   groups: String[];
   value: any;
+  ruleset: RuleSet[];
 
   deserialize(inJson) {
     let obj = this;
     obj = Converter.convert(inJson, obj);
     obj['groups'] = inJson.groups;
+    obj['ruleset'] = [];
+    for (var p in inJson.ruleset) {
+      obj['ruleset'].push(new RuleSet().deserialize(inJson.ruleset[p]));
+    }
+
+    return obj;
+  }
+}
+
+export class RuleSet implements Serializable<RuleSet, string> {
+  message: string;
+  rule: string;
+
+  deserialize(inJson) {
+    let obj = this;
+    obj = Converter.convert(inJson, obj);
     return obj;
   }
 }

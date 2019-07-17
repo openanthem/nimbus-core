@@ -24,6 +24,7 @@ import { Param } from '../../../shared/param-state';
 import { ValidationConstraint } from './../../../shared/validationconstraints.enum';
 import { CustomValidators } from './custom.validators';
 
+
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes
@@ -72,7 +73,7 @@ export class ValidationUtils {
   ) {
     var check = ValidationUtils.constructValidations(
       constraint,
-      element.config.uiStyles.attributes.alias
+      element
     );
     if (check) {
       checks.push(check);
@@ -85,10 +86,13 @@ export class ValidationUtils {
 
   static constructValidations(
     constraint: Constraint,
-    controlAlias: string
-  ): ValidatorFn {
+    element: Param
+    ): ValidatorFn {
     if (constraint.name === ValidationConstraint._notNull.value) {
-      if (controlAlias == 'CheckBox') {
+      if(element.config.uiStyles.attributes.alias == 'Form') {
+        return CustomValidators.formGroupNotNull(Validators.required);
+      }
+      if (element.config.uiStyles.attributes.alias == 'CheckBox') {
         return Validators.requiredTrue;
       } else {
         return Validators.required;
@@ -99,7 +103,7 @@ export class ValidationUtils {
       return Validators.pattern(constraint.attribute.regexp);
     } else if (constraint.name === ValidationConstraint._size.value) {
       return CustomValidators.minMaxSelection(
-        controlAlias,
+        element.config.uiStyles.attributes.alias,
         constraint.attribute
       );
     } else if (constraint.name === ValidationConstraint._max.value) {
@@ -112,6 +116,8 @@ export class ValidationUtils {
       return CustomValidators.isPast;
     } else if (constraint.name === ValidationConstraint._future.value) {
       return CustomValidators.isFuture;
+    } else if(constraint.name === ValidationConstraint._validationrule.value) {
+      return CustomValidators.validationrule(constraint.attribute.ruleset);
     }
   }
 

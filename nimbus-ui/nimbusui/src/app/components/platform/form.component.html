@@ -1,3 +1,6 @@
+<ng-template ngFor let-msg [ngForOf]="elemMessages">
+    <nm-message id="{{element.config?.code}}" [messageContext]="msg.context"  [messageArray]="msg.messageArray" [life] = "msg.life" [styleClass]="msg.styleClass"></nm-message>
+</ng-template>
 <form id="{{formId}}" [formGroup]="form" novalidate>
     <ng-template [ngIf] = "element?.visible">
         <nm-counter-message id="{{element.config?.code}}" *ngIf="element.config?.uiStyles?.attributes?.showMessages" [element]="element" [form]="form"></nm-counter-message>
