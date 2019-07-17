@@ -45,10 +45,13 @@ export class FormElementsService {
 
   toFormGroup(elements: Param[], formValidations: ValidatorFn[]) {
     let group: FormGroup;
-    if (formValidations.length > 0)
+    if (formValidations.length > 0) {
+      
       group = this._fb.group(this.buildFormGroup(elements), {
-        validator: CustomValidators.formGroupNotNull(Validators.required)
+        validator: Validators.compose(formValidations)
       });
+    }
+      
     else group = this._fb.group(this.buildFormGroup(elements));
 
     return group;

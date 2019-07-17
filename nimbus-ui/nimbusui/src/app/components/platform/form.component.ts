@@ -33,6 +33,10 @@ import { Model, Param } from '../../shared/param-state';
 import { BaseElement } from './base-element.component';
 import { FormElementsService } from './form-builder.service';
 import { ValidationUtils } from './validators/ValidationUtils';
+import { Constraint } from './../../shared/param-config';
+import { ConstraintMapping } from './../../shared/validationconstraints.enum';
+import { Message } from './../../shared/message';
+import { ValidationConstraint } from './../../shared/validationconstraints.enum';
 
 var uniqueId = 0;
 
@@ -69,7 +73,7 @@ export class Form extends BaseElement implements OnInit, OnChanges {
   elementCss: string;
 
   formElements: Param[] = [];
-
+  elemMessages: Message[];
   // accordionGroups: Array<any> =[];
   // formGroupElements: Param[] = [];
 
@@ -168,6 +172,51 @@ export class Form extends BaseElement implements OnInit, OnChanges {
     this.updatePosition();
   }
 
+  ngAfterViewInit() {
+    this.form.valueChanges.subscribe(val => {
+      this.elemMessages = [];
+      if(this.form.errors) {
+        for (var key in this.form.errors) {
+          let constraintName = ConstraintMapping.getConstraintValue(key);
+          let constraint: Constraint = this.element.config.validation.constraints.find(
+            v => v.name == constraintName
+          );
+          if(constraintName === ValidationConstraint._validationrule.value) {
+            this.addErrorMessage(this.form.errors[key]);
+          } else {
+            this.addErrorMessages(constraint.attribute.message);
+          }
+        }
+      }
+    })
+  }
+
+  addErrorMessages(errorText: string) {
+    let errorMessage: Message, summary: string;
+    errorMessage = new Message();
+    errorMessage.context = 'INLINE';
+    // errorMessage.life = 10000;
+    errorMessage.messageArray.push({
+      severity: 'error',
+      summary: summary,
+      detail: errorText,
+      life: 10000
+    });
+    this.elemMessages.push(errorMessage);
+  }
+
+  addErrorMessage(errorText: string[]) {
+    let errorMessage: Message, summary: string;
+    errorMessage = new Message();
+    errorMessage.context = 'INLINE';
+    errorMessage.messageArray.push({
+      severity: 'error',
+      summary: summary,
+      detail: errorText,
+      life: 10000
+    });
+    this.elemMessages.push(errorMessage);
+  }
   /** Loop through the config and build Form Elements **/
   buildFormElements(model: Model) {
     this.formModel = [];
