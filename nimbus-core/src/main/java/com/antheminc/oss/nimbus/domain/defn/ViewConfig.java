@@ -1177,16 +1177,16 @@ public class ViewConfig {
 	 * is treated as the definition for row item data in the final rendered
 	 * grid. This is referred to as the <i>collection element type</i>. The
 	 * following components may be used to decorate fields in the collection
-	 * element type: <ul> <li>{@link ComboBox}</li> <li>{@link GridColumn}</li>
-	 * <li>{@link GridRowBody}</li> <li>{@link LinkMenu}</li> <li>{@link Link}</li> </ul>
+	 * element type: <ul> <li>{@link Calendar}</li> <li>{@link ComboBox}</li>
+	 * <li>{@link GridColumn}</li> <li>{@link GridRowBody}</li>
+	 * <li>{@link LinkMenu}</li> <li>{@link Link}</li> </ul>
 	 * 
-	 * <p>Grid supports in-line editing. When in editable mode, {@link GridColumn} 
-	 * components will be rendered as {@link TextBox} components. Other supported 
-	 * components that need to use different UI components to capture editable 
-	 * information will use an appropriate UI component in editable mode. 
-	 * (e.g. a collection element field decorated with {@link ComboBox} will be 
-	 * rendered as a {@link GridColumn} in non-editable mode, but as a {@link ComboBox} 
-	 * when in editable mode.) 
+	 * <p><b>Configuring inline editing</b>
+	 * 
+	 * <p>Grid supports in-line editing for the first-level fields of each row
+	 * item (editing expanded row content fields are not supported). When in
+	 * editable mode, acceptable UI components will be rendered with respect to
+	 * the type of annotation decorating each editable field.
 	 * 
 	 * @since 1.0
 	 */
@@ -1195,6 +1195,14 @@ public class ViewConfig {
 	@ViewStyle
 	@OnStateLoad
 	public @interface Grid {
+		/**
+		 * <p>Add an add row button to that allows for adding a new element to
+		 * be added to this decorated parameter using the in-line editing
+		 * feature.
+		 * @see #onAdd()
+		 */
+		boolean addRow() default false;
+
 		String alias() default "Grid";
 
 		boolean clearAllFilters() default false;
@@ -1208,9 +1216,23 @@ public class ViewConfig {
 
 		boolean dataEntryField() default true;
 
+		/**
+		 * <p>Add an edit button to each record that allows for in-line editing.
+		 * @see #onEdit()
+		 */
+		boolean editRow() default false;
+
 		boolean expandableRows() default false;
 
 		boolean export() default false;
+
+		/**
+		 * <p>When {@code true}, selecting the "select all" checkbox in the
+		 * header of the rendered grid will select all the records in the
+		 * dataset across all pages. When {@code false}, only within the current
+		 * page items will be selected.
+		 */
+		boolean headerCheckboxToggleAllPages() default false;
 
 		boolean isTransient() default false;
 
@@ -1264,13 +1286,13 @@ public class ViewConfig {
 		 * @see #postButton()
 		 */
 		String postButtonTargetPath() default "";
-		
+
 		/**
 		 * <p>A parameter path relative to the decorated this decorated field on
 		 * which to invoke an HTTP POST
 		 * @see #postButton()
 		 */
-		String postButtonUri() default "";	
+		String postButtonUri() default "";
 
 		boolean postEventOnChange() default false;
 
@@ -1284,28 +1306,6 @@ public class ViewConfig {
 		boolean showHeader() default true;
 
 		String url() default "";
-		
-		/**
-		 * <p>When {@code true}, selecting the "select all" checkbox in the
-		 * header of the rendered grid will select all the records in the
-		 * dataset across all pages. When {@code false}, only within the current
-		 * page items will be selected.
-		 */
-		boolean headerCheckboxToggleAllPages() default false;
-		
-		/**
-		 * <p>Add an edit button to each record that allows for in-line editing.
-		 * @see #onEdit()
-		 */
-		boolean editRow() default false;
-
-		/**
-		 * <p>Add an add row button to that allows for adding a new element to
-		 * be added to this decorated parameter using the in-line editing
-		 * feature.
-		 * @see #onAdd()
-		 */
-		boolean addRow() default false;
 	}
 
 	/**
@@ -2243,7 +2243,16 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Write javadoc-->
+	 * <p>PageHeader is a {@link ViewParamBehavior} that provides a way to
+	 * customize certain features of a header.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>PageHeader data will be used/rendered when annotating a field nested
+	 * under a {@link Section} with a value of {@link Section.Type#HEADER}.
+	 * 
+	 * <p>PageHeader will render nested components in accordance with the
+	 * configured value. See {@link PageHeader.Property} for specific details.
 	 * 
 	 * @since 1.0
 	 */
@@ -2252,7 +2261,102 @@ public class ViewConfig {
 	@ViewParamBehavior
 	public @interface PageHeader {
 		public enum Property {
-			APPTITLE, DEFAULT, HELP, LOGO, LOGOUT, MENU, NOTIFICATIONS, NUMBEROFNOTIFICATIONS, SETTINGS, SUBHEADER, SUBTITLE, TITLE, USERNAME, USERROLE;
+
+			/**
+			 * <p>Adds the application title name in the header. This should
+			 * decorate alongside a {@link Paragraph} component.
+			 */
+			APPTITLE,
+
+			/**
+			 * <p>An empty default value. Not used by the UI framework, but used
+			 * as a marker TODO This should be removed in the future.
+			 */
+			DEFAULT,
+
+			/**
+			 * <p>Adds a link to point to a help page. This should decorate
+			 * alongside a {@link Link} component.
+			 */
+			HELP,
+
+			/**
+			 * <p>Adds a image to the header. This should decorate alongside a
+			 * {@link Link} component using the {@code imgSrc} attribute.
+			 */
+			LOGO,
+
+			/**
+			 * <p>Adds a link to point to a logout page. This should decorate
+			 * alongside a {@link Link} component.
+			 */
+			LOGOUT,
+
+			/**
+			 * <p>Not used by the UI framework. Will likely be removed in the
+			 * future.
+			 */
+			@Deprecated
+			MENU,
+
+			/**
+			 * <p>Adds clickable notification components that can be used to
+			 * display additional information to the user. This should decorate
+			 * a nested class that may contain one or more of the following
+			 * components:
+			 * <ul><li>{@link Button}</li><li>{@link Link}</li><li>{@link LinkMenu}</li></ul>
+			 */
+			NOTIFICATIONS,
+
+			/**
+			 * <p>Not used by the UI framework. Will likely be removed in the
+			 * future.
+			 */
+			@Deprecated
+			NUMBEROFNOTIFICATIONS,
+
+			/**
+			 * <p>Not used by the UI framework. Will likely be removed in the
+			 * future.
+			 */
+			@Deprecated
+			SETTINGS,
+
+			/**
+			 * <p>Not used by the UI framework. Will likely be removed in the
+			 * future.
+			 */
+			@Deprecated
+			SUBHEADER,
+
+			/**
+			 * <p>Adds the subtitle name in the header. This should decorate
+			 * alongside a {@link Paragraph} component.
+			 * @see #APPTITLE
+			 */
+			SUBTITLE,
+
+			/**
+			 * <p>Sets the HTML document title. This should decorate alongside a
+			 * {@link Label} component.
+			 */
+			TITLE,
+
+			/**
+			 * <p>Renders a user's username in the header. This should decorate
+			 * a field with type String. The {@code leafState} of the generated
+			 * param for the field decorated by this annotation will be used as
+			 * the rendered value.
+			 */
+			USERNAME,
+
+			/**
+			 * <p>Renders a user's role name in the header. This should decorate
+			 * a field with type String. The {@code leafState} of the generated
+			 * param for the field decorated by this annotation will be used as
+			 * the rendered value.
+			 */
+			USERROLE;
 		}
 
 		Property value() default Property.DEFAULT;

@@ -258,9 +258,11 @@ export class LayoutService {
             if (nature.attributes.value === 'NOTIFICATIONS') {
               branding['linkNotifications'] = element;
             }
+            // TODO Remove (not used)
             if (nature.attributes.value === 'NUMBEROFNOTIFICATIONS') {
               branding['numOfNotifications'] = element;
             }
+            // TODO Remove (not used)
             if (nature.attributes.value === 'MENU') {
               headerMenus.push(element);
             }
