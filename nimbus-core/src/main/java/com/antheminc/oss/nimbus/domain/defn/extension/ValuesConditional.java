@@ -147,5 +147,5 @@ public @interface ValuesConditional {
 	/**
 	 * <p>The target path relative to the this annotated field to update.
 	 */
-	String targetPath();
+	String[] targetPath();
 }

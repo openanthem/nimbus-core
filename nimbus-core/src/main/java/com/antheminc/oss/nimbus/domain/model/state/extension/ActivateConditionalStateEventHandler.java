@@ -15,11 +15,10 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
-import java.util.Arrays;
-
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditional;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.extension.conditionals.IfElseConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
@@ -27,27 +26,20 @@ import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
  *
  */
 @EnableLoggingInterceptor
-public class ActivateConditionalStateEventHandler extends EvalExprWithCrudActions<ActivateConditional> {
+public class ActivateConditionalStateEventHandler extends IfElseConditionalStateEventHandler<ActivateConditional> {
 
 	public ActivateConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}
-	
-	@Override
-	protected void handleInternal(Param<?> onChangeParam, ActivateConditional configuredAnnotation) {
-		boolean isTrue = evalWhen(onChangeParam, configuredAnnotation.when());
-		
-		// validate target param to activate
-		String[] targetPaths = configuredAnnotation.targetPath();
 
-		Arrays.asList(targetPaths).stream()
-			.forEach(targetPath -> handleInternal(onChangeParam, targetPath, (targetParam->{
-				if(isTrue)
-					targetParam.activate();
-				else
-					targetParam.deactivate();
-			})));
-		
+	@Override
+	protected void whenFalse(ActivateConditional configuredAnnotation, Param<?> onChangeParam, Param<?> targetParam) {
+		targetParam.deactivate();
 	}
-	
+
+	@Override
+	protected void whenTrue(ActivateConditional configuredAnnotation, Param<?> onChangeParam, Param<?> targetParam) {
+		targetParam.activate();
+	}
+
 }

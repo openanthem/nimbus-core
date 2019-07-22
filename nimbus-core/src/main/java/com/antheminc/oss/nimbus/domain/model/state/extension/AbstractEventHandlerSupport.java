@@ -27,6 +27,10 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadNewHandler;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * <p>Abstract (base) event handler implementation for specific event annotation handler(s) to extend from.
  * <p>This class provides abstraction to all the event handler interfaces and would contain common behavior applicable to all event handlers,
@@ -40,6 +44,16 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
 public abstract class AbstractEventHandlerSupport<A extends Annotation>
 		implements OnStateLoadHandler<A>, OnStateLoadGetHandler<A>, OnStateLoadNewHandler<A> , OnStateChangeHandler<A> {
 
+	@Setter(AccessLevel.PROTECTED)
+	@Getter
+	protected StateChangeEventType stateChangeEventType;
+	
+	public enum StateChangeEventType {
+		ON_CHANGE,
+		ON_LOAD,
+		ON_LOAD_NEW;
+	}
+	
 	@Override
 	public void onStateLoad(A configuredAnnotation, Param<?> param) {
 		throw new InvalidConfigException("OnStateLoadHandler is not implemented for "+configuredAnnotation+ " on param "+param);
