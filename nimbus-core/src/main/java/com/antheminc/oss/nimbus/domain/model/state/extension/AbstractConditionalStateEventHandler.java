@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.util.EnumSet;
 import java.util.Optional;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -93,11 +94,16 @@ public abstract class AbstractConditionalStateEventHandler<A extends Annotation>
 	 * @return the result of the expression evaluation
 	 */
 	protected boolean evaluate(String expression, Param<?> contextParam) {
-		boolean result = getExpressionEvaluator().getValue(expression, new ParamStateHolder<>(contextParam),
-				Boolean.class);
-		LOG.trace(() -> "\"" + expression + "\" evaluated to " + String.valueOf(result).toUpperCase()
-				+ ". Context param: " + contextParam);
-		return result;
+		try {
+			boolean result = getExpressionEvaluator().getValue(expression, new ParamStateHolder<>(contextParam),
+					Boolean.class);
+			LOG.trace(() -> "\"" + expression + "\" evaluated to " + String.valueOf(result).toUpperCase()
+					+ ". Context param: " + contextParam);
+			return result;
+		} catch (Exception e) {
+			throw new FrameworkRuntimeException("Encountered an exception evaluating the expression \"" + expression
+					+ "\" + for param: " + contextParam, e);
+		}
 	}
 
 	/**
