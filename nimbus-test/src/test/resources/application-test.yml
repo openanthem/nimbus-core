@@ -128,6 +128,7 @@ ext:
   repository:
     targetUrl: 
       ext_client: http://localhost:9095
+      questionnaire_note: http://localhost:9095
       
 test:
   url:

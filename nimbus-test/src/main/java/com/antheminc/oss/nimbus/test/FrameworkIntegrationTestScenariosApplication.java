@@ -29,6 +29,7 @@ import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestEventNoOve
 import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestOnStateChangeNoOverrideHandler;
 import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestRedundantEventOverrideHandler;
 import com.antheminc.oss.nimbus.test.domain.session.TestSessionProvider;
+import com.antheminc.oss.nimbus.test.scenarios.coreviewsame.config.QuestionnaireNoteConversionFunctionHandler;
 
 /**
  * @author Soham Chakravarti
@@ -76,4 +77,8 @@ public class FrameworkIntegrationTestScenariosApplication {
 		return new TestRedundantEventOverrideHandler(beanResolver);
 	}
 	
+	@Bean(name="default._process$execute?fn=_systemNotesConversion")
+	public QuestionnaireNoteConversionFunctionHandler<?, ?> questionnaireNoteConversionFunctionHandler(BeanResolverStrategy beanResolver) {
+		return new QuestionnaireNoteConversionFunctionHandler<>(beanResolver);
+	}
 }
