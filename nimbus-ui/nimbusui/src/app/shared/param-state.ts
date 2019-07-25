@@ -240,6 +240,13 @@ export class Values implements Serializable<Values, string> {
     obj = Converter.convert(inJson, obj);
     return obj;
   }
+
+  static of(code: string, label: string): Values {
+    return new Values().deserialize({
+      code: code,
+      label: label
+    });
+  }
 }
 
 export class Model implements Serializable<Model, string> {

@@ -65,7 +65,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
       <fieldset [disabled]="!parent?.enabled">
         <p-pickList
           #picklist
-          [source]="sourcelist"
+          [source]="sourceList"
           filterBy="label"
           [sourceHeader]="parent?.config?.uiStyles?.attributes.sourceHeader"
           [targetHeader]="parent?.config?.uiStyles?.attributes.targetHeader"
@@ -75,8 +75,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
           [responsive]="true"
           [showSourceControls]="false"
           [showTargetControls]="false"
-          (onMoveToTarget)="updateListValues($event)"
-          (onMoveToSource)="updateListValues($event)"
+          (onMoveToTarget)="updateParamState($event)"
+          (onMoveToSource)="updateParamState($event)"
         >
           <ng-template let-itm pTemplate="item">
             <div class="ui-helper-clearfix">
@@ -93,7 +93,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 export class OrderablePickList extends BaseElement
   implements OnInit, ControlValueAccessor {
   @Input() parent: Param;
-  sourcelist: any[];
+  sourceList: any[];
   @Input() selectedvalues: Values[];
   @Input() form: FormGroup;
   @ViewChild('picklist') pickListControl: PickList;
@@ -127,19 +127,6 @@ export class OrderablePickList extends BaseElement
 
   ngOnInit() {
     this.requiredCss = ValidationUtils.applyelementStyle(this.parent);
-    this.sourcelist = [];
-    if (this.parent.values) {
-      this.parent.values.forEach(value => {
-        this.sourcelist.push(value);
-      });
-    }
-
-    // First check if the picklist has any values that are selected onload
-    if (this.element.leafState != null && this.element.leafState.length > 0) {
-      this.targetList = this.element.leafState;
-    } else {
-      this.targetList = [];
-    }
     this.refreshSourceList();
     if (this.form != null) {
       const parentCtrl = this.form.controls[this.parent.config.code];
@@ -226,6 +213,7 @@ export class OrderablePickList extends BaseElement
       }
     }
 
+    // Refresh the source list on param update
     this.subscribers.push(
       this.pageService.eventUpdate$.subscribe(event => {
         if (event.path == this.parent.path) {
@@ -249,8 +237,17 @@ export class OrderablePickList extends BaseElement
     frmInp.element.leafState = event;
   }
 
-  updateListValues(event: any) {
-    this.updateData();
+  updateParamState(event: any) {
+    let newState = null;
+    if (this.targetList.length > 0) {
+      newState = [];
+      // targetList stores Values object, but leafState should be sent as string[]
+      // the following converts Values to string[], using "code" as the value
+      this.targetList.forEach(element => {
+        newState.push(element.code);
+      });
+    }
+    this.element.leafState = newState;
     this.emitValueChangedEvent();
   }
 
@@ -301,47 +298,37 @@ export class OrderablePickList extends BaseElement
    * If yes, remove them from source and refresh the source list.
    */
   private refreshSourceList() {
-    // make sure targetlist and leafstate are in sync
-    if (
-      this.element.leafState !== undefined &&
-      this.element.leafState !== null &&
-      this.element.leafState.length > 0
-    ) {
-      this.targetList = this.element.leafState;
-    } else {
-      this.targetList = [];
+    // Build the target (RHS) of the picklist
+    this.targetList = [];
+    if (this.element.leafState != null && this.element.leafState.length > 0) {
+      let leafState = this.element.leafState as [];
+      if (!this.element.values) {
+        // if NO values are given, then default all labels to be the code
+        this.targetList = leafState.map(code => Values.of(code, code));
+      } else {
+        this.targetList = leafState.map(code => {
+          let value = this.element.values.find(x => x.code == code);
+          // if values is not given, then default the label to be the code
+          return value ? value : Values.of(code, code);
+        });
+      }
     }
 
-    if (this.targetList && this.targetList.length > 0) {
+    // Build the source (LHS) of the picklist
+    if (this.targetList.length > 0) {
       if (this.parent.values != null && this.parent.values.length > 0) {
-        this.sourcelist = this.parent.values.filter(
-          value => this.targetList.indexOf(value.code) < 0
+        this.sourceList = this.parent.values.filter(
+          value => this.targetList.indexOf(value) < 0
         );
       }
     } else {
-      this.sourcelist = [];
-      this.parent.values.forEach(value => {
-        this.sourcelist.push(value);
-      });
+      this.sourceList = [];
+      if (this.parent.values) {
+        this.parent.values.forEach(value => {
+          this.sourceList.push(value);
+        });
+      }
     }
-  }
-
-  /**
-   * Update the internal model.
-   */
-  private updateData() {
-    let newState = null;
-    if (this.targetList.length > 0) {
-      newState = [];
-      this.targetList.forEach(element => {
-        if (element.code) {
-          newState.push(element.code);
-        } else {
-          newState.push(element);
-        }
-      });
-    }
-    this.element.leafState = newState;
   }
 
   /**
