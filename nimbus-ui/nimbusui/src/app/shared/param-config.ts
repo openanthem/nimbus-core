@@ -250,6 +250,7 @@ export class UiAttribute implements Serializable<UiAttribute, string> {
   yAxisLabel: string;
   yearNavigator: boolean;
   yearRange: string;
+  loaderIcon: string;
 
   deserialize(inJson) {
     let obj = this;

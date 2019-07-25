@@ -52,7 +52,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, ControlSubscribers],
   template: `
     <nm-input-label
-      *ngIf="!isLabelEmpty"
+      *ngIf="!isLabelEmpty && !this.hideLabel"
       [element]="element"
       [for]="element.config?.code"
       [required]="requiredCss"

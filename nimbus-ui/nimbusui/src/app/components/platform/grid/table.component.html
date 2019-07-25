@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <p-table #dt [value]="value" [columns]="params" 
+    <p-table #dt [value]="value" [loading]="loading" [loadingIcon]="element.config?.uiStyles?.attributes?.loaderIcon" [columns]="params" 
         [dataKey]="'elemId'"
         [(selection)]="selectedRows"
         [rows]="element.config?.uiStyles?.attributes?.pageSize"
@@ -121,7 +121,7 @@
 
                                     <ng-template 
                                     [ngIf]="gridMode == 'edit' && 
-                                    TableComponentConstants.allowedInlineEditNmInputComponents.includes(col.uiStyles.attributes.alias)
+                                    TableComponentConstants.componentsEditableAsText.includes(col.uiStyles.attributes.alias)
                                     && gridModeRow == rowData.elemId">
                                         <nm-input  
                                         [nmValidator]="getViewParamInEditRow(col, rowData['elemId'])"
@@ -133,10 +133,16 @@
 
 
                                         <nm-comboBox 
-                                        *ngIf="gridMode == 'edit' && col?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString() && gridModeRow == rowData.elemId" 
+                                        *ngIf="gridMode == 'edit' && gridModeRow == rowData.elemId && col?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString()" 
                                         [hideLabel]=true
                                         [element]="getViewParamInEditRow(col, rowData['elemId'])" 
                                         [(ngModel)]="rowData[col.code]" ></nm-comboBox>
+
+                                        <nm-input-calendar 
+                                        *ngIf="gridMode == 'edit' && gridModeRow == rowData.elemId && col?.uiStyles?.attributes?.type == componentTypes.calendar.toString()" 
+                                        [hideLabel]=true
+                                        [element]="getViewParamInEditRow(col, rowData['elemId'])" 
+                                        [(ngModel)]="rowData[col.code]" ></nm-input-calendar>
 
 
                                         <div *ngFor="let error of getAddValErr(col.code)">
@@ -170,8 +176,8 @@
                                                 <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.linkMenu.toString()">
                                                     <nm-action-dropdown #dropDown 
                                                         *ngIf = "rowData['elemId']"
-                                                        id="{{element.tableBasedData.collectionParams[rowData['elemId']][col.code]?.config?.code}}{{rowIndex}}" 
-                                                        [element]="element.tableBasedData.collectionParams[rowData['elemId']][col.code]" 
+                                                        id="{{element?.tableBasedData?.collectionParams[rowData['elemId']][col.code]?.config?.code}}{{rowIndex}}" 
+                                                        [element]="element?.tableBasedData?.collectionParams[rowData['elemId']][col.code]" 
                                                         [params]="col?.type?.model?.paramConfigs" 
                                                         [rowData]="rowData" 
                                                         [elementPath]="getRowPath(col, rowData)" 

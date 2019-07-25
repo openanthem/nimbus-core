@@ -59,6 +59,8 @@ import { ParamUtils } from './../../../shared/param-utils';
 import { BaseTableElement } from './../base-table-element.component';
 import { GridColumnDataType, SortAs } from './sortas.interface';
 import { TableComponentConstants } from './table.component.constants';
+import { LoaderState } from './../loader/loader.state';
+import { LoaderService } from './../../../services/loader.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -97,6 +99,7 @@ export class DataTable extends BaseTableElement
   addValErr = {};
   gridMode: string = '';
   gridModeRow: string = '-1';
+  loading: boolean;
 
   public onChange: any = _ => {
     /*Empty*/
@@ -119,7 +122,8 @@ export class DataTable extends BaseTableElement
   rowStart = 0;
   rowEnd = 0;
   rowExpanderKey = '';
-  defaultPattern: RegExp = /^[ A-Za-z0-9_@./#&+-,()!%_{};:?.<>-]*$/;
+  // defaultPattern: RegExp = /^[ A-Za-z0-9_@./#&+-,()!%_{};:?.<>-]*$/;
+  defaultPattern: RegExp= /^[^|~`'"]+$/; //only those characters that dont fall in this group are allowed in filters
   numPattern: RegExp = /[\d\-\.]/;
   id: String = 'grid-control' + counter++;
   gridRowConfig: any[];
@@ -160,7 +164,8 @@ export class DataTable extends BaseTableElement
     private dtFormat: DateTimeFormatPipe,
     protected cd: ChangeDetectorRef,
     private configService: ConfigService,
-    private counterMessageService: CounterMessageService
+    private counterMessageService: CounterMessageService,
+    private loaderservice: LoaderService
   ) {
     super(cd);
   }
@@ -303,6 +308,12 @@ export class DataTable extends BaseTableElement
 
   ngOnInit() {
     super.ngOnInit();
+    //initialize the loader icon based on the config of onload=true or lazyload=true
+    if(this.element.config.uiStyles.attributes.lazyLoad || this.element.config.uiStyles.attributes.onLoad) {
+      this.loading = true;
+    } else {
+      this.loading = false;
+    }
     // non-hidden columns
     this.columnsToShow = 0;
     // Set the column headers
@@ -368,6 +379,15 @@ export class DataTable extends BaseTableElement
       });
     }
 
+    this.subscribers.push(this.loaderservice.loaderUpdate.subscribe(
+      (state: LoaderState) => {
+        if(state.path === this.element.path) {
+          this.loading = state.show;
+          if (!(<ViewRef>this.cd).destroyed) this.cd.detectChanges();
+        }
+      }
+    ));
+
     if (
       this.element.config.uiStyles &&
       this.element.config.uiStyles.attributes.onLoad === true
@@ -380,7 +400,8 @@ export class DataTable extends BaseTableElement
           '$execute',
           new GenericDomain(),
           'GET',
-          queryString
+          queryString,
+          true
         );
       }
     }
@@ -932,7 +953,8 @@ export class DataTable extends BaseTableElement
       '$execute',
       payload,
       HttpMethod.POST.value,
-      queryString
+      queryString,
+      true
     );
   }
 

@@ -44,7 +44,6 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
-import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
@@ -57,7 +56,8 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
+import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection.LogLevel;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 
@@ -68,7 +68,7 @@ import lombok.Getter;
  *
  */
 @Getter
-@EnableLoggingInterceptor
+@EnableAPIMetricCollection(args = LogLevel.info)
 public class ActivitiBPMGateway implements BPMGateway {
 	
 	protected final JustLogit logit = new JustLogit(this.getClass());

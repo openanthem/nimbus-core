@@ -40,11 +40,11 @@ export class LoaderService {
 
   constructor() {}
 
-  show() {
-    this.loaderUpdate.next(<LoaderState>{ show: true });
+  show(path: string) {
+    this.loaderUpdate.next(<LoaderState>{ show: true, path:path });
   }
 
-  hide() {
-    this.loaderUpdate.next(<LoaderState>{ show: false });
+  hide(path: string) {
+    this.loaderUpdate.next(<LoaderState>{ show: false, path: path });
   }
 }
