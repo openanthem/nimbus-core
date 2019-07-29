@@ -117,16 +117,6 @@ export class OrderablePickList extends BaseElement
     this._disabled = value;
   }
 
-  get value() {
-    return this._value;
-  }
-
-  set value(val) {
-    this._value = val;
-    this.onChange(val);
-    this.onTouched();
-  }
-
   constructor(
     private pageService: PageService,
     private counterMessageService: CounterMessageService
@@ -274,6 +264,16 @@ export class OrderablePickList extends BaseElement
     this.value = newState;
     this.setState(newState, this);
     this.emitValueChangedEvent();
+  }
+
+  get value() {
+    return this._value;
+  }
+
+  set value(val) {
+    this._value = val;
+    this.onChange(val);
+    this.onTouched();
   }
 
   findIndexInList(item: Values, list: Values[]): number {
