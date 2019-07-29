@@ -81,20 +81,6 @@ export class FormElementsService {
           } else {
             // Adding this for picklist since form submit does not handle complex type - Revisit
             group[element.config.code] = this.createNewFormGroup(element);
-            const picklistparam: Param = element.type.model.params.find(
-              p => p.alias === ViewComponent.selectedPicklist.toString()
-            );
-            var leafState = this._getTypeSafeLeafState(picklistparam);
-            if (checks) {
-              group[picklistparam.config.code] = [
-                { value: leafState, disabled: !picklistparam.enabled },
-                checks
-              ];
-            } else {
-              group[picklistparam.config.code] = [
-                { value: leafState, disabled: !picklistparam.enabled }
-              ];
-            }
           }
           //create new formgroup and formcontrol to create checkboxes in form. this is for form binding. TODO validations binding
         } else {
