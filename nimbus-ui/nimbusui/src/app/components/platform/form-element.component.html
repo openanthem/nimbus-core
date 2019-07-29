@@ -40,10 +40,12 @@
     </ng-template>
 
     <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias === viewComponent.picklist.toString()">
-        <ng-template ngFor let-selectededparam [ngForOf]="element?.type?.model?.params">
-            <ng-template [ngIf]= "selectededparam?.config?.uiStyles?.attributes?.alias === viewComponent.selectedPicklist.toString()">
-                <nm-pickList id="{{element.config?.code}}" [parent]="element" [selectedvalues]="selectededparam.values" [formControlName]="selectededparam.config?.code" ngDefaultControl [element]="selectededparam" [form]="form"></nm-pickList> 
+        <div [formGroup]="form.controls[element?.config?.code]">
+            <ng-template ngFor let-selectededparam [ngForOf]="element?.type?.model?.params">
+                <ng-template [ngIf]= "selectededparam?.config?.uiStyles?.attributes?.alias === viewComponent.selectedPicklist.toString()">
+                    <nm-pickList id="{{element.config?.code}}" [parent]="element" [selectedvalues]="selectededparam.values" [formControlName]="selectededparam.config?.code" ngDefaultControl [element]="selectededparam" [form]="form.controls[element?.config?.code]"></nm-pickList> 
+                </ng-template>
             </ng-template>
-        </ng-template>                
+        </div>                
     </ng-template>
 </div>
