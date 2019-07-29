@@ -329,6 +329,10 @@ export class ParamUtils {
     return true;
   }
 
+  public static isNested(p: Param): boolean {
+    return p && p.type && p.type.model && p.type.model.params && p.type.model.params.length > 0;
+  }
+
   static getLabelConfig(labelConfigs: LabelConfig[]) {
     if (!labelConfigs || labelConfigs.length === 0) {
       return undefined;
