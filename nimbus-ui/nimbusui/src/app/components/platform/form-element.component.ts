@@ -34,6 +34,7 @@ import { CounterMessageService } from './../../services/counter-message.service'
 import { Constraint } from './../../shared/param-config';
 import { ConstraintMapping } from './../../shared/validationconstraints.enum';
 import { BaseElement } from './base-element.component';
+import { ParamUtils } from '../../shared/param-utils';
 
 var counter = 0;
 
@@ -155,13 +156,21 @@ export class FormElement extends BaseElement {
    */
   updateErrorMessages() {
     var control: AbstractControl = this.form.controls[this.element.config.code];
+    // TODO needs to be removed when refactoring @PickList
+    // start REMOVE_ME
+    if (control instanceof FormGroup) {
+      control = control.controls[Object.keys(control.controls)[0]]
+    }
+    // end REMOVE_ME
     if (control.invalid) {
       let errs: ValidationErrors = control.errors;
       for (var key in errs) {
         let constraintName = ConstraintMapping.getConstraintValue(key);
-        let constraint: Constraint = this.element.config.validation.constraints.find(
-          v => v.name == constraintName
-        );
+        // TODO needs to be removed/refactored when refactoring @PickList
+        // start REFACTOR_ME
+        let constraintParam = !ParamUtils.isNested(this.element) ? this.element : this.element.type.model.params[0];
+        let constraint: Constraint = constraintParam.config.validation.constraints.find(v => v.name == constraintName);
+        // end REFACTOR_ME
         this.addErrorMessages(constraint.attribute.message);
         const index = this.componentClass.indexOf(this.errorStyles, 0);
         if (index < 0) {

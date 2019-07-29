@@ -35,10 +35,6 @@
          </nm-treegrid>
     </ng-template>
 
-    <ng-template ngFor let-msg [ngForOf]="elemMessages">
-        <nm-message id="{{element.config?.code}}" [messageContext]="msg.context"  [messageArray]="msg.messageArray" [life] = "msg.life" [styleClass]="msg.styleClass"></nm-message>
-    </ng-template>
-
     <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias === viewComponent.picklist.toString()">
         <div [formGroup]="form.controls[element?.config?.code]">
             <ng-template ngFor let-selectededparam [ngForOf]="element?.type?.model?.params">
@@ -47,5 +43,9 @@
                 </ng-template>
             </ng-template>
         </div>                
+    </ng-template>
+
+    <ng-template ngFor let-msg [ngForOf]="elemMessages">
+        <nm-message id="{{element.config?.code}}" [messageContext]="msg.context"  [messageArray]="msg.messageArray" [life] = "msg.life" [styleClass]="msg.styleClass"></nm-message>
     </ng-template>
 </div>

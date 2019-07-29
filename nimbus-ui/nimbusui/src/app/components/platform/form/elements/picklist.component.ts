@@ -135,7 +135,8 @@ export class OrderablePickList extends BaseElement
   }
 
   ngOnInit() {
-    this.requiredCss = ValidationUtils.applyelementStyle(this.parent);
+    // this.requiredCss = ValidationUtils.applyelementStyle(this.parent);
+    super.ngOnInit();
     this.updateComponentLists();
     if (this.form != null) {
       const frmCtrl = this.form.controls[this.element.config.code];
@@ -154,17 +155,14 @@ export class OrderablePickList extends BaseElement
         this.subscribers.push(frmCtrl.valueChanges.subscribe($event => {
           this.setState($event, this);
           // setting parent Picklist value manually
-          if (!$event || !$event.config) {
-            return;
-          }
-          let frmCtrl = this.form.controls[$event.config.code];
+          let frmCtrl = this.form.controls[this.element.config.code];
           if (frmCtrl) {
             if (frmCtrl.valid && this.sendEvent) {
               this.counterMessageService.evalCounterMessage(true);
-              this.counterMessageService.evalFormParamMessages(this.element);
+              this.counterMessageService.evalFormParamMessages(this.parent);
               this.sendEvent = false;
             } else if (frmCtrl.invalid && !frmCtrl.pristine) {
-              this.counterMessageService.evalFormParamMessages(this.element);
+              this.counterMessageService.evalFormParamMessages(this.parent);
               this.counterMessageService.evalCounterMessage(true);
               this.sendEvent = true;
             }
