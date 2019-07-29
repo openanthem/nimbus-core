@@ -1241,7 +1241,7 @@ public class ViewConfig {
 		/**
 		 * <p>When set with fontawesome animated icon, shows the loading icon until the grid results are fetched from server
 		 */
-		String loaderIcon() default "fa fa fa-spinner";
+		String loaderIcon() default "fa fa fa-spinner fa-4x";
 
 		/**
 		 * <p>A param path relative to the Grid param created by this decorated
