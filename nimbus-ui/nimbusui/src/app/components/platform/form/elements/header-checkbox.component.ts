@@ -229,7 +229,7 @@ export class HeaderCheckBox {
     const filteredValues: any[] =
       this.dt.filteredValue != null ? this.dt.filteredValue : this.dt.value;
 
-    const startSelection = this.isHeaderCheckboxToggleAllPages()
+    const startSelection = this.isHeaderCheckboxToggleAllPages() || this.element.config.uiStyles.attributes.lazyLoad
       ? 0
       : this.dt.first;
     const maxRowsAllowed = this.getMaxRowsAllowed(filteredValues.length);
