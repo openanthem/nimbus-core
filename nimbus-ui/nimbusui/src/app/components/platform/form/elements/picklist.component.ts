@@ -80,11 +80,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         >
           <ng-template let-itm pTemplate="item">
             <div class="ui-helper-clearfix">
-              <div
-                pDraggable="dd"
-                (onDragStart)="dragStart($event, itm)"
-                (onDragEnd)="dragEnd($event)"
-              >
+              <div pDraggable="dd">
                 {{ itm.label ? itm.label : getDesc(itm) }}
               </div>
             </div>
@@ -100,11 +96,9 @@ export class OrderablePickList extends BaseElement
   sourcelist: any[];
   @Input() selectedvalues: Values[];
   @Input() form: FormGroup;
-  @Input('value') _value;
   @ViewChild('picklist') pickListControl: PickList;
   targetList: any[];
   private draggedItm: any;
-  private selectedOptions: string[] = [];
   private _disabled: boolean;
   public onChange: any = _ => {
     /*Empty*/
@@ -257,41 +251,7 @@ export class OrderablePickList extends BaseElement
 
   updateListValues(event: any) {
     this.updateData();
-    /* comes into this loop when leafState is not null and new values are added
-         prime-ng adds data of type Values{code, label} to leafState since the [source] is of type {element.values} 
-         ex: leafState : ["Mon","Tue",{'code' : "Wed", 'label' : "Wednesday"}]
-         The below logic, transforms the data into just codes i.e leafState : ["Mon","Tue","Wed"] 
-        */
-    if (this.element.leafState) {
-      this.element.leafState.forEach((state, i) => {
-        if (state && state.code) {
-          const code = state.code;
-          this.element.leafState.splice(i, 1, code);
-          this.targetList = this.element.leafState;
-        }
-      });
-    } else {
-      if (this.value) {
-        this.element.leafState = this.value;
-      }
-    }
     this.emitValueChangedEvent();
-  }
-
-  get value() {
-    return this._value;
-  }
-
-  set value(val) {
-    this._value = val;
-    this.onChange(val);
-    this.onTouched();
-  }
-
-  dragStart(event, itm: any) {
-    if (this.element.enabled) {
-      this.draggedItm = itm;
-    }
   }
 
   findIndexInList(item: Values, list: Values[]): number {
@@ -305,31 +265,6 @@ export class OrderablePickList extends BaseElement
       }
     }
     return index;
-  }
-
-  dragEnd(event) {
-    if (this.draggedItm) {
-      let index = this.findIndexInList(
-        this.draggedItm,
-        this.pickListControl.source
-      );
-      if (index >= 0) {
-        this.pickListControl.source.splice(index, 1);
-        this.pickListControl.target.push(this.draggedItm);
-      } else {
-        index = this.findIndexInList(
-          this.draggedItm,
-          this.pickListControl.target
-        );
-        if (index >= 0) {
-          this.pickListControl.target.splice(index, 1);
-          this.pickListControl.source.push(this.draggedItm);
-        }
-      }
-      this.draggedItm = null;
-      //updating the internal data model
-      this.updateData();
-    }
   }
 
   public writeValue(obj: any): void {
@@ -395,19 +330,18 @@ export class OrderablePickList extends BaseElement
    * Update the internal model.
    */
   private updateData() {
-    if (this.targetList.length === 0) {
-      this.value = null;
-    } else {
-      this.selectedOptions = [];
+    let newState = null;
+    if (this.targetList.length > 0) {
+      newState = [];
       this.targetList.forEach(element => {
         if (element.code) {
-          this.selectedOptions.push(element.code);
+          newState.push(element.code);
         } else {
-          this.selectedOptions.push(element);
+          newState.push(element);
         }
       });
-      this.value = this.selectedOptions;
     }
+    this.element.leafState = newState;
   }
 
   /**
