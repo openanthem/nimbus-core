@@ -20,17 +20,17 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 /**
  * @author Tony Lopez
  *
  */
 @Data
-@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class MessageQueueEvent extends AbstractEvent<String, String> {
 
+	public MessageQueueEvent() {}
+	
 	public MessageQueueEvent(String commandUrl, String payload) {
 		super(null, commandUrl, payload);
 	}
