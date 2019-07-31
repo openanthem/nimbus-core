@@ -31,6 +31,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
+import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values.CacheType;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values.EMPTY;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values.Source;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
@@ -83,16 +84,19 @@ public class DefaultParamValuesHandler implements ParamValuesOnLoadHandler {
 
 				// retrieve staticCodeValue lookup searches from cache if it
 				// exists, otherwise continue
-				if (null != this.cacheManager
-						&& cmd.getRootDomainAlias().equals(Constants.PARAM_VALUES_DOMAIN_ALIAS.code)
-						&& Action._search == cmd.getAction() && Constants.PARAM_VALUES_LOOKUP_FN_KEY.code
-								.equals(cmd.getFirstParameterValue(Constants.KEY_FUNCTION.code))) {
-					Cache cache = this.cacheManager.getCache(Constants.PARAM_VALUES_CACHE_KEY.code);
-					if (null != cache) {
-						ValueWrapper cacheValue = cache.get(cmd.getFirstParameterValue("where"));
-						if (null != cacheValue) {
-							return (List<ParamValue>) cacheValue.get();
+				if (cmd.getRootDomainAlias().equals(Constants.PARAM_VALUES_DOMAIN_ALIAS.code)
+						&& values.useParamValuesCacheOnLoad()) {
+					if (null != this.cacheManager) {
+						Cache cache = this.cacheManager.getCache(Constants.PARAM_VALUES_CACHE_KEY.code);
+						if (null != cache) {
+							ValueWrapper cacheValue = cache.get(cmd.getFirstParameterValue("where"));
+							if (null != cacheValue) {
+								return (List<ParamValue>) cacheValue.get();
+							}
 						}
+					} else {
+						logIt.warn(() -> "Param " + srcParam
+								+ " is configured with useCacheOnLoad, but the configured CacheManager is null.");
 					}
 				}
 
