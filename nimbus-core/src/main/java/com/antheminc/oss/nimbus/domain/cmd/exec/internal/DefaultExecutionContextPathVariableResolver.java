@@ -1,6 +1,7 @@
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.function.Function;
@@ -187,7 +188,9 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 			FilterMode filterMode = (FilterMode) currentParam.getUiStyles().getAttributes().get("filterMode");
 			
 			//TODO - once additional filter patterns are implemented, need to revisit this
-			if(StringUtils.containsIgnoreCase(currentParam.getType().getName(), "date")) {
+			if(StringUtils.equalsIgnoreCase(currentParam.getType().getName(), "ZonedDateTime")) {
+				buildZoneDateCriteria(builder, alias, paramPath, f.getValue());
+			} else if(StringUtils.containsIgnoreCase(currentParam.getType().getName(), "date")) {
 				buildDateCriteria(builder, alias, paramPath, f.getValue());
 			}
 			else if(ClassUtils.isAssignable(currentParam.getReferredClass(), Number.class, true)) {
@@ -256,4 +259,26 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 		return null;
 	}
 	
+	private void buildZoneDateCriteria(StringBuilder builder, final String alias, String paramPath, String value ) {
+		LocalDateTime dateValue = getLocalDateTime(value);
+		if(dateValue != null) {
+			int year = dateValue.getYear();
+		    int month = dateValue.getMonthValue();
+		    int day = dateValue.getDayOfMonth();
+		    
+		    buildCriteria(builder, alias, paramPath, "java.time.ZonedDateTime.of("+year+", "+month+", "+day+", 0 , 0 , 0 , 0 , java.time.ZoneId.of(\"UTC\"))", "after");
+			buildCriteria(builder, alias, paramPath, "java.time.ZonedDateTime.of("+year+", "+month+", "+day+", 23 , 59 , 59 , 999 , java.time.ZoneId.of(\"UTC\"))", "before");
+		}
+	}
+
+	private LocalDateTime getLocalDateTime(String value) {
+		for (String DATE_FORMAT : DATE_FORMATS) {
+			try {
+				return LocalDateTime.parse(value, DateTimeFormatter.ofPattern(DATE_FORMAT));
+			} catch (Exception e) {
+				
+			}
+		}
+		return null;
+	}
 }
