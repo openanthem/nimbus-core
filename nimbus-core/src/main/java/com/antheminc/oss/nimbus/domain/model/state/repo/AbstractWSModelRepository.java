@@ -117,17 +117,17 @@ public abstract class AbstractWSModelRepository implements ExternalModelReposito
 	}
 	
 	protected URI createUriForAlias(String alias, String url) {
-		String targetUrl = getTargetUrl(alias);
-		if(StringUtils.isBlank(targetUrl))
+		String urlToConstruct = getTargetUrl(alias);
+		if(StringUtils.isEmpty(urlToConstruct)) {
 			return null;
-		
-		String urlToConstruct = StringUtils.startsWith(url, "/") ? url : "/".concat(url);
-		urlToConstruct = targetUrl.concat(urlToConstruct);
+		}
+		if (!StringUtils.isEmpty(url)) {
+			urlToConstruct = urlToConstruct.concat(url);
+		}
 		try {
-			URI uri = new URI(urlToConstruct);
-			return uri;
+			return new URI(urlToConstruct);
 		} catch (URISyntaxException e) {
-			throw new FrameworkRuntimeException("Cannot create URI for ["+urlToConstruct+"]", e);
+			throw new FrameworkRuntimeException("Cannot create URI from supplied url: "+url);
 		}
 	}
 	

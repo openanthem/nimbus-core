@@ -242,7 +242,7 @@
 //         app.ngOnInit();
 //         expect(breadcrumbService.getHomeBreadcrumb).toHaveBeenCalled();
 //       }));
-  
+
 //   });
 
 //   describe('BreadcrumbComponent', () => {
@@ -288,5 +288,5 @@
 //         app.ngOnInit();
 //         expect(breadcrumbService.getHomeBreadcrumb).toHaveBeenCalled();
 //       }));
-  
+
 //   });

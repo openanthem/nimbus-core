@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -430,7 +430,11 @@ abstract public class AbstractEntityConfigBuilder {
 	
 	private <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, Field f, DefaultParamConfig<P> created, EntityConfigVisitor visitedModels) {
 		created.setUiNatures(annotationConfigHandler.handle(f, ViewParamBehavior.class));
-		created.setUiStyles(annotationConfigHandler.handleSingle(f, ViewStyle.class));
+		try {
+			created.setUiStyles(annotationConfigHandler.handleSingle(f, ViewStyle.class));
+		} catch (InvalidConfigException e) {
+			throw new InvalidConfigException("Failed to decorate uiStyles attribute for field \"" + f.getName() + "\".", e);
+		}
 		
 		ExecutionConfig executionConfig = executionConfigFactory.build(f);
 		created.setExecutionConfig(executionConfig);

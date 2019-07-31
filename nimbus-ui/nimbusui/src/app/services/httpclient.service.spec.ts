@@ -1,11 +1,31 @@
-import { TestBed, inject, async } from '@angular/core/testing';
-import { HttpClient, HttpRequest } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+/**
+ * @license
+ * Copyright 2016-2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
+import { async, TestBed } from '@angular/core/testing';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
 import { CustomHttpClient } from './httpclient.service';
-import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
+import { CUSTOM_STORAGE, SessionStoreService } from './session.store';
 
 let backend, service;
 
@@ -16,11 +36,8 @@ describe('CustomHttpClient', () => {
         { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
         CustomHttpClient,
         SessionStoreService
-    ],
-      imports: [ 
-          HttpClientTestingModule,
-          StorageServiceModule
-        ]
+      ],
+      imports: [HttpClientTestingModule, StorageServiceModule]
     });
     backend = TestBed.get(HttpTestingController);
     service = TestBed.get(CustomHttpClient);
@@ -31,8 +48,7 @@ describe('CustomHttpClient', () => {
   }));
 
   it('get() should make GET call', async(() => {
-    service.get('/test', {test: 123}).subscribe (data => {
-    });
+    service.get('/test', { test: 123 }).subscribe(data => {});
     const req = backend.expectOne('/test');
     expect(req.request.method).toEqual('GET');
     req.flush(123);
@@ -40,18 +56,16 @@ describe('CustomHttpClient', () => {
   }));
 
   it('postFileData() should make a POST call', async(() => {
-    service.postFileData('/testing', {}).subscribe (data => {
+    service.postFileData('/testing', {}).subscribe(data => {});
+    const req = backend.expectOne(r => {
+      return true;
     });
-  const req = backend.expectOne ( r=> {
-    return true;
-  });
     req.flush(123);
     backend.verify();
   }));
 
   it('post() should make a POST call', async(() => {
-    service.post('/test', {test: 123}).subscribe (data => {
-    });
+    service.post('/test', { test: 123 }).subscribe(data => {});
     const req = backend.expectOne('/test');
     expect(req.request.method).toEqual('POST');
     req.flush(123);
@@ -61,5 +75,4 @@ describe('CustomHttpClient', () => {
   it('getCookie(test:123=t) should return undefined', async(() => {
     expect(service.getCookie('test:123=t')).toBeFalsy();
   }));
-
 });

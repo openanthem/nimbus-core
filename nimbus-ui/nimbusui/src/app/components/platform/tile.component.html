@@ -1,18 +1,18 @@
 <nm-message messageContext="{{element?.message.context}}"  [messageArray]="element?.message.messageArray" [life]="element?.message.life" *ngIf="element?.message"></nm-message>
 <div class="card-holder {{cssClass}}" id="{{code}}" *ngIf="visible==true">
 		<div class="card-header">
-			<nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize" [labelClass]="imgSrc + ' card-title'"></nm-label>
+			<nm-label id="{{element.config?.code}}" *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize" [labelClass]="imgSrc + ' card-title'"></nm-label>
 			<ng-template ngFor let-element [ngForOf]="nestedParams">
 				<!-- ButtonGroup -->
 				<ng-template [ngIf]="element.alias == componentTypes.buttonGroup.toString()">
 					<div class="">
-						<nm-button-group [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass">
+						<nm-button-group [buttonList]="element.type?.model?.params" class="{{element.config?.uiStyles?.attributes?.cssClass}} buttonGroup">
 						</nm-button-group>
 					</div>
 				</ng-template>
 				<!-- Paragraph -->
 				<ng-template [ngIf]="element.alias == componentTypes.paragraph.toString()">
-					<nm-paragraph [element]="element"></nm-paragraph>
+					<nm-paragraph id="{{element.config?.code}}" [element]="element" [ngClass]="element.config.uiStyles.attributes.cssClass" [hidden]="!element.visible"></nm-paragraph>
 				</ng-template>
 			</ng-template>		
 		</div>
@@ -20,13 +20,16 @@
 		<div class="viewport" >
 			<ng-template ngFor let-element [ngForOf]="nestedParams">
 				<ng-template [ngIf]="element.alias == viewComponent.tile.toString()">
-					<nm-tile [element]="element" tileType="subtile" [nmPrint]="element"></nm-tile>
+					<nm-tile id="{{element.config?.code}}" [element]="element" tileType="subtile" [nmPrint]="element"></nm-tile>
 				</ng-template>
 				<ng-template [ngIf]="element.alias == viewComponent.section.toString()">
-					<nm-section [element]="element" [position]="position+1" [nmPrint]="element"></nm-section>	
+					<nm-section id="{{element.config?.code}}" [element]="element" [position]="position+1" [nmPrint]="element" class="{{element.config?.uiStyles?.attributes?.cssClass}}"></nm-section>	
 				</ng-template>
 				<ng-template [ngIf]="element.alias == viewComponent.modal.toString()">
-					<nm-modal [element]="element" [nmPrint]="element" [contentSelector]="'div.ui-dialog-content'"></nm-modal>
+					<nm-modal id="{{element.config?.code}}" [element]="element" [nmPrint]="element" [contentSelector]="'div.ui-dialog-content'"></nm-modal>
+				</ng-template>
+				<ng-template [ngIf]="element.alias == 'Tab'">
+					<nm-tab id="{{element.config?.code}}" [element]="element"></nm-tab>
 				</ng-template>
 			</ng-template>	
 		</div>

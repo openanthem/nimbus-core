@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,9 +32,8 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
-import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
-import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
 import com.antheminc.oss.nimbus.entity.audit.AuditEntry;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
@@ -72,13 +71,10 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 	
 	private JavaBeanHandler javaBeanHandler;
 	
-	private final IdSequenceRepository idSequenceRepo;
-	
 	public AuditStateChangeHandler(BeanResolverStrategy beanResolver) {
 		this.repositoryFactory = beanResolver.get(ModelRepositoryFactory.class);
 		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
 		this.javaBeanHandler = beanResolver.get(JavaBeanHandler.class);
-		this.idSequenceRepo =  beanResolver.get(IdSequenceRepository.class);
 	}
 	
 	
@@ -123,11 +119,11 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 		String auditHistoryAlias = findAuditHistoryAlias(auditConfig, configuredAnnotation);
 		Repo repo = findAuditHistoryRepo(auditConfig, configuredAnnotation);
 		
-		ModelRepository db = getRepositoryFactory().get(repo);
+		DefaultMongoModelRepository db = (DefaultMongoModelRepository) getRepositoryFactory().get(repo);
 		
 		// autogenerate id
 		String repoAlias = StringUtils.isNotBlank(repo.alias()) ? repo.alias() : auditHistoryAlias;
-		Long id = getIdSequenceRepo().getNextSequenceId(repoAlias);
+		Long id = db.getIdSequenceRepo().getNextSequenceId(repoAlias);
 		ae.setId(id);
 		
 		db._save(repoAlias, ae);

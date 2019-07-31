@@ -1,4 +1,10 @@
-<div id="{{id}}"  class="scrollGrid" [hidden]="!element?.visible">
+<div class="buttonGroup tableHeaderButton clearfix" *ngIf="element.config?.uiStyles?.attributes?.addRow">
+    <button class="btn-plain fa fa-plus" (click)="addRow()">
+        <span class="pl-2">add row</span>
+    </button>
+</div>
+
+<div id="{{id}}"  class="scrollGrid" [hidden]="!element?.visible" [ngClass]="element.config?.uiStyles?.attributes?.addRow ? 'withAddRow' : ''">
     <div class="ui-datatable-header ui-widget-header" *ngIf="element.config?.uiStyles?.attributes?.showHeader == true">
         <p-header>
             <caption>{{label}}</caption>
@@ -15,7 +21,7 @@
         </div>
     </div>
 
-    <p-table #dt [value]="value" [columns]="params" 
+    <p-table #dt [value]="value" [loading]="loading" [loadingIcon]="element.config?.uiStyles?.attributes?.loaderIcon" [columns]="params" 
         [dataKey]="'elemId'"
         [(selection)]="selectedRows"
         [rows]="element.config?.uiStyles?.attributes?.pageSize"
@@ -30,13 +36,14 @@
         (onPage)="paginate($event)"
         (onFilter)="filterCallBack($event)"
         [lazy]=element.config?.uiStyles?.attributes?.lazyLoad
-        (onLazyLoad)="loadDataLazy($event)">
+        (onLazyLoad)="loadDataLazy($event)"
+        editMode="row">
 
-        <ng-template pTemplate="header" let-columns>
+        <ng-template pTemplate="header" let-columns >
             <tr>
                 <th style="width: 2.25em" *ngIf="element.config?.uiStyles?.attributes?.rowSelection">
                     <!-- <p-tableHeaderCheckbox></p-tableHeaderCheckbox> -->
-                    <nm-header-checkbox [dt] = 'dt' [element] = 'element'></nm-header-checkbox>
+                    <nm-header-checkbox id="{{element.config?.code}}" [dt] = 'dt' [element] = 'element'></nm-header-checkbox>
                 </th>
                 <th style="width: 2.25em" *ngIf="element?.config?.uiStyles?.attributes?.expandableRows"></th>
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
@@ -45,6 +52,7 @@
                         <p-sortIcon [field]="col" *ngIf="col?.uiStyles?.attributes?.alias === viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.sortable !== false"></p-sortIcon>
                     </th>
                 </ng-template>
+                <th style="width: 70px;" *ngIf="element.config?.uiStyles?.attributes?.editRow">Edit</th>
             </tr>
             <tr *ngIf="showFilters">
                 <th style="width: 2.25em" *ngIf="element.config?.uiStyles?.attributes?.rowSelection"></th>
@@ -83,55 +91,116 @@
             </tr>
         </ng-template>
         
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex" let-expanded="expanded">
-             <tr [pSelectableRow]="rowData"  [ngClass]="rowIndex % 2 === 0 ? 'even' : 'odd'" > 
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex" let-expanded="expanded" let-editing="editing">
+             <tr #editableRow [pSelectableRow]="rowData" [pEditableRow]="rowData" [ngClass]="rowIndex % 2 === 0 ? 'even' : 'odd'" > 
                 <td *ngIf="element.config?.uiStyles?.attributes?.rowSelection">
-                    <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                    <p-tableCheckbox id="tableCheckbox{{rowIndex}}" [value]="rowData"></p-tableCheckbox>
                 </td>
-
-                <td *ngIf="element.config?.uiStyles?.attributes?.expandableRows">
+                <td *ngIf="element?.config?.uiStyles?.attributes?.expandableRows">
                     <a href="#" [pRowToggler]="rowData" *ngIf=isRowExpanderHidden(rowData) >
                         <i [ngClass]="expanded ? 'fa fa-fw fa-chevron-circle-down ui-row-toggler' : 'fa fa-fw fa-chevron-circle-right ui-row-toggler'"></i>
-                    </a>
+                    </a>                                   
                 </td>
 
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
                     <td *ngIf="showColumn(col)" [ngClass]="getColumnStyle(col)">
-                        <span title="{{getCellDisplayValue(rowData, col)}}" *ngIf="showValue(col)" [nmDisplayValue]='getCellDisplayValue(rowData, col)' [config]='col'>
-                            <span class="fieldValue {{col.code}} {{getCellStyle(rowData.elemId, col.code)}}">{{getCellDisplayValue(rowData, col)}}</span>
-                        </span>
-                        <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.link.toString()">
-                            <nm-link
-                                [element] = "getViewParam(col, rowData['elemId'])"
-                                [rowData]="rowData">                                
-                            </nm-link>
-                        </span>
-                        <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true">
-                            <nm-link
-                                [element] = "getViewParam(col, rowData['elemId'])">
-                            </nm-link>
-                        </span>
-                        <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.button.toString()">
-                            <nm-button
-                                [element] = "getViewParam(col, rowData['elemId'])">
-                            </nm-button>
-                        </span>
-                        <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.linkMenu.toString()">
-                            <nm-action-dropdown #dropDown [element]="getViewParam(col, rowData['elemId'])" 
-                                [params]="col?.type?.model?.paramConfigs" 
-                                [rowData]="rowData" 
-                                [elementPath]="getRowPath(col, rowData)" 
-                                (dropDownClick)="toggleOpen($event)">
-                            </nm-action-dropdown>
-                        </span>
+                            <p-cellEditor>
+                                     <ng-template pTemplate="input" [ngIf]="element?.config?.uiStyles?.attributes?.editRow && showValue(col)">
+
+                                        <nm-input  
+                                        *ngIf="gridMode == 'add' 
+                                        && gridModeRow == ''
+                                        && !rowData.elemId
+                                        && TableComponentConstants.allowedInlineEditColumnStylesAlias.includes(col.uiStyles.attributes.alias)"
+                                        [nmValidator]="getViewParamInEditRow(col, rowData['elemId'])"
+                                        (nmValidate)="updateValidation($event)"
+                                         [hideLabel]=true
+                                        [element]="getViewParamInEditRow(col, rowData['elemId'])" 
+                                        [(ngModel)]="rowData[col.code]"
+                                       [attr.id]="col.code"></nm-input>
+
+                                    <ng-template 
+                                    [ngIf]="gridMode == 'edit' && 
+                                    TableComponentConstants.componentsEditableAsText.includes(col.uiStyles.attributes.alias)
+                                    && gridModeRow == rowData.elemId">
+                                        <nm-input  
+                                        [nmValidator]="getViewParamInEditRow(col, rowData['elemId'])"
+                                        (nmValidate)="updateValidation($event)"
+                                        [hideLabel]=true
+                                        [element]="getViewParamInEditRow(col, rowData['elemId'])" 
+                                        [(ngModel)]="rowData[col.code]"></nm-input>
+                                    </ng-template>
+
+
+                                        <nm-comboBox 
+                                        *ngIf="gridMode == 'edit' && gridModeRow == rowData.elemId && col?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString()" 
+                                        [hideLabel]=true
+                                        [element]="getViewParamInEditRow(col, rowData['elemId'])" 
+                                        [(ngModel)]="rowData[col.code]" ></nm-comboBox>
+
+                                        <nm-input-calendar 
+                                        *ngIf="gridMode == 'edit' && gridModeRow == rowData.elemId && col?.uiStyles?.attributes?.type == componentTypes.calendar.toString()" 
+                                        [hideLabel]=true
+                                        [element]="getViewParamInEditRow(col, rowData['elemId'])" 
+                                        [(ngModel)]="rowData[col.code]" ></nm-input-calendar>
+
+
+                                        <div *ngFor="let error of getAddValErr(col.code)">
+                                            {{error}}
+                                        </div>
+
+                                     </ng-template>
+                                    <ng-template pTemplate="output">
+                                            <span title="{{getCellDisplayValue(rowData, col)}}" *ngIf="showValue(col)" [nmDisplayValue]='getCellDisplayValue(rowData, col)' [config]='col'>
+                                                    <span class="fieldValue {{col.code}} {{getCellStyle(rowData.elemId, col.code)}}">{{getCellDisplayValue(rowData, col)}}</span>
+                                                </span>
+                                                <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.link.toString()">
+                                                    <nm-link
+                                                        id="{{element.tableBasedData.collectionParams[rowData['elemId']][col.code].config?.code}}" 
+                                                        [element] = "element.tableBasedData.collectionParams[rowData['elemId']][col.code]"
+                                                        [rowData]="rowData">                                
+                                                    </nm-link>
+                                                </span>
+                                                <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true">
+                                                    <nm-link
+                                                        id="{{element.tableBasedData.collectionParams[rowData['elemId']][col.code].config?.code}}"  
+                                                        [element] = "element.tableBasedData.collectionParams[rowData['elemId']][col.code]">
+                                                    </nm-link>
+                                                </span>
+                                                <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.button.toString()">
+                                                    <nm-button
+                                                        id="{{element.tableBasedData.collectionParams[rowData['elemId']][col.code].config?.code}}" 
+                                                        [element] = "element.tableBasedData.collectionParams[rowData['elemId']][col.code]">
+                                                    </nm-button>
+                                                </span>
+                                                <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.linkMenu.toString()">
+                                                    <nm-action-dropdown #dropDown 
+                                                        *ngIf = "rowData['elemId']"
+                                                        id="{{element?.tableBasedData?.collectionParams[rowData['elemId']][col.code]?.config?.code}}{{rowIndex}}" 
+                                                        [element]="element?.tableBasedData?.collectionParams[rowData['elemId']][col.code]" 
+                                                        [params]="col?.type?.model?.paramConfigs" 
+                                                        [rowData]="rowData" 
+                                                        [elementPath]="getRowPath(col, rowData)" 
+                                                        (dropDownClick)="toggleOpen($event)">
+                                                    </nm-action-dropdown>
+                                                </span>
+                                    </ng-template>
+                    </p-cellEditor>
                     </td>
                 </ng-template>
+
+            <td style="text-align:center" *ngIf="element.config?.uiStyles?.attributes?.editRow">
+                    <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil" class="ui-button-info" (click)="onRowEditInitialize(rowData)"></button>
+                    <button *ngIf="editing" pButton type="button" icon="pi pi-check" class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData)"></button>
+                    <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times" class="ui-button-danger" (click)="onRowEditCancel(rowData)"></button>
+            </td>
+
             </tr>
         </ng-template>
 
         <ng-template pTemplate="rowexpansion" let-rowData>
             <tr class="ui-expanded-row-content">
-                <td [attr.colspan]="columnsToShow" >
+                <td [attr.colspan]="element.config?.uiStyles?.attributes?.editRow ? columnsToShow+1 : columnsToShow">
                     <nm-section *ngIf="rowData.nestedElement" [position]="position+1" [element]="rowData.nestedElement" [nmPrint]="rowData.nestedElement"></nm-section>
                 </td>
             </tr>
@@ -139,7 +208,7 @@
 
         <ng-template pTemplate="emptymessage" let-columns>
             <tr>
-                <td [attr.colspan]="columnsToShow">
+                <td [attr.colspan]="element.config?.uiStyles?.attributes?.editRow ? columnsToShow+1 : columnsToShow">
                     No records found
                 </td>
             </tr>

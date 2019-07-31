@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,10 +23,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.util.CollectionUtils;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -161,6 +165,25 @@ public final class CommandExecution {
 //				throw new IllegalStateException("Multi output contains more than one output elements: "+getOutputs());
 			
 			return getOutputs().get(0).getValue();
+		}
+		
+		@JsonIgnore
+		public List<Output<?>> findParamOutputsEndingWithPath(String path) {
+			List<Output<?>> result = new ArrayList<>();
+			for (Output<?> output : getOutputs()) {
+				if (output.getValue() instanceof Param) {
+					Param<?> param = (Param<?>) output.getValue();
+					if (!StringUtils.isEmpty(param.getPath()) && param.getPath().endsWith(path)) {
+						result.add(output);
+					}
+				}
+			}
+			return result;
+		}
+		
+		@JsonIgnore
+		public Output<?> findFirstParamOutputEndingWithPath(String path) {
+			return Optional.ofNullable(findParamOutputsEndingWithPath(path).get(0)).orElse(null);
 		}
 		
 	}

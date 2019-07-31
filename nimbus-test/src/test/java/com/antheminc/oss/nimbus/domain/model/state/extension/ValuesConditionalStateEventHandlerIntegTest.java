@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -273,5 +273,24 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 		Assert.assertEquals("Past", statusForm.findParamByPath("/contactStatus").getValues().get(0).getLabel());
 		
 		Assert.assertEquals(Status.PAST, statusForm.findParamByPath("/contactStatus").getState());
+	}
+	
+	@Test
+	public void t12_arrayState() {
+		final Param<?> statusForm = _q.getRoot().findParamByPath(STATUS_FORM);
+		assertNotNull(statusForm);
+		
+		Assert.assertNotNull(statusForm.findParamByPath("/contactStatus").getValues());
+		Assert.assertNull(statusForm.findParamByPath("/contactStatus").getState());
+		String[] defaultState = {"FUTURE"};
+		statusForm.findParamByPath("/multiSelect").setState(defaultState);
+		
+		statusForm.findParamByPath("/contactType").setState("changeit");
+		Assert.assertEquals(3, statusForm.findParamByPath("/multiSelect").getValues().size());
+		Assert.assertEquals("FUTURE", statusForm.findParamByPath("/multiSelect").getValues().get(0).getCode());
+		Assert.assertEquals("PAST", statusForm.findParamByPath("/multiSelect").getValues().get(1).getCode());
+		Assert.assertEquals("CURRENT", statusForm.findParamByPath("/multiSelect").getValues().get(2).getCode());
+
+		Assert.assertEquals(defaultState, statusForm.findParamByPath("/multiSelect").getState());
 	}
 }

@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -440,15 +440,30 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 	}
 	
 	@Test
+	public void testLookupParamValueWithStringCode() {
+		List<SampleTask> expected = this.insertSampleTaskData();
+		Param<List<String>> actual = this.testLookupParamValueType("/page_green/tile/view_sample_form/comboboxWithStringId", "comboboxWithStringId");
+		Assert.assertEquals(2, actual.getValues().size());
+		Assert.assertEquals(expected.get(0).getTaskName(), actual.getValues().get(0).getCode());
+		Assert.assertEquals(expected.get(0).getTaskName(), actual.getValues().get(0).getLabel());
+		Assert.assertEquals(expected.get(1).getTaskName(), actual.getValues().get(1).getCode());
+		Assert.assertEquals(expected.get(1).getTaskName(), actual.getValues().get(1).getLabel());
+	}
+	
+	@Test
+	public void testLookupParamValueWithLongCode() {
+		List<SampleTask> expected = this.insertSampleTaskData();
+		Param<List<String>> actual = this.testLookupParamValueType("/page_green/tile/view_sample_form/unsortedDynamicValues", "unsortedDynamicValues");
+		Assert.assertEquals(2, actual.getValues().size());
+		Assert.assertEquals(expected.get(0).getId(), actual.getValues().get(0).getCode());
+		Assert.assertEquals(expected.get(0).getTaskName(), actual.getValues().get(0).getLabel());
+		Assert.assertEquals(expected.get(1).getId(), actual.getValues().get(1).getCode());
+		Assert.assertEquals(expected.get(1).getTaskName(), actual.getValues().get(1).getLabel());
+	}
+	
+	@Test
 	public void testLookupSort() {
-		SampleTask task1 = new SampleTask();
-		task1.setId(1L);
-		task1.setTaskName("Play");
-		SampleTask task2 = new SampleTask();
-		task2.setId(2L);
-		task2.setTaskName("Groom");
-		mongo.insert(task1, "sampletask");
-		mongo.insert(task2, "sampletask");
+		this.insertSampleTaskData();
 		
 		Long refId = createOrGetDomainRoot_RefId();
 		
@@ -461,9 +476,9 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		final Object unsortedResponse = controller.handlePost(unsortedRequest, null);
 		Param<List<String>> pUnsorted = ParamUtils.extractResponseByParamPath(unsortedResponse, "/unsortedDynamicValues");
 		Assert.assertEquals(2, pUnsorted.getValues().size());
-		Assert.assertEquals("1", pUnsorted.getValues().get(0).getCode());
+		Assert.assertEquals(1L, pUnsorted.getValues().get(0).getCode());
 		Assert.assertEquals("Play", pUnsorted.getValues().get(0).getLabel());
-		Assert.assertEquals("2", pUnsorted.getValues().get(1).getCode());
+		Assert.assertEquals(2L, pUnsorted.getValues().get(1).getCode());
 		Assert.assertEquals("Groom", pUnsorted.getValues().get(1).getLabel());
 		
 		final MockHttpServletRequest sortedRequest = MockHttpRequestBuilder
@@ -475,10 +490,35 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		final Object sortedResponse = controller.handlePost(sortedRequest, null);
 		Param<List<String>> pSorted = ParamUtils.extractResponseByParamPath(sortedResponse, "/sortedDynamicValues");
 		Assert.assertEquals(2, pSorted.getValues().size());
-		Assert.assertEquals("2", pSorted.getValues().get(0).getCode());
+		Assert.assertEquals(2L, pSorted.getValues().get(0).getCode());
 		Assert.assertEquals("Groom", pSorted.getValues().get(0).getLabel());
-		Assert.assertEquals("1", pSorted.getValues().get(1).getCode());
+		Assert.assertEquals(1L, pSorted.getValues().get(1).getCode());
 		Assert.assertEquals("Play", pSorted.getValues().get(1).getLabel());
+	}
+	
+	private Param<List<String>> testLookupParamValueType(String pathToCombobox, String fieldName) {
+		Long refId = createOrGetDomainRoot_RefId();
+		
+		final MockHttpServletRequest unsortedRequest = MockHttpRequestBuilder
+				.withUri(VIEW_PARAM_ROOT)
+				.addRefId(refId)
+				.addNested(pathToCombobox)
+				.addAction(Action._get)
+				.getMock();
+		Object response = controller.handlePost(unsortedRequest, null);
+		return ParamUtils.extractResponseByParamPath(response, "/" + fieldName);
+	}
+	
+	private List<SampleTask> insertSampleTaskData() {
+		SampleTask task1 = new SampleTask();
+		task1.setId(1L);
+		task1.setTaskName("Play");
+		SampleTask task2 = new SampleTask();
+		task2.setId(2L);
+		task2.setTaskName("Groom");
+		mongo.insert(task1, "sampletask");
+		mongo.insert(task2, "sampletask");
+		return Arrays.asList(task1, task2);
 	}
 	
 	@SuppressWarnings("unchecked")

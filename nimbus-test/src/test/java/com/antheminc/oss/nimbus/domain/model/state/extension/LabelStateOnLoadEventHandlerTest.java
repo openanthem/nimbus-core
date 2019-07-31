@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,15 +43,18 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo.Type;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
+import com.antheminc.oss.nimbus.test.domain.support.utils.ParamUtils;
 import com.antheminc.oss.nimbus.test.scenarios.labelstate.core.Sample_Core_Label_Entity;
 import com.antheminc.oss.nimbus.test.scenarios.labelstate.core.Sample_Core_Label_Entity.Nested_Attr;
 import com.antheminc.oss.nimbus.test.scenarios.labelstate.core.Sample_Core_Label_Entity.Nested_Attr_Level2;
 import com.antheminc.oss.nimbus.test.scenarios.labelstate.view.Sample_View_Label_Entity;
+import com.antheminc.oss.nimbus.test.scenarios.labelstate.view.Sample_View_Label_Entity.Sample_View_Entity_2;
 import com.antheminc.oss.nimbus.test.scenarios.labelstate.view.Sample_View_Label_Entity.Sample_View_Nested_Label;
 
 import lombok.Getter;
@@ -289,19 +292,7 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 		assertNull(nested_coll_p.findParamByPath("/1").getLabels());	
 		
 		/*Elem labels*/
-		assertNotNull(nested_coll_p.findIfCollection().getElemLabels());
-		assertEquals(2,nested_coll_p.findIfCollection().getElemLabels().size());
-		ParamConfig<?> elemConfig_attr1 = getElemConfigByCode(nested_coll_p, "attr_nested_1");
-		ParamConfig<?> elemConfig_attr2 = getElemConfigByCode(nested_coll_p, "attr_nested_2");
-		
-		assertNotNull(nested_coll_p.findIfCollection().getElemLabels().get(Optional.ofNullable(elemConfig_attr1.getId()).orElse(null)));
-		assertTrue(nested_coll_p.findIfCollection().getElemLabels().containsKey(elemConfig_attr1.getId()));
-		assertEquals("Test label nested attr", getElemLabelState(nested_coll_p, Locale.getDefault(), elemConfig_attr1.getId()).getText());
-
-		assertNotNull(nested_coll_p.findIfCollection().getElemLabels().get(Optional.ofNullable(elemConfig_attr2.getId()).orElse(null)));
-		assertTrue(nested_coll_p.findIfCollection().getElemLabels().containsKey(elemConfig_attr2.getId()));
-		assertEquals("Test label nested level 2", getElemLabelState(nested_coll_p, Locale.getDefault(), elemConfig_attr2.getId()).getText());
-		
+		assertNull(nested_coll_p.findIfCollection().getElemLabels());		
 	}
 	
 	@Test
@@ -545,11 +536,28 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 		assertEquals("This label color is null",getLabelState(label_a_p, Locale.getDefault()).getText());
 	}
 	
+	/**
+	 * https://anthemopensource.atlassian.net/browse/NIMBUS-51 When a collection
+	 * has a collection element that contains variables decorated with Label
+	 * then all the grid's columns should render the corresponding column labels
+	 */
 	@Test
-	public void t14_multiple_nested_coll_withstate() {}
-	
-	@Test
-	public void t14_multiple_nested_coll_withoutstate() {}
+	public void testCollectionElemLabels() {
+		Object response = prepareParam(VIEW_ROOT);
+		Param<Sample_View_Label_Entity> viewParam = ParamUtils.extractResponseByParamPath(response, "sample_view_label");
+		assertNotNull(viewParam);
+		
+		LabelState expected = new LabelState();
+		expected.setText("Test Label Nested level 2 attr");
+		
+		Param<Sample_View_Entity_2> collectionParam = viewParam.findParamByPath("/collectionNoParentLabel");
+		assertNull("Found labels but expected none.", collectionParam.getLabels());
+		assertNotNull("Collection element labels were expected but none were found.", collectionParam.findIfCollection().getElemLabels());
+		
+		ParamConfig<?> elemConfig = getElemConfigByCode(collectionParam, "label_nested_attr_level2");
+		assertEquals("Number of collection element labels was not correct.", 1, collectionParam.findIfCollection().getElemLabels().size());
+		assertEquals("Collection element label was not found in elemLabels.", expected, getElemLabelState(collectionParam, Locale.US, elemConfig.getId()));
+	}
 	
 	private static LabelState getLabelState(Param<?> p, Locale expectedLocale) {	
 		if(CollectionUtils.isNotEmpty(p.getLabels())) {

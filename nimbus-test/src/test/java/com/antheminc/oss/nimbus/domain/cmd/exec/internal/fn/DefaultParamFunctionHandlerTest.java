@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -163,7 +163,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		// user clicks on save button :: set to form 
 		MockHttpServletRequest updateReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/saveButton")
-				.addAction(Action._update)
+				.addAction(Action._get)
 				.getMock();
 		
 		Object updateResp = controller.handlePut(updateReq, null, jsonPayload);
@@ -258,7 +258,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		
 		MockHttpServletRequest submitFormReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/saveButton")
-				.addAction(Action._replace)
+				.addAction(Action._get)
 				.getMock();
 		
 		Object submitFormResp = controller.handlePut(submitFormReq, null, jsonFormPayload);
@@ -310,7 +310,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		
 		MockHttpServletRequest submitUpdateFormReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/saveButton")
-				.addAction(Action._update)
+				.addAction(Action._get)
 				.getMock();
 		
 		Object submitUpdateFormResp = controller.handlePut(submitUpdateFormReq, null, jsonPayload_updated);

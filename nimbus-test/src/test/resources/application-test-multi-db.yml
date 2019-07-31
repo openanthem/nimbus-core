@@ -1,0 +1,150 @@
+#
+#  Copyright 2016-2019 the original author or authors.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+        
+security:
+    basic:
+      enabled: 
+              false
+
+nimbus:
+  mongodb:
+    primary:
+      # host: localhost
+      # port: 27017
+      database: primary
+    secondary:
+      # host: localhost
+      # port: 12345
+      database: secondary
+
+ruleBasedRequestHandler:
+                     - defaultRuleBasedRequestHandler
+                     - defaultRuleBasedResponseHandler
+
+scriptBasedRequestHandler: defaultScriptBasedRequestHandler
+scriptBasedResponseHandler: defaultScriptBasedResponseHandler
+
+scriptHandlerType: cript
+customHandlerType: Custom
+
+stomp:
+    hostName: localhost
+    port: 61613
+
+domain:
+  model:
+    basePackages:
+      - com.antheminc.oss.nimbus.entity
+      - com.antheminc.oss.nimbus.test.scenarios.multidb.core
+      - com.antheminc.oss.nimbus.test.scenarios.multidb.view
+      - com.antheminc.oss.nimbus.domain.bpm
+      - com.antheminc.oss.nimbus.domain.rules
+    basePackagesToExclude:
+      - com.antheminc.oss.nimbus.test.exclude.core.*
+      
+    typeClassMappings:
+      java.time.LocalDate : 
+        date
+      java.lang.String : 
+        string
+    includeFilter: ['a','b']
+    persistenceStrategy: ATOMIC
+  action: abc
+    
+  validation:
+    markerAnnotations:
+      javax.validation.Constraint
+    markerInterfaces:
+   
+logging:
+  file: ${HOME}/Documents/nimbuslogs/test-nimbus.log
+user:
+  permissionToActions:
+    ACCESS:
+      _get,_info,_search,_new,_replace,_update,_delete,_nav,_process
+    READ:
+      _get,_info,_search,_getAll,_nav,_process
+    CREATE:
+      _new,_nav,_process
+    UPDATE:
+      _update,_replace,_nav,_process
+    DELETE:
+      _delete,_nav,_process
+  #authenticationStrategyBeans:
+     #jwtAuthenticationStrategy,ldapAuthenticationStrategy
+
+process:
+  key:
+    regex:
+     ([A-Za-z0-9_\\-\\*~\\?=\\.\\$]+)
+  database:
+    driver: 
+      embeddedH2
+    url: 
+      embeddedH2
+    username: 
+      embeddedH2
+    password: 
+      embeddedH2
+    taskUpdateQuery:
+      update ACT_RU_TASK set TASK_DEF_KEY_ = ?, NAME_ = ? WHERE ID_=?
+    executionUpdateQuery:
+      update ACT_RU_EXECUTION set ACT_ID_ = ?  WHERE ID_=? AND ACT_ID_=?   
+  history:
+    level: 
+      none  
+  definitions:
+   - classpath*:process-defs/**.xml          
+template:
+  definitions:
+    - path: e_post/*/comm/icr/p/flow_umcase/_findPatient/_process/_execute
+      id: flow_umcase_findPatient
+      criteria:  
+model:
+  persistence:
+    strategy:
+      mode:
+        ATOMIC
+dsl:
+  behavior:
+    extensions:
+      #$execute:
+        #$save
+
+platform:
+  config:
+    secure:
+      regex: "^[a-zA-Z0-9<>()\\[\\]@/: &.=?,$\n\r#_-]{1,}"
+ext:
+  repository:
+    targetUrl: 
+      ext_client: http://localhost:9095
+      
+test:
+  url:
+    code: test-environment
+    link: https://hooli/thebox/someLink
+    image: https://hooli/thebox/someImage
+    initialize: some-alias
+  key1: key1
+  key2: key2
+search:
+  threshold:
+    1
+  lookup:
+    inMemory:
+      sortThreshold: 100
+      exceptionIfOverSortThreshold: true   

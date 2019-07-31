@@ -1,22 +1,25 @@
 
-<div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.dataEntryField" [hidden]="!element?.visible" [ngClass]="getComponentClass()">
+<div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.dataEntryField" [hidden]="!element?.visible" class="form-group">
    
-    <nm-input id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.text.toString()" [element]="element" [form]="form"></nm-input>
-    <nm-input-rich-text id="{{id}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.richText.toString()" [element]="element" [form]="form"></nm-input-rich-text>
-    <nm-signature id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.signature.toString()" [element]="element" [form]="form"></nm-signature>
-    <nm-input-textarea id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.textarea.toString()" [element]="element" [form]="form"></nm-input-textarea>
-    <nm-input-calendar  id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.calendar.toString()" [element]="element" [form]="form"></nm-input-calendar>
-    <nm-comboBox id="{{id}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString()" [element]="element"  [form]="form"></nm-comboBox>
-    <nm-input-radio id="{{id}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.radio.toString()" [element]="element" [form]="form"></nm-input-radio>
-    <nm-input-checkbox id="{{id}}"  *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.checkBoxGroup.toString()" [element]="element" [form]="form"></nm-input-checkbox>
-    <nm-single-checkbox id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.checkBox.toString()" [formControlName]="element.config?.code"  ngDefaultControl [element]="element" [form]="form"></nm-single-checkbox>
-    <nm-multi-select-listbox id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.multiSelect.toString()" [element]="element"  [form]="form"></nm-multi-select-listbox>
-    <nm-multiselect-card id="{{id}}"  *ngIf="element.config.uiStyles?.attributes?.alias == componentTypes.multiSelectCard.toString()" [formControlName]="element.config?.code" ngDefaultControl [element]="element" [form]="form"></nm-multiselect-card>
-    <nm-upload id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.fileUpload.toString()" [formControlName]="element.config?.code" [element]="element" [form]="form"></nm-upload>
-    <nm-input-switch id="{{id}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.inputSwitch.toString()" [element]="element"  [form]="form"></nm-input-switch>
+    <nm-input id="{{element.config?.code}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.text.toString()" [element]="element" [form]="form"></nm-input>
+    <nm-input-mask id="{{element.config?.code}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias==componentTypes.mask.toString()" [element]="element" [form]="form"></nm-input-mask>
+    <nm-input-rich-text id="{{element.config?.code}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.richText.toString()" [element]="element" [form]="form"></nm-input-rich-text>
+    <nm-signature id="{{element.config?.code}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.signature.toString()" [element]="element" [form]="form"></nm-signature>
+    <nm-input-textarea id="{{element.config?.code}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.textarea.toString()" [element]="element" [form]="form"></nm-input-textarea>
+    <nm-input-calendar  id="{{element.config?.code}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.calendar.toString()" [element]="element" [form]="form"></nm-input-calendar>
+    <nm-comboBox id="{{element.config?.code}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString()" [element]="element"  [form]="form"></nm-comboBox>
+    <nm-input-radio id="{{element.config?.code}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.radio.toString()" [element]="element" [form]="form"></nm-input-radio>
+    <nm-input-checkbox id="{{element.config?.code}}"  *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.checkBoxGroup.toString()" [element]="element" [form]="form"></nm-input-checkbox>
+    <nm-single-checkbox id="{{element.config?.code}}" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.checkBox.toString()" [formControlName]="element.config?.code"  ngDefaultControl [element]="element" [form]="form"></nm-single-checkbox>
+    <nm-multi-select-listbox id="{{element.config?.code}}" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.multiSelect.toString()" [element]="element"  [form]="form"></nm-multi-select-listbox>
+    <nm-multiselect-card id="{{element.config?.code}}"  *ngIf="element.config.uiStyles?.attributes?.alias == componentTypes.multiSelectCard.toString()" [formControlName]="element.config?.code" ngDefaultControl [element]="element" [form]="form"></nm-multiselect-card>
+    <nm-upload id="{{element.config?.code}}" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.fileUpload.toString()" [formControlName]="element.config?.code" [element]="element" [form]="form"></nm-upload>
+    <nm-input-switch id="{{element.config?.code}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.inputSwitch.toString()" [element]="element"  [form]="form"></nm-input-switch>
+    <nm-autocomplete id="{{element.config?.code}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.autocomplete.toString()" [element]="element"  [form]="form"></nm-autocomplete>
 
     <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == componentTypes.grid.toString()">
         <nm-table
+            id="{{element.config?.code}}"
             [element]="element" [form]="form" [formControlName]="element.config?.code"
             [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs" (onScrollEvent)="onScrollEvent()"
             [position]="position"
@@ -26,19 +29,20 @@
 
     <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == componentTypes.treeGrid.toString()">
          <nm-treegrid
+             id="{{element.config?.code}}"
              [element]="element" [form]="form" [formControlName]="element.config?.code"
              [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs">
          </nm-treegrid>
     </ng-template>
 
-    <ng-template ngFor let-msg [ngForOf]="getMessages()">
-        <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" [life] = "msg.life" [styleClass]="msg.styleClass"></nm-message>
+    <ng-template ngFor let-msg [ngForOf]="elemMessages">
+        <nm-message id="{{element.config?.code}}" [messageContext]="msg.context"  [messageArray]="msg.messageArray" [life] = "msg.life" [styleClass]="msg.styleClass"></nm-message>
     </ng-template>
 
     <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias === viewComponent.picklist.toString()">
         <ng-template ngFor let-selectededparam [ngForOf]="element?.type?.model?.params">
             <ng-template [ngIf]= "selectededparam?.config?.uiStyles?.attributes?.alias === viewComponent.selectedPicklist.toString()">
-                <nm-pickList id="{{id}}" [parent]="element" [selectedvalues]="selectededparam.values" [formControlName]="selectededparam.config?.code" ngDefaultControl [element]="selectededparam" [form]="form"></nm-pickList> 
+                <nm-pickList id="{{element.config?.code}}" [parent]="element" [selectedvalues]="selectededparam.values" [formControlName]="selectededparam.config?.code" ngDefaultControl [element]="selectededparam" [form]="form"></nm-pickList> 
             </ng-template>
         </ng-template>                
     </ng-template>

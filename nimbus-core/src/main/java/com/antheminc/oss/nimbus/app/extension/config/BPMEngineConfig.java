@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
+import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.AbstractProcessEngineAutoConfiguration;
@@ -115,11 +116,11 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	@Bean
 	public SpringProcessEngineConfiguration springProcessEngineConfiguration(
 			@Qualifier("processDataSource") DataSource processDataSource,
-			PlatformTransactionManager jpaTransactionManager, SpringAsyncExecutor springAsyncExecutor, 
-			BeanResolverStrategy beanResolver) throws Exception {
+			PlatformTransactionManager jpaTransactionManager, SpringAsyncExecutor springAsyncExecutor,
+			BeanResolverStrategy beanResolver, UserGroupManager userGroupManager) throws Exception {
 		
 		SpringProcessEngineConfiguration engineConfiguration = this
-				.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor, null);
+				.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor,userGroupManager);
 
 		if (deploymentName.isPresent()) {
 			engineConfiguration.setDeploymentName(deploymentName.get());

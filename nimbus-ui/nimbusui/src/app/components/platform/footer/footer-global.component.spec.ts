@@ -1,20 +1,36 @@
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { AngularSvgIconModule } from 'angular-svg-icon';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+/**
+ * @license
+ * Copyright 2016-2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import { FooterGlobal } from './footer-global.component';
+'use strict';
+import { HttpClientModule } from '@angular/common/http';
+import { async, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { configureTestSuite } from 'ng-bullet';
+import { setup } from '../../../setup.spec';
+import { Header } from '../content/header.component';
 import { Paragraph } from '../content/paragraph.component';
+import { InputLabel } from '../form/elements/input-label.component';
+import { InputText } from '../form/elements/textbox.component';
 import { Link } from '../link.component';
 import { SvgComponent } from '../svg/svg.component';
-import { Header } from '../content/header.component';
-import { InputText } from '../form/elements/textbox.component';
 import { TooltipComponent } from '../tooltip/tooltip.component';
-import { InputLabel } from '../form/elements/input-label.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
+import { FooterGlobal } from './footer-global.component';
 
 const declarations = [
   FooterGlobal,
@@ -25,22 +41,21 @@ const declarations = [
   InputText,
   TooltipComponent,
   InputLabel
-  ];
-  const imports = [
-    AngularSvgIconModule,
-    HttpModule,
-    HttpClientModule,
-    ReactiveFormsModule, FormsModule
-  ];
+];
+const imports = [
+  AngularSvgIconModule,
+  HttpModule,
+  HttpClientModule,
+  ReactiveFormsModule,
+  FormsModule
+];
 const providers = [];
 let fixture, hostComponent;
 
 describe('FooterGlobal', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FooterGlobal);
@@ -48,7 +63,6 @@ describe('FooterGlobal', () => {
   });
 
   it('should create the FooterGlobal', async(() => {
-      expect(hostComponent).toBeTruthy();
+    expect(hostComponent).toBeTruthy();
   }));
-
 });

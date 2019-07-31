@@ -1,62 +1,86 @@
-import { Param } from './../../../../shared/param-state';
-'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { CalendarModule } from 'primeng/primeng';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
-import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
-import { JL } from 'jsnlog';
-import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
+/**
+ * @license
+ * Copyright 2016-2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import { Calendar } from './calendar.component';
-import { TooltipComponent } from '../../../platform/tooltip/tooltip.component';
-import { PageService } from '../../../../services/page.service';
+'use strict';
+import {
+  HashLocationStrategy,
+  Location,
+  LocationStrategy
+} from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { async, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { By } from '@angular/platform-browser';
+import {
+  SESSION_STORAGE,
+  StorageServiceModule
+} from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { calendarElement } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { CalendarModule } from 'primeng/primeng';
+import { AppInitService } from '../../../../services/app.init.service';
+import { ConfigService } from '../../../../services/config.service';
+import { CounterMessageService } from '../../../../services/counter-message.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
-import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
-import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
-import { AppInitService } from '../../../../services/app.init.service';
-import { InputLabel } from './input-label.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
-import { calendarElement } from 'mockdata';
-import { By } from '@angular/platform-browser';
+import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';
+import {
+  CUSTOM_STORAGE,
+  SessionStoreService
+} from '../../../../services/session.store';
+import { setup } from '../../../../setup.spec';
+import { TooltipComponent } from '../../../platform/tooltip/tooltip.component';
+import { NmMessageService } from './../../../../services/toastmessage.service';
+import { Param } from './../../../../shared/param-state';
+import { Calendar } from './calendar.component';
+import { InputLabel } from './input-label.component';
 
-const declarations = [
-  Calendar,
-  TooltipComponent,
-  InputLabel
- ];
- const imports = [
+const declarations = [Calendar, TooltipComponent, InputLabel];
+const imports = [
   CalendarModule,
   FormsModule,
   HttpModule,
   HttpClientModule,
   StorageServiceModule
- ];
- const providers = [
+];
+const providers = [
   { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
   { provide: 'JSNLOG', useValue: JL },
   { provide: LocationStrategy, useClass: HashLocationStrategy },
   Location,
   PageService,
   CustomHttpClient,
+  NmMessageService,
   LoaderService,
   ConfigService,
   LoggerService,
   SessionStoreService,
-  AppInitService
- ];
- let fixture, hostComponent;
+  AppInitService,
+  CounterMessageService
+];
+let fixture, hostComponent;
 describe('Calendar', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(Calendar);
@@ -93,7 +117,10 @@ describe('Calendar', () => {
   }));
 
   it('ngOnInit() should call applyDateConstraint()', async(() => {
-    const spy = spyOn((hostComponent as any), 'applyDateConstraint').and.returnValue('');
+    const spy = spyOn(
+      hostComponent as any,
+      'applyDateConstraint'
+    ).and.returnValue('');
     hostComponent.ngOnInit();
     expect(spy).toHaveBeenCalled();
   }));
@@ -107,5 +134,4 @@ describe('Calendar', () => {
     expect(hostComponent.minDate).toEqual(presentTime);
     expect(hostComponent.maxDate).toEqual(presentTime);
   }));
-
 });
