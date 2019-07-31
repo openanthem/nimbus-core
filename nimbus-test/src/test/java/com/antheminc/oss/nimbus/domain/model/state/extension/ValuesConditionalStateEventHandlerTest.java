@@ -344,6 +344,11 @@ public class ValuesConditionalStateEventHandlerTest {
 			public String url() {
 				return url;
 			}
+
+			@Override
+			public boolean useParamValuesCacheOnLoad() {
+				return true;
+			}
 			
 		};
 	}
