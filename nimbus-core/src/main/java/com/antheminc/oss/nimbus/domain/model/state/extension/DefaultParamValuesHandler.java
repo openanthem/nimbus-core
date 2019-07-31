@@ -17,6 +17,10 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 
 import java.util.List;
 
+import org.springframework.cache.Cache;
+import org.springframework.cache.Cache.ValueWrapper;
+import org.springframework.cache.CacheManager;
+
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
@@ -25,6 +29,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values.EMPTY;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values.Source;
@@ -46,10 +51,12 @@ public class DefaultParamValuesHandler implements ParamValuesOnLoadHandler {
 
 	protected final CommandPathVariableResolver pathVariableResolver;
 	protected final CommandExecutorGateway gateway;
+	private final CacheManager cacheManager;
 	
 	public DefaultParamValuesHandler(BeanResolverStrategy beanResolver) {
 		this.pathVariableResolver = beanResolver.get(CommandPathVariableResolver.class);
 		this.gateway = beanResolver.get(CommandExecutorGateway.class);
+		this.cacheManager = beanResolver.get(CacheManager.class);
 	}
 
 	@Override
@@ -73,15 +80,26 @@ public class DefaultParamValuesHandler implements ParamValuesOnLoadHandler {
 				valuesUrl = srcParam.getRootExecution().getRootCommand().getRelativeUri(valuesUrl);
 				Command cmd = CommandBuilder.withUri(valuesUrl).getCommand();
 				cmd.setAction(Action._search);
-				
-				CommandMessage cmdMsg = new CommandMessage();
-				cmdMsg.setCommand(cmd);
-				
-				MultiOutput multiOp = getGateway().execute(cmdMsg);
+
+				// retrieve staticCodeValue lookup searches from cache if it
+				// exists, otherwise continue
+				if (null != this.cacheManager
+						&& cmd.getRootDomainAlias().equals(Constants.PARAM_VALUES_DOMAIN_ALIAS.code)
+						&& Action._search == cmd.getAction() && Constants.PARAM_VALUES_LOOKUP_FN_KEY.code
+								.equals(cmd.getFirstParameterValue(Constants.KEY_FUNCTION.code))) {
+					Cache cache = this.cacheManager.getCache(Constants.PARAM_VALUES_CACHE_KEY.code);
+					if (null != cache) {
+						ValueWrapper cacheValue = cache.get(cmd.getFirstParameterValue("where"));
+						if (null != cacheValue) {
+							return (List<ParamValue>) cacheValue.get();
+						}
+					}
+				}
+
+				MultiOutput multiOp = getGateway().execute(new CommandMessage(cmd, null));
 				return (List<ParamValue>) multiOp.getSingleResult();
 			}
 		}
 		return null;
 	}
-
 }
