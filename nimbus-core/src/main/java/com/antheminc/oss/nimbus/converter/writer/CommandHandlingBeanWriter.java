@@ -47,6 +47,8 @@ public class CommandHandlingBeanWriter implements RowProcessingHandler<Object> {
 		} catch (JsonProcessingException e) {
 			throw new FrameworkRuntimeException("Failed to write bean data. Failed to convert bean data to JSON.", e);
 		}
+		// TODO revisit. shouldn't Command and CommendElementLinked be immutable?
+		command.getRootDomainElement().setRefId(null);
 		commandGateway.execute(command, payload);
 	}
 
