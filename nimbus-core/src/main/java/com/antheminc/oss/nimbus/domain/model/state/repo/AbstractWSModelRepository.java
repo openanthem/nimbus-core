@@ -37,9 +37,11 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
+import com.antheminc.oss.nimbus.support.RefIdHolder;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -70,12 +72,15 @@ public abstract class AbstractWSModelRepository implements ExternalModelReposito
 	abstract protected <T> T handleDelete(URI uri);
 	
 	@Override
-	public <T> T _new(Command cmd, ModelConfig<T> mConfig) {
+	public <T> RefIdHolder<T> _new(Command cmd, ModelConfig<T> mConfig) {
 		final String url = cmd.toRemoteUri(CommandElement.Type.ParamName, Action._new, Behavior.$execute);
 		
 		URI _newUri = createUriForAlias(mConfig.getAlias(), url);
 		
-		return handleNew(mConfig.getReferredClass(), _newUri);
+		T state = handleNew(mConfig.getReferredClass(), _newUri);
+		RefId<?> refId = cmd.getRefId(CommandElement.Type.DomainAlias);
+		
+		return new RefIdHolder<>(refId, state);
 	}
 	
 	@Override
@@ -127,7 +132,7 @@ public abstract class AbstractWSModelRepository implements ExternalModelReposito
 		try {
 			return new URI(urlToConstruct);
 		} catch (URISyntaxException e) {
-			throw new FrameworkRuntimeException("Cannot create URI from supplied url: "+url);
+			throw new FrameworkRuntimeException("Cannot create URI from supplied url: "+url, e);
 		}
 	}
 	

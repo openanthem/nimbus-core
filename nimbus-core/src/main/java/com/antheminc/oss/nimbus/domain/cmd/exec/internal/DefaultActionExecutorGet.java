@@ -27,6 +27,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
@@ -149,9 +150,10 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 		String resolvedEntityAlias = rootDomainConfig.getRepoAlias();
 		String entityProcessAlias = resolvedEntityAlias + "_" + processStateAlias;
 		
-		final Long entityRefId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		RefId<?> entityRefId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		Long processId = RefId.nullSafeGetId(entityRefId);
 		
-		ProcessFlow processEntityState = getProcessRepo()._get(entityRefId, ProcessFlow.class, entityProcessAlias);
+		ProcessFlow processEntityState = getProcessRepo()._get(processId, ProcessFlow.class, entityProcessAlias);
 		
 		return processEntityState;
 		

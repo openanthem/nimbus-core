@@ -41,7 +41,7 @@ public class CommandElementLinked extends CommandElement implements Serializable
 		
 	}
 	
-	public CommandElementLinked(int seqNum, Type type, String alias, Long refId) {
+	public CommandElementLinked(int seqNum, Type type, String alias, RefId<?> refId) {
 		setSeqNum(seqNum);
 		setType(type);
 		setAlias(alias);

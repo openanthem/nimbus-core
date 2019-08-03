@@ -24,11 +24,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.util.CollectionUtils;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
@@ -118,6 +118,9 @@ public final class CommandExecution {
 			return output;
 		}
 		
+		private void setRootDomainId(RefId<?> refId) {
+			this.rootDomainId = RefId.nullSafeGetId(refId);
+		}
 		
 		@Override
 		public List<Behavior> getBehaviors() {
