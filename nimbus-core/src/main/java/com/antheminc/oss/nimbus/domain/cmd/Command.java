@@ -146,7 +146,7 @@ public class Command implements Serializable {
 		return getElement(type).map(e -> e.getAliasUri()).orElse(null);
 	}
 	
-	public Long getRefId(Type type) {
+	public RefId<?> getRefId(Type type) {
 		return getElement(type).map(e -> e.getRefId()).orElse(null);
 	}
 	

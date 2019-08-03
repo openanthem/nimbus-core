@@ -33,7 +33,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
-import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
@@ -186,7 +186,7 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 		String processStateAlias = modelConfig.getRepoAlias();
 		String entityProcessAlias = context.getParam().getRootDomain().getConfig().getRepoAlias() + "_" + processStateAlias;
 		
-		Long entityRefId = context.getParam().getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
+		Long entityRefId = RefId.nullSafeGetId(context.getParam().getRootExecution().getRootCommand().getRefId(Type.DomainAlias));
 		
 		getProcessRepo()._update(entityProcessAlias, entityRefId, "/activeTasks", activeTasks);
 	}	

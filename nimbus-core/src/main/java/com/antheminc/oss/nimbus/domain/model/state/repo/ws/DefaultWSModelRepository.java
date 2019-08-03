@@ -32,10 +32,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.cmd.Action;
-import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.repo.AbstractWSModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
@@ -72,8 +71,8 @@ public class DefaultWSModelRepository extends AbstractWSModelRepository {
 
 	@Override
 	public <T> T _get(Command cmd, ModelConfig<T> mConfig) {
-		Long refId = cmd.getRefId(CommandElement.Type.DomainAlias);
-		if (null != cmd.getRefId(CommandElement.Type.DomainAlias)) {
+		RefId<?> refId = cmd.getRefId(CommandElement.Type.DomainAlias);
+		if (null != refId) {
 			LOG.warn(() -> "A refId of \"" + refId + "\" was provided for a _get on alias \"" + mConfig.getAlias()
 					+ "\". DefaultWSModelRepository does explicitely handle external object retrieval by using the refId. Consider removing refId.");
 		}

@@ -16,7 +16,6 @@
 package com.antheminc.oss.nimbus.domain.cmd.exec;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,6 +23,7 @@ import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
@@ -90,24 +90,30 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 	
 	protected <T> T getEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
 		ModelRepository mRepo = getRepositoryFactory().get(mConfig);
-		if (mRepo == null) {
+		if (mRepo == null) 
 			return null;
-		}
-		final Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		
+		RefId<?> refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
 		if (Repo.Database.isRefIdRequired(mConfig.getRepo()) && null == refId) {
-			throw new InvalidConfigException("Get call received for domain - " + mConfig.getAlias() + " without a refId. Execution Context: " + eCtx);
+			throw new InvalidConfigException("Get call received for domain - " 
+					+ mConfig.getAlias() + " without a refId. Execution Context: " + eCtx);
 		}
 		return mRepo._get(eCtx.getCommandMessage().getCommand(), mConfig);
 	}
 	
 	protected <T> T getOrInstantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
 		ModelRepository mRepo = getRepositoryFactory().get(mConfig);
-		if (null == mRepo) {
+		
+		// non DB
+		if(mRepo==null) 
 			return javaBeanHandler.instantiate(mConfig.getReferredClass());
-		}
-		Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
-		return refId != null ? mRepo._get(eCtx.getCommandMessage().getCommand(), mConfig)
-						: mRepo._new(eCtx.getCommandMessage().getCommand(), mConfig);
+		
+		RefId<?> refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		if(refId==null)
+			return mRepo._new(eCtx.getCommandMessage().getCommand(), mConfig).getState();
+		
+		
+		return mRepo._get(eCtx.getCommandMessage().getCommand(), mConfig);
 	}
 	
 	public interface RepoDBCallback<T> {

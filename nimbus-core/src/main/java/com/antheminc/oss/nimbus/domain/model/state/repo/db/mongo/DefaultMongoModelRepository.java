@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -31,17 +30,20 @@ import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
+import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
 import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.MongoIdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositoryOptions;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBSearchOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
+import com.antheminc.oss.nimbus.support.RefIdHolder;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 
@@ -69,13 +71,13 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	}
 	
 	@Override
-	public <T> T _new(Command cmd, ModelConfig<T> mConfig) {
+	public <T> RefIdHolder<T> _new(Command cmd, ModelConfig<T> mConfig) {
 		T newState = getBeanHandler().instantiate(mConfig.getReferredClass());
 		return _new(cmd, mConfig, newState);
 	}
 	
 	@Override
-	public <T> T _new(Command cmd, ModelConfig<T> mConfig, T newState) {
+	public <T> RefIdHolder<T> _new(Command cmd, ModelConfig<T> mConfig, T newState) {
 		// detect id paramConfig
 		ParamConfig<?> pId = Optional.ofNullable(mConfig.getIdParamConfig())
 								.orElseThrow(()->new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param."));
@@ -85,7 +87,8 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(), pId.getCode());
 		getBeanHandler().setValue(va, newState, id);
 		
-		return newState;
+		RefId<?> refId = RefId.with(id);
+		return new RefIdHolder<>(refId, newState);
 	}
 
 	@Override
@@ -96,7 +99,10 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	
 	@Override
 	public <T> T _get(Command cmd, ModelConfig<T> mConfig) {
-		Long id = cmd.getRefId(Type.DomainAlias);
+		Long id = RefId.nullSafeGetId(cmd.getRefId(Type.DomainAlias));
+		if(id==null)
+			return null;
+		
 		T state = getMongoOps().findById(id, mConfig.getReferredClass(), mConfig.getRepoAlias());
 		return state;
 	}
@@ -165,9 +171,13 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	
 	@Override
 	public <T> T _delete(Param<?> param) {
-		Serializable id = param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
+		RefId<?> refId = param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
 		Class<T> referredClass = (Class<T>)param.getRootDomain().getConfig().getReferredClass();
 		String alias = param.getRootDomain().getConfig().getRepoAlias();
+		
+		Long id = RefId.nullSafeGetId(refId);
+		if(id==null)
+			throw new InvalidStateException("Id must not be null for delete in param: "+param);
 		
 		Query query = new Query(Criteria.where("_id").is(id));
 		T state = getMongoOps().findAndRemove(query, referredClass, alias);
