@@ -48,7 +48,7 @@ public class HierarchyMatchBasedBeanFinder implements ApplicationContextAware {
 	
 	ApplicationContext ctx;
 	
-	@Value("${process.key.regex}") 
+	@Value("${nimbus.process.key.regex:([A-Za-z0-9_\\-\\*~\\?=\\.\\$]+)}") 
 	private String processBeanRegex;
 	
 	public static final Pattern SPECIAL_REGEX_CHARS = Pattern.compile("[{}()\\[\\].+*?^$\\\\|]");
