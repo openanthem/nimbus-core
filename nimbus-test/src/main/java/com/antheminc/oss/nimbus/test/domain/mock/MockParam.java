@@ -67,6 +67,7 @@ public class MockParam implements Param<Object> {
 	private String path = "";
 	private ValueAccessor valueAccessor = null;
 	private Object state = null;
+	private Object previousLeafState = null;
 	private boolean stateInitialized = false;
 	private StateType type = null;
 	private List<ParamValue> values = null;

@@ -76,6 +76,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 		private String path;
 
 		// what: parameter
+		private Object previousValue;
 		private Object value;
 		
 	}
@@ -203,6 +204,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			
 			h.entry.setAction(pEvent.getAction());
 			h.entry.setPath(pEvent.getParam().getPath());
+			h.entry.setPreviousValue(pEvent.getParam().getPreviousLeafState());
 			h.entry.setValue(pEvent.getParam().getLeafState());
 			return h;
 		} 

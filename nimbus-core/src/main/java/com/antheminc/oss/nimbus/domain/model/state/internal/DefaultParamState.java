@@ -88,6 +88,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	private boolean active = true;
 	
 	@JsonIgnore
+	private T previousLeafState;
+	
+	@JsonIgnore
 	private RemnantState<Boolean> visibleState = this.new RemnantState<>(true);
 	
 	@JsonIgnore
@@ -361,6 +364,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		boolean isLeaf = isLeafOrCollectionWithLeafElems();
 		final T localPotentialOldState = isLeaf ? getState() : null;
 
+		this.previousLeafState = localPotentialOldState;
 		state = preSetState(localPotentialOldState, state, localLockId, execRt, cb);
 		
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
@@ -1043,4 +1047,5 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		}
 		return false;
 	}
+
 }
