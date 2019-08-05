@@ -39,4 +39,5 @@ public class AuditEntry extends AbstractEntity.IdLong {
 	
 	private Object newValue;
 	
+	private Object previousValue;
 }

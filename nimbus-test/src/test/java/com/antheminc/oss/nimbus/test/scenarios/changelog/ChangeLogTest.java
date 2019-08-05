@@ -127,4 +127,48 @@ public class ChangeLogTest extends AbstractFrameworkIntegrationTests {
 		
 	}
 	
+	@Test
+	public void testPreviousState() throws Exception {
+		// create the entity
+		HttpServletRequest newReq = MockHttpRequestBuilder.withUri(CL_VIEW_A_ROOT)
+				.addAction(Action._new)
+				.getMock();
+			
+		Object controllerResp = controller.handleGet(newReq, null);
+		assertThat(controllerResp).isNotNull();
+		
+		Param<?> p = ExtractResponseOutputUtils.extractOutput(controllerResp);
+		assertThat(p).isNotNull();
+		
+		CL_VIEW_A_ID = p.findStateByPath("/.m/id");
+		assertThat(CL_VIEW_A_ID).isNotNull();
+		
+		// set an initial state
+		HttpServletRequest eventNotifyRequest = MockHttpRequestBuilder.withUri(PLATFORM_ROOT)
+				.addNested("/event/notify")
+				.getMock();
+		
+		ModelEvent<String> modelEventRequest1 = new ModelEvent<>();
+		modelEventRequest1.setId("/samplechangelogview_a:"+CL_VIEW_A_ID+"/vpSampleCoreChangeLog/vtSampleCoreChangeLog/vsSampleCoreChangeLog/vfSampleCoreChangeLog/status/_update");
+		modelEventRequest1.setType(Action._update.name());
+		modelEventRequest1.setPayload(json.write("before").getJson());
+		Object resp1 = controller.handleEventNotify(eventNotifyRequest, modelEventRequest1);
+		assertThat(resp1).isNotNull();
+		
+		ChangeLogEntry before = mongo.findOne(new Query(Criteria.where("value").is("before")), ChangeLogEntry.class, "changelog");
+		assertThat(before).isNotNull();
+		assertThat(before.getPreviousValue()).isNull();
+		
+		// set a second state
+		ModelEvent<String> modelEventRequest2 = new ModelEvent<>();
+		modelEventRequest2.setId("/samplechangelogview_a:"+CL_VIEW_A_ID+"/vpSampleCoreChangeLog/vtSampleCoreChangeLog/vsSampleCoreChangeLog/vfSampleCoreChangeLog/status/_update");
+		modelEventRequest2.setType(Action._update.name());
+		modelEventRequest2.setPayload(json.write("after").getJson());
+		Object resp2 = controller.handleEventNotify(eventNotifyRequest, modelEventRequest2);
+		assertThat(resp2).isNotNull();
+		
+		ChangeLogEntry after = mongo.findOne(new Query(Criteria.where("value").is("after")), ChangeLogEntry.class, "changelog");
+		assertThat(after).isNotNull();
+		assertThat(after.getPreviousValue()).isEqualTo("before");
+	}
 }
