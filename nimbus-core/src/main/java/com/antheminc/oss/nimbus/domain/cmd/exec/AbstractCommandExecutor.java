@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
@@ -110,10 +111,18 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		
 		RefId<?> refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
 		if(refId==null)
-			return mRepo._new(eCtx.getCommandMessage().getCommand(), mConfig).getState();
+			return instantiateEntity(eCtx, mConfig);
 		
 		
 		return mRepo._get(eCtx.getCommandMessage().getCommand(), mConfig);
+	}
+	
+	protected <T> T instantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
+		ModelRepository mRepo = getRepositoryFactory().get(mConfig);
+		if (null == mRepo) {
+			return javaBeanHandler.instantiate(mConfig.getReferredClass());
+		}
+		return mRepo._new(eCtx.getCommandMessage().getCommand(), mConfig).getState();
 	}
 	
 	public interface RepoDBCallback<T> {
