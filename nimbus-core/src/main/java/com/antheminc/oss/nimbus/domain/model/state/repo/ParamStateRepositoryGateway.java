@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -397,6 +398,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	}
 	
 	public static <P> Action _equals(P newState, P currState) {
+		boolean isEqual;
 		//00
 		if(newState==null && currState==null) return null;
 		
@@ -407,7 +409,12 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		if(newState!=null && currState==null) return Action._new;
 		
 		//11
-		boolean isEqual = currState.equals(newState);
+		if(currState instanceof Object[] && newState instanceof Object[]) {
+			isEqual = Arrays.equals((Object[]) currState, (Object[]) newState); 
+		} else {
+			isEqual = currState.equals(newState);
+		}
+	
 		return isEqual ? null : Action._update;
 	}
 	

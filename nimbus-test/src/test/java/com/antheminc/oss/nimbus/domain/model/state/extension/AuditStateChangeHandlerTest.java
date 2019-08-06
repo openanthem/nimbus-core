@@ -424,4 +424,16 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals("SampleCoreEntity.ComplexObject", audit.get(0).getPropertyType());
 		assertNotNull(audit.get(0).getCreatedDate());
 	}
+	
+	@Test
+	public void audit_arrayType() {
+		t08_core_string_array();
+		Param<String[]> cp = _q.getRoot().findParamByPath("/sample_core/attr_array_String");
+		//update the array with the same value - test to check if setting the state with the same array is logging additional audit entry
+		final String arr_val[] = new String[]{"A", "B", "C @"+new Date()};
+		cp.setState(arr_val);
+		
+		List<AuditEntry> audit_new = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
+		assertEquals(1, audit_new.size());
+	}
 }
