@@ -41,6 +41,8 @@ export class ValidationConstraint extends Enum<string> {
   public static readonly _max = new Enum('Max');
   public static readonly _past = new Enum('Past');
   public static readonly _future = new Enum('Future');
+  public static readonly _validationrule = new Enum('ValidationRule');
+
 }
 
 export class ConstraintMapping extends Enum<string> {
@@ -58,6 +60,9 @@ export class ConstraintMapping extends Enum<string> {
   );
   public static readonly isNumber = new Enum(
     ValidationConstraint._number.value
+  );
+  public static readonly validationrule = new Enum(
+    ValidationConstraint._validationrule.value
   );
   public static readonly isPast = new Enum(ValidationConstraint._past.value);
   public static readonly isFuture = new Enum(

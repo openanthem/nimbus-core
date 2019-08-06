@@ -113,7 +113,7 @@ export class MultiSelectListBox extends BaseElement {
       this.form.controls[this.element.config.code].setValue(this.targetList);
     }
     if (this.form.controls[this.element.config.code] != null) {
-      this.form.controls[this.element.config.code].valueChanges.subscribe(
+      this.subscribers.push(this.form.controls[this.element.config.code].valueChanges.subscribe(
         $event => {
           this.setState($event, this);
           if (
@@ -132,7 +132,7 @@ export class MultiSelectListBox extends BaseElement {
             this.counterMessageService.evalCounterMessage(true);
           }
         }
-      );
+      ));
     }
     this.controlValueChanged.subscribe($event => {
       if ($event.config.uiStyles.attributes.postEventOnChange) {
@@ -161,7 +161,7 @@ export class MultiSelectListBox extends BaseElement {
         }
       })
     );
-    this.pageService.validationUpdate$.subscribe(event => {
+    this.subscribers.push(this.pageService.validationUpdate$.subscribe(event => {
       let frmCtrl = this.form.controls[event.config.code];
       if (frmCtrl != null) {
         if (event.path === this.element.path) {
@@ -184,7 +184,7 @@ export class MultiSelectListBox extends BaseElement {
           ValidationUtils.assessControlValidation(event, frmCtrl);
         }
       }
-    });
+    }));
   }
 
   setState(event: any, frmInp: any) {

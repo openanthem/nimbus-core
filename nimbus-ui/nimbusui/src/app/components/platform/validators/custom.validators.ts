@@ -24,6 +24,8 @@ import {
   ValidatorFn
 } from '@angular/forms';
 import { Attribute } from './../../../shared/param-config';
+import evaluate, { registerFunction } from 'ts-expression-evaluator'
+import { RuleSet } from './../../../shared/param-config';
 
 /**
  * \@author Dinakar.Meda
@@ -64,6 +66,39 @@ export class CustomValidators {
         };
   };
 
+  static validationrule(ruleset: RuleSet[]) {
+    return (grp: FormGroup) => {
+      if(grp) {
+        let error = [];
+        if(grp.pristine) {
+          return null;
+        }
+        registerFunction('findStateByPath', (code: string) => {
+          let pathArray = code.split('/');
+          let c = '';
+          if(pathArray.length > 0) {
+            c = pathArray[pathArray.length - 1]
+          } else {
+            return null;
+          }
+          if(grp.controls)
+            return grp.controls[c]? grp.controls[c].value : null;
+          else
+            return null;
+        });
+        ruleset.forEach(rs => {
+          let valid = evaluate(rs.rule, grp);
+          if(!valid) {
+            error.push(rs.message);
+          }
+        });
+        if(error.length > 0) {
+          return {validationrule: error};
+        }
+      }
+    return null;
+    };
+  }
   /*
    * custom validator for @Size annotation
    * This will validate the minimum/ maximum fields selected in a checkboxgroup; can be exteded to Multi-select group or other group element
