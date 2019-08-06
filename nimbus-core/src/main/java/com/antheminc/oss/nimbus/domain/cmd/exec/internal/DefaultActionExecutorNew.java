@@ -145,7 +145,7 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 	
 	private QuadModel<?, ?> createNewQuad(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
 		// create new entity instance for core & view
-		Object entity = getOrInstantiateEntity(eCtx, rootDomainConfig);
+		Object entity = instantiateEntity(eCtx, rootDomainConfig);
 		
 		// unmapped	
 		if(!rootDomainConfig.isMapped())
