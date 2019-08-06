@@ -56,9 +56,8 @@ import lombok.Setter;
  * 
  * @author Rakesh Patel
  */
-@ConfigurationProperties(prefix = "ext.repository")
-@Getter
-@Setter
+@ConfigurationProperties(prefix="nimbus.ext.repository")
+@Getter @Setter
 @EnableLoggingInterceptor
 public class DefaultWSModelRepository extends AbstractWSModelRepository {
 

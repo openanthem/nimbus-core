@@ -51,7 +51,7 @@ import com.antheminc.oss.nimbus.support.expr.SpelExpressionEvaluator;
 @Configuration 
 public class DefaultProcessConfig {
 	
-	@Value("${process.supportStatefulProcesses:#{true}}")
+	@Value("${nimbus.process.supportStatefulProcesses:#{true}}")
 	private Boolean supportStatefulProcesses;	
 		
 	@Bean

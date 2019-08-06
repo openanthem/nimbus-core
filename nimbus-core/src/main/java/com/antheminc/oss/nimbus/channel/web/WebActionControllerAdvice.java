@@ -60,7 +60,7 @@ import lombok.Setter;
  */
 @ControllerAdvice(assignableTypes=WebActionController.class)
 @EnableConfigurationProperties
-@ConfigurationProperties(prefix="application")
+@ConfigurationProperties(prefix="nimbus")
 @Getter
 public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	
@@ -68,13 +68,13 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	
 	private static final String RESPONSE_INTERCEPTOR_BEAN_PREFIX = "httpresponsebodyinterceptor.";
 	
-	@Value("${application.error.metricLoggingEnabled:true}")
+	@Value("${nimbus.error.metricLoggingEnabled:true}")
 	private boolean metricLoggingEnabled;
 	
 	@Getter @Setter
 	private Map<Class<?>,String> exceptions;
 	
-	@Value("${application.error.genericMsg:#{null}}")
+	@Value("${nimbus.error.genericMsg:System Error ERR.UNIQUEID}")
 	private String genericMsg;
 	
 	@Autowired CommandTransactionInterceptor defaultInterceptor;

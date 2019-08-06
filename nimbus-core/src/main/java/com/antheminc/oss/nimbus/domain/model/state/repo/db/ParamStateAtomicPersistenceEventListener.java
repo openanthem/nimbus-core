@@ -37,14 +37,14 @@ import lombok.Setter;
  * @author Soham Chakravarti
  * @author Rakesh Patel
  */
-@ConfigurationProperties(prefix="model.persistence.strategy")
+@ConfigurationProperties(prefix="nimbus.model.persistence.strategy")
 public class ParamStateAtomicPersistenceEventListener extends ParamStatePersistenceEventListener {
 
 	@Getter(value=AccessLevel.PROTECTED)
 	ModelRepositoryFactory repoFactory;
 
 	@Getter @Setter
-	private PersistenceMode mode;
+	private PersistenceMode mode = PersistenceMode.ATOMIC;
 	
 	public ParamStateAtomicPersistenceEventListener(ModelRepositoryFactory repoFactory) {
 		this.repoFactory = repoFactory;

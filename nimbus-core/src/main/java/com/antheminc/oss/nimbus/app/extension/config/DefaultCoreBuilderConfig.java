@@ -67,12 +67,12 @@ import lombok.Setter;
  */
 @Configuration
 @EnableConfigurationProperties
-@ConfigurationProperties(prefix="domain.model")
+@ConfigurationProperties(prefix="nimbus.domain.model")
 @Getter @Setter
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public class DefaultCoreBuilderConfig {
 	
-	private Map<String, String> typeClassMappings;
+	private Map<String, String> typeClassMappings = getDefaultTypeClassMappings();
 	
 	private List<String> basePackages;
 	
@@ -80,7 +80,7 @@ public class DefaultCoreBuilderConfig {
 	
 	private Map<Scope, List<String>> domainSet;
 	
-	@Value("${platform.config.secure.regex}")
+	@Value("${nimbus.config.secure.regex:'^[a-zA-Z0-9<>()\\[\\]@/: &.=?,$#_-]{1,1000}'}")
 	private String secureRegex;
 	
 	
@@ -182,6 +182,12 @@ public class DefaultCoreBuilderConfig {
 	@Bean
 	public DefaultLoggingInterceptor defaultLoggingHandler() {
 		return new DefaultLoggingInterceptor();
+	}
+	
+	protected Map<String, String> getDefaultTypeClassMappings() {
+		Map<String, String> rv = new HashMap<>();
+		rv.put("java.lang.String", "string");
+		return rv;
 	}
 
 }

@@ -46,7 +46,7 @@ import lombok.Setter;
  * @author Rakesh Patel
  *
  */
-@ConfigurationProperties(prefix="static.codevalue")
+@ConfigurationProperties(prefix="nimbus.static.codevalue")
 public class ParamCodeValueProvider implements HierarchyMatch, CommandExecutor<List<ParamValue>> {
 	
 	private static final String DEFAULT_KEY_ATTRIBUTE = "id";

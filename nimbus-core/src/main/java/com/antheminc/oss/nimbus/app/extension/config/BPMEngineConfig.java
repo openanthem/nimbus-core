@@ -80,35 +80,35 @@ import lombok.Setter;
  * 
  */
 @Configuration
-@ConfigurationProperties(prefix="process")
+@ConfigurationProperties(prefix="nimbus.process")
 public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	
-	@Value("${process.database.driver}") 
+	@Value("${nimbus.process.database.driver:embeddedH2}")
 	private String dbDriver;
 	
-	@Value("${process.database.url}") 
+	@Value("${nimbus.process.database.url:embeddedH2}") 
 	private String dbUrl;
 	
-	@Value("${process.database.username}") 
+	@Value("${nimbus.process.database.username:embeddedH2}") 
 	private String dbUserName;
 	
-	@Value("${process.database.password}") 
+	@Value("${nimbus.process.database.password:embeddedH2}") 
 	private String dbPassword;
 	
-	@Value("${process.history.level}") 
+	@Value("${nimbus.process.history.level:full}") 
 	private String processHistoryLevel;
 	
-	@Value("${process.deployment.name:#{null}}")
+	@Value("${nimbus.process.deployment.name:#{null}}")
 	private Optional<String> deploymentName;
 	
 	@Getter @Setter
-	private List<String> definitions = new ArrayList<String>();
+	private List<String> definitions = getDefaultProcessDefinitions();
 	
 	@Getter @Setter
-	private List<String> rules = new ArrayList<String>();
+	private List<String> rules = getDefaultRuleDefinitions();
 	
 	@Getter @Setter
-	private List<String> customDeployers = new ArrayList<String>();	
+	private List<String> customDeployers = getDefaultCustomDemployers();	
 	
 	@Autowired
 	private ActivitiExpressionManager platformExpressionManager;
@@ -140,7 +140,23 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 
 		return engineConfiguration;
 	}
-    
+
+	protected List<String> getDefaultCustomDemployers() {
+		return new ArrayList<>();
+	}
+
+	protected List<String> getDefaultRuleDefinitions() {
+		List<String> rv = new ArrayList<>();
+		rv.add("rules/**.drl");
+		return rv;
+	}
+
+	protected List<String> getDefaultProcessDefinitions() {
+		List<String> rv = new ArrayList<>();
+		rv.add("classpath*:process-defs/**.xml");
+		return rv;
+	}
+
 	public DefaultActivityBehaviorFactory platformActivityBehaviorFactory(BeanResolverStrategy beanResolver) {
 		
 		return new DefaultActivityBehaviorFactory() {
