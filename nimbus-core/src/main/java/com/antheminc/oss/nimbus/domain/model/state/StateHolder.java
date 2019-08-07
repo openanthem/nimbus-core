@@ -241,6 +241,11 @@ public class StateHolder {
 		}
 		
 		@Override
+		public T getPreviousLeafState() {
+			return this.ref.getPreviousLeafState();
+		}
+		
+		@Override
 		public Action setState(T state) {
 			if(this.ref.isStateInitialized())
 				throw throwEx("'setState' not allowed once parameter is initialized to avoid circular event trigger on param: "+this.ref

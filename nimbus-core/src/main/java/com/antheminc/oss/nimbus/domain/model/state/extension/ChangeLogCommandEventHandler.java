@@ -62,6 +62,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 
 		// who
 		private String by;
+		private String sessionId;
 		
 	    // what: common 
 		private String root;
@@ -76,6 +77,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 		private String path;
 
 		// what: parameter
+		private Object previousValue;
 		private Object value;
 		
 	}
@@ -96,11 +98,10 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 	@Override
 	public void handleOnRootStop(ChangeLog configuredAnnotation, Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
 		ModelRepository rep = getResolvedRepo();
-		String currentUser = getCurrentUser();
 		
 		// log command : ALL
 		if(!cmd.isRootDomainOnly())
-			Handler.forCommand(cmd, rep, currentUser).addUrl().save();		
+			Handler.forCommand(cmd, rep, getSessionProvider()).addUrl().save();		
 		
 		// log model
 //		aggregatedEvents.keySet().stream()
@@ -121,13 +122,12 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			return;
 
 		ModelRepository rep = getResolvedRepo();
-		String currentUser = getCurrentUser();
 		
 		// log parameter
 		aggregatedEvents.stream()
 			.filter(pe->!pe.getParam().isMapped()) // core
 			.filter(pe->pe.getParam().isLeafOrCollectionWithLeafElems()) // leaf
-				.forEach(pe->Handler.forParam(rep, pe, currentUser).save());
+				.forEach(pe->Handler.forParam(rep, pe, getSessionProvider()).save());
 			
 	}
 	
@@ -152,16 +152,11 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 	@Override
 	public void handleOnSelfStop(ChangeLog configuredAnnotation, Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
 		ModelRepository rep = getResolvedRepo();
-		String currentUser = getCurrentUser();
 		
 		// log command : only root command CRUD actions
 		//if(cmd.isRootDomainOnly() && cmd.getAction().isCrud())
-			Handler.forCommand(cmd, rep, currentUser).addUrl().save();
+			Handler.forCommand(cmd, rep, getSessionProvider()).addUrl().save();
 
-	}
-	
-	private String getCurrentUser() {
-		return Optional.ofNullable(getSessionProvider().getLoggedInUser()).map(ClientUser::getLoginId).orElse(null);
 	}
 	
 	private ModelRepository getResolvedRepo() {
@@ -176,10 +171,12 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 		private final Command cmd;
 		private final ModelRepository rep;
 		
-		public static Handler forCommand(Command cmd, ModelRepository rep, String by) {
+		public static Handler forCommand(Command cmd, ModelRepository rep, SessionProvider sessionProvider) {
 			Handler h = new Handler(cmd, rep);
 
-			h.entry.setBy(by);
+			h.entry.setBy(Optional.ofNullable(sessionProvider.getLoggedInUser()).map(ClientUser::getLoginId).orElse(null));
+			h.entry.setSessionId(sessionProvider.getSessionId());
+			
 			h.entry.setOn(Date.from(cmd.getCreatedInstant()));
 			
 			h.entry.setRoot(cmd.getRootDomainAlias());
@@ -189,13 +186,14 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			return h;
 		}
 
-		public static Handler forParam(ModelRepository rep, ParamEvent pEvent, String by) {
+		public static Handler forParam(ModelRepository rep, ParamEvent pEvent, SessionProvider sessionProvider) {
 			ExecutionModel<?> root = pEvent.getParam().getRootExecution();
 			Command rootCmd = root.getRootCommand();
 
 			Handler h = new Handler(rootCmd, rep);
 
-			h.entry.setBy(by);
+			h.entry.setBy(Optional.ofNullable(sessionProvider.getLoggedInUser()).map(ClientUser::getLoginId).orElse(null));
+			h.entry.setSessionId(sessionProvider.getSessionId());
 			h.entry.setOn(Date.from(pEvent.getCreatedInstant()));
 			
 			h.entry.setRoot(rootCmd.getRootDomainAlias());
@@ -203,6 +201,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			
 			h.entry.setAction(pEvent.getAction());
 			h.entry.setPath(pEvent.getParam().getPath());
+			h.entry.setPreviousValue(pEvent.getParam().getPreviousLeafState());
 			h.entry.setValue(pEvent.getParam().getLeafState());
 			return h;
 		} 

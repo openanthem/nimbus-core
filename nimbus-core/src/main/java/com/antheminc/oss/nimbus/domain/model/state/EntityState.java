@@ -282,6 +282,7 @@ public interface EntityState<T> {
 		@Override
 		ParamConfig<T> getConfig();
 		
+		T getPreviousLeafState();
 		T getLeafState();
 		
 		@JsonIgnore
