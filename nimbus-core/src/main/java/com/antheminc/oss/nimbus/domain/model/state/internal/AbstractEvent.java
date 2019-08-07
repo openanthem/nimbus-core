@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,11 +28,11 @@ import lombok.ToString;
 @Getter @Setter @ToString
 public abstract class AbstractEvent<T extends Serializable, P> {
 
-	private String type;
+	protected String type;
 	
-	private T id;
+	protected T id;
 	
-	private P payload;
+	protected P payload;
 
 	
 	public enum SuppressMode {

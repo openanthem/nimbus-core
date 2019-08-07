@@ -1,13 +1,13 @@
 /**
  * @license
- * Copyright 2016-2018 the original author or authors.
- * 
+ * Copyright 2016-2019 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,25 +16,23 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { AngularSvgIconModule } from 'angular-svg-icon';
-import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
-
-import { ButtonGroup } from './button-group.component';
-import { SvgComponent } from '../../svg/svg.component';
-import { Image } from '../../image.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../../setup.spec';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 import { buttonGroupbuttonList } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { setup } from '../../../../setup.spec';
+import { Image } from '../../image.component';
+import { SvgComponent } from '../../svg/svg.component';
+import { ButtonGroup } from './button-group.component';
 
 @Component({
   template: '<div></div>',
   selector: 'nm-button'
 })
 class Button {
-
   @Input() element: any;
   @Input() payload: string;
   @Input() form: any;
@@ -51,24 +49,15 @@ class Button {
   componentTypes;
 }
 
-const declarations = [
-  ButtonGroup,
-  Button,
-  SvgComponent,
-  Image
- ];
- const imports = [
-   AngularSvgIconModule
- ];
- const providers = []
- let fixture, hostComponent;
+const declarations = [ButtonGroup, Button, SvgComponent, Image];
+const imports = [AngularSvgIconModule];
+const providers = [];
+let fixture, hostComponent;
 describe('ButtonGroup', () => {
-
   configureTestSuite();
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ButtonGroup);
@@ -78,7 +67,7 @@ describe('ButtonGroup', () => {
     hostComponent.form = new FormGroup({
       question123: new FormControl(),
       txt1: new FormControl()
-   });
+    });
   });
 
   it('should create the ButtonGroup', async(() => {
@@ -118,6 +107,4 @@ describe('ButtonGroup', () => {
     const buttonEle = debugElement.query(By.css('nm-button'));
     expect(buttonEle).toBeFalsy();
   }));
-
 });
-

@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -103,7 +103,7 @@ public class WebCommandBuilderTest {
 		assertSame(Action._update, cmd.getAction());
 		assertEquals("anthem", cmd.getRootClientAlias());
 		assertEquals("flow_umcase", cmd.getRootDomainAlias());
-		assertEquals(Long.valueOf("123"), cmd.getRootDomainElement().getRefId());
+		assertEquals(Long.valueOf("123"), cmd.getRootDomainElement().getRefId().getId());
 		assertEquals("/flow_umcase/pg1/caseInfo/requestType", cmd.getAbsoluteDomainAlias());
 		assertEquals("icr", cmd.getAppAlias());
 		assertFalse(cmd.isRootDomainOnly());
@@ -119,7 +119,7 @@ public class WebCommandBuilderTest {
 		assertSame(Action._process, cmd.getAction());
 		assertEquals("/flow_umcase/_findPatient", cmd.getAbsoluteDomainAlias());
 		assertEquals("/_findPatient", cmd.getProcessAlias());
-		assertEquals(Long.valueOf("10"), cmd.getRefId(Type.ProcessAlias));
+		assertEquals(Long.valueOf("10"), cmd.getRefId(Type.ProcessAlias).getId());
 		assertFalse(cmd.isRootDomainOnly());
 	}
 

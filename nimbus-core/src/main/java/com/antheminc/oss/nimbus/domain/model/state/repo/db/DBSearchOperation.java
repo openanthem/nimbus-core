@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@ package com.antheminc.oss.nimbus.domain.model.state.repo.db;
  * @author Rakesh Patel
  *
  */
-public interface DBSearch {
+public interface DBSearchOperation {
 	
-	public <T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria);
+	boolean shouldAllow(SearchCriteria<?> criteria);
+	
+	<T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria);
 }

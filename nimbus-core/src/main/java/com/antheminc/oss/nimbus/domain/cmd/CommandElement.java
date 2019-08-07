@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 package com.antheminc.oss.nimbus.domain.cmd;
 
 import java.io.Serializable;
-
-import org.apache.commons.lang3.StringUtils;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 
@@ -61,8 +61,18 @@ abstract public class CommandElement implements Serializable {
 	
 	private String alias;
 
-	private Long refId;	
+	private RefId<?> refId;	
 	
+	public RefId<?> getRefId() {
+		return refId;
+	}
+	
+	public void doIfRefIdPresent(Consumer<Long> cb) {
+		Optional.ofNullable(getRefId())
+			.map(RefId::getId)
+			.ifPresent(cb::accept);
+		
+	}
 	
 	abstract public void detachChildElements();
 	
@@ -81,23 +91,18 @@ abstract public class CommandElement implements Serializable {
 	public String getUri(){
 		StringBuilder sb = new StringBuilder();
 		
-		return hasRefId() 
-			? sb.append(getAliasUri()).append(Constants.SEPARATOR_URI_VALUE.code+getRefId())
+		return (getRefId() != null)
+			? sb.append(getAliasUri()).append(Constants.SEPARATOR_URI_VALUE.code+getRefId().getId())
 					.toString()
 			: getAliasUri();
 	}
 
 	public void setUri(String uri) {
-		int i = StringUtils.indexOf(uri, Constants.SEPARATOR_URI_VALUE.code);
-		if(i == -1) {
-			setAlias(uri);
-		}
-		else {
-			String alias = StringUtils.substring(uri, 0, i);
-			Long refId = Long.valueOf(StringUtils.substring(uri, i+1));
+		CommandBuilder.buildCommandElement(uri, (alias, refId)->{
 			setAlias(alias);
 			setRefId(refId);
-		}
+			return null;
+		});
 	}
 
 }

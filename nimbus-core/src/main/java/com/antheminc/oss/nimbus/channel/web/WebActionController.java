@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
+import com.antheminc.oss.nimbus.domain.cmd.exec.FileImportGateway;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.support.Holder;
@@ -103,6 +104,8 @@ public class WebActionController {
 	@Autowired WebCommandDispatcher dispatcher;
 	
 	@Autowired ExecutionContextLoader ctxLoader;
+	
+	@Autowired WebCommandBuilder builder;
 	
 	@RequestMapping(value=URI_PATTERN_P+"/clear", produces="application/json", method=RequestMethod.GET)
 	public void clear() {
@@ -185,11 +188,10 @@ public class WebActionController {
 		return false;
 	}
 	
-	@RequestMapping({"/login/*"})
+	@RequestMapping(value = {"/login/*"}, method = RequestMethod.GET)
 	public ResponseEntity<?> login(){
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
-	
 	
 	protected Object handleInternal(HttpServletRequest req, RequestMethod httpMethod, String v, String json) {
 		Object obj = dispatcher.handle(req, json);

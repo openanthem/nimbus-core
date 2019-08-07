@@ -10,19 +10,19 @@
             </button>
             <div aria-expanded="false" class="navbar-collapse nav-block collapse" id="navbarToggler2" style="">
                 <div class="topLinksMenu clearfix">
-                    <nm-link [element]="branding.help" *ngIf="branding.help"></nm-link>
-                    <nm-link [element]="branding.logOut" *ngIf="branding.logOut"></nm-link> 
+                    <nm-link id="{{branding?.help?.config?.code}}" [element]="branding.help" *ngIf="branding.help"></nm-link>
+                    <nm-link id="{{branding?.logOut?.config?.code}}" [element]="branding.logOut" *ngIf="branding.logOut"></nm-link> 
                 </div>
                 <div class="btn-group float-right clearfix">
                     <ng-template ngFor let-element [ngForOf]="branding?.linkNotifications?.type?.model?.params">
                         <ng-template [ngIf]="element.alias == 'Button'">
-                            <nm-button [element]="element"> </nm-button>
+                            <nm-button id="{{element.config?.code}}" [element]="element"> </nm-button>
                         </ng-template>
                         <ng-template [ngIf]="element.alias == 'Link'">
-                            <nm-link [element]="element"></nm-link> 
+                            <nm-link id="{{element.config?.code}}" [element]="element"></nm-link> 
                         </ng-template>
                         <ng-template [ngIf]="element.alias == 'LinkMenu'">
-                            <nm-action-dropdown #dropDown [element]="element" 
+                            <nm-action-dropdown #dropDown id="{{element.config?.code}}" [element]="element" 
                             (dropDownClick)="toggleOpen($event)"></nm-action-dropdown>
                         </ng-template>
                     </ng-template>
@@ -43,9 +43,9 @@
     </div>
     <div class="col-sm-3 d-none d-sm-inline-block p-0 ml-3 mt-1 ">
         <div class="productName  d-inline-block">
-            <nm-paragraph [element]="branding.appTitle" *ngIf="branding.appTitle"></nm-paragraph>
+            <nm-paragraph [element]="branding.appTitle" *ngIf="branding.appTitle" [ngClass]="branding.appTitle.config.uiStyles.attributes.cssClass" [hidden]="!branding.appTitle.visible"></nm-paragraph>
             <div class="subTitle" *ngIf="branding.subTitle">
-                <nm-paragraph [element]="branding.subTitle"></nm-paragraph> 
+                <nm-paragraph [element]="branding.subTitle" [ngClass]="branding.subTitle.config.uiStyles.attributes.cssClass" [hidden]="!branding.subTitle.visible"></nm-paragraph> 
             </div>
         </div>
             

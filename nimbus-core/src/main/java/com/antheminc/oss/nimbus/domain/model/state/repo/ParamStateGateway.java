@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,7 +27,19 @@ public interface ParamStateGateway extends ParamStateRepository {
 	public <T> T getValue(ValueAccessor pd, Object target);	
 	public <T> void setValue(ValueAccessor pd, Object target, T value);
 	public <T> T instantiate(Class<T> clazz);
-
+	
+	/**
+	 * <p>Remove the state of the {@code param}. <p>This implementation will
+	 * simply sever the connection between the associated object stored in the
+	 * {@code param} state. If the state of {@code param} is an instance of
+	 * {@link Object}, then the state is nullified, allowing the garbage
+	 * collector to take over. If the state of {@code param} is a primitive
+	 * type, then the state is reset to it's default value (as defined by the
+	 * JVM for the provided primitive type).
+	 * @param param the {@link Param} instance to uninstantiate
+	 */
+	public <T> void uninstantiate(Param<T> param);
+	
 	default <M> M _instantiateOrGet(Param<M> param) {
 		M existing = _getRaw(param);
 		return (existing==null) ? _instantiateAndSet(param) : existing;

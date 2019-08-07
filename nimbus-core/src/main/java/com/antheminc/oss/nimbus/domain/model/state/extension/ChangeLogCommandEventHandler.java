@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -183,7 +183,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			h.entry.setOn(Date.from(cmd.getCreatedInstant()));
 			
 			h.entry.setRoot(cmd.getRootDomainAlias());
-			h.entry.setRefId(cmd.getRootDomainElement().getRefId());
+			cmd.getRootDomainElement().doIfRefIdPresent(h.entry::setRefId);
 			h.entry.setAction(cmd.getAction());
 			
 			return h;
@@ -199,7 +199,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			h.entry.setOn(Date.from(pEvent.getCreatedInstant()));
 			
 			h.entry.setRoot(rootCmd.getRootDomainAlias());
-			h.entry.setRefId(rootCmd.getRootDomainElement().getRefId());
+			rootCmd.getRootDomainElement().doIfRefIdPresent(h.entry::setRefId);
 			
 			h.entry.setAction(pEvent.getAction());
 			h.entry.setPath(pEvent.getParam().getPath());

@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorGet;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
@@ -37,14 +37,14 @@ import lombok.Setter;
  * @author Soham Chakravarti
  * @author Rakesh Patel
  */
-@ConfigurationProperties(prefix="model.persistence.strategy")
+@ConfigurationProperties(prefix="nimbus.model.persistence.strategy")
 public class ParamStateAtomicPersistenceEventListener extends ParamStatePersistenceEventListener {
 
 	@Getter(value=AccessLevel.PROTECTED)
 	ModelRepositoryFactory repoFactory;
 
 	@Getter @Setter
-	private PersistenceMode mode;
+	private PersistenceMode mode = PersistenceMode.ATOMIC;
 	
 	public ParamStateAtomicPersistenceEventListener(ModelRepositoryFactory repoFactory) {
 		this.repoFactory = repoFactory;
@@ -58,7 +58,7 @@ public class ParamStateAtomicPersistenceEventListener extends ParamStatePersiste
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean listen(ModelEvent<Param<?>> event) {
-		if(DefaultActionExecutorGet.TH_ACTION.get() == Action._get)
+		if(DefaultExecutionContextLoader.TH_ACTION.get() == Action._get)
 			return false;
 		
 		Param<?> p = (Param<?>) event.getPayload();
@@ -84,7 +84,6 @@ public class ParamStateAtomicPersistenceEventListener extends ParamStatePersiste
 		
 		modelRepo._update(pRoot, pRoot.getState());
 		return true;
-		
 	}
 	
 }

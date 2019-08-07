@@ -1,62 +1,85 @@
-import { Enum } from './command.enum';
-export class ViewConfig extends Enum<string> {
-    public static readonly page = new Enum('ViewConfig.Page');
-    public static readonly pageheader = new Enum('ViewConfig.PageHeader');
-    public static readonly gridrowbody = new Enum('ViewConfig.GridRowBody');
-    public static readonly linkmenu = new Enum('ViewConfig.LinkMenu');
-    public static readonly link = new Enum('ViewConfig.Link');
-    public static readonly menulink = new Enum('ViewConfig.MenuLink');
-    public static readonly footerproperty = new Enum('ViewConfig.FooterProperty');
-    public static readonly hidden = new Enum('ViewConfig.Hidden');
-    public static readonly initialize = new Enum('initialize');
-    public static readonly button = new Enum('ViewConfig.Button');
-    public static readonly gridcolumn = new Enum('ViewConfig.GridColumn');
-    public static readonly actiontray = new Enum('ViewConfig.ActionTray');
-    public static readonly picklist = new Enum('ViewConfig.PickList');
-    public static readonly selectedPicklist = new Enum('ViewConfig.PickListSelected');
-    public static readonly printConfig = new Enum('ViewConfig.PrintConfig');
-    public static readonly fonts = new Enum('ViewConfig.Fonts');
-    public static readonly headings = new Enum('ViewConfig.Headings');
+/**
+ * @license
+ * Copyright 2016-2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-    static attributeList(): String[] {
-      const keys = Object.keys(ViewConfig);
-      return keys;
-    }
+'use strict';
+
+import { Enum } from './command.enum';
+
+export class ViewConfig extends Enum<string> {
+  public static readonly page = new Enum('ViewConfig.Page');
+  public static readonly pageheader = new Enum('ViewConfig.PageHeader');
+  public static readonly gridrowbody = new Enum('ViewConfig.GridRowBody');
+  public static readonly linkmenu = new Enum('ViewConfig.LinkMenu');
+  public static readonly link = new Enum('ViewConfig.Link');
+  public static readonly menulink = new Enum('ViewConfig.MenuLink');
+  public static readonly footerproperty = new Enum('ViewConfig.FooterProperty');
+  public static readonly hidden = new Enum('ViewConfig.Hidden');
+  public static readonly initialize = new Enum('initialize');
+  public static readonly button = new Enum('ViewConfig.Button');
+  public static readonly gridcolumn = new Enum('ViewConfig.GridColumn');
+  public static readonly actiontray = new Enum('ViewConfig.ActionTray');
+  public static readonly picklist = new Enum('ViewConfig.PickList');
+  public static readonly selectedPicklist = new Enum(
+    'ViewConfig.PickListSelected'
+  );
+  public static readonly printConfig = new Enum('ViewConfig.PrintConfig');
+  public static readonly fonts = new Enum('ViewConfig.Fonts');
+  public static readonly headings = new Enum('ViewConfig.Headings');
+  public static readonly tooltip = new Enum('ViewConfig.ToolTip');
+
+  static attributeList(): String[] {
+    const keys = Object.keys(ViewConfig);
+    return keys;
+  }
 }
 
 export class ViewComponent extends Enum<string> {
-    public static readonly page = new Enum('Page');
-    public static readonly tile = new Enum('Tile');
-    public static readonly section = new Enum('Section');
-    public static readonly form = new Enum('Form');
-    public static readonly formElementGroup = new Enum('FormElementGroup');
-    public static readonly link = new Enum('Link');
-    public static readonly linkMenu = new Enum('LinkMenu');
-    public static readonly grid = new Enum('Grid');
-    public static readonly treeGrid = new Enum('TreeGrid');
-    public static readonly treeGridChild = new Enum('TreeGridChild');
-    public static readonly cardDetailsGrid = new Enum('CardDetailsGrid');
-    public static readonly button = new Enum('Button');
-    public static readonly buttongroup = new Enum('ButtonGroup');
-    public static readonly gridRowBody = new Enum('GridRowBody');
-    public static readonly gridcolumn = new Enum('GridColumn');
-    public static readonly actiontray = new Enum('ActionTray');
-    public static readonly modal = new Enum('Modal');
-    public static readonly menulink = new Enum('MenuLink');
-    public static readonly menupanel = new Enum('MenuPanel');
-    public static readonly image = new Enum('Image');
-    public static readonly tabInfo = new Enum('TabInfo');
-    public static readonly picklist = new Enum('PickList');
-    public static readonly selectedPicklist = new Enum('PickListSelected');
-    public static readonly paragraph = new Enum('Paragraph');
-    public static readonly header = new Enum('Header');
-    public static readonly formGridFiller = new Enum('FormGridFiller');
-    public static readonly chart = new Enum('Chart');
+  public static readonly page = new Enum('Page');
+  public static readonly tile = new Enum('Tile');
+  public static readonly section = new Enum('Section');
+  public static readonly form = new Enum('Form');
+  public static readonly formElementGroup = new Enum('FormElementGroup');
+  public static readonly link = new Enum('Link');
+  public static readonly linkMenu = new Enum('LinkMenu');
+  public static readonly grid = new Enum('Grid');
+  public static readonly treeGrid = new Enum('TreeGrid');
+  public static readonly treeGridChild = new Enum('TreeGridChild');
+  public static readonly cardDetailsGrid = new Enum('CardDetailsGrid');
+  public static readonly button = new Enum('Button');
+  public static readonly buttongroup = new Enum('ButtonGroup');
+  public static readonly gridRowBody = new Enum('GridRowBody');
+  public static readonly gridcolumn = new Enum('GridColumn');
+  public static readonly actiontray = new Enum('ActionTray');
+  public static readonly modal = new Enum('Modal');
+  public static readonly menulink = new Enum('MenuLink');
+  public static readonly menupanel = new Enum('MenuPanel');
+  public static readonly image = new Enum('Image');
+  public static readonly tabInfo = new Enum('TabInfo');
+  public static readonly picklist = new Enum('PickList');
+  public static readonly selectedPicklist = new Enum('PickListSelected');
+  public static readonly paragraph = new Enum('Paragraph');
+  public static readonly header = new Enum('Header');
+  public static readonly formGridFiller = new Enum('FormGridFiller');
+  public static readonly chart = new Enum('Chart');
 
-    static attributeList(): String[] {
-      const keys = Object.keys(ViewConfig);
-      return keys;
-    }
+  static attributeList(): String[] {
+    const keys = Object.keys(ViewConfig);
+    return keys;
+  }
 }
 
 export class ComponentTypes extends Enum<string> {
@@ -75,6 +98,7 @@ export class ComponentTypes extends Enum<string> {
   public static readonly text = new Enum('text');
   public static readonly tab = new Enum('Tab');
   public static readonly mask = new Enum('InputMask');
+  public static readonly autocomplete = new Enum('Autocomplete');
   public static readonly signature = new Enum('signature');
   public static readonly textarea = new Enum('textarea');
   public static readonly date = new Enum('date');
@@ -111,7 +135,7 @@ export class ComponentTypes extends Enum<string> {
   public static readonly link = new Enum('Link');
   public static readonly chart = new Enum('Chart');
   public static readonly richText = new Enum('RichText');
-  
+
   static attributeList(): String[] {
     const keys = Object.keys(ComponentTypes);
     return keys;

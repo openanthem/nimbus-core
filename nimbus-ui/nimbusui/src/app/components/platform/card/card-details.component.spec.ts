@@ -1,13 +1,13 @@
 /**
  * @license
- * Copyright 2016-2018 the original author or authors.
- * 
+ * Copyright 2016-2019 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,54 +16,53 @@
  */
 
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import { DropdownModule } from 'primeng/primeng';
-import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
-import { AngularSvgIconModule } from 'angular-svg-icon';
-import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-import { CardDetailsComponent } from './card-details.component';
-import { Link } from '../link.component';
-import { StaticText } from '../content/static-content.component';
-import { InPlaceEditorComponent } from '../form/elements/inplace-editor.component';
-import { InputText } from '../form/elements/textbox.component';
-import { TextArea } from '../form/elements/textarea.component';
-import { ComboBox } from '../form/elements/combobox.component';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { cardDetailsBodyElement, cardDetailsHeaderElement } from 'mockdata';
+import { configureTestSuite } from 'ng-bullet';
+import { DropdownModule } from 'primeng/primeng';
+import { Subject } from 'rxjs';
+import { DisplayValueDirective } from '../../../directives/display-value.directive';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
-import { TooltipComponent } from '../tooltip/tooltip.component';
 import { SelectItemPipe } from '../../../pipes/select-item.pipe';
-import { PageService } from '../../../services/page.service';
+import { ConfigService } from '../../../services/config.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
-import { ConfigService } from '../../../services/config.service';
-import { CardDetailsFieldGroupComponent } from './card-details-field-group.component';
-import { Paragraph } from '../content/paragraph.component';
+import { PageService } from '../../../services/page.service';
+import { ServiceConstants } from '../../../services/service.constants';
+import { setup } from '../../../setup.spec';
 import { ButtonGroup } from '../../platform/form/elements/button-group.component';
-import { Label } from '../content/label.component';
-import { DisplayValueDirective } from '../../../directives/display-value.directive';
 import { InputLabel } from '../../platform/form/elements/input-label.component';
+import { InputLegend } from '../../platform/form/elements/input-legend.component';
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
-import { configureTestSuite } from 'ng-bullet';
-import { setup, TestContext } from '../../../setup.spec';
-import * as data from '../../../payload.json';
-import { By } from '@angular/platform-browser';
-import { ServiceConstants } from '../../../services/service.constants';
-import { Subject } from 'rxjs';
-import { ComponentTypes } from '../../../shared/param-annotations.enum';
-import { cardDetailsBodyElement, cardDetailsHeaderElement } from 'mockdata';
-import { NmMessageService } from './../../../services/toastmessage.service';import { Param } from './../../../shared/param-state';
+import { Label } from '../content/label.component';
+import { Paragraph } from '../content/paragraph.component';
+import { StaticText } from '../content/static-content.component';
+import { ComboBox } from '../form/elements/combobox.component';
+import { InPlaceEditorComponent } from '../form/elements/inplace-editor.component';
+import { TextArea } from '../form/elements/textarea.component';
+import { InputText } from '../form/elements/textbox.component';
+import { Link } from '../link.component';
+import { TooltipComponent } from '../tooltip/tooltip.component';
+import { NmMessageService } from './../../../services/toastmessage.service';
+import { Param } from './../../../shared/param-state';
+import { CardDetailsFieldGroupComponent } from './card-details-field-group.component';
+import { CardDetailsComponent } from './card-details.component';
 
 class MockPageService {
-    public eventUpdate$: Subject<any>;
+  public eventUpdate$: Subject<any>;
 
-    constructor() {
-        this.eventUpdate$ = new Subject();
-    }
-    processEvent() {    }
+  constructor() {
+    this.eventUpdate$ = new Subject();
+  }
+  processEvent() {}
 }
 
 @Component({
@@ -71,7 +70,6 @@ class MockPageService {
   selector: 'nm-button'
 })
 class Button {
-
   @Input() element: any;
   @Input() payload: string;
   @Input() form: any;
@@ -89,15 +87,13 @@ class Button {
 }
 
 @Component({
-    template: '<div></div>',
-    selector: 'nm-card-details-field'
-  })
-  class CardDetailsFieldComponent {
-  
-    @Input() element: any;
-    @Input() value: string;
-
-  }
+  template: '<div></div>',
+  selector: 'nm-card-details-field'
+})
+class CardDetailsFieldComponent {
+  @Input() element: any;
+  @Input() value: string;
+}
 
 const declarations = [
   CardDetailsComponent,
@@ -119,7 +115,8 @@ const declarations = [
   InputLabel,
   Button,
   Image,
-  SvgComponent
+  SvgComponent,
+  InputLegend
 ];
 const imports = [
   FormsModule,
@@ -140,15 +137,14 @@ const providers = [
 let fixture, hostComponent, pageService;
 
 describe('CardDetailsComponent', () => {
-
   configureTestSuite(() => {
-    setup( declarations, imports, providers);
+    setup(declarations, imports, providers);
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CardDetailsComponent);
     hostComponent = fixture.debugElement.componentInstance;
-    hostComponent.element = cardDetailsBodyElement as Param;    
+    hostComponent.element = cardDetailsBodyElement as Param;
     pageService = TestBed.get(PageService);
   });
 
@@ -174,7 +170,9 @@ describe('CardDetailsComponent', () => {
   }));
 
   it('getAllURLParams should return string matching the regexp', async(() => {
-    expect(hostComponent.getAllURLParams('{ /webhp?hl=en}')).toEqual(['{ /webhp?hl=en}']);
+    expect(hostComponent.getAllURLParams('{ /webhp?hl=en}')).toEqual([
+      '{ /webhp?hl=en}'
+    ]);
   }));
 
   it('toggleState() should update isHidden and _state properties', async(() => {
@@ -204,7 +202,9 @@ describe('CardDetailsComponent', () => {
     const debugElement = fixture.debugElement;
     const labelEle = debugElement.query(By.css('nm-label'));
     expect(labelEle.name).toEqual('nm-label');
-    expect(labelEle.nativeElement.innerText.toString().trim()).toEqual('testing card details label');
+    expect(labelEle.nativeElement.innerText.toString().trim()).toEqual(
+      'testing card details label'
+    );
   }));
 
   it('Label should not be created on if element.labels is empty', async(() => {
@@ -229,7 +229,7 @@ describe('CardDetailsComponent', () => {
     const debugElement = fixture.debugElement;
     const buttonEle = debugElement.query(By.css('button'));
     spyOn(hostComponent, 'toggleState').and.callThrough();
-    buttonEle.nativeElement.click()
+    buttonEle.nativeElement.click();
     expect(hostComponent.toggleState).toHaveBeenCalled();
   }));
 
@@ -252,7 +252,8 @@ describe('CardDetailsComponent', () => {
 
   it('Button group should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias !== ButtonGroup', async(() => {
     hostComponent.element = cardDetailsHeaderElement as Param;
-    hostComponent.element.type.model.params[0].type.model.params[0].config.uiStyles.attributes.alias = '';
+    hostComponent.element.type.model.params[0].type.model.params[0].config.uiStyles.attributes.alias =
+      '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const buttonGroupEle = debugElement.query(By.css('nm-button-group'));
@@ -269,7 +270,8 @@ describe('CardDetailsComponent', () => {
 
   it('Paragraph should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias !== Paragraph', async(() => {
     hostComponent.element = cardDetailsHeaderElement as Param;
-    hostComponent.element.type.model.params[0].type.model.params[1].config.uiStyles.attributes.alias = '';
+    hostComponent.element.type.model.params[0].type.model.params[1].config.uiStyles.attributes.alias =
+      '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const paragraphEle = debugElement.query(By.css('nm-paragraph'));
@@ -280,16 +282,21 @@ describe('CardDetailsComponent', () => {
     hostComponent.element = cardDetailsHeaderElement as Param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const cardDetailsFieldEle = debugElement.query(By.css('nm-card-details-field'));
+    const cardDetailsFieldEle = debugElement.query(
+      By.css('nm-card-details-field')
+    );
     expect(cardDetailsFieldEle.name).toEqual('nm-card-details-field');
   }));
 
   it('card-details-field should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias !== FieldValue', async(() => {
     hostComponent.element = cardDetailsHeaderElement as Param;
-    hostComponent.element.type.model.params[0].type.model.params[2].config.uiStyles.attributes.alias = '';
+    hostComponent.element.type.model.params[0].type.model.params[2].config.uiStyles.attributes.alias =
+      '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const cardDetailsFieldEle = debugElement.query(By.css('nm-card-details-field'));
+    const cardDetailsFieldEle = debugElement.query(
+      By.css('nm-card-details-field')
+    );
     expect(cardDetailsFieldEle).toBeFalsy();
   }));
 
@@ -301,7 +308,8 @@ describe('CardDetailsComponent', () => {
   }));
 
   it('StaticText in card details body should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias !== StaticText', async(() => {
-    hostComponent.element.type.model.params[0].type.model.params[0].config.uiStyles.attributes.alias = '';
+    hostComponent.element.type.model.params[0].type.model.params[0].config.uiStyles.attributes.alias =
+      '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const staticTextEle = debugElement.query(By.css('nm-static-text'));
@@ -316,7 +324,8 @@ describe('CardDetailsComponent', () => {
   }));
 
   it('Paragraph in card details body should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias !== Paragraph', async(() => {
-    hostComponent.element.type.model.params[0].type.model.params[2].config.uiStyles.attributes.alias = '';
+    hostComponent.element.type.model.params[0].type.model.params[2].config.uiStyles.attributes.alias =
+      '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const paragraphEle = debugElement.query(By.css('nm-paragraph'));
@@ -325,7 +334,8 @@ describe('CardDetailsComponent', () => {
 
   it('On updating param another paragraph need to be added in carddetails body', async(() => {
     let param = hostComponent.element;
-    param.type.model.params[0].type.model.params[2].config.uiStyles.attributes.alias = 'Paragraph';
+    param.type.model.params[0].type.model.params[2].config.uiStyles.attributes.alias =
+      'Paragraph';
     hostComponent.element = param;
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
@@ -335,12 +345,15 @@ describe('CardDetailsComponent', () => {
     let newParam = hostComponent.element;
     let paragraphParam = newParam.type.model.params[0].type.model.params[2];
     paragraphParam = Object.assign({}, paragraphParam);
-    paragraphParam.labels[0].text = '2nd paragraph'
+    paragraphParam.labels[0].text = '2nd paragraph';
     newParam.type.model.params[0].type.model.params.push(paragraphParam);
-    newParam.type.model.params[0].type.model.params[2].labels[0].text = '1st paragraph...';
+    newParam.type.model.params[0].type.model.params[2].labels[0].text =
+      '1st paragraph...';
     hostComponent.element = newParam;
     fixture.detectChanges();
-    const updatedAllParagraphEle = debugElement.queryAll(By.css('nm-paragraph'));
+    const updatedAllParagraphEle = debugElement.queryAll(
+      By.css('nm-paragraph')
+    );
     const newParagraphs = document.getElementsByTagName('nm-paragraph');
     expect(newParagraphs.length).toEqual(2);
   }));
@@ -348,30 +361,42 @@ describe('CardDetailsComponent', () => {
   it('CardDetailsFieldGroup in card details body should be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias === CardDetailsFieldGroup', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const CardDetailsFieldGroupEle = debugElement.query(By.css('nm-card-details-field-group'));
-    expect(CardDetailsFieldGroupEle.name).toEqual('nm-card-details-field-group');
+    const CardDetailsFieldGroupEle = debugElement.query(
+      By.css('nm-card-details-field-group')
+    );
+    expect(CardDetailsFieldGroupEle.name).toEqual(
+      'nm-card-details-field-group'
+    );
   }));
 
   it('CardDetailsFieldGroup in card details body should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias !== CardDetailsFieldGroup', async(() => {
-    hostComponent.element.type.model.params[0].type.model.params[3].config.uiStyles.attributes.alias = '';
+    hostComponent.element.type.model.params[0].type.model.params[3].config.uiStyles.attributes.alias =
+      '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const CardDetailsFieldGroupEle = debugElement.query(By.css('nm-card-details-field-group'));
+    const CardDetailsFieldGroupEle = debugElement.query(
+      By.css('nm-card-details-field-group')
+    );
     expect(CardDetailsFieldGroupEle).toBeFalsy();
   }));
 
   it('CardDetailsField in card details body should be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias === CardDetailsField  ', async(() => {
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const CardDetailsFieldEle = debugElement.query(By.css('nm-card-details-field'));
+    const CardDetailsFieldEle = debugElement.query(
+      By.css('nm-card-details-field')
+    );
     expect(CardDetailsFieldEle.name).toEqual('nm-card-details-field');
   }));
 
   it('CardDetailsField in card details body should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.attributes?.alias !== CardDetailsField', async(() => {
-    hostComponent.element.type.model.params[0].type.model.params[1].config.uiStyles.attributes.alias = '';
+    hostComponent.element.type.model.params[0].type.model.params[1].config.uiStyles.attributes.alias =
+      '';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const CardDetailsFieldEle = debugElement.query(By.css('nm-card-details-field'));
+    const CardDetailsFieldEle = debugElement.query(
+      By.css('nm-card-details-field')
+    );
     expect(CardDetailsFieldEle).toBeFalsy;
   }));
 
@@ -380,7 +405,9 @@ describe('CardDetailsComponent', () => {
     const debugElement = fixture.debugElement;
     const linkEle = debugElement.query(By.css('nm-link'));
     expect(linkEle.name).toEqual('nm-link');
-    expect(linkEle.nativeElement.innerText.toString().trim()).toEqual('Delete Note');
+    expect(linkEle.nativeElement.innerText.toString().trim()).toEqual(
+      'Delete Note'
+    );
   }));
 
   it('Link should not be created if element.type.model.params[0].type.model.params[0].config?.uiStyles?.isLink is invalid', async(() => {
@@ -391,83 +418,114 @@ describe('CardDetailsComponent', () => {
     expect(linkEle).toBeFalsy();
   }));
 
-
   it('On updating param another static-text need to be added in carddetails body', async(() => {
-    hostComponent.element.type.model.params[0].type.model.params[0].config.uiStyles.attributes.alias = 'StaticText';
+    hostComponent.element.type.model.params[0].type.model.params[0].config.uiStyles.attributes.alias =
+      'StaticText';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const staticTextEle = document.getElementsByTagName('nm-static-text');
     expect(staticTextEle.length).toEqual(1);
-    hostComponent.element.type.model.params[0].type.model.params.push(hostComponent.element.type.model.params[0].type.model.params[0])
+    hostComponent.element.type.model.params[0].type.model.params.push(
+      hostComponent.element.type.model.params[0].type.model.params[0]
+    );
     fixture.detectChanges();
     const newStaticTextEle = document.getElementsByTagName('nm-static-text');
     expect(newStaticTextEle.length).toEqual(2);
   }));
 
   it('On updating param another card-details-field-group need to be added in carddetails body', async(() => {
-    hostComponent.element.type.model.params[0].type.model.params[3].config.uiStyles.attributes.alias = 'FieldValueGroup';
+    hostComponent.element.type.model.params[0].type.model.params[3].config.uiStyles.attributes.alias =
+      'FieldValueGroup';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const cardDetailsFieldGroupEle = document.getElementsByTagName('nm-card-details-field-group');
+    const cardDetailsFieldGroupEle = document.getElementsByTagName(
+      'nm-card-details-field-group'
+    );
     expect(cardDetailsFieldGroupEle.length).toEqual(1);
-    hostComponent.element.type.model.params[0].type.model.params.push(hostComponent.element.type.model.params[0].type.model.params[3]);
+    hostComponent.element.type.model.params[0].type.model.params.push(
+      hostComponent.element.type.model.params[0].type.model.params[3]
+    );
     fixture.detectChanges();
-    const updatedCardDetailsFieldGroupEle = document.getElementsByTagName('nm-card-details-field-group');
+    const updatedCardDetailsFieldGroupEle = document.getElementsByTagName(
+      'nm-card-details-field-group'
+    );
     expect(cardDetailsFieldGroupEle.length).toEqual(2);
   }));
 
   it('On updating param another nm-card-details-field need to be added in carddetails body', async(() => {
-    hostComponent.element.type.model.params[0].type.model.params[1].config.uiStyles.attributes.alias = 'FieldValue';
+    hostComponent.element.type.model.params[0].type.model.params[1].config.uiStyles.attributes.alias =
+      'FieldValue';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const cardDetailsFieldEle = document.getElementsByTagName('nm-card-details-field');
+    const cardDetailsFieldEle = document.getElementsByTagName(
+      'nm-card-details-field'
+    );
     expect(cardDetailsFieldEle.length).toEqual(2);
-    hostComponent.element.type.model.params[0].type.model.params.push(hostComponent.element.type.model.params[0].type.model.params[1]);
+    hostComponent.element.type.model.params[0].type.model.params.push(
+      hostComponent.element.type.model.params[0].type.model.params[1]
+    );
     fixture.detectChanges();
-    const updatedCardDetailsFieldEle = document.getElementsByTagName('nm-card-details-field');
+    const updatedCardDetailsFieldEle = document.getElementsByTagName(
+      'nm-card-details-field'
+    );
     expect(updatedCardDetailsFieldEle.length).toEqual(3);
   }));
 
   it('On updating param another button group need to be added in carddetails header', async(() => {
     hostComponent.element = cardDetailsHeaderElement as Param;
-    hostComponent.element.type.model.params[0].type.model.params[0].config.uiStyles.attributes.alias = 'ButtonGroup';
+    hostComponent.element.type.model.params[0].type.model.params[0].config.uiStyles.attributes.alias =
+      'ButtonGroup';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const buttonGroupEle = document.getElementsByTagName('nm-button-group');
     expect(buttonGroupEle.length).toEqual(1);
-    hostComponent.element.type.model.params[0].type.model.params.push(hostComponent.element.type.model.params[0].type.model.params[0]);
+    hostComponent.element.type.model.params[0].type.model.params.push(
+      hostComponent.element.type.model.params[0].type.model.params[0]
+    );
     fixture.detectChanges();
-    const updatedButtonGroupEle = document.getElementsByTagName('nm-button-group');
+    const updatedButtonGroupEle = document.getElementsByTagName(
+      'nm-button-group'
+    );
     expect(updatedButtonGroupEle.length).toEqual(2);
   }));
 
   it('On updating param another paragraph need to be added in carddetails header', async(() => {
     hostComponent.element = cardDetailsHeaderElement as Param;
-    hostComponent.element.type.model.params[0].type.model.params[1].config.uiStyles.attributes.alias = 'Paragraph';
+    hostComponent.element.type.model.params[0].type.model.params[1].config.uiStyles.attributes.alias =
+      'Paragraph';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
     const paragraphEle = document.getElementsByTagName('nm-paragraph');
     expect(paragraphEle.length).toEqual(1);
-    const newEle = hostComponent.element.type.model.params[0].type.model.params[1];
+    const newEle =
+      hostComponent.element.type.model.params[0].type.model.params[1];
     newEle.labels[0].text = 'new paragraph';
     hostComponent.element.type.model.params[0].type.model.params.push(newEle);
     fixture.detectChanges();
     const updatedParagraphEle = document.getElementsByTagName('nm-paragraph');
     expect(updatedParagraphEle.length).toEqual(2);
-    expect(updatedParagraphEle[1].getElementsByTagName("p")[0].innerHTML).toEqual('new paragraph');
+    expect(
+      updatedParagraphEle[1].getElementsByTagName('p')[0].innerHTML
+    ).toEqual('new paragraph');
   }));
 
   it('On updating param another card-details-field need to be added in carddetails header', async(() => {
     hostComponent.element = cardDetailsHeaderElement as Param;
-    hostComponent.element.type.model.params[0].type.model.params[2].config.uiStyles.attributes.alias = 'FieldValue';
+    hostComponent.element.type.model.params[0].type.model.params[2].config.uiStyles.attributes.alias =
+      'FieldValue';
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const cardDetailsFieldEle = document.getElementsByTagName('nm-card-details-field');
+    const cardDetailsFieldEle = document.getElementsByTagName(
+      'nm-card-details-field'
+    );
     expect(cardDetailsFieldEle.length).toEqual(1);
-    hostComponent.element.type.model.params[0].type.model.params.push(hostComponent.element.type.model.params[0].type.model.params[2]);
+    hostComponent.element.type.model.params[0].type.model.params.push(
+      hostComponent.element.type.model.params[0].type.model.params[2]
+    );
     fixture.detectChanges();
-    const updatedCardDetailsFieldEle = document.getElementsByTagName('nm-card-details-field');
+    const updatedCardDetailsFieldEle = document.getElementsByTagName(
+      'nm-card-details-field'
+    );
     expect(updatedCardDetailsFieldEle.length).toEqual(2);
   }));
-
 });

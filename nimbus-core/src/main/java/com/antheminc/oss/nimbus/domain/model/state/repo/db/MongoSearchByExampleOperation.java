@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,25 +26,30 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
-import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.SearchNature.StartsWith;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
+
+import lombok.Getter;
 
 /**
  * @author Rakesh Patel
  *
  */ 
 @EnableAPIMetricCollection
-public class MongoSearchByExample extends MongoDBSearch {
+@Getter
+public class MongoSearchByExampleOperation extends MongoDBSearchOperation {
 
-	public MongoSearchByExample(BeanResolverStrategy beanResolver) {
-		super(beanResolver);
+	public MongoSearchByExampleOperation(MongoOperations mongoOps, DomainConfigBuilder domainConfigBuilder) {
+		super(mongoOps, domainConfigBuilder);
 	}
 
 	@Override
@@ -121,6 +126,11 @@ public class MongoSearchByExample extends MongoDBSearch {
 				matcher = matcher.withMatcher(field.getName(), startsWith());
 		}
 		return matcher;
+	}
+
+	@Override
+	public boolean shouldAllow(SearchCriteria<?> criteria) {
+		return criteria instanceof ExampleSearchCriteria;
 	}
 	
 }

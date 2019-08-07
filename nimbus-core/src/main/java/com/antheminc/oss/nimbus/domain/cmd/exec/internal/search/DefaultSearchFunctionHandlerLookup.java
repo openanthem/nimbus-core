@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -59,10 +59,10 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 	
 	private ExpressionEvaluator expressionEvaluator;
 	
-	@Value(value="${search.lookup.inMemory.sortThreshold:500}")
+	@Value(value="${nimbus.search.lookup.inMemory.sortThreshold:500}")
 	private int inMemorySortThreshold;
 	
-	@Value(value="${search.lookup.inMemory.exceptionIfOverSortThreshold:false}")
+	@Value(value="${nimbus.search.lookup.inMemory.exceptionIfOverSortThreshold:false}")
 	private boolean exceptionIfOverSortThreshold;
 	
 	public DefaultSearchFunctionHandlerLookup(BeanResolverStrategy beanResolver) {
@@ -138,7 +138,7 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 				Object code = this.expressionEvaluator.getValue(cd, model);
 				Object label = this.expressionEvaluator.getValue(lb, model);
 				if(code!= null && label !=null) {
-					paramValues.add(new ParamValue(code.toString(), label.toString()));
+					paramValues.add(new ParamValue(code, label.toString()));
 				}
 			}
 			return sortIfApplicable(paramValues, mConfig, cmd);
@@ -176,12 +176,12 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		
 		String property = StringUtils.substringBeforeLast(orderBy, PROPERTY_DELIMITER);
 		String direction = StringUtils.substringAfterLast(orderBy, PROPERTY_DELIMITER);
-		
+		Comparator<ParamValue> pvComparator = Comparator.comparing(pv -> expressionEvaluator.getValue(property, pv, String.class));
 		try {
 			if(StringUtils.equalsAnyIgnoreCase(direction, Constants.SEARCH_REQ_ORDERBY_DESC_MARKER.code))
-				CollectionsTemplate.sortSelfReverse(paramValues, Comparator.comparing(pv -> expressionEvaluator.getValue(property, pv, String.class)));
+				CollectionsTemplate.sortSelfReverse(paramValues, pvComparator);
 			else if(StringUtils.equalsAnyIgnoreCase(direction, Constants.SEARCH_REQ_ORDERBY_ASC_MARKER.code))
-				CollectionsTemplate.sortSelf(paramValues, Comparator.comparing(pv -> expressionEvaluator.getValue(property, pv, String.class)));
+				CollectionsTemplate.sortSelf(paramValues, pvComparator);
 			else
 				throw new FrameworkRuntimeException("Valid sort direction(s) are "+Constants.SEARCH_REQ_ORDERBY_DESC_MARKER.code+" OR "+Constants.SEARCH_REQ_ORDERBY_ASC_MARKER.code+" but found: "+direction+" , in command: "+cmd); 
 		}

@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.List;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.RefIdHolder;
 
 /**
  * @author Rakesh Patel
@@ -27,11 +28,11 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
  */
 public interface ExternalModelRepository extends ModelRepository {
 
-	default public <T> T _new(Command cmd, ModelConfig<T> mConfig) {
+	default public <T> RefIdHolder<T> _new(Command cmd, ModelConfig<T> mConfig) {
 		throw new UnsupportedOperationException("_new operation is not supported for Database.rep_ws repository");
 	}
 	
-	default public <T> T _new(Command cmd, ModelConfig<T> mConfig, T newState) {
+	default public <T> RefIdHolder<T> _new(Command cmd, ModelConfig<T> mConfig, T newState) {
 		throw new UnsupportedOperationException("_new operation is not supported for Database.rep_ws repository");
 	}
 	

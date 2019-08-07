@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElementLinked;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
@@ -66,7 +67,7 @@ public class ParamCodeValueProviderUnitTest {
 		Mockito.when(commandMessage.getCommand()).thenReturn(command);
 		Mockito.when(command.getElementSafely(Type.DomainAlias)).thenReturn(domainCmdElem);
 		Mockito.when(command.getRootDomainElement()).thenReturn(rootDomainElem);
-		Mockito.when(rootDomainElem.getRefId()).thenReturn(42L);
+		Mockito.when(rootDomainElem.getRefId()).thenReturn((RefId)RefId.with(42L));
 		
 		List<StaticCodeValue> searchResults = new ArrayList<>();
 		Output<List<StaticCodeValue>> searchResultsOutput = Output.instantiate(input, eCtx);
@@ -92,7 +93,7 @@ public class ParamCodeValueProviderUnitTest {
 		Mockito.when(commandMessage.getCommand()).thenReturn(command);
 		Mockito.when(command.getElementSafely(Type.DomainAlias)).thenReturn(domainCmdElem);
 		Mockito.when(command.getRootDomainElement()).thenReturn(rootDomainElem);
-		Mockito.when(rootDomainElem.getRefId()).thenReturn(42L);
+		Mockito.when(rootDomainElem.getRefId()).thenReturn((RefId)RefId.with(42L));
 		
 		List<ParamValue> expected = new ArrayList<ParamValue>();
 		List<StaticCodeValue> searchResults = new ArrayList<>();
@@ -120,7 +121,7 @@ public class ParamCodeValueProviderUnitTest {
 		Mockito.when(commandMessage.getCommand()).thenReturn(command);
 		Mockito.when(command.getElementSafely(Type.DomainAlias)).thenReturn(domainCmdElem);
 		Mockito.when(command.getRootDomainElement()).thenReturn(rootDomainElem);
-		Mockito.when(rootDomainElem.getRefId()).thenReturn(42L);
+		Mockito.when(rootDomainElem.getRefId()).thenReturn((RefId)RefId.with(42L));
 		
 		List<ParamValue> expected = new ArrayList<ParamValue>();
 		List<StaticCodeValue> searchResults = new ArrayList<>();
@@ -151,7 +152,7 @@ public class ParamCodeValueProviderUnitTest {
 		Mockito.when(commandMessage.getCommand()).thenReturn(command);
 		Mockito.when(command.getElementSafely(Type.DomainAlias)).thenReturn(domainCmdElem);
 		Mockito.when(command.getRootDomainElement()).thenReturn(rootDomainElem);
-		Mockito.when(rootDomainElem.getRefId()).thenReturn(42L);
+		Mockito.when(rootDomainElem.getRefId()).thenReturn((RefId)RefId.with(42L));
 		
 		List<ParamValue> expected = new ArrayList<ParamValue>();
 		expected.add(new ParamValue());
@@ -184,7 +185,7 @@ public class ParamCodeValueProviderUnitTest {
 		Mockito.when(commandMessage.getCommand()).thenReturn(command);
 		Mockito.when(command.getElementSafely(Type.DomainAlias)).thenReturn(domainCmdElem);
 		Mockito.when(command.getRootDomainElement()).thenReturn(rootDomainElem);
-		Mockito.when(rootDomainElem.getRefId()).thenReturn(42L);
+		Mockito.when(rootDomainElem.getRefId()).thenReturn((RefId)RefId.with(42L));
 		
 		List<ParamValue> expected = new ArrayList<ParamValue>();
 		expected.add(new ParamValue());

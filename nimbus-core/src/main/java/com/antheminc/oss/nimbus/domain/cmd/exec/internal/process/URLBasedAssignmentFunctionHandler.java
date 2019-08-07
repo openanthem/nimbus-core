@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -47,14 +47,13 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	@SuppressWarnings("unchecked")
 	@Override
 	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
-		CommandMessage commandFromContext = null;
 		S state = null;
 		//TODO - Expose 2 other flavors for _set. 1. Set by value 2. Set by executing rule file.
 		//TODO - When we set by value, if the value is something like Status.INACTIVE, have to use querydsl replace or come up with some other approach
 		Param<S> targetParameter = findTargetParam(executionContext);
-		if(StringUtils.isNotBlank(executionContext.getCommandMessage().getCommand().getFirstParameterValue("value"))) {
-			commandFromContext =  executionContext.getCommandMessage();
-			state = (S) commandFromContext.getCommand().getFirstParameterValue("value");
+		String value = executionContext.getCommandMessage().getCommand().getFirstParameterValue(Constants.REQUEST_PARAMETER_VALUE_MARKER.code);
+		if (!StringUtils.isBlank(value)) {
+			state = (S) value;
 		} else {
 			state = isInternal(executionContext.getCommandMessage()) ? getInternalState(executionContext): getExternalState(executionContext);
 		}
@@ -102,7 +101,7 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 
 	protected boolean isInternal(CommandMessage commandMessage){
 		String url = commandMessage.getCommand().getFirstParameterValue(Constants.REQUEST_PARAMETER_URL_MARKER.code);
-		if(StringUtils.startsWith(url, Constants.SEPARATOR_URI_PLATFORM.code)) {
+		if(StringUtils.startsWith(url, Constants.SEGMENT_PLATFORM_MARKER.code)) {
 			return false;
 		}
 		return true;

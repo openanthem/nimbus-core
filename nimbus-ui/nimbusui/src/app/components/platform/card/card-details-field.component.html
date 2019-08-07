@@ -1,9 +1,9 @@
 <div class="col-sm-12 mb-1 {{cssClass}}" *ngIf="element.config.uiStyles.attributes.type==componentTypes.divider.toString()">
 </div>
-<div [ngClass]="getComponentClass()" *ngIf="element.config.uiStyles.attributes.type==componentTypes.field.toString()">
+<div *ngIf="element.config.uiStyles.attributes.type==componentTypes.field.toString()">
     <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc && element?.visible == true">
         <ng-template [ngIf]="element.config.uiStyles.attributes.inplaceEdit">
-            <inplace-editor [element]="element"></inplace-editor>
+            <inplace-editor id="{{element.config?.code}}" [element]="element"></inplace-editor>
         </ng-template>
         
         <ng-template [ngIf]="isDate(element.config.type.name)">
@@ -26,7 +26,9 @@
                 [element]="element" 
                 [required]="false">
             </nm-input-label>
-            <div class="textWrapBreakWord" [nmDisplayValue]='element.leafState' [config]='element.config'>
+            <div class="textWrapBreakWord" [pTooltip]="toolTip?.attributes?.value" [escape]="toolTip?.attributes?.escape" 
+                [tooltipStyleClass]="toolTip?.attributes?.tooltipStyleClass" [tooltipPosition]="toolTip?.attributes?.toolTipPosition" 
+                [nmDisplayValue]="element.leafState" [config]="element.config">
                 <span class="fieldValue">{{value ? value : placeholder}}&nbsp;</span>
             </div>    
         </div>

@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ComboBox;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Form;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.FormElementGroup;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
@@ -35,6 +36,7 @@ import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity.SampleForm;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreLevel1_Entity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -113,6 +115,44 @@ public class VPSampleViewPageGreen {
 		@ComboBox
 		@Values(url = "a/b/p/sampletask/_search?fn=lookup&orderby=sampletask.taskName.asc()&projection.mapsTo=code:id,label:taskName")
 		private List<String> sortedDynamicValues;
+		
+		@ComboBox
+		@Values(url = "a/b/p/sampletask/_search?fn=lookup&projection.mapsTo=code:taskName,label:taskName")
+		private String comboboxWithStringId;
+		
+		@TextBox(postEventOnChange = true)
+		@Path
+		@ActivateConditional(when = "state == 'showit'", targetPath = "/../unmappedNested")
+		private String p1;
+		
+		@FormElementGroup
+		private SampleNestedGroup unmappedNested;
+	}
+	
+	@MapsTo.Type(SampleCoreEntity.class)
+	@Getter @Setter
+	public static class SampleNestedGroup {
+		
+		@TextBox(postEventOnChange = true)
+		@Path
+		private String p2;
+		
+		@TextBox(postEventOnChange = true)
+		@Path
+		private int p3;
+		
+		@FormElementGroup
+		@Path(linked = false)
+		private Group1 group1;
+		
+		@MapsTo.Type(SampleEntity.class)
+		@Getter @Setter
+		public static class Group1 {
+			
+			@TextBox
+			@Path("test_name")
+			private String p4;
+		}
 	}
 	
 	@MapsTo.Type(SampleCoreEntity.class)
