@@ -13,31 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.entity.audit;
+package com.antheminc.oss.nimbus.domain.defn.extension;
 
-import com.antheminc.oss.nimbus.entity.AbstractEntity;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import lombok.Getter;
-import lombok.Setter;
+import javax.validation.Constraint;
+
 
 /**
- * @author Soham Chakravarti
- *
+ * @author Sandeep Mantha
  */
-@Getter @Setter
-public class AuditEntry extends AbstractEntity.IdLong {
-
-	private static final long serialVersionUID = 1L;
-
-	private String domainRootAlias;
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+public @interface RuleSet {
 	
-	private Long domainRootRefId;
+	String message() default "";
+	String rule() default "";
 	
-	private String propertyPath;
-	
-	private String propertyType;
-	
-	private Object newValue;
-	
-	private Object previousValue;
 }

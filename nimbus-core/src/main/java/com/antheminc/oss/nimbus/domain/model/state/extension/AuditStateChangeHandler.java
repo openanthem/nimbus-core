@@ -104,6 +104,7 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 		Long domainRootRefId = Long.valueOf(String.valueOf(persistableDomainRoot.getIdParam().getState()));
 		String propertyPath = leafParam.getPath();
 		String propertyType = leafParam.getType().getName();
+		Object previousValue = leafParam.getPreviousLeafState();
 		Object newValue = leafParam.getState();
 		
 		AuditEntry ae = getJavaBeanHandler().instantiate(configuredAnnotation.value());
@@ -111,6 +112,7 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 		ae.setDomainRootRefId(domainRootRefId);
 		ae.setPropertyPath(propertyPath);
 		ae.setPropertyType(propertyType);
+		ae.setPreviousValue(previousValue);
 		ae.setNewValue(newValue);
 
 		ModelConfig<?> auditConfig = Optional.ofNullable(getDomainConfigBuilder().getModel(configuredAnnotation.value()))
