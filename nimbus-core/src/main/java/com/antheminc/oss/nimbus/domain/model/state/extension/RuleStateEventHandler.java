@@ -24,8 +24,6 @@ import com.antheminc.oss.nimbus.domain.defn.extension.Rule;
 import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.RulesRuntime;
-import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
-import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.rules.RulesEngineFactory;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
@@ -54,7 +52,6 @@ public class RuleStateEventHandler extends EvalExprWithCrudActions<Rule> {
 
 	@Override
 	protected void handleInternal(Param<?> onChangeParam, Rule configuredAnnotation) {
-		
 		for(final String ruleAlias: configuredAnnotation.value()) {
 			
 			// Build the rules runtime

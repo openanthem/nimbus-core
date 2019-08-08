@@ -24,13 +24,18 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
+import com.antheminc.oss.nimbus.domain.model.state.extension.conditionals.AssignThenToTargetCaseConditionalHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.conditionals.BooleanSetterConditionalHandler;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 
 /**
  * @author Soham Chakravarti
- *
+ * @deprecated This class will likely be removed in the future. Consider
+ *             replacing implementations with:
+ *             <ul><li>{@link AssignThenToTargetCaseConditionalHandler}</li>
+ *             <li>{@link BooleanSetterConditionalHandler}</li></ul>
  */
 @Getter(AccessLevel.PROTECTED)
 public abstract class EvalExprWithCrudActions<A extends Annotation> extends AbstractConditionalStateEventHandler<A> {
@@ -41,7 +46,7 @@ public abstract class EvalExprWithCrudActions<A extends Annotation> extends Abst
 	
 	@Override
 	public void onStateLoad(A configuredAnnotation, Param<?> param) {
-		handleInternal(param, configuredAnnotation, StateEventType.ON_LOAD);
+		handleInternal(param, configuredAnnotation, StateChangeEventType.ON_LOAD);
 	}
 	
 	@Override
@@ -56,11 +61,11 @@ public abstract class EvalExprWithCrudActions<A extends Annotation> extends Abst
 		if(!validSet.contains(event.getAction()))
 			return;
 		
-		handleInternal(event.getParam(), configuredAnnotation, StateEventType.ON_CHANGE);
+		handleInternal(event.getParam(), configuredAnnotation, StateChangeEventType.ON_CHANGE);
 	}
 	
-	protected void handleInternal(Param<?> onChangeParam, A configuredAnnotation, StateEventType stateEventType) {
-		setStateEventType(stateEventType);
+	protected void handleInternal(Param<?> onChangeParam, A configuredAnnotation, StateChangeEventType stateEventType) {
+		setStateChangeEventType(stateEventType);
 		handleInternal(onChangeParam, configuredAnnotation);
 	}
 	
@@ -70,5 +75,9 @@ public abstract class EvalExprWithCrudActions<A extends Annotation> extends Abst
 		Param<?> targetParam = retrieveParamByPath(onChangeParam, targetPath);
 
 		executeCb.accept(targetParam);
+	}
+	
+	protected boolean evalWhen(Param<?> onChangeParam, String expr) {
+		return evaluate(expr, onChangeParam);
 	}
 }

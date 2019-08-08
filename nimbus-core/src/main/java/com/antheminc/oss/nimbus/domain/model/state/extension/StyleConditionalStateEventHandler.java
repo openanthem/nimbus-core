@@ -15,18 +15,22 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
+import java.lang.annotation.Annotation;
+import java.util.Set;
+
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.extension.Style;
 import com.antheminc.oss.nimbus.domain.defn.extension.StyleConditional;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.StyleState;
+import com.antheminc.oss.nimbus.domain.model.state.extension.conditionals.AssignThenToTargetCaseConditionalHandler;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
 /**
  * @author Tony Lopez
  *
  */
-public class StyleConditionalStateEventHandler extends EvalExprWithCrudDefaults<StyleConditional> {
+public class StyleConditionalStateEventHandler extends AssignThenToTargetCaseConditionalHandler<StyleConditional> {
 
 	public static final JustLogit LOG = new JustLogit();
 
@@ -34,22 +38,18 @@ public class StyleConditionalStateEventHandler extends EvalExprWithCrudDefaults<
 		super(beanResolver);
 	}
 
-	protected void applyStyleToState(Param<?> onChangeParam, Param<?> targetParam,
-			Style style) {
+	@Override
+	protected void executeElse(Param<?> onChangeParam, Annotation configuredAnnotation, Set<Param<?>> targetParams) {
+		for(Param<?> targetParam : targetParams) {
+			targetParam.setStyle(null);
+		}
+	}
+
+	@Override
+	protected void whenConditionTrue(Object thenValue, Param<?> onChangeParam, Param<?> targetParam) {
+		Style thenAnnotation = (Style) thenValue;
 		StyleState styleState = new StyleState();
-		styleState.setCssClass(style.cssClass());
+		styleState.setCssClass(thenAnnotation.cssClass());
 		targetParam.setStyle(styleState);
-	}
-
-	@Override
-	protected void executeDefault(Param<?> onChangeParam, Param<?> targetParam) {
-		targetParam.setStyle(null);
-	}
-
-	@Override
-	protected void executeOnWhenConditionTrue(Object payload, Param<?> onChangeParam, Param<?> targetParam) {
-		// Convert the payload into the expected parameter type.
-		Style style = (Style) payload;
-		this.applyStyleToState(onChangeParam, targetParam, style);
 	}
 }

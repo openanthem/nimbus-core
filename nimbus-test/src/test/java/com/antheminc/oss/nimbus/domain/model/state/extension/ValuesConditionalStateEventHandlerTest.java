@@ -99,7 +99,7 @@ public class ValuesConditionalStateEventHandlerTest {
 	
 	@Test
 	public void t1_useDefault_handleResetOnChange() {
-		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{}, true, Event.DEFAULT_ORDER_NUMBER, true, "../targetParam");
+		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{}, true, Event.DEFAULT_ORDER_NUMBER, true, new String[] { "../targetParam" });
 		final Values defaultValues = createValues(SAMPLE_VALUES.class, null);
 		final ParamEvent event = Mockito.mock(ParamEvent.class);
 		final MockParam decoratedParam = new MockParam();
@@ -123,7 +123,7 @@ public class ValuesConditionalStateEventHandlerTest {
 	
 	@Test
 	public void t2_useDefault_handleDontResetOnChange_noDefaultValues() {
-		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{}, true, Event.DEFAULT_ORDER_NUMBER, false, "../targetParam");
+		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{}, true, Event.DEFAULT_ORDER_NUMBER, false, new String[] {"../targetParam"});
 		
 		final ParamEvent event = Mockito.mock(ParamEvent.class);
 		final MockParam decoratedParam = new MockParam();
@@ -144,7 +144,7 @@ public class ValuesConditionalStateEventHandlerTest {
 	
 	@Test
 	public void t3_useDefault_handleDontResetOnChange_stateIsAlreadyNull() {
-		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{}, true, Event.DEFAULT_ORDER_NUMBER, false, "../targetParam");
+		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{}, true, Event.DEFAULT_ORDER_NUMBER, false, new String[] {"../targetParam"});
 		final Values defaultValues = createValues(SAMPLE_VALUES.class, null);
 		final ParamEvent event = Mockito.mock(ParamEvent.class);
 		final MockParam decoratedParam = new MockParam();
@@ -169,7 +169,7 @@ public class ValuesConditionalStateEventHandlerTest {
 	
 	@Test
 	public void t4_useDefault_handleDontResetOnChange_previousStateNotFoundInNewValues() {
-		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{}, true, Event.DEFAULT_ORDER_NUMBER, false, "../targetParam");
+		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{}, true, Event.DEFAULT_ORDER_NUMBER, false, new String[] {"../targetParam"});
 		final Values defaultValues = createValues(SAMPLE_VALUES.class, null);
 		final ParamEvent event = Mockito.mock(ParamEvent.class);
 		final MockParam decoratedParam = new MockParam();
@@ -194,7 +194,7 @@ public class ValuesConditionalStateEventHandlerTest {
 	
 	@Test
 	public void t5_useDefault_handleDontResetOnChange_preservePreviousState() {
-		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{}, true, Event.DEFAULT_ORDER_NUMBER, false, "../targetParam");
+		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{}, true, Event.DEFAULT_ORDER_NUMBER, false, new String[] {"../targetParam"});
 		final Values defaultValues = createValues(SAMPLE_VALUES.class, null);
 		final ParamEvent event = Mockito.mock(ParamEvent.class);
 		final MockParam decoratedParam = new MockParam();
@@ -221,7 +221,7 @@ public class ValuesConditionalStateEventHandlerTest {
 	public void t6_exclusive_handleResetOnChange() {
 		final Condition condition1 = createCondition("condition1expr", createValues(SAMPLE_VALUES.class, null));
 		final Condition condition2 = createCondition("condition2expr", createValues(SAMPLE_VALUES.class, null));
-		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{ condition1, condition2 }, true, Event.DEFAULT_ORDER_NUMBER, true, "../targetParam");
+		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{ condition1, condition2 }, true, Event.DEFAULT_ORDER_NUMBER, true, new String[] {"../targetParam"});
 		final Values defaultValues = createValues(SAMPLE_VALUES.class, null);
 		final ParamEvent event = Mockito.mock(ParamEvent.class);
 		final MockParam decoratedParam = new MockParam();
@@ -250,7 +250,7 @@ public class ValuesConditionalStateEventHandlerTest {
 		final Condition condition1 = createCondition("condition1expr", createValues(SAMPLE_VALUES.class, null));
 		final Condition condition2 = createCondition("condition2expr", createValues(SAMPLE_VALUES.class, null));
 		final Condition condition3 = createCondition("condition3expr", createValues(SAMPLE_VALUES.class, null));
-		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{ condition1, condition2, condition3 }, false, Event.DEFAULT_ORDER_NUMBER, true, "../targetParam");
+		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{ condition1, condition2, condition3 }, false, Event.DEFAULT_ORDER_NUMBER, true, new String[] {"../targetParam"});
 		final Values defaultValues = createValues(SAMPLE_VALUES.class, null);
 		final ParamEvent event = Mockito.mock(ParamEvent.class);
 		final MockParam decoratedParam = new MockParam();
@@ -279,7 +279,7 @@ public class ValuesConditionalStateEventHandlerTest {
 	@Test
 	public void t8_useDefault_targetParamDisabled() {
 		final Condition condition1 = createCondition("condition1expr", createValues(SAMPLE_VALUES.class, null));
-		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{ condition1 }, true, Event.DEFAULT_ORDER_NUMBER, true, "../targetParam");
+		final ValuesConditional configuredAnnotation = createValuesConditional(new Condition[]{ condition1 }, true, Event.DEFAULT_ORDER_NUMBER, true, new String[] {"../targetParam"});
 		final Values defaultValues = createValues(SAMPLE_VALUES.class, null);
 		final ParamEvent event = Mockito.mock(ParamEvent.class);
 		final MockParam decoratedParam = new MockParam();
@@ -353,7 +353,7 @@ public class ValuesConditionalStateEventHandlerTest {
 		};
 	}
 	
-	private ValuesConditional createValuesConditional(Condition[] condition, boolean exclusive, int order, boolean resetOnChange, String targetPath) {
+	private ValuesConditional createValuesConditional(Condition[] condition, boolean exclusive, int order, boolean resetOnChange, String[] targetPath) {
 		return new ValuesConditional() {
 
 			@Override
@@ -382,7 +382,7 @@ public class ValuesConditionalStateEventHandlerTest {
 			}
 
 			@Override
-			public String targetPath() {
+			public String[] targetPath() {
 				return targetPath;
 			}
 			

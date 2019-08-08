@@ -139,5 +139,5 @@ public @interface LabelConditional {
 	 * <p>Path of param to enable when condition is satisfied relative to param
 	 * on which this annotation is declared
 	 */
-	String targetPath();
+	String[] targetPath();
 }

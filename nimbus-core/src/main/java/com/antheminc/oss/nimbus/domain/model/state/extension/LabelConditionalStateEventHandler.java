@@ -15,7 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
-import java.util.ArrayList;
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
@@ -25,6 +25,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.defn.extension.LabelConditional;
 import com.antheminc.oss.nimbus.domain.model.config.extension.LabelStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.extension.conditionals.AssignThenToTargetCaseConditionalHandler;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
@@ -44,7 +45,7 @@ import lombok.Getter;
  */
 @EnableLoggingInterceptor
 @Getter(AccessLevel.PROTECTED)
-public class LabelConditionalStateEventHandler extends EvalExprWithCrudDefaults<LabelConditional> {
+public class LabelConditionalStateEventHandler extends AssignThenToTargetCaseConditionalHandler<LabelConditional> {
 
 	public static final JustLogit LOG = new JustLogit(LabelConditionalStateEventHandler.class);
 
@@ -96,39 +97,20 @@ public class LabelConditionalStateEventHandler extends EvalExprWithCrudDefaults<
 		LOG.debug(() -> "Replaced label configs for " + targetParam + " with " + labelsToAdd);
 	}
 
-	/**
-	 * <p>Reset the label configs for {@code targetParam} using the
-	 * {@link Label} that decorates the field representing it. <p>If the field
-	 * represented by {@code targetParam} does not have a {@link Label}
-	 * decorator, the label config for that param will be set to an empty
-	 * {@link ArrayList}.
-	 * @param onChangeParam the param represented by the field decorated with
-	 *            {@link LabelConditional}
-	 * @param targetParam the target parameter to execute against
-	 */
 	@Override
-	protected void executeDefault(Param<?> onChangeParam, Param<?> targetParam) {
-		this.applyLabelToState(onChangeParam, targetParam, p -> p.getConfig().getLabels());
+	protected void executeElse(Param<?> onChangeParam, Annotation configuredAnnotation, Set<Param<?>> targetParams) {
+		for(Param<?> targetParam : targetParams) {
+			this.applyLabelToState(onChangeParam, targetParam, p -> p.getConfig().getLabels());
+		}
 	}
 
-	/**
-	 * <p>Apply all {@code labels} within the configured annotation of
-	 * {@link LabelConditional} to {@code targetParam}.
-	 * @param payload the {@link LabelConditional.Condition#then()} value from
-	 *            the corresponding {@code true} condition that has been
-	 *            executed
-	 * @param onChangeParam the source parameter (annotated field)
-	 * @param targetParam the target parameter to execute against
-	 */
 	@Override
-	protected void executeOnWhenConditionTrue(Object payload, Param<?> onChangeParam, Param<?> targetParam) {
-		// Convert the payload into the expected parameter type.
-		Label[] labelsArr = (Label[]) payload;
-
+	protected void whenConditionTrue(Object thenValue, Param<?> onChangeParam, Param<?> targetParam) {
 		// Add the conditional label configs from the LabelConditional
 		// annotation.
+		Label[] thenAnnotation = (Label[]) thenValue;
 		Set<Label> labels = new HashSet<>();
-		for (Label label : labelsArr) {
+		for (Label label : thenAnnotation) {
 			labels.add(label);
 		}
 

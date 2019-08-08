@@ -36,7 +36,6 @@ import com.antheminc.oss.nimbus.domain.defn.extension.Script.Type;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.StateHolder.ParamStateHolder;
 import com.antheminc.oss.nimbus.support.JustLogit;
-import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 
 import lombok.Getter;
 
@@ -45,9 +44,7 @@ import lombok.Getter;
  *
  */
 @Getter
-public class ScriptEventHandler extends EvalExprWithCrudActions<Script> {
-
-	private ExpressionEvaluator expressionEvaluator;
+public class ScriptEventHandler extends AbstractConditionalStateEventHandler<Script> {
 	
 	private static final ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
 	
@@ -55,7 +52,6 @@ public class ScriptEventHandler extends EvalExprWithCrudActions<Script> {
 	
 	public ScriptEventHandler(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
-		this.expressionEvaluator = beanResolver.get(ExpressionEvaluator.class);
 	}
 	
 	@Override
