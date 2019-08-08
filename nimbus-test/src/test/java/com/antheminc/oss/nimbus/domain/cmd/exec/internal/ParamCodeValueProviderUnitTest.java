@@ -34,6 +34,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.entity.StaticCodeValue;
 
@@ -72,7 +73,7 @@ public class ParamCodeValueProviderUnitTest {
 		Output<List<StaticCodeValue>> searchResultsOutput = Output.instantiate(input, eCtx);
 		searchResultsOutput.setValue(searchResults);
 	
-		Mockito.when(domainCmdElem.getAlias()).thenReturn(ParamCodeValueProvider.STATIC_CODE_VALUE);
+		Mockito.when(domainCmdElem.getAlias()).thenReturn(Constants.PARAM_VALUES_DOMAIN_ALIAS.code);
 		Mockito.when(this.searchExecutor.execute(input)).thenReturn(searchResultsOutput);
 		
 		Assert.assertNull(this.testee.execute(input).getValue());
@@ -100,7 +101,7 @@ public class ParamCodeValueProviderUnitTest {
 		Output<List<StaticCodeValue>> searchResultsOutput = Output.instantiate(input, eCtx);
 		searchResultsOutput.setValue(searchResults);
 	
-		Mockito.when(domainCmdElem.getAlias()).thenReturn(ParamCodeValueProvider.STATIC_CODE_VALUE);
+		Mockito.when(domainCmdElem.getAlias()).thenReturn(Constants.PARAM_VALUES_DOMAIN_ALIAS.code);
 		Mockito.when(this.searchExecutor.execute(input)).thenReturn(searchResultsOutput);
 		
 		Assert.assertEquals(expected, this.testee.execute(input).getValue());
@@ -129,7 +130,7 @@ public class ParamCodeValueProviderUnitTest {
 		Output<List<StaticCodeValue>> searchResultsOutput = Output.instantiate(input, eCtx);
 		searchResultsOutput.setValue(searchResults);
 	
-		Mockito.when(domainCmdElem.getAlias()).thenReturn(ParamCodeValueProvider.STATIC_CODE_VALUE);
+		Mockito.when(domainCmdElem.getAlias()).thenReturn(Constants.PARAM_VALUES_DOMAIN_ALIAS.code);
 		Mockito.when(this.searchExecutor.execute(input)).thenReturn(searchResultsOutput);
 		
 		this.testee.execute(input).getValue();
@@ -160,7 +161,7 @@ public class ParamCodeValueProviderUnitTest {
 		values.put(codeKey, expected);
 		this.testee.setValues(values);
 	
-		Mockito.when(domainCmdElem.getAlias()).thenReturn(ParamCodeValueProvider.STATIC_CODE_VALUE);
+		Mockito.when(domainCmdElem.getAlias()).thenReturn(Constants.PARAM_VALUES_DOMAIN_ALIAS.code);
 		Mockito.when(commandMessage.getRawPayload()).thenReturn(rawPayload);
 		
 		Assert.assertEquals(expected, this.testee.execute(input).getValue());

@@ -72,7 +72,8 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 	@Override
 	@Cacheable(value="staticcodevalues", 
 		key = "#executionContext.getCommandMessage().getCommand().getFirstParameterValue(\"where\")", 
-		condition= "T(org.apache.commons.lang3.StringUtils).equalsIgnoreCase(#executionContext.getCommandMessage().getCommand().getElementSafely(T(com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type).DomainAlias).getAlias(), \"staticCodeValue\")")
+		condition = "T(org.apache.commons.lang3.StringUtils).equalsIgnoreCase(#executionContext.getCommandMessage().getCommand().getElementSafely(T(com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type).DomainAlias).getAlias(), \"staticCodeValue\")",
+		unless = "#result == null")
 	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
 		
 		ModelConfig<?> mConfig = getRootDomainConfig(executionContext);
@@ -80,7 +81,7 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		List<?> searchResult = (List<?>)super.execute(executionContext, actionParameter);
 				
 		Command cmd = executionContext.getCommandMessage().getCommand();
-		if(StringUtils.equalsIgnoreCase(cmd.getElementSafely(Type.DomainAlias).getAlias(), "staticCodeValue")) {
+		if(StringUtils.equalsIgnoreCase(cmd.getElementSafely(Type.DomainAlias).getAlias(), Constants.PARAM_VALUES_DOMAIN_ALIAS.code)) {
 			return getStaticParamValues((List<StaticCodeValue>)searchResult, mConfig, cmd);
 		}
 		return getDynamicParamValues(mConfig, searchResult, cmd);
