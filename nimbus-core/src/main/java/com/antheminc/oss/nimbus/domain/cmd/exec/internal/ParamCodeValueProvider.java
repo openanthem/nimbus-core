@@ -32,6 +32,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutor;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.HierarchyMatch;
@@ -50,7 +51,6 @@ public class ParamCodeValueProvider implements HierarchyMatch, CommandExecutor<L
 	
 	private static final String DEFAULT_KEY_ATTRIBUTE = "id";
 	private static final String KEY_VALUE_SEPERATOR = "&";
-	public static final String STATIC_CODE_VALUE = "staticCodeValue";
 	
 	DefaultActionExecutorSearch searchExecutor;
 	
@@ -76,7 +76,7 @@ public class ParamCodeValueProvider implements HierarchyMatch, CommandExecutor<L
 	public Output<List<ParamValue>> execute(Input input) {
 		CommandMessage cmdMsg = input.getContext().getCommandMessage();
 		final List<ParamValue> codeValues;
-		if(StringUtils.equalsIgnoreCase(cmdMsg.getCommand().getElementSafely(Type.DomainAlias).getAlias(), STATIC_CODE_VALUE)) {
+		if(StringUtils.equalsIgnoreCase(cmdMsg.getCommand().getElementSafely(Type.DomainAlias).getAlias(), Constants.PARAM_VALUES_DOMAIN_ALIAS.code)) {
 			codeValues = getStaticCodeValue(input);
 		}
 		else{
