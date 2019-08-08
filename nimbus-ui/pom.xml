@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.antheminc.oss</groupId>
 		<artifactId>nimbus-parent</artifactId>
-		<version>1.3.2.BUILD-SNAPSHOT</version>
+		<version>1.3.2.M1</version>
 	</parent>
 	
 	<name>nimbus-ui</name>
