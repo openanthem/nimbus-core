@@ -69,6 +69,7 @@ public class DefaultParamValuesHandlerTest extends AbstractFrameworkIngerationPe
 		
 		Param<String> viewRoot = ParamUtils.extractResponseByParamPath(response, "/sample_view");
 		Param<String> actual = viewRoot.findParamByPath("/page_green/tile/view_sample_form/comboBoxStaticCodeValuesLookup");
+		Assert.assertNotNull(actual.getValues());
 		Assert.assertTrue(CollectionUtils.isEqualCollection(getSampleValues().getParamValues(), actual.getValues()));
 	}
 	
