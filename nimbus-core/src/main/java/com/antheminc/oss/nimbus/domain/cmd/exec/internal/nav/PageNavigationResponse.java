@@ -33,8 +33,8 @@ public class PageNavigationResponse {
 		EXTERNAL;
 	}
 	
-	@Builder.Default
-	private Type type = Type.INTERNAL;
+	
+	private Type type;
 	private String pageId;
 	private String redirectUrl;
 }
