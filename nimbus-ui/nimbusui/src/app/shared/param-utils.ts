@@ -85,9 +85,9 @@ export class ParamUtils {
     switch (typeClassMapping) {
       case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name: {
         return new Date(
-          serverDateTime.getFullYear(),
-          serverDateTime.getMonth(),
-          serverDateTime.getDate()
+          serverDateTime.getUTCFullYear(),
+          serverDateTime.getUTCMonth(),
+          serverDateTime.getUTCDate()
         );
       }
 
@@ -118,6 +118,10 @@ export class ParamUtils {
         var seconds = value.getSeconds();
         var milliseconds = value.getMilliseconds();
         return JSON.stringify(ParamUtils.getServerDateString(yyyy, mm, dd) + 'T' + ParamUtils.getServerTimeString(hours, minutes, seconds, milliseconds) + ParamUtils.getServerTimeZoneString(value));
+      }
+
+      case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name: {
+        return JSON.stringify(value).substring(0,11) + '"';
       }
 
       default: {

@@ -39,6 +39,11 @@
         "secure" : false,
         "logLevel": "debug"
     },
+    "/training/client/org/*" :{ 
+        "target" : "http://localhost:8080",
+        "secure" : false,
+        "logLevel": "debug"
+    },
     "/cmproductadmin/client/org/*" :{ 
         "target" : "http://localhost:8086",
         "secure" : false,
