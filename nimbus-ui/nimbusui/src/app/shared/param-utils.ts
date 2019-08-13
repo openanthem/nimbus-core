@@ -121,7 +121,9 @@ export class ParamUtils {
       }
 
       case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name: {
-        return JSON.stringify(value).substring(0,11) + '"';
+        var userDate = new Date(value);
+        userDate.setMinutes(-value.getTimezoneOffset());
+        return JSON.stringify(userDate).substring(0,11) + '"';
       }
 
       default: {
