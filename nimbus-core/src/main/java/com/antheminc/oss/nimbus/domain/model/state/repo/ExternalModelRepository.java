@@ -15,8 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
-import java.util.List;
-
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -40,20 +38,13 @@ public interface ExternalModelRepository extends ModelRepository {
 		return state;
 	}
 	
-	default public <T> T _update(Param<?> param, T state){
+	@Override
+	default void _save(Param<?> param) {
 		throw new UnsupportedOperationException("_update operation is not supported for Database.rep_ws repository");
 	}
 	
-	default public void _replace(Param<?> param){
-		throw new UnsupportedOperationException("_replace operation is not supported for Database.rep_ws repository");
-	}
-	
-	default public void _replace(List<Param<?>> params){
-		throw new UnsupportedOperationException("_replace operation is not supported for Database.rep_ws repository");
-	}
-	
-	default public <T> T _replace(String alias, T state){
-		throw new UnsupportedOperationException("_replace operation is not supported for Database.rep_ws repository");
+	default public <T> T _update(Param<?> param, T state){
+		throw new UnsupportedOperationException("_update operation is not supported for Database.rep_ws repository");
 	}
 	
 	default public <T> T _delete(Param<?> param){

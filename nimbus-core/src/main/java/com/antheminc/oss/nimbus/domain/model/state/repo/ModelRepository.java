@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
-import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -61,18 +60,12 @@ public interface ModelRepository {
 	public <T> RefIdHolder<T> _new(Command cmd, ModelConfig<T> mConfig);
 	public <T> RefIdHolder<T> _new(Command cmd, ModelConfig<T> mConfig, T newState);
 	
-	// internally used, not exposed as an Action
-	default public <T> T _save(String alias, T state) {
-		return state;
-	}
+	<T> T _save(String alias, T state);
+	void _save(Param<?> param);
 	
 	public <T> T _get(Command cmd, ModelConfig<T> mConfig);
 	
 	public <T> T _update(Param<?> param, T state);
-	
-	public void _replace(Param<?> param);
-	public void _replace(List<Param<?>> params);
-	public <T> T _replace(String alias, T state);
 	
 	public <T> T _delete(Param<?> param);
 		

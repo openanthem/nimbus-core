@@ -49,5 +49,19 @@ public class ClassLoadUtils {
 		}
 	}
 	
+	public static boolean isPrimitive(Class<?> determinedType) {
+		return ClassUtils.isPrimitiveOrWrapper(determinedType) || String.class==determinedType;
+	}
 	
+	public static <P> Object toObject(Class<?> clazz, P value) {
+		if(value != null) {
+			if( Boolean.class == clazz || Boolean.TYPE == clazz) return Boolean.parseBoolean(value.toString());
+			if( Short.class == clazz || Short.TYPE == clazz) return Short.parseShort(value.toString());
+			if( Integer.class == clazz || Integer.TYPE == clazz) return Integer.parseInt(value.toString());
+			if( Long.class == clazz || Long.TYPE == clazz) return Long.parseLong(value.toString());
+			if( Float.class == clazz || Float.TYPE == clazz) return Float.parseFloat(value.toString());
+			if( Double.class == clazz || Double.TYPE == clazz) return Double.parseDouble(value.toString());
+		}
+	    return value;
+	}
 }

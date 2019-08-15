@@ -32,6 +32,8 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidArgumentException;
@@ -300,11 +302,33 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			return getSelf().execute(configCmdMsg);
 		
 		try {
+			Map<Object, Object> outerThreadResources = TransactionSynchronizationManager.getResourceMap();
+			boolean outerThreadTxnIsActive = TransactionSynchronizationManager.isActualTransactionActive();
+			List<TransactionSynchronization> outerThreadTxnSyncs = outerThreadTxnIsActive ? TransactionSynchronizationManager.getSynchronizations() : null;
+			
 			return Executors.newSingleThreadExecutor().submit(() -> {
 				try {
+					if(outerThreadResources!=null) {
+						outerThreadResources.keySet().stream()
+							.forEach(k->TransactionSynchronizationManager.bindResource(k, outerThreadResources.get(k)));
+					}
+
+					if(outerThreadTxnIsActive)
+						TransactionSynchronizationManager.setActualTransactionActive(outerThreadTxnIsActive);
+					
+					if(outerThreadTxnSyncs!=null) {
+						if(!TransactionSynchronizationManager.isSynchronizationActive())
+							TransactionSynchronizationManager.initSynchronization();
+						
+						outerThreadTxnSyncs.stream()
+							.forEach(t->TransactionSynchronizationManager.registerSynchronization(t));
+					}
+
+					
 					WebSessionIdLoggerInterceptor.addSessionIdIfAny();
 					return getSelf().execute(configCmdMsg);
 				} finally {
+					TransactionSynchronizationManager.clear();
 					WebSessionIdLoggerInterceptor.clearSessionIdIfAny();
 				}
 			}).get();

@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.model.state.internal;
 import java.io.Serializable;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -40,10 +41,13 @@ public abstract class AbstractEvent<T extends Serializable, P> {
 		ECHO
 	}
 	
+	@Getter @RequiredArgsConstructor
 	public enum PersistenceMode {
 
-		ATOMIC,
-		BATCH
+		ATOMIC(true),
+		MANUAL(false);
+		
+		private final boolean isAuto;
 	}
   
 	

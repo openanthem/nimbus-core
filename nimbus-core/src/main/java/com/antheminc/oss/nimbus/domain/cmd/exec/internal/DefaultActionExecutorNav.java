@@ -55,7 +55,7 @@ public class DefaultActionExecutorNav<T> extends AbstractCommandExecutor<PageNav
 		String pageId = input.getContext().getCommandMessage().getCommand()
 				.getFirstParameterValue(Constants.KEY_NAV_ARG_PAGE_ID.code);
 		if (!StringUtils.isEmpty(pageId)) {
-			return PageNavigationResponse.builder().pageId(pageId).build();
+			return PageNavigationResponse.builder().type(Type.INTERNAL).pageId(pageId).build();
 		}
 
 		String redirectUrl = input.getContext().getCommandMessage().getCommand()

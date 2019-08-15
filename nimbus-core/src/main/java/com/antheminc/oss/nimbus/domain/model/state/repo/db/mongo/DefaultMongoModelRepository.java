@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -34,6 +33,7 @@ import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
@@ -98,6 +98,23 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	}
 	
 	@Override
+	public void _save(Param<?> param) {
+		@SuppressWarnings("unchecked")
+		Model<Object> mRoot = (Model<Object>)param.getRootDomain();
+		
+		String idParamCode = mRoot.getConfig().getIdParamConfig().getCode();
+		Object coreStateId = mRoot.findParamByPath(idParamCode).getState();
+		if(coreStateId == null) {
+			Command rootCmd = mRoot.getRootExecution().getRootCommand();
+			_new(rootCmd, mRoot.getConfig(), mRoot.getState());
+			return;
+		}
+		
+		Object pState = param.getState();
+		_update(param, pState);
+	}
+	
+	@Override
 	public <T> T _get(Command cmd, ModelConfig<T> mConfig) {
 		Long id = RefId.nullSafeGetId(cmd.getRefId(Type.DomainAlias));
 		if(id==null)
@@ -152,22 +169,6 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		return state;
 	}
 	
-	
-	@Override
-	public <T> T _replace(String alias, T state) {
-		getMongoOps().save(state, alias);
-		return state;
-	}
-
-	@Override
-	public void _replace(Param<?> param) {
-
-	}
-
-	@Override
-	public void _replace(List<Param<?>> params) {
-
-	}
 	
 	@Override
 	public <T> T _delete(Param<?> param) {
