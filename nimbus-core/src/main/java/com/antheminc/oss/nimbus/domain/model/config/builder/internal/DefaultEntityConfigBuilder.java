@@ -15,10 +15,15 @@
  */
 package com.antheminc.oss.nimbus.domain.model.config.builder.internal;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -30,6 +35,7 @@ import org.springframework.data.annotation.Version;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.ConfigNature;
+import com.antheminc.oss.nimbus.domain.defn.RefId;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.EntityConfig.Scope;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
@@ -97,14 +103,17 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		}
 		
 		List<Field> fields = FieldUtils.getAllFieldsList(clazz);
-		if(fields==null) return mConfig;
+		if(fields==null) 
+			return mConfig;
 		
+		Map<Field, ParamConfig<?>> fieldToConfigMap = new HashMap<>(fields.size());
 		fields.stream()
 			.filter(f->!f.isSynthetic())
 			.filter(f->!Modifier.isStatic(f.getModifiers()))
 			.forEach((f)->{
 				ParamConfig<?> p = buildParam(mConfig, f, visitedModels);
 				mConfig.templateParamConfigs().add(p);
+				fieldToConfigMap.put(f, p);
 				
 				if(AnnotatedElementUtils.isAnnotated(f, Id.class)) {
 					// default id
@@ -115,6 +124,9 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 					mConfig.setVersionParamConfig(p);
 				}				
 			});
+		
+		Optional.ofNullable(handleIdParamConfig(mConfig, fieldToConfigMap))
+			.ifPresent(mConfig::setIdParamConfig);
 		
 		if(Repo.Database.isPersistable(mConfig.getRepo()) && mConfig.getIdParamConfig()==null) {
 			throw new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param which has Repo: "+mConfig.getRepo());
@@ -139,6 +151,58 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		return mConfig;
 	}
 
+	private ParamConfig<?> handleIdParamConfig(DefaultModelConfig<?> mConfig, Map<Field, ParamConfig<?>> fieldToConfigMap) {
+		if(mConfig.templateParamConfigs().isNullOrEmpty())
+			return null;
+		
+		// Look for @RefId
+		List<Entry<Field, ParamConfig<?>>> refIdEntries = fieldToConfigMap.entrySet().stream()
+			.filter(e->AnnotatedElementUtils.isAnnotated(e.getKey(), RefId.class))
+			.collect(Collectors.toList());
+		
+		if(CollectionUtils.isNotEmpty(refIdEntries)) {
+			
+			if(refIdEntries.size()!=1)
+				throw new InvalidConfigException("Expected to find only 1 declaration of @RefId, "
+						+ "but found: "+refIdEntries.size()+" in model: "+mConfig.getReferredClass());
+
+			ParamConfig<?> idParamConfig = refIdEntries.get(0).getValue();
+			mConfig.setIdParamConfig(idParamConfig);
+			
+			// check if field is also @Id param
+			//Field f = refIdEntries.get(0).getKey();
+			//boolean idParamIsPersistenceId = hasIdAnnotation(f);
+			//mConfig.setIdParamIsPersistenceId(idParamIsPersistenceId);
+
+			return idParamConfig;
+		}
+		
+		// @RefId not found, look for @Id
+		List<Entry<Field, ParamConfig<?>>> idEntries = fieldToConfigMap.entrySet().stream()
+				.filter(e->hasIdAnnotation(e.getKey()))
+				.collect(Collectors.toList());
+		
+		if(CollectionUtils.isEmpty(idEntries))
+			return null;
+		
+		if(idEntries.size()!=1)
+			throw new InvalidConfigException("Expected to find at least 1 declaration of @RefId when composite Id is defined, "
+					+ "but found none in model: "+mConfig.getReferredClass());
+		
+		ParamConfig<?> idParamConfig = idEntries.get(0).getValue();
+		//mConfig.setIdParamConfig(idParamConfig);
+		//mConfig.setIdParamIsPersistenceId(true);
+		return idParamConfig;
+	}
+	
+	private static boolean hasIdAnnotation(Field f) {
+		for(Annotation a : f.getAnnotations()) {
+			if(a.annotationType().getSimpleName().equals("Id"))
+				return true;
+		}
+		return false;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.antheminc.oss.nimbus.domain.model.config.builder.IEntityConfigBuilder#buildParam(com.antheminc.oss.nimbus.domain.model.config.ModelConfig, java.lang.reflect.Field, com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor)
 	 */

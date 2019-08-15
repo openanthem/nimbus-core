@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Optional;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.util.ClassUtils;
 
 import com.antheminc.oss.nimbus.InvalidArgumentException;
 import com.antheminc.oss.nimbus.UnsupportedScenarioException;
@@ -36,9 +35,9 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.PrimitiveUtils;
+import com.antheminc.oss.nimbus.support.pojo.ClassLoadUtils;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 
 import lombok.Getter;
@@ -175,7 +174,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		_setRaw(defaultRepStrategy, param, newState);
 	}
 	public <P> void _setRaw(ParamStateRepository currRep, Param<P> param, P newState) {
-		currRep._set(param, (P)toObject(param.getConfig().getReferredClass(), newState));
+		currRep._set(param, (P)ClassLoadUtils.toObject(param.getConfig().getReferredClass(), newState));
 	}
 	
 	/***
@@ -233,7 +232,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	
 	public <P> Action _set(ParamStateRepository currRep, Param<P> param, P newState) {
 		
-		newState = (P)toObject(param.getConfig().getReferredClass(), newState);
+		newState = (P)ClassLoadUtils.toObject(param.getConfig().getReferredClass(), newState);
 		
 		// unmapped core/view - nested/leaf: set to param
 		if(!param.isMapped()) {
@@ -416,21 +415,6 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		}
 	
 		return isEqual ? null : Action._update;
-	}
-	
-	/**
-	 * TODO Rakesh - in progress - try replace this with ConvertUtils...
-	 */
-	public static <P> Object toObject(Class<?> clazz, P value) {
-		if(value != null) {
-			if( Boolean.class == clazz || Boolean.TYPE == clazz) return Boolean.parseBoolean(value.toString());
-			if( Short.class == clazz || Short.TYPE == clazz) return Short.parseShort(value.toString());
-			if( Integer.class == clazz || Integer.TYPE == clazz) return Integer.parseInt(value.toString());
-			if( Long.class == clazz || Long.TYPE == clazz) return Long.parseLong(value.toString());
-			if( Float.class == clazz || Float.TYPE == clazz) return Float.parseFloat(value.toString());
-			if( Double.class == clazz || Double.TYPE == clazz) return Double.parseDouble(value.toString());
-		}
-	    return value;
 	}
 	
 }

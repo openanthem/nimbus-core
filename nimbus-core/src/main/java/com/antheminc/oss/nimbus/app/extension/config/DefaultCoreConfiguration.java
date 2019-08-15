@@ -72,8 +72,14 @@ public class DefaultCoreConfiguration {
 	public DefaultModelRepositoryFactory defaultModelRepositoryFactory(BeanResolverStrategy beanResolver){
 		/*Add ModelRepository implementation beans to a lookup map*/
 		Map<String, ModelRepository> repoBeanLookup = new HashMap<>();
-		repoBeanLookup.put(Repo.Remote.rep_remote_ws.name(), beanResolver.get(ModelRepository.class, Repo.Remote.rep_remote_ws.name()));
+		
 		repoBeanLookup.put(Repo.Database.rep_mongodb.name(), beanResolver.get(ModelRepository.class, Repo.Database.rep_mongodb.name()));
+		
+		Optional.ofNullable(beanResolver.find(ModelRepository.class, Repo.Database.rep_rdbms.name()))
+			.ifPresent(repo->repoBeanLookup.put(Repo.Database.rep_rdbms.name(), repo));
+		
+		
+		repoBeanLookup.put(Repo.Remote.rep_remote_ws.name(), beanResolver.get(ModelRepository.class, Repo.Remote.rep_remote_ws.name()));
 		repoBeanLookup.put(Repo.Database.rep_ws.name(), beanResolver.get(ModelRepository.class, Repo.Database.rep_ws.name()));
 
 		return new DefaultModelRepositoryFactory(beanResolver, repoBeanLookup);

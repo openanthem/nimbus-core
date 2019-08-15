@@ -251,6 +251,11 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 		}
 		
 		@Override
+		public void setNew(boolean isNew) {
+			_this().setNew(isNew);
+		}
+		
+		@Override
 		protected void initSetupInternal() {
 			getExecutionRuntime().start();
 			

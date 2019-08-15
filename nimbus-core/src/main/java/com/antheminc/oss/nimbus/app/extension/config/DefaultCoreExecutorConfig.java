@@ -33,6 +33,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorNa
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorNew;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorProcess;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorReplace;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorSave;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorSearch;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorUpdate;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultBehaviorExecutorState;
@@ -120,6 +121,16 @@ public class DefaultCoreExecutorConfig {
 	@Bean(name="default._config$execute")
 	public CommandExecutor<?> defaultBehaviorExecutorConfig(BeanResolverStrategy beanResolver){
 		return new DefaultActionExecutorConfig(beanResolver);
+	}
+	
+	@Bean(name="default._save$execute")
+	public CommandExecutor<?> defaultActionExecutorSave(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorSave(beanResolver);
+	}
+	
+	@Bean(name="default.$save")
+	public CommandExecutor<?> defaultBehaviorExecutorSave(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorSave(beanResolver);
 	}
 	
 	@Bean(name="default.$state")

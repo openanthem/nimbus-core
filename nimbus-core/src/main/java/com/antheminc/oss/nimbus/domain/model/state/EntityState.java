@@ -148,6 +148,8 @@ public interface EntityState<T> {
 		Map<String, Object> getParamRuntimes();
 		
 		<U> U unwrap(Class<U> c);
+		
+		void setNew(boolean isNew);
 	}
 	
 	public interface Model<T> extends EntityState<T> { 

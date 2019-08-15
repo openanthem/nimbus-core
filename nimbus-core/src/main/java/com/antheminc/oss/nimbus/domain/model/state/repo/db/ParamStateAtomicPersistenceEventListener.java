@@ -37,7 +37,7 @@ import lombok.Setter;
  * @author Soham Chakravarti
  * @author Rakesh Patel
  */
-@ConfigurationProperties(prefix="nimbus.model.persistence.strategy")
+@ConfigurationProperties(prefix="nimbus.domain.model.persistence.strategy")
 public class ParamStateAtomicPersistenceEventListener extends ParamStatePersistenceEventListener {
 
 	@Getter(value=AccessLevel.PROTECTED)

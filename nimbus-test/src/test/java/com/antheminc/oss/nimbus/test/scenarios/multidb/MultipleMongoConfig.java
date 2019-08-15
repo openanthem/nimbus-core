@@ -15,9 +15,6 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.multidb;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
@@ -35,9 +32,6 @@ import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.defn.Repo;
-import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultModelRepositoryFactory;
-import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositoryOptions;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
 import com.mongodb.MongoClient;

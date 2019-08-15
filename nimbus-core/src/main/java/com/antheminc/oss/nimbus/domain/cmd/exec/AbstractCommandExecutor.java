@@ -19,7 +19,6 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
@@ -174,5 +173,40 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		
 		Object refId = getJavaBeanHandler().getValue(va, entity);
 		return refId;
+	}
+	
+	
+	@Getter
+	protected static class RepoDatabaseResolution {
+		private Repo self;
+		private Repo mapsTo;
+		private ModelConfig<?> mapsToConfig;
+		
+		public boolean isSelfPersistable() {
+			return Repo.Database.isPersistable(self);
+		}
+		
+		public boolean isMapsToPersistable() {
+			return Repo.Database.isPersistable(mapsTo);
+		}
+	} 
+	
+	protected RepoDatabaseResolution resolveByRepoDatabase(ModelConfig<?> rootDomainConfig) {
+		RepoDatabaseResolution r = new RepoDatabaseResolution();
+		Repo repo = rootDomainConfig.getRepo();
+		
+		if(Repo.Database.exists(repo)) {
+			r.self = repo;
+		} 
+		
+		if(rootDomainConfig.isMapped()) {
+			r.mapsToConfig = rootDomainConfig.findIfMapped().getMapsToConfig();
+			Repo mapsToRepo = r.mapsToConfig.getRepo();
+			
+			if(Repo.Database.exists(mapsToRepo))
+				r.mapsTo = mapsToRepo;
+		}
+		
+		return r;
 	}
 }

@@ -78,4 +78,4 @@ remote:
       vr_remote_repo2: http://remote_repo/contextpath
       remote_repo_withcontext: http://remote-repo/contextpath
       cliententity: http://cliententity
-      client: http://client
+      client: http://client      
