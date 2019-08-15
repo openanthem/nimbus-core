@@ -65,7 +65,13 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
   }
 
   setState(val: any, frmInp: any) {
-    frmInp.element.leafState = val;
+
+    if (ParamUtils.isKnownDateType(frmInp.element.config.type.name)) {
+      frmInp.element.leafState = ParamUtils.convertDateToServerDate(val, frmInp.element.config.type.name);
+    } else {
+      frmInp.element.leafState = val;
+    }
+    
     this.cd.markForCheck();
     if (val == null) {
       //if the val is null - the form is set for the first time or it is being reset or user clearing the value (date component)

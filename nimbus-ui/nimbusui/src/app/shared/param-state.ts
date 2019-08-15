@@ -151,15 +151,15 @@ export class Param implements Serializable<Param, string> {
         }
         this.leafState = data;
       }
-    } else if (
-      this.config &&
-      this.config.type &&
-      ParamUtils.isKnownDateType(this.config.type.name)
-    ) {
-      this.leafState = ParamUtils.convertServerDateStringToDate(
-        inJson.leafState,
-        this.config.type.name
-      );
+    // } else if (
+    //   this.config &&
+    //   this.config.type &&
+    //   ParamUtils.isKnownDateType(this.config.type.name)
+    // ) {
+    //   this.leafState = ParamUtils.convertServerDateStringToDate(
+    //     inJson.leafState,
+    //     this.config.type.name
+    //   );
     } else {
       this.leafState = inJson.leafState;
       // Handle any transformations that need to be applied to the leaf state
@@ -413,7 +413,7 @@ export abstract class TableBasedData {
   static fromJson(
     configSvc: ConfigService,
     param: Param,
-    colElemParamsJSON: string[]
+    colElemParamsJSON: Param[]
   ): TableBasedData {
     switch (param.config.uiStyles.attributes.alias) {
       case ViewComponent.grid.toString(): {
@@ -438,7 +438,7 @@ export abstract class TableBasedData {
    * @param useJson denotes to use json as the table data building strategy
    * @param colElemParamsJSON the "source" of data to transform
    */
-  from(baseParam: Param, useJson?: boolean, colElemParamsJSON?: string[]): TableBasedData {
+  from(baseParam: Param, useJson?: boolean, colElemParamsJSON?: Param[]): TableBasedData {
     if (!baseParam) {
       return this;
     }
@@ -452,10 +452,11 @@ export abstract class TableBasedData {
         // if JSON is given, deserialize the JSON into useable params
         for (let colElemParamJSON of colElemParamsJSON) {
           colElemParams.push(
-            new Param(this.configSvc).deserialize(
-              colElemParamJSON,
-              baseParam.path
-            )
+            // new Param(this.configSvc).deserialize(
+            //   colElemParamJSON,
+            //   baseParam.path
+            // )
+            colElemParamJSON
           );
         }
       }
@@ -534,18 +535,18 @@ export abstract class RowData {
       };
 
       // apply any needed transformations
-      if (
-        cellParam.config &&
-        cellParam.config.type &&
-        ParamUtils.isKnownDateType(cellParam.config.type.name)
-      ) {
-        this.values[
-          cellParam.config.code
-        ] = ParamUtils.convertServerDateStringToDate(
-          this.values[cellParam.config.code],
-          cellParam.config.type.name
-        );
-      }
+      // if (
+      //   cellParam.config &&
+      //   cellParam.config.type &&
+      //   ParamUtils.isKnownDateType(cellParam.config.type.name)
+      // ) {
+      //   this.values[
+      //     cellParam.config.code
+      //   ] = ParamUtils.convertServerDateStringToDate(
+      //     this.values[cellParam.config.code],
+      //     cellParam.config.type.name
+      //   );
+      // }
     }
     if (Object.keys(stateData).length > 0) {
       this.stateMap.push(stateData);
