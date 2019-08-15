@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
@@ -27,7 +28,6 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
-import org.springframework.core.type.filter.TypeFilter;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
@@ -36,8 +36,6 @@ import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.ClassLoadUtils;
-
-import java.util.regex.Pattern;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -74,7 +72,10 @@ public class DomainConfigBuilder {
 	
 	public ModelConfig<?> getRootDomainOrThrowEx(String rootAlias) {
 		return Optional.ofNullable(getRootDomain(rootAlias))
-				.orElseThrow(()->new InvalidConfigException("Domain model config not found for root-alias: "+rootAlias));
+				.orElseThrow(() -> new InvalidConfigException("Domain model config not found for root-alias \""
+						+ rootAlias + "\".\n -> (1) Has the Java class for the domain entity been declared with @"
+						+ Domain.class.getSimpleName() + "(value = \"" + rootAlias + "\")?"
+						+ "\n -> (2) Has the package that includes the domain entity been defined in ${domain.model.basePackages}?"));
 	}
 
 

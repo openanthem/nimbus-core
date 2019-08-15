@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,12 +32,15 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidArgumentException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.channel.web.WebSessionIdLoggerInterceptor;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
@@ -215,11 +218,10 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		Param<?> cmdParam = findParamByCommandOrThrowEx(eCtx);
 		ExecutionConfig executionConfig = cmdParam != null ? cmdParam.getConfig().getExecutionConfig() : null;
 		
-		// if present, hand-off to each command within execution config
-		if(executionConfig != null && CollectionUtils.isNotEmpty(executionConfig.get())) {
-			List<MultiOutput> execConfigOutputs = executeConfig(eCtx, cmdParam, executionConfig.get());
-			execConfigOutputs.stream().forEach(mOut->addMultiOutput(mOutput, mOut));
-		}
+		if(cmdMsg.getCommand().getAction() == Action._get && executionConfig != null && CollectionUtils.isNotEmpty(executionConfig.get())) {
+               List<MultiOutput> execConfigOutputs = executeConfig(eCtx, cmdParam, executionConfig.get());
+               execConfigOutputs.stream().forEach(mOut->addMultiOutput(mOutput, mOut));
+        }
 		else {// otherwise, execute self
 			List<Output<?>> selfExecOutputs = executeSelf(eCtx, cmdParam);
 			selfExecOutputs.stream().forEach(out->addOutput(mOutput, out));
@@ -300,11 +302,33 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			return getSelf().execute(configCmdMsg);
 		
 		try {
+			Map<Object, Object> outerThreadResources = TransactionSynchronizationManager.getResourceMap();
+			boolean outerThreadTxnIsActive = TransactionSynchronizationManager.isActualTransactionActive();
+			List<TransactionSynchronization> outerThreadTxnSyncs = outerThreadTxnIsActive ? TransactionSynchronizationManager.getSynchronizations() : null;
+			
 			return Executors.newSingleThreadExecutor().submit(() -> {
 				try {
+					if(outerThreadResources!=null) {
+						outerThreadResources.keySet().stream()
+							.forEach(k->TransactionSynchronizationManager.bindResource(k, outerThreadResources.get(k)));
+					}
+
+					if(outerThreadTxnIsActive)
+						TransactionSynchronizationManager.setActualTransactionActive(outerThreadTxnIsActive);
+					
+					if(outerThreadTxnSyncs!=null) {
+						if(!TransactionSynchronizationManager.isSynchronizationActive())
+							TransactionSynchronizationManager.initSynchronization();
+						
+						outerThreadTxnSyncs.stream()
+							.forEach(t->TransactionSynchronizationManager.registerSynchronization(t));
+					}
+
+					
 					WebSessionIdLoggerInterceptor.addSessionIdIfAny();
 					return getSelf().execute(configCmdMsg);
 				} finally {
+					TransactionSynchronizationManager.clear();
 					WebSessionIdLoggerInterceptor.clearSessionIdIfAny();
 				}
 			}).get();

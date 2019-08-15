@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,12 +28,12 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorConfig;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorDelete;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.FunctionExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorGet;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorNav;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorNew;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorProcess;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorReplace;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorSave;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorSearch;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorUpdate;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultBehaviorExecutorState;
@@ -42,9 +42,6 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultCommandPathVaria
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.HierarchyMatchBasedBeanFinder;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.DBSearch;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByExample;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByQuery;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 import com.antheminc.oss.nimbus.support.expr.SpelExpressionEvaluator;
 
@@ -126,6 +123,16 @@ public class DefaultCoreExecutorConfig {
 		return new DefaultActionExecutorConfig(beanResolver);
 	}
 	
+	@Bean(name="default._save$execute")
+	public CommandExecutor<?> defaultActionExecutorSave(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorSave(beanResolver);
+	}
+	
+	@Bean(name="default.$save")
+	public CommandExecutor<?> defaultBehaviorExecutorSave(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorSave(beanResolver);
+	}
+	
 	@Bean(name="default.$state")
 	public CommandExecutor<?> defaultActionBehaviorExecutorGetState(BeanResolverStrategy beanResolver){
 		return new DefaultBehaviorExecutorState(beanResolver);
@@ -140,16 +147,6 @@ public class DefaultCoreExecutorConfig {
 	@Bean(name="default.processGateway")
 	public DefaultCommandExecutorGateway defaultProcessGateway(BeanResolverStrategy beanResolver){
 		return new DefaultCommandExecutorGateway(beanResolver);
-	}
-	
-	@Bean(name="searchByExample")
-	public DBSearch searchByExample(BeanResolverStrategy beanResolver) {
-		return new MongoSearchByExample(beanResolver);
-	}
-	
-	@Bean(name="searchByQuery")
-	public DBSearch searchByQuery(BeanResolverStrategy beanResolver) {
-		return new MongoSearchByQuery(beanResolver);
 	}
 
 	@Bean(name="default._search$execute")

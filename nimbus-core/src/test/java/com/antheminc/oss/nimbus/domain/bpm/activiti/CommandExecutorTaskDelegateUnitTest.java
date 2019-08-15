@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,11 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.bpm.activiti;
 
-import java.util.ArrayList;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -32,7 +29,6 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
@@ -140,7 +136,7 @@ public class CommandExecutorTaskDelegateUnitTest {
 		CommandElement rootDomainElement = Mockito.mock(CommandElement.class);
 		Mockito.when(cmdMsg.getCommand()).thenReturn(cmd);
 		Mockito.when(cmd.getRootDomainElement()).thenReturn(rootDomainElement);
-		Mockito.when(rootDomainElement.getRefId()).thenReturn(1L);
+		Mockito.when(rootDomainElement.getRefId().getId()).thenReturn(1L);
 		return new ExecutionContext(cmdMsg);
 	}
 }

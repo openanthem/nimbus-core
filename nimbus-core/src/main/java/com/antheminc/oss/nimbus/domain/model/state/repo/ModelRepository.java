@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
-import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -26,6 +25,7 @@ import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 import com.antheminc.oss.nimbus.support.Holder;
+import com.antheminc.oss.nimbus.support.RefIdHolder;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -57,21 +57,15 @@ public interface ModelRepository {
 		}
 	}
 	
-	public <T> T _new(Command cmd, ModelConfig<T> mConfig);
-	public <T> T _new(Command cmd, ModelConfig<T> mConfig, T newState);
+	public <T> RefIdHolder<T> _new(Command cmd, ModelConfig<T> mConfig);
+	public <T> RefIdHolder<T> _new(Command cmd, ModelConfig<T> mConfig, T newState);
 	
-	// internally used, not exposed as an Action
-	default public <T> T _save(String alias, T state) {
-		return state;
-	}
+	<T> T _save(String alias, T state);
+	void _save(Param<?> param);
 	
 	public <T> T _get(Command cmd, ModelConfig<T> mConfig);
 	
 	public <T> T _update(Param<?> param, T state);
-	
-	public void _replace(Param<?> param);
-	public void _replace(List<Param<?>> params);
-	public <T> T _replace(String alias, T state);
 	
 	public <T> T _delete(Param<?> param);
 		

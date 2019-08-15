@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,8 +25,14 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.Past;
 
 import com.antheminc.oss.nimbus.domain.Event;
+import com.antheminc.oss.nimbus.domain.cmd.Action;
+import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
+import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
+import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -144,50 +150,6 @@ public class ViewConfig {
 		String text() default "";
 
 		Type value() default Type.ActionTray;
-	}
-
-	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface Assessment {
-		String alias() default "Assessment";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "text-sm-right";
-	}
-
-	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface BreadCrumb {
-		String alias() default "breadCrumb";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "";
-
-		String label();
-
-		int order();
-
-		boolean postEventOnChange() default false;
 	}
 
 	/**
@@ -367,8 +329,8 @@ public class ViewConfig {
 	 * 
 	 * <p>CardDetail will be rendered when annotating a field nested under one
 	 * of the following components: <ul> <li>{@link Accordion}</li>
-	 * <li>{@link AccordionTab}</li><!-- TODO Candidate for removal --!>
-	 * <li>{@link CardDetailsGrid}</li> <li>{@link Section}</li> </ul>
+	 * <li>{@link AccordionTab}</li> <li>{@link CardDetailsGrid}</li>
+	 * <li>{@link Section}</li> </ul>
 	 * 
 	 * <p>CardDetail will render nested fields that are decorated with: <ul>
 	 * <li>{@link CardDetailsHeader}</li> <li>{@link CardDetailsBody}</li> </ul>
@@ -404,7 +366,7 @@ public class ViewConfig {
 			 * surrounding this component. <p>This can be used to apply
 			 * additional styling, if necessary.
 			 */
-			String cssClass() default "";
+			String cssClass() default "fourColumn";
 		}
 
 		/**
@@ -425,25 +387,6 @@ public class ViewConfig {
 		@ViewStyle
 		public @interface Header {
 			String alias() default "CardDetailsHeader";
-
-			/**
-			 * <p>CSS classes added here will be added to a container element
-			 * surrounding this component. <p>This can be used to apply
-			 * additional styling, if necessary.
-			 */
-			String cssClass() default "";
-		}
-
-		/**
-		 * <!--TODO Candidate for removal-->
-		 * 
-		 * @since 1.0
-		 */
-		@Retention(RetentionPolicy.RUNTIME)
-		@Target({ ElementType.FIELD })
-		@ViewStyle
-		public @interface Tag {
-			String alias() default "CardDetailsTag";
 
 			/**
 			 * <p>CSS classes added here will be added to a container element
@@ -624,6 +567,13 @@ public class ViewConfig {
 
 		boolean dataEntryField() default true;
 
+		/**
+		 * <p>When non-empty, add a default selection item to the top of the
+		 * rendered combo box with the provided value displayed as the label
+		 * text. The default value will always be {@code null}.
+		 */
+		String defaultLabel() default "";
+		
 		String help() default "";
 
 		String labelClass() default "anthem-label";
@@ -633,6 +583,51 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 
 		boolean readOnly() default false;
+
+	}
+	
+	
+	/**
+	 * <p>Autocomplete is a text input component.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>Autocomplete will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Section}</li> <li>{@link Form}</li> </ul>
+	 * 
+	 * <p>
+	 *  Example config:
+	 * <pre>
+	 * &#64;Autocomplete(display="label", postEventOnChange = true, minLength = 2)
+	 * &#64;Config(url = "/p/owner/_search?fn=lookup&where=owner.firstName.containsIgnoreCase('<!autocompletesearchvalue!>')&projection.mapsTo=code:id,label:firstName")
+	 * </pre>
+	 * 
+	 * 
+	 * @since 1.3
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface Autocomplete {
+		
+		String alias() default "Autocomplete";
+				
+		/**
+		 * <p> display represents the projection variable in the mongo query, the values of which will be 
+		 * 	   displayed to the user as suggestions.
+		 * 
+		 */
+		String display() default "";
+		
+		/**
+		 * <p> The minimum number of characters user should type to activate
+		 * 	   the autocomplete feature.
+		 */
+		int minLength() default 1;
+
+		boolean postEventOnChange() default false;
+
+		boolean dataEntryField() default true;
 
 	}
 
@@ -646,20 +641,6 @@ public class ViewConfig {
 	@DomainMeta
 	public @interface ConceptId {
 		String value() default "";
-	}
-
-	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface ContentContainer {
-		String alias() default "ContentContainer";
-
-		String content() default "";
 	}
 
 	/**
@@ -682,6 +663,8 @@ public class ViewConfig {
 	 * <p>FieldValue will be rendered when annotating a field nested under one
 	 * of the following components: <ul> <li>{@link CardDetailHeader}</li>
 	 * <li>{@link CardDetailBody}</li> <li>{@link FieldValueGroup}</li> </ul>
+	 * 
+	 * <p>FieldValue can show additional information to the user by annotating with {@link ToolTip}
 	 * 
 	 * <p>FieldValue should decorate a field having a simple type.
 	 * 
@@ -855,6 +838,16 @@ public class ViewConfig {
 		String type() default ".pdf,.png";
 
 		String url() default "";
+		
+		Behavior behavior() default Behavior.UPLOAD;
+		
+		public enum WriteStrategy{
+			COMMAND, MODEL_REPSITORY
+		}
+		public enum Behavior {
+			CONVERSION,
+			UPLOAD
+		}
 
 	}
 
@@ -889,7 +882,7 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Candidate for removal-->
+	 * <!--TODO Write javadoc -->
 	 * 
 	 * @since 1.0
 	 */
@@ -920,9 +913,13 @@ public class ViewConfig {
 	 * <li>{@link FileUpload}</li> <li>{@link Grid}</li> <li>{@link Header}</li>
 	 * <li>{@link MultiSelect}</li> <li>{@link MultiSelectCard}</li>
 	 * <li>{@link Paragraph}</li> <li>{@link PickList}</li>
+	 * <li>{@link Radio}</li> <li>{@link Signature}</li>
+	 * <li>{@link TextArea}</li> <li>{@link TextBox}</li>
+	 * <li>{@link InputMask}</li> <li>{@link Autocomplete}</li> </ul>
 	 * <li>{@link Radio}</li>  <li>{@link RichText}</li> 
 	 * <li>{@link Signature}</li> <li>{@link TextArea}</li>
 	 * <li>{@link TextBox}</li> </ul>
+
 	 * 
 	 * <p><i>*Note: Nested class fields will <b>not</b> be rendered in the same
 	 * manner as fields declared directly under the Form decorated field. This
@@ -1065,53 +1062,6 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <p><b>Expected Field Structure</b>
-	 * 
-	 * <p>GlobalNavMenu will be rendered when annotating a field nested under
-	 * one of the following components: <ul> <li>Layout Domain</li> </ul>
-	 * 
-	 * @since 1.0
-	 * @deprecated As of 1.1.7 onwards, {@code GlobalNavMenu} will no longer be
-	 *             rendered in the UI. Use {@link MenuPanel} instead.
-	 */
-	@Deprecated
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface GlobalNavMenu {
-
-		String alias() default "Global-Nav-Menu";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "";
-	}
-
-	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface GlobalSection {
-		String alias() default "globalSection";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "";
-
-		String imgSrc() default "";
-	}
-
-	/**
 	 * <p>Grid is a table container capable of displaying tabular data.
 	 * 
 	 * <p><b>Expected Field Structure</b>
@@ -1120,21 +1070,44 @@ public class ViewConfig {
 	 * following components: <ul> <li>{@link Form}</li> <li>{@link Section}</li>
 	 * </ul>
 	 * 
+	 * <p><b>Labels</b>
+	 * 
+	 * <p>Any labels defined within the <i>collection element</i> configuration
+	 * will be assigned to the decorated param and available via
+	 * {@link ListParam#getElemLabels()}.
+	 * 
 	 * <p><b>Configuring Row Item Display</b>
 	 * 
 	 * <p>The class being used in the decorated collection's parameterized type
 	 * is treated as the definition for row item data in the final rendered
 	 * grid. This is referred to as the <i>collection element type</i>. The
 	 * following components may be used to decorate fields in the collection
-	 * element type: <ul> <li>{@link LinkMenu}</li> <li>{@link GridColumn}</li>
-	 * <li>{@link GridRowBody}</li> </ul>
+	 * element type: <ul> <li>{@link Calendar}</li> <li>{@link ComboBox}</li>
+	 * <li>{@link GridColumn}</li> <li>{@link GridRowBody}</li>
+	 * <li>{@link LinkMenu}</li> <li>{@link Link}</li> </ul>
+	 * 
+	 * <p><b>Configuring inline editing</b>
+	 * 
+	 * <p>Grid supports in-line editing for the first-level fields of each row
+	 * item (editing expanded row content fields are not supported). When in
+	 * editable mode, acceptable UI components will be rendered with respect to
+	 * the type of annotation decorating each editable field.
 	 * 
 	 * @since 1.0
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
+	@OnStateLoad
 	public @interface Grid {
+		/**
+		 * <p>Add an add row button to that allows for adding a new element to
+		 * be added to this decorated parameter using the in-line editing
+		 * feature.
+		 * @see #onAdd()
+		 */
+		boolean addRow() default false;
+
 		String alias() default "Grid";
 
 		boolean clearAllFilters() default false;
@@ -1149,65 +1122,95 @@ public class ViewConfig {
 		boolean dataEntryField() default true;
 
 		/**
-		 * <p>As of release 1.1.9, {@code dataKey} is no longer needed to
-		 * support grid row expansion. This attribute will be removed in the
-		 * future releases.
+		 * <p>Add an edit button to each record that allows for in-line editing.
+		 * @see #onEdit()
 		 */
-		@Deprecated
-		String dataKey() default "id";
+		boolean editRow() default false;
 
 		boolean expandableRows() default false;
 
 		boolean export() default false;
 
+		/**
+		 * <p>When {@code true}, selecting the "select all" checkbox in the
+		 * header of the rendered grid will select all the records in the
+		 * dataset across all pages. When {@code false}, only within the current
+		 * page items will be selected.
+		 */
+		boolean headerCheckboxToggleAllPages() default false;
+
 		boolean isTransient() default false;
 
 		boolean lazyLoad() default false;
+
+		/**
+		 * <p>When set with fontawesome animated icon, shows the loading icon until the grid results are fetched from server
+		 */
+		String loaderIcon() default "fa fa fa-spinner fa-4x";
+
+		/**
+		 * <p>A param path relative to the Grid param created by this decorated
+		 * field, on which to invoke an {@link Action._get} call whenever a new
+		 * grid record is added. The {@link #addRow()} feature must be enabled
+		 * for this behavior to occur. <p>This mandates that a field having the
+		 * same value as {@code onAdd} must be defined as a sibling parameter to
+		 * this decorated field.
+		 */
+		String onAdd() default "../_action_onAdd";
+
+		/**
+		 * <p>A param path relative to the collection element param being edited
+		 * on which to invoke an {@link Action._get} call whenever a grid record
+		 * is edited. The {@link #editRow()} feature must be enabled for this
+		 * behavior to occur. <p>This mandates that a field having the same name
+		 * as {@code onEdit} must be defined in the generic type of the
+		 * decorated collection parameter.
+		 */
+		String onEdit() default "_action_onEdit";
 
 		boolean onLoad() default false;
 
 		String pageSize() default "25";
 
 		boolean pagination() default true;
-
+		
+		/**
+		 * <p>Render a button below the rendered grid that when clicked, submits
+		 * an HTTP POST request with a payload containing the selected indexes
+		 */
 		boolean postButton() default false;
 
-		String postButtonAlias() default "";
-
+		/**
+		 * <p>Set the label of the button rendered by {@link #postButton()}
+		 */
 		String postButtonLabel() default "";
 
+		/**
+		 * <p>Set the key to be used for the JSON object of selected index that
+		 * is sent as a payload
+		 * @see #postButton()
+		 */
 		String postButtonTargetPath() default "";
-		
+
 		/**
-		 * @deprecated As of 1.1.11 onwards, {@code postButtonUrl} will no longer 
-		 * represent the absolute path to make a http call for rowselection from UI. 
-		 * Replaced with {@link postButtonUri} attribute instead.
+		 * <p>A parameter path relative to the decorated this decorated field on
+		 * which to invoke an HTTP POST
+		 * @see #postButton()
 		 */
-		@Deprecated
-		String postButtonUrl() default "";
-		
-		/**
-		 * Represents the relative path of the postButton on a rowselection Grid. 
-		 * Can use similar notation as url attribute of @Config for relative path to param i.e, '../', <!#this!>
-		 */
-		String postButtonUri() default "";	
+		String postButtonUri() default "";
 
 		boolean postEventOnChange() default false;
 
+		/**
+		 * <p>Renders a checkbox at the beginning of each row in the table,
+		 * intended to be used for row selection and in conjunction with
+		 * {@link #postButtonUri()}, {@link #postButtonTargetPath()}
+		 */
 		boolean rowSelection() default false;
 
 		boolean showHeader() default true;
 
 		String url() default "";
-		
-		/**
-		 * @Since 1.1.11
-		 * Setting this to true will enable to select all the records in the dataset i.e across all pages 
-		 * within a table when selectAll checkbox in the header is checked. 
-		 * Default behavior is to select all the records only within the current  
-		 * page of the table when the table is paginated.
-		 */
-		boolean headerCheckboxToggleAllPages() default false;
 	}
 
 	/**
@@ -1371,30 +1374,6 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface GridContainer {
-		String alias() default "GridContainer";
-	}
-
-	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(value = { ElementType.ANNOTATION_TYPE })
-	@Inherited
-	public @interface GridFilter {
-
-	}
-
-	/**
 	 * <p>GridRowBody is used to display additional content about the row data
 	 * within a {@link Grid}.
 	 * 
@@ -1464,7 +1443,7 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Write Javadoc -->
+	 * <!--TODO Write javadoc -->
 	 * 
 	 * @since 1.0
 	 */
@@ -1518,7 +1497,16 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Write javadoc-->
+	 * <p>Informs the UI framework to invoke a {@link Action#_get} call to the
+	 * parameter created for the decorated field once the page has been fully
+	 * rendered. {@link Initialize} is commonly used as a way to trigger
+	 * {@link Config} executions only after the page has loaded.
+	 * 
+	 * <p>This annotation is only supported when decorating fields that are also
+	 * decorated with the following: <ul> <li>{@link Section}</li></ul>
+	 *
+	 * <p>Decorating other fields will not result in an error, but no action
+	 * will occur.
 	 *
 	 * @since 1.0
 	 */
@@ -1527,25 +1515,6 @@ public class ViewConfig {
 	@ViewParamBehavior
 	public @interface Initialize {
 		String alias() default "initialize";
-	}
-
-	/**
-	 * <!-- TODO Candidate for removal -->
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface InPlaceEdit {
-		String alias() default "InPlaceEdit";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "";
-
-		String type() default "text";
 	}
 
 	/**
@@ -1577,7 +1546,7 @@ public class ViewConfig {
 		 * 
 		 */
 		public enum Type {
-			DEFAULT, LEFT, RIGHT
+			DEFAULT, LEFT, RIGHT, DOWN
 		}
 
 		String alias() default "InputSwitch";
@@ -1596,7 +1565,7 @@ public class ViewConfig {
 		/**
 		 * It describes the Type of orientation, Accepted values can be
 		 * InputSwitch.Type.LEFT, InputSwitch.Type.RIGHT,
-		 * InputSwitch.Type.DEFAULT
+		 * InputSwitch.Type.DOWN, InputSwitch.Type.DEFAULT
 		 * 
 		 */
 		InputSwitch.Type orientation() default InputSwitch.Type.DEFAULT;
@@ -1606,29 +1575,6 @@ public class ViewConfig {
 		 * posts the state changes on this component to the server.
 		 * 
 		 */
-		boolean postEventOnChange() default false;
-	}
-
-	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface LinearGauge {
-		String alias() default "LinearGauge";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "";
-
-		String labelClass() default "anthem-label";
-
 		boolean postEventOnChange() default false;
 	}
 
@@ -1882,9 +1828,38 @@ public class ViewConfig {
 			 */
 			INTERNAL;
 		}
-
+		
+		/**
+		 * <p>Orientation properties for a {@link MenuPanel} instance.
+		 * @author Tony Lopez
+		 *
+		 */
+		public static enum Align {
+			
+			/**
+			 * <p>Let the parent component containing this {@link MenuPanel} decide the orientation.
+			 */
+			DEFAULT,
+			
+			/**
+			 * <p>Set the orientation for this {@link MenuPanel} from left to right.
+			 */
+			HORIZONTAL,
+			
+			/**
+			 * <p>Set the orientation for this {@link MenuPanel} from top to bottom.
+			 */
+			VERTICAL;
+		}
+		
+		
 		String alias() default "MenuPanel";
 
+		/**
+		 * <p>Control the orientation of the rendered menu items.
+		 */
+		Align align() default Align.DEFAULT;
+		
 		/**
 		 * <p>CSS classes added here will be added to a container element
 		 * surrounding this component. <p>This can be used to apply additional
@@ -1926,6 +1901,12 @@ public class ViewConfig {
 		 * component.
 		 */
 		String url() default "";
+		
+		/**
+		 * <p>{@code flow} attribute when given for breadcrumb navigation will be set appropriately.
+		 * flow needs to be the domain alias of which it is a sub process.
+		 */
+		String flow() default "";
 	}
 
 	/**
@@ -1980,7 +1961,7 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Write javadoc-->
+	 * <!--TODO Write javadoc -->
 	 *
 	 * @since 1.0
 	 */
@@ -1993,82 +1974,6 @@ public class ViewConfig {
 		}
 
 		Options value() default Options.Inherit;
-	}
-
-	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface MultiGrid {
-		String alias() default "MultiGrid";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "question-header";
-
-		String header() default "test";
-
-		String level() default "0";
-
-		boolean postEventOnChange() default false;
-	}
-
-	/**
-	 * <!-- TODO Candidate for removal -->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface MultiSelect {
-		String alias() default "MultiSelect";
-
-		String cols() default "";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "";
-
-		String help() default "";
-
-		String labelClass() default "anthem-label";
-
-		boolean postEventOnChange() default false;
-		
-		boolean dataEntryField() default true;
-
-	}
-
-	/**
-	 * <!-- TODO Candidate for removal -->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface MultiSelectCard {
-		String alias() default "MultiSelectCard";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "";
-
-		boolean dataEntryField() default true;
 	}
 
 	/**
@@ -2104,10 +2009,22 @@ public class ViewConfig {
 		String route() default ""; // remove
 		
 		boolean fixLayout() default false;
+		
+		String breadcrumbLabel() default "";
+
 	}
 
 	/**
-	 * <!--TODO Write javadoc-->
+	 * <p>PageHeader is a {@link ViewParamBehavior} that provides a way to
+	 * customize certain features of a header.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>PageHeader data will be used/rendered when annotating a field nested
+	 * under a {@link Section} with a value of {@link Section.Type#HEADER}.
+	 * 
+	 * <p>PageHeader will render nested components in accordance with the
+	 * configured value. See {@link PageHeader.Property} for specific details.
 	 * 
 	 * @since 1.0
 	 */
@@ -2116,10 +2033,154 @@ public class ViewConfig {
 	@ViewParamBehavior
 	public @interface PageHeader {
 		public enum Property {
-			APPTITLE, DEFAULT, HELP, LOGO, LOGOUT, MENU, NOTIFICATIONS, NUMBEROFNOTIFICATIONS, SETTINGS, SUBHEADER, SUBTITLE, TITLE, USERNAME, USERROLE;
+
+			/**
+			 * <p>Adds the application title name in the header. This should
+			 * decorate alongside a {@link Paragraph} component.
+			 */
+			APPTITLE,
+
+			/**
+			 * <p>An empty default value. Not used by the UI framework, but used
+			 * as a marker TODO This should be removed in the future.
+			 */
+			DEFAULT,
+
+			/**
+			 * <p>Adds a link to point to a help page. This should decorate
+			 * alongside a {@link Link} component.
+			 */
+			HELP,
+
+			/**
+			 * <p>Adds a image to the header. This should decorate alongside a
+			 * {@link Link} component using the {@code imgSrc} attribute.
+			 */
+			LOGO,
+
+			/**
+			 * <p>Adds a link to point to a logout page. This should decorate
+			 * alongside a {@link Link} component.
+			 */
+			LOGOUT,
+
+			/**
+			 * <p>Not used by the UI framework. Will likely be removed in the
+			 * future.
+			 */
+			@Deprecated
+			MENU,
+
+			/**
+			 * <p>Adds clickable notification components that can be used to
+			 * display additional information to the user. This should decorate
+			 * a nested class that may contain one or more of the following
+			 * components:
+			 * <ul><li>{@link Button}</li><li>{@link Link}</li><li>{@link LinkMenu}</li></ul>
+			 */
+			NOTIFICATIONS,
+
+			/**
+			 * <p>Not used by the UI framework. Will likely be removed in the
+			 * future.
+			 */
+			@Deprecated
+			NUMBEROFNOTIFICATIONS,
+
+			/**
+			 * <p>Not used by the UI framework. Will likely be removed in the
+			 * future.
+			 */
+			@Deprecated
+			SETTINGS,
+
+			/**
+			 * <p>Not used by the UI framework. Will likely be removed in the
+			 * future.
+			 */
+			@Deprecated
+			SUBHEADER,
+
+			/**
+			 * <p>Adds the subtitle name in the header. This should decorate
+			 * alongside a {@link Paragraph} component.
+			 * @see #APPTITLE
+			 */
+			SUBTITLE,
+
+			/**
+			 * <p>Sets the HTML document title. This should decorate alongside a
+			 * {@link Label} component.
+			 */
+			TITLE,
+
+			/**
+			 * <p>Renders a user's username in the header. This should decorate
+			 * a field with type String. The {@code leafState} of the generated
+			 * param for the field decorated by this annotation will be used as
+			 * the rendered value.
+			 */
+			USERNAME,
+
+			/**
+			 * <p>Renders a user's role name in the header. This should decorate
+			 * a field with type String. The {@code leafState} of the generated
+			 * param for the field decorated by this annotation will be used as
+			 * the rendered value.
+			 */
+			USERROLE;
 		}
 
 		Property value() default Property.DEFAULT;
+	}
+	
+	
+	/**
+	 * <p> Tooltip can be used to display additional information to the user.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>Tooltip will be rendered when annotating on one of
+	 * the following components: <ul> <li>{@link FieldValue}</li> </ul>
+	 * 
+	 * <p>
+	 *  Example config:
+	 * <pre>
+	 * &#64;ToolTip(value="Additional information <!/.d/.m/toolTipValue!>", tooltipStyleClass="styleClass", toolTipPosition="bottom")
+	 * 
+	 * @since 1.2
+	 */
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewParamBehavior
+	@OnStateLoad
+	public @interface ToolTip {
+
+		/**
+		 * <p> The value of the tooltip to display to the user..
+		 * <p> Html tags can be put inside value.  These will be parsed and rendered on the browser.
+		 * <p> Path can also be given for value property which will be resolved.
+		 */
+		String value() default "";
+
+		/**
+		 * <p> This determines the position of the tooltip. Valid options are right, left, top and bottom.
+		 */
+		String toolTipPosition() default "right";
+
+		/**
+		 * <p> Attaching a CSS Class to customise the style of the tooltip. 
+		 *     The styles for this class can be written in app_styles.css
+		 */	
+		String tooltipStyleClass() default "";
+		
+		
+		/**
+		 * <p> html tags will be parsed if escape value is false.
+		 */	
+		boolean escape() default true;
+
 	}
 
 	/**
@@ -2381,7 +2442,14 @@ public class ViewConfig {
 	public @interface RichText {
 
 		public enum ToolbarFeature {
-			ALIGN, BACKGROUND, BLOCKQUOTE, BOLD, CLEAN, CODE, CODE_BLOCK, COLOR, DIRECTION, FONT, HEADER, IMAGE, INDENT, ITALIC, LINK, LIST, SCRIPT, SIZE, STRIKE, UNDERLINE, VIDEO;
+			ALIGN, BACKGROUND, BLOCKQUOTE, BOLD, CLEAN, CODE, CODE_BLOCK, COLOR, DIRECTION, FONT, HEADER, IMAGE, INDENT,
+			/**
+			 * <p>Adds a combobox to the toolbar. Selected values from the
+			 * combobox will be inserted into the editor's last known cursor
+			 * position (at the start if untouched).</p><p>Values can be
+			 * supplied by decorating the field with {@link Values}.</p>
+			 */
+			VALUES_COMBOBOX, ITALIC, LINK, LIST, SCRIPT, SIZE, STRIKE, UNDERLINE, VIDEO;
 		}
 
 		String alias() default "RichText";
@@ -2494,10 +2562,10 @@ public class ViewConfig {
 	 * <p>Section will render nested fields that are decorated with: <ul>
 	 * <li>{@link Accordion}</li> <li>{@link Button}</li>
 	 * <li>{@link ButtonGroup}</li> <li>{@link CardDetail}</li>
-	 * <li>{@link CardDetailsGrid}</li> <li>{@link ComboBox}</li>
+	 * <li>{@link CardDetailsGrid}</li> <li>{@link Tab}</li> <li>{@link ComboBox}</li>
 	 * <li>{@link Form}</li> <li>{@link Grid}</li> <li>{@link Link}</li>
 	 * <li>{@link Menu}</li> <li>{@link Paragraph}</li><li>{@link Chart}</li>
-	 * <li>{@link StaticText}</li> <li>{@link TextBox}</li> </ul>
+	 * <li>{@link StaticText}</li> <li>{@link TextBox}</li> <li>{@link Autocomplete}</li> </ul>
 	 * 
 	 * @since 1.0
 	 */
@@ -2666,27 +2734,7 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!-- TODO Candidate for removal -->
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface SubHeader {
-		String alias() default "SubHeader";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "col-sm-6 pb-0 align-top"; // pb-0 is added
-																// for the demo.
-																// It is temp
-																// fix
-	}
-
-	/**
-	 * <!--TODO Javadoc-->
+	 * <!--TODO Write javadoc -->
 	 * 
 	 * @since 1.1
 	 */
@@ -2803,7 +2851,100 @@ public class ViewConfig {
 		String type() default "text";
 
 	}
+	
+	
+	/**
+	 * <p>InputMask is a text input component.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>InputMask will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Form}</li>
+	 * 
+	 * <p>InputMask should decorate a field having a simple type.
+	 * 
+	 * @since 1.0
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface InputMask {
+		String alias() default "InputMask";
+		
+		boolean dataEntryField() default true;
+		
+		boolean postEventOnChange() default false;
+		
+		/**
+		 * <p> maskStyle can be used to define the restricted format user is expected to enter.
+		 * For example maskStyle="99-9999" would let user enter only 6 numerical values in the i/p box.
+		 */
+		String mask() default "";
+		
+		/**
+		 * <p> Please visit PrimeNG's website for details on the below parameter.
+		 */
+		
+		String slotChar() default "_";
+		
+		/**
+		 * <p> Please visit PrimeNG's website for details on the below parameter.
+		 */		
+		String charRegex() default "[A-Za-z]";
+		
+		
+		/**
+		 * <p> Please visit PrimeNG's website for details on the below parameter.
+		 */
+		String maskPlaceHolder() default "";		
+		
+	}
+	
+	
+	
+	/**
+	 * <p> Tab groups a collection of TabPanels in tabs.
+	 * 
+	 * <p> <b>Expected Field Structure</b>
+	 * 
+	 * <p> Tab will be rendered when annotating a field nested under one
+	 * of the following components: <ul> <li>{@link Tile}</li>
+	 * <li>{@link Section}</li> </ul>
+	 * 
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface Tab {
+		
+		String alias() default "Tab";		
+	}
+	
+	
+	
+	/**
+	 * <p> TabPanel is used to display content for the tabs.
+	 * <p>TabPanel will render nested fields that are decorated with: <ul>
+	 * <li>{@link Tab}</li> <li>{@link Section}</li> </ul>
+	 * We can have a section within a TabPanel or even a Tab to create a nested structure.
+	 * 
+	 * <p> <b>Expected Field Structure</b>
+	 * 
+	 * <p> TabPanel will be rendered when annotating a field nested under one
+	 * of the following components: <ul> <li>{@link Tab}</li> </ul>
+	 * 
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface TabPanel {
 
+		String alias() default "TabPanel";
+		
+		boolean closable() default false;		
+		
+	}
+	
 	/**
 	 * <p>Tile is a container component that groups a collection of contents.
 	 * 
@@ -2814,7 +2955,7 @@ public class ViewConfig {
 	 * 
 	 * <p>Tile will render nested fields that are decorated with: <ul>
 	 * <li>{@link Header}</li> <li>{@link Modal}</li> <li>{@link Section}</li>
-	 * <li>{@link Tile}</li> </ul>
+	 * <li>{@link Tile}</li> <li>{@link Tab}</li></ul>
 	 * 
 	 * @since 1.0
 	 */
@@ -2861,6 +3002,7 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
+	@OnStateLoad
 	public @interface TreeGrid {
 		String alias() default "TreeGrid";
 
@@ -2905,9 +3047,17 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Write javadoc-->
+	 * <p>A low-level framework annotation that is used to decorate other
+	 * annotations as holding supplemental information that should provided
+	 * alongside a view parameter.
+	 * 
+	 * <p>Decorating an annotation with {@link ViewParamBehavior} will result in
+	 * the decorated annotation's metadata being added to the resulting
+	 * parameter object as an {@link AnnotationConfig}, accessible via
+	 * {@link ParamConfig#getUiNatures()}.
 	 *
 	 * @since 1.0
+	 * @see com.antheminc.oss.nimbus.domain.model.config.builder.internal.AbstractEntityConfigBuilder
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value = { ElementType.ANNOTATION_TYPE })

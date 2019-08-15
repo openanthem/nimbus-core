@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,9 +19,11 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
@@ -86,14 +88,40 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		return alias;
 	}
 	
+	protected <T> T getEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
+		ModelRepository mRepo = getRepositoryFactory().get(mConfig);
+		if (mRepo == null) 
+			return null;
+		
+		RefId<?> refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		if (Repo.Database.isRefIdRequired(mConfig.getRepo()) && null == refId) {
+			throw new InvalidConfigException("Get call received for domain - " 
+					+ mConfig.getAlias() + " without a refId. Execution Context: " + eCtx);
+		}
+		return mRepo._get(eCtx.getCommandMessage().getCommand(), mConfig);
+	}
+	
 	protected <T> T getOrInstantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
-		Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
 		ModelRepository mRepo = getRepositoryFactory().get(mConfig);
 		
-		return mRepo != null
-				? refId != null ? mRepo._get(eCtx.getCommandMessage().getCommand(), mConfig)
-						: mRepo._new(eCtx.getCommandMessage().getCommand(), mConfig)
-				: javaBeanHandler.instantiate(mConfig.getReferredClass());
+		// non DB
+		if(mRepo==null) 
+			return javaBeanHandler.instantiate(mConfig.getReferredClass());
+		
+		RefId<?> refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		if(refId==null)
+			return instantiateEntity(eCtx, mConfig);
+		
+		
+		return mRepo._get(eCtx.getCommandMessage().getCommand(), mConfig);
+	}
+	
+	protected <T> T instantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
+		ModelRepository mRepo = getRepositoryFactory().get(mConfig);
+		if (null == mRepo) {
+			return javaBeanHandler.instantiate(mConfig.getReferredClass());
+		}
+		return mRepo._new(eCtx.getCommandMessage().getCommand(), mConfig).getState();
 	}
 	
 	public interface RepoDBCallback<T> {
@@ -145,5 +173,40 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		
 		Object refId = getJavaBeanHandler().getValue(va, entity);
 		return refId;
+	}
+	
+	
+	@Getter
+	protected static class RepoDatabaseResolution {
+		private Repo self;
+		private Repo mapsTo;
+		private ModelConfig<?> mapsToConfig;
+		
+		public boolean isSelfPersistable() {
+			return Repo.Database.isPersistable(self);
+		}
+		
+		public boolean isMapsToPersistable() {
+			return Repo.Database.isPersistable(mapsTo);
+		}
+	} 
+	
+	protected RepoDatabaseResolution resolveByRepoDatabase(ModelConfig<?> rootDomainConfig) {
+		RepoDatabaseResolution r = new RepoDatabaseResolution();
+		Repo repo = rootDomainConfig.getRepo();
+		
+		if(Repo.Database.exists(repo)) {
+			r.self = repo;
+		} 
+		
+		if(rootDomainConfig.isMapped()) {
+			r.mapsToConfig = rootDomainConfig.findIfMapped().getMapsToConfig();
+			Repo mapsToRepo = r.mapsToConfig.getRepo();
+			
+			if(Repo.Database.exists(mapsToRepo))
+				r.mapsTo = mapsToRepo;
+		}
+		
+		return r;
 	}
 }

@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -138,6 +138,7 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
 		assertEquals(1, audit.size());
 		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
+		assertNull(audit.get(0).getPreviousValue());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertEquals("string", audit.get(0).getPropertyType());
@@ -152,12 +153,14 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		
 		assertEquals(domainRootAlias, audit.get(0).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
+		assertNull(audit.get(0).getPreviousValue());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertNotNull(audit.get(0).getCreatedDate());
 		
 		assertEquals(domainRootAlias, audit.get(1).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(1).getDomainRootRefId());
+		assertEquals(K_state_1, audit.get(1).getPreviousValue());
 		assertEquals(K_state_2, audit.get(1).getNewValue());
 		assertEquals(propertyPath, audit.get(1).getPropertyPath());
 		assertEquals("string", audit.get(1).getPropertyType());
@@ -252,6 +255,7 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		
 		assertEquals("sample_view", audit.get(0).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
+		assertNull(audit.get(0).getPreviousValue());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertEquals("string", audit.get(0).getPropertyType());
@@ -266,6 +270,7 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		
 		assertEquals("sample_view", audit.get(0).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
+		assertNull(audit.get(0).getPreviousValue());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertEquals("string", audit.get(0).getPropertyType());
@@ -273,6 +278,7 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		
 		assertEquals("sample_view", audit.get(1).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(1).getDomainRootRefId());
+		assertEquals(K_state_1, audit.get(1).getPreviousValue());
 		assertEquals(K_state_2, audit.get(1).getNewValue());
 		assertEquals(propertyPath, audit.get(1).getPropertyPath());
 		assertEquals("string", audit.get(1).getPropertyType());
@@ -308,6 +314,7 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		
 		assertEquals("sample_core", audit.get(0).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
+		assertNull(audit.get(0).getPreviousValue());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
 		assertEquals("/sample_core/level1/audit_nested_attr", audit.get(0).getPropertyPath());
 		assertEquals("string", audit.get(0).getPropertyType());
@@ -410,10 +417,23 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
 		assertEquals(1, audit.size());
 		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
+		assertNull((ComplexObject) audit.get(0).getPreviousValue());
 		assertEquals(k.getField1(), ((ComplexObject) audit.get(0).getNewValue()).getField1());
 		assertEquals(k.getField2(), ((ComplexObject) audit.get(0).getNewValue()).getField2());
 		assertEquals("/sample_core/complex_object", audit.get(0).getPropertyPath());
 		assertEquals("SampleCoreEntity.ComplexObject", audit.get(0).getPropertyType());
 		assertNotNull(audit.get(0).getCreatedDate());
+	}
+	
+	@Test
+	public void audit_arrayType() {
+		t08_core_string_array();
+		Param<String[]> cp = _q.getRoot().findParamByPath("/sample_core/attr_array_String");
+		//update the array with the same value - test to check if setting the state with the same array is logging additional audit entry
+		final String arr_val[] = new String[]{"A", "B", "C @"+new Date()};
+		cp.setState(arr_val);
+		
+		List<AuditEntry> audit_new = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
+		assertEquals(1, audit_new.size());
 	}
 }

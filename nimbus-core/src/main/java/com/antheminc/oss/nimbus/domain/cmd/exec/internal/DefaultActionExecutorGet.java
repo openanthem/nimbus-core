@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.ProcessRepository;
@@ -26,6 +27,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
@@ -92,7 +94,18 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 	}
 	
 	protected QuadModel<?, ?> createNewQuad(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
-		final Object entity = getOrInstantiateEntity(eCtx, rootDomainConfig);
+		final Repo repo = rootDomainConfig.getRepo();
+		final Object entity;
+		
+		if(Repo.Database.exists(repo)) { // root (view or core) is persistent
+			entity = getEntity(eCtx, rootDomainConfig);
+		} else {
+			entity = getOrInstantiateEntity(eCtx, rootDomainConfig);
+		}
+		
+		if (null == entity) {
+			throw new FrameworkRuntimeException("Entity not found for " + eCtx);
+		}
 		
 		if(rootDomainConfig.isMapped()) 
 			return handleMapped(rootDomainConfig, eCtx, entity, Action._get);
@@ -100,21 +113,7 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 		// create quad-model
 		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, null);
 		
-		return executeCb(eCtx, e);
-	}
-
-	// TODO: [SOHAM] interim solution
-	public static final ThreadLocal<Action> TH_ACTION = new ThreadLocal<>();
-	
-	private QuadModel<?, ?> executeCb(ExecutionContext eCtx, ExecutionEntity<?, ?> e) {
-		try {
-			TH_ACTION.set(Action._get);
-			QuadModel<?, ?> q = getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);
-			q.getRoot().initState();
-			return q;
-		} finally {
-			TH_ACTION.set(null);
-		}
+		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);
 	}
 
 	protected QuadModel<?, ?> handleMapped(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, Object mapped, Action action) {
@@ -129,7 +128,6 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 								.orElseThrow(()->new InvalidStateException("Expected first response from command gateway to return mapsTo core parm, but not found for mapsToCmd: "+mapsToCmd));
 		
 		QuadModel<?, ?> q = getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), mapped, coreParam);
-		q.getRoot().initState();
 		return q;
 	}
 	
@@ -152,9 +150,10 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 		String resolvedEntityAlias = rootDomainConfig.getRepoAlias();
 		String entityProcessAlias = resolvedEntityAlias + "_" + processStateAlias;
 		
-		final Long entityRefId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		RefId<?> entityRefId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		Long processId = RefId.nullSafeGetId(entityRefId);
 		
-		ProcessFlow processEntityState = getProcessRepo()._get(entityRefId, ProcessFlow.class, entityProcessAlias);
+		ProcessFlow processEntityState = getProcessRepo()._get(processId, ProcessFlow.class, entityProcessAlias);
 		
 		return processEntityState;
 		

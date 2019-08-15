@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.web.client.RestTemplate;
 
+import com.antheminc.oss.nimbus.channel.messagequeue.MessageQueueCommandDispatcher;
 import com.antheminc.oss.nimbus.channel.web.RemoteModelClientHttpRequestInterceptor;
 import com.antheminc.oss.nimbus.channel.web.WebActionController;
 import com.antheminc.oss.nimbus.channel.web.WebCommandBuilder;
@@ -67,12 +68,18 @@ import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerReflection;
 @EnableCaching
 public class DefaultCoreConfiguration {
 	
-	@Bean
+	@Bean(name="default.repositoryFactory")
 	public DefaultModelRepositoryFactory defaultModelRepositoryFactory(BeanResolverStrategy beanResolver){
 		/*Add ModelRepository implementation beans to a lookup map*/
 		Map<String, ModelRepository> repoBeanLookup = new HashMap<>();
-		repoBeanLookup.put(Repo.Remote.rep_remote_ws.name(), beanResolver.get(ModelRepository.class, Repo.Remote.rep_remote_ws.name()));
+		
 		repoBeanLookup.put(Repo.Database.rep_mongodb.name(), beanResolver.get(ModelRepository.class, Repo.Database.rep_mongodb.name()));
+		
+		Optional.ofNullable(beanResolver.find(ModelRepository.class, Repo.Database.rep_rdbms.name()))
+			.ifPresent(repo->repoBeanLookup.put(Repo.Database.rep_rdbms.name(), repo));
+		
+		
+		repoBeanLookup.put(Repo.Remote.rep_remote_ws.name(), beanResolver.get(ModelRepository.class, Repo.Remote.rep_remote_ws.name()));
 		repoBeanLookup.put(Repo.Database.rep_ws.name(), beanResolver.get(ModelRepository.class, Repo.Database.rep_ws.name()));
 
 		return new DefaultModelRepositoryFactory(beanResolver, repoBeanLookup);
@@ -167,11 +174,16 @@ public class DefaultCoreConfiguration {
 		return new WebCommandDispatcher(beanResolver);
 	}
 	
+	@Bean
+	public MessageQueueCommandDispatcher messageQueueCommandDispatcher(BeanResolverStrategy beanResolver){
+		return new MessageQueueCommandDispatcher(beanResolver);
+	}
 
 	@Bean
 	public AuditorAware<String> auditorProvider(BeanResolverStrategy beanResolver) {
 		return new SpringSecurityAuditorAware(beanResolver);
 	}
+	
 	
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {

@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,32 +15,35 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo;
 
-import java.io.Serializable;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
+import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
+import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
 import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.DBSearch;
+import com.antheminc.oss.nimbus.domain.model.state.repo.MongoIdSequenceRepository;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositoryOptions;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBSearchOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
+import com.antheminc.oss.nimbus.support.RefIdHolder;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 
@@ -56,27 +59,25 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	private final MongoOperations mongoOps;
 	private final IdSequenceRepository idSequenceRepo;
 	private final JavaBeanHandler beanHandler;
+	private final MongoDBModelRepositoryOptions options;
 	
-	@Autowired @Qualifier("searchByExample") 
-	DBSearch searchByExample;
-	
-	@Autowired @Qualifier("searchByQuery") 
-	DBSearch searchByQuery;
-
-	public DefaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo, BeanResolverStrategy beanResolver) {
+	public DefaultMongoModelRepository(MongoOperations mongoOps, BeanResolverStrategy beanResolver, 
+			MongoDBModelRepositoryOptions options) {
 		this.mongoOps = mongoOps;
-		this.idSequenceRepo = idSequenceRepo;
 		this.beanHandler = beanResolver.get(JavaBeanHandler.class);
+		this.options = options;
+		
+		this.idSequenceRepo = new MongoIdSequenceRepository(mongoOps);
 	}
 	
 	@Override
-	public <T> T _new(Command cmd, ModelConfig<T> mConfig) {
+	public <T> RefIdHolder<T> _new(Command cmd, ModelConfig<T> mConfig) {
 		T newState = getBeanHandler().instantiate(mConfig.getReferredClass());
 		return _new(cmd, mConfig, newState);
 	}
 	
 	@Override
-	public <T> T _new(Command cmd, ModelConfig<T> mConfig, T newState) {
+	public <T> RefIdHolder<T> _new(Command cmd, ModelConfig<T> mConfig, T newState) {
 		// detect id paramConfig
 		ParamConfig<?> pId = Optional.ofNullable(mConfig.getIdParamConfig())
 								.orElseThrow(()->new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param."));
@@ -86,7 +87,8 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(), pId.getCode());
 		getBeanHandler().setValue(va, newState, id);
 		
-		return newState;
+		RefId<?> refId = RefId.with(id);
+		return new RefIdHolder<>(refId, newState);
 	}
 
 	@Override
@@ -96,8 +98,28 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	}
 	
 	@Override
+	public void _save(Param<?> param) {
+		@SuppressWarnings("unchecked")
+		Model<Object> mRoot = (Model<Object>)param.getRootDomain();
+		
+		String idParamCode = mRoot.getConfig().getIdParamConfig().getCode();
+		Object coreStateId = mRoot.findParamByPath(idParamCode).getState();
+		if(coreStateId == null) {
+			Command rootCmd = mRoot.getRootExecution().getRootCommand();
+			_new(rootCmd, mRoot.getConfig(), mRoot.getState());
+			return;
+		}
+		
+		Object pState = param.getState();
+		_update(param, pState);
+	}
+	
+	@Override
 	public <T> T _get(Command cmd, ModelConfig<T> mConfig) {
-		Long id = cmd.getRefId(Type.DomainAlias);
+		Long id = RefId.nullSafeGetId(cmd.getRefId(Type.DomainAlias));
+		if(id==null)
+			return null;
+		
 		T state = getMongoOps().findById(id, mConfig.getReferredClass(), mConfig.getRepoAlias());
 		return state;
 	}
@@ -135,7 +157,13 @@ public class DefaultMongoModelRepository implements ModelRepository {
 				update.unset(path);
 			else
 				update.set(path, state);
-			getMongoOps().upsert(query, update, param.getRootDomain().getConfig().getRepoAlias());
+			
+			String repoAlias = param.getRootDomain().getConfig().getRepoAlias();
+			if (StringUtils.isBlank(repoAlias)) {
+				throw new InvalidConfigException("Core Persistent entity must be configured with "
+						+ Domain.class.getSimpleName() + " annotation. Not found for root model: " + param.getRootDomain());
+			}
+			getMongoOps().upsert(query, update, repoAlias);
 		} 
 		
 		return state;
@@ -143,26 +171,14 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	
 	
 	@Override
-	public <T> T _replace(String alias, T state) {
-		getMongoOps().save(state, alias);
-		return state;
-	}
-
-	@Override
-	public void _replace(Param<?> param) {
-
-	}
-
-	@Override
-	public void _replace(List<Param<?>> params) {
-
-	}
-	
-	@Override
 	public <T> T _delete(Param<?> param) {
-		Serializable id = param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
+		RefId<?> refId = param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
 		Class<T> referredClass = (Class<T>)param.getRootDomain().getConfig().getReferredClass();
 		String alias = param.getRootDomain().getConfig().getRepoAlias();
+		
+		Long id = RefId.nullSafeGetId(refId);
+		if(id==null)
+			throw new InvalidStateException("Id must not be null for delete in param: "+param);
 		
 		Query query = new Query(Criteria.where("_id").is(id));
 		T state = getMongoOps().findAndRemove(query, referredClass, alias);
@@ -174,11 +190,10 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		SearchCriteria<?> sc = criteria.get();
 		Class<?> referredClass = param.getRootDomain().getConfig().getReferredClass();
 		String alias = param.getRootDomain().getConfig().getRepoAlias();
-		
-		if(sc instanceof ExampleSearchCriteria) {
-			return getSearchByExample().search(referredClass, alias, sc);
+		Optional<MongoDBSearchOperation> searchOperation = getOptions().getSearchOperations().stream().filter(o -> o.shouldAllow(sc)).findFirst();
+		if (!searchOperation.isPresent()) {
+			throw new FrameworkRuntimeException("Unable to determine search operation for search criteria: " + sc);
 		}
-		return getSearchByQuery().search(referredClass, alias, sc);
+		return searchOperation.get().search(referredClass, alias, sc);
 	}
-
 }

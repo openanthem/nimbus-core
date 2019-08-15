@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -34,8 +35,9 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
+import com.antheminc.oss.nimbus.support.PrimitiveUtils;
+import com.antheminc.oss.nimbus.support.pojo.ClassLoadUtils;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 
 import lombok.Getter;
@@ -146,6 +148,19 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		return newState;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> void uninstantiate(Param<T> param) {
+		T newState = null;
+		
+		Class<?> referredClass = param.getConfig().getReferredClass();
+		if (referredClass.isPrimitive()) {
+			newState = (T) PrimitiveUtils.getDefaultValue(referredClass);
+		}
+		
+		_setRaw(param, newState);
+	}
+	
 	@Override
 	public <P> P _getRaw(Param<P> param) {
 		return _getRaw(defaultRepStrategy, param);
@@ -159,7 +174,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		_setRaw(defaultRepStrategy, param, newState);
 	}
 	public <P> void _setRaw(ParamStateRepository currRep, Param<P> param, P newState) {
-		currRep._set(param, (P)toObject(param.getConfig().getReferredClass(), newState));
+		currRep._set(param, (P)ClassLoadUtils.toObject(param.getConfig().getReferredClass(), newState));
 	}
 	
 	/***
@@ -217,7 +232,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	
 	public <P> Action _set(ParamStateRepository currRep, Param<P> param, P newState) {
 		
-		newState = (P)toObject(param.getConfig().getReferredClass(), newState);
+		newState = (P)ClassLoadUtils.toObject(param.getConfig().getReferredClass(), newState);
 		
 		// unmapped core/view - nested/leaf: set to param
 		if(!param.isMapped()) {
@@ -235,8 +250,16 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 				if(parentParam==null)
 					return currRep._set(param, null);
 				
-				if(parentParam.getState()!=null)
+				if(parentParam.getState()!=null) {
+					// ripple to mapsTo elements of mapped children
+					param.traverse(p -> {
+						if (p.isMapped()) {
+							uninstantiate(p.findIfMapped().getMapsTo());
+						}
+					});
+					
 					return currRep._set(param, null);
+				}
 				
 				return null;
 			}
@@ -374,6 +397,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	}
 	
 	public static <P> Action _equals(P newState, P currState) {
+		boolean isEqual;
 		//00
 		if(newState==null && currState==null) return null;
 		
@@ -384,23 +408,13 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		if(newState!=null && currState==null) return Action._new;
 		
 		//11
-		boolean isEqual = currState.equals(newState);
-		return isEqual ? null : Action._update;
-	}
-	
-	/**
-	 * TODO Rakesh - in progress - try replace this with ConvertUtils...
-	 */
-	public static <P> Object toObject(Class<?> clazz, P value) {
-		if(value != null) {
-			if( Boolean.class == clazz || Boolean.TYPE == clazz) return Boolean.parseBoolean(value.toString());
-			if( Short.class == clazz || Short.TYPE == clazz) return Short.parseShort(value.toString());
-			if( Integer.class == clazz || Integer.TYPE == clazz) return Integer.parseInt(value.toString());
-			if( Long.class == clazz || Long.TYPE == clazz) return Long.parseLong(value.toString());
-			if( Float.class == clazz || Float.TYPE == clazz) return Float.parseFloat(value.toString());
-			if( Double.class == clazz || Double.TYPE == clazz) return Double.parseDouble(value.toString());
+		if(currState instanceof Object[] && newState instanceof Object[]) {
+			isEqual = Arrays.equals((Object[]) currState, (Object[]) newState); 
+		} else {
+			isEqual = currState.equals(newState);
 		}
-	    return value;
+	
+		return isEqual ? null : Action._update;
 	}
 	
 }

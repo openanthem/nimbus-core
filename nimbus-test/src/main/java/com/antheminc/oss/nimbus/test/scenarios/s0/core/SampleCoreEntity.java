@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -200,4 +200,10 @@ public class SampleCoreEntity extends IdLong {
 	private String testEntry;
 	
 	private List<String> attr_list_2_simple;
+	
+	private String p1;
+	
+	private String p2;
+	
+	private int p3;
 }

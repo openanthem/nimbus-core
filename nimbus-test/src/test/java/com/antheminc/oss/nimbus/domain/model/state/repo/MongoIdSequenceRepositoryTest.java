@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
 
 /**
@@ -33,7 +34,7 @@ import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegration
 public class MongoIdSequenceRepositoryTest extends AbstractFrameworkIntegrationTests {
 
 	@Autowired
-	IdSequenceRepository seqIdRepo;
+	DefaultMongoModelRepository mongoModelRepository;
 	
 	@Autowired
 	MongoOperations mongoOps;
@@ -41,7 +42,7 @@ public class MongoIdSequenceRepositoryTest extends AbstractFrameworkIntegrationT
 	@Test
 	public void t1_testSequenceCollectionUpsert() {
 		mongoOps.dropCollection("sequence");
-		assertNotEquals(0, seqIdRepo.getNextSequenceId("global"));
-		assertNotEquals(1, seqIdRepo.getNextSequenceId("global"));
+		assertNotEquals(0, mongoModelRepository.getIdSequenceRepo().getNextSequenceId("global"));
+		assertNotEquals(1, mongoModelRepository.getIdSequenceRepo().getNextSequenceId("global"));
 	}
 }

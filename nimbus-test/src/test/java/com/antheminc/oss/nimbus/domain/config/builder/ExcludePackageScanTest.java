@@ -1,5 +1,6 @@
 package com.antheminc.oss.nimbus.domain.config.builder;
 
+import org.hamcrest.core.StringContains;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,7 +20,7 @@ public class ExcludePackageScanTest extends AbstractFrameworkIntegrationTests  {
 	public void testShouldNotScanTheConfiguredBasePackage(){		
         MockHttpServletRequest request = MockHttpRequestBuilder.withUri(PLATFORM_ROOT+"/sampleExcludeEntity").addAction(Action._new).getMock();									
 		thrown.expect(InvalidConfigException.class);
-		thrown.expectMessage("Domain model config not found for root-alias: sampleExcludeEntity");
+		thrown.expectMessage(new StringContains("Domain model config not found for root-alias \"sampleExcludeEntity\""));
 		controller.handlePost(request, null);
 	}	
 }

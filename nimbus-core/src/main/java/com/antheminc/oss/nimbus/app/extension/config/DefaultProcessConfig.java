@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav.DefaultActionNewIni
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav.PageIdEchoNavHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.AddFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.EvalFunctionHandler;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.FilterFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.SetByRuleFunctionalHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.SetFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.StatelessBPMFunctionHanlder;
@@ -51,7 +52,7 @@ import com.antheminc.oss.nimbus.support.expr.SpelExpressionEvaluator;
 @Configuration 
 public class DefaultProcessConfig {
 	
-	@Value("${process.supportStatefulProcesses:#{true}}")
+	@Value("${nimbus.process.supportStatefulProcesses:#{true}}")
 	private Boolean supportStatefulProcesses;	
 		
 	@Bean
@@ -133,10 +134,14 @@ public class DefaultProcessConfig {
 	public FunctionHandler<?, ?> queryFunctionHandler(){
 		return new DefaultSearchFunctionHandlerQuery<>();
 	}
-
+	
 	@Bean(name="default._process$execute?fn=_eval")
 	public EvalFunctionHandler<?,?> evalFunctionHandler(ExpressionManager expressionManager){
 		return new EvalFunctionHandler(expressionManager);
 	}
 
+	@Bean(name="default._process$execute?fn=_filter")
+	public FilterFunctionHandler filterFunctionHandler() {
+		return new FilterFunctionHandler();
+	}
 }

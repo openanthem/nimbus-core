@@ -68,7 +68,8 @@ public class MessageConditionalHandler extends EvalExprWithCrudActions<MessageCo
 		// The unevaluated msg is considered unique as we dont want to show the same msg twice in different contexts or Types
 		// TODO: The same msg should not be added accross two Message Conditionals -Add a static validation for it in future
 		Message msg = new Message(configuredAnnotation.message(), message, configuredAnnotation.messageType(), configuredAnnotation.context(),configuredAnnotation.cssClass());
-
+		msg.setTransient(configuredAnnotation.isTransient());
+		
 		Set<Message> newMsgs = new HashSet<>();
 		if(!CollectionUtils.isEmpty(param.getMessages())) 
 			newMsgs.addAll(param.getMessages());

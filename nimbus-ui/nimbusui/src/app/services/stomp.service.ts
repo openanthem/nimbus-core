@@ -1,51 +1,52 @@
 /**
  * @license
- * Copyright 2016-2018 the original author or authors.
- * 
+ * Copyright 2016-2019 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
+
 import { Injectable } from '@angular/core';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import * as Stomp from 'stompjs';
-import { ServiceConstants } from './service.constants';
 import { LoggerService } from './logger.service';
 
 /**
  * \@author reference https://github.com/ivanderbu2/angular-redux
  * \@author Dinakar.Meda
- * 
- * \@whatItDoes 
- * 
- * \@howToUse 
- * 
+ *
+ * \@whatItDoes
+ *
+ * \@howToUse
+ *
  */
 /** possible states for the STOMP service */
 export enum STOMPState {
-    CLOSED,
-    TRYING,
-    CONNECTED,
-    SUBSCRIBED,
-    DISCONNECTING
-};
+  CLOSED,
+  TRYING,
+  CONNECTED,
+  SUBSCRIBED,
+  DISCONNECTING
+}
 
 /** look up states for the STOMP service */
 export const StateLookup: string[] = [
-    'CLOSED',
-    'TRYING',
-    'CONNECTED',
-    'SUBSCRIBED',
-    'DISCONNECTING'
+  'CLOSED',
+  'TRYING',
+  'CONNECTED',
+  'SUBSCRIBED',
+  'DISCONNECTING'
 ];
 
 /**
@@ -59,167 +60,150 @@ export const StateLookup: string[] = [
  */
 @Injectable()
 export class STOMPService {
+  /* Service parameters */
 
-    /* Service parameters */
+  // State of the STOMPService
+  public state: BehaviorSubject<STOMPState>;
 
-    // State of the STOMPService
-    public state: BehaviorSubject<STOMPState>;
+  // Publishes new messages to Observers
+  public messages: Subject<Stomp.Message>;
 
-    // Publishes new messages to Observers
-    public messages: Subject<Stomp.Message>;
+  // STOMP Client from stomp.js
+  private client: Stomp.Client;
 
-    // STOMP Client from stomp.js
-    private client: Stomp.Client;
+  // Resolve Promise made to calling class, when connected
+  private resolvePromise: { (...args: any[]): void };
 
-    // Resolve Promise made to calling class, when connected
-    private resolvePromise: { (...args: any[]): void };
+  /** Constructor */
+  public constructor(public logger: LoggerService) {
+    this.messages = new Subject<Stomp.Message>();
+    this.state = new BehaviorSubject<STOMPState>(STOMPState.CLOSED);
+  }
 
-    /** Constructor */
-    public constructor(
-        public logger: LoggerService
-    ) {
-        this.messages = new Subject<Stomp.Message>();
-        this.state = new BehaviorSubject<STOMPState>(STOMPState.CLOSED);
+  /** Set up configuration */
+  public configure(): void {
+    // Check for errors:
+    // if (this.state.getValue() !== STOMPState.CLOSED) {
+    //     throw Error('Already running!');
+    // }
+    // // Attempt connection, passing in a callback
+    // //let theClientFunction;
+    // //jit-aot conflict,  same typing, same angular version
+    // //but the ts code has to be written differently like below
+    // let stompAny : any = Stomp;
+    // if (stompAny.client) {
+    //     this.client = Stomp.client(ServiceConstants.WS_BASE_URL, ['v10.stomp', 'v11.stomp', 'v12.stomp']);
+    // } else {
+    //     this.client = stompAny.Stomp.client(ServiceConstants.WS_BASE_URL, ['v10.stomp', 'v11.stomp', 'v12.stomp']);
+    // }
+    // // Configure client heartbeating
+    // this.client.heartbeat.incoming = 20000;
+    // this.client.heartbeat.outgoing = 0;
+    // // Set function to debug print messages
+    // this.client.debug = this.debug;
+  }
+
+  /**
+   * Perform connection to STOMP broker, returning a Promise
+   * which is resolved when connected.
+   */
+  public try_connect(): Promise<{}> {
+    // if(this.state.getValue() !== STOMPState.CLOSED) {
+    //     this.logger.error('Can\'t try_connect if not CLOSED!');
+    //     throw Error('Can\'t try_connect if not CLOSED!');
+    // }
+    // if(this.client === null) {
+    //     this.logger.error('Client not configured!');
+    //     throw Error('Client not configured!');
+    // }
+
+    // // Attempt connection, passing in a callback
+    // this.client.connect(
+    //     {login: '', passcode: ''},
+    //     this.on_connect,
+    //     this.on_error
+    // );
+
+    // this.state.next(STOMPState.TRYING);
+
+    return new Promise((resolve, reject) => (this.resolvePromise = resolve));
+  }
+
+  /** Disconnect the STOMP client and clean up */
+  public disconnect(message?: string) {
+    // Notify observers that we are disconnecting!
+    this.state.next(STOMPState.DISCONNECTING);
+
+    // Disconnect. Callback will set CLOSED state
+    // this.client.disconnect(
+    //     () => this.state.next( STOMPState.CLOSED ),
+    //     message
+    // );
+  }
+
+  /** Send a message to all topics */
+  public publish(message: string) {}
+
+  /**
+   * Callback Functions
+   *
+   * Note the method signature: () => preserves lexical scope
+   * if we need to use this.x inside the function
+   */
+  public debug(...args: any[]) {
+    // Push arguments to this function into console.log
+    if (window.console && console.log && console.log.apply) {
+      console.log.apply(console, args);
     }
+  }
 
-    /** Set up configuration */
-    public configure(): void {
+  // Callback run on successfully connecting to server
+  public on_connect = () => {
+    // Indicate our connected state to observers
+    this.state.next(STOMPState.CONNECTED);
 
-        // Check for errors:
-        // if (this.state.getValue() !== STOMPState.CLOSED) {
-        //     throw Error('Already running!');
-        // }
+    // Subscribe to message queues
+    this.subscribe();
 
-        // // Attempt connection, passing in a callback
-        // //let theClientFunction;
-        // //jit-aot conflict,  same typing, same angular version
-        // //but the ts code has to be written differently like below
-        // let stompAny : any = Stomp;
-        // if (stompAny.client) {
-        //     this.client = Stomp.client(ServiceConstants.WS_BASE_URL, ['v10.stomp', 'v11.stomp', 'v12.stomp']);
-        // } else {
-        //     this.client = stompAny.Stomp.client(ServiceConstants.WS_BASE_URL, ['v10.stomp', 'v11.stomp', 'v12.stomp']);
-        // }
-        // // Configure client heartbeating
-        // this.client.heartbeat.incoming = 20000;
-        // this.client.heartbeat.outgoing = 0;
+    // Resolve our Promise to the caller
+    this.resolvePromise();
 
-        // // Set function to debug print messages
-        // this.client.debug = this.debug;
+    // Clear callback
+    this.resolvePromise = null;
+  };
+
+  // Handle errors from stomp.js
+  public on_error = (error: string) => {
+    console.error('Error: ' + error);
+
+    // Check for dropped connection and try reconnecting
+    if (error.indexOf('Lost connection') !== -1) {
+      // Reset state indicator
+      this.state.next(STOMPState.CLOSED);
+
+      // Attempt reconnection
+      setTimeout(() => {
+        this.configure();
+        this.try_connect();
+      }, 5000);
     }
+  };
 
-    /** 
-     * Perform connection to STOMP broker, returning a Promise
-     * which is resolved when connected. 
-     */
-    public try_connect(): Promise<{}> {
-
-        // if(this.state.getValue() !== STOMPState.CLOSED) {
-        //     this.logger.error('Can\'t try_connect if not CLOSED!');
-        //     throw Error('Can\'t try_connect if not CLOSED!');
-        // }
-        // if(this.client === null) {
-        //     this.logger.error('Client not configured!');
-        //     throw Error('Client not configured!');
-        // }
-
-        // // Attempt connection, passing in a callback 
-        // this.client.connect(
-        //     {login: '', passcode: ''},
-        //     this.on_connect,
-        //     this.on_error
-        // );
-
-        // this.state.next(STOMPState.TRYING);
-
-        return new Promise(
-            (resolve, reject) => this.resolvePromise = resolve
-        );
+  // On message RX, notify the Observable with the message object
+  public on_message = (message: Stomp.Message) => {
+    if (message.body) {
+      this.messages.next(message);
+    } else {
+      this.logger.error('Empty message received!');
+      console.error('Empty message received!');
     }
+  };
 
-    /** Disconnect the STOMP client and clean up */
-    public disconnect(message?: string) {
-
-        // Notify observers that we are disconnecting!
-        this.state.next( STOMPState.DISCONNECTING );
-
-        // Disconnect. Callback will set CLOSED state
-        // this.client.disconnect(
-        //     () => this.state.next( STOMPState.CLOSED ),
-        //     message
-        // );
-    }
-
-    /** Send a message to all topics */
-    public publish(message: string) {
-    }
-
-    /** 
-     * Callback Functions
-     *
-     * Note the method signature: () => preserves lexical scope
-     * if we need to use this.x inside the function
-     */
-    public debug(...args: any[]) {
-
-        // Push arguments to this function into console.log
-        if (window.console && console.log && console.log.apply) {
-            console.log.apply(console, args);
-        }
-    }
-
-
-    // Callback run on successfully connecting to server
-    public on_connect = () => {
-
-        // Indicate our connected state to observers
-        this.state.next( STOMPState.CONNECTED );
-
-        // Subscribe to message queues
-        this.subscribe();
-
-        // Resolve our Promise to the caller
-        this.resolvePromise();
-
-        // Clear callback
-        this.resolvePromise = null;
-    }
-
-    // Handle errors from stomp.js
-    public on_error = (error: string) => {
-
-        console.error('Error: ' + error);
-
-        // Check for dropped connection and try reconnecting
-        if (error.indexOf('Lost connection') !== -1) {
-
-            // Reset state indicator
-            this.state.next( STOMPState.CLOSED );
-
-            // Attempt reconnection
-            setTimeout(() => {
-                this.configure();
-                this.try_connect();
-            }, 5000);
-        }
-    }
-
-    // On message RX, notify the Observable with the message object
-    public on_message = (message: Stomp.Message) => {
-
-        if (message.body) {
-            this.messages.next(message);
-        } else {
-            this.logger.error('Empty message received!');
-            console.error('Empty message received!');
-        }
-    }
-
-    /** Subscribe to server message queues */
-    private subscribe(): void {
-        // Subscribe to our configured queues
-        // this.client.subscribe(ServiceConstants.WS_SUBSCRIBE_Q, this.on_message, <any>{ ack: 'auto' });
-        // Update the state
-        this.state.next( STOMPState.SUBSCRIBED );
-    }
+  /** Subscribe to server message queues */
+  private subscribe(): void {
+    // Subscribe to our configured queues
+    // this.client.subscribe(ServiceConstants.WS_SUBSCRIBE_Q, this.on_message, <any>{ ack: 'auto' });
+    // Update the state
+    this.state.next(STOMPState.SUBSCRIBED);
+  }
 }

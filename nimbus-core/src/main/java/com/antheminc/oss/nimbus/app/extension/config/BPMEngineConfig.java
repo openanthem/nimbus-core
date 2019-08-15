@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
+import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.AbstractProcessEngineAutoConfiguration;
@@ -79,35 +80,35 @@ import lombok.Setter;
  * 
  */
 @Configuration
-@ConfigurationProperties(prefix="process")
+@ConfigurationProperties(prefix="nimbus.process")
 public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	
-	@Value("${process.database.driver}") 
+	@Value("${nimbus.process.database.driver:embeddedH2}")
 	private String dbDriver;
 	
-	@Value("${process.database.url}") 
+	@Value("${nimbus.process.database.url:embeddedH2}") 
 	private String dbUrl;
 	
-	@Value("${process.database.username}") 
+	@Value("${nimbus.process.database.username:embeddedH2}") 
 	private String dbUserName;
 	
-	@Value("${process.database.password}") 
+	@Value("${nimbus.process.database.password:embeddedH2}") 
 	private String dbPassword;
 	
-	@Value("${process.history.level}") 
+	@Value("${nimbus.process.history.level:full}") 
 	private String processHistoryLevel;
 	
-	@Value("${process.deployment.name:#{null}}")
+	@Value("${nimbus.process.deployment.name:#{null}}")
 	private Optional<String> deploymentName;
 	
 	@Getter @Setter
-	private List<String> definitions = new ArrayList<String>();
+	private List<String> definitions = getDefaultProcessDefinitions();
 	
 	@Getter @Setter
-	private List<String> rules = new ArrayList<String>();
+	private List<String> rules = getDefaultRuleDefinitions();
 	
 	@Getter @Setter
-	private List<String> customDeployers = new ArrayList<String>();	
+	private List<String> customDeployers = getDefaultCustomDemployers();	
 	
 	@Autowired
 	private ActivitiExpressionManager platformExpressionManager;
@@ -115,11 +116,11 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	@Bean
 	public SpringProcessEngineConfiguration springProcessEngineConfiguration(
 			@Qualifier("processDataSource") DataSource processDataSource,
-			PlatformTransactionManager jpaTransactionManager, SpringAsyncExecutor springAsyncExecutor, 
-			BeanResolverStrategy beanResolver) throws Exception {
+			PlatformTransactionManager jpaTransactionManager, SpringAsyncExecutor springAsyncExecutor,
+			BeanResolverStrategy beanResolver, UserGroupManager userGroupManager) throws Exception {
 		
 		SpringProcessEngineConfiguration engineConfiguration = this
-				.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor, null);
+				.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor,userGroupManager);
 
 		if (deploymentName.isPresent()) {
 			engineConfiguration.setDeploymentName(deploymentName.get());
@@ -139,7 +140,23 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 
 		return engineConfiguration;
 	}
-    
+
+	protected List<String> getDefaultCustomDemployers() {
+		return new ArrayList<>();
+	}
+
+	protected List<String> getDefaultRuleDefinitions() {
+		List<String> rv = new ArrayList<>();
+		rv.add("rules/**.drl");
+		return rv;
+	}
+
+	protected List<String> getDefaultProcessDefinitions() {
+		List<String> rv = new ArrayList<>();
+		rv.add("classpath*:process-defs/**.xml");
+		return rv;
+	}
+
 	public DefaultActivityBehaviorFactory platformActivityBehaviorFactory(BeanResolverStrategy beanResolver) {
 		
 		return new DefaultActivityBehaviorFactory() {

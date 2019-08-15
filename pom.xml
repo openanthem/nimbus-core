@@ -71,6 +71,8 @@
         <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
         <sonar.maven.plugin.version>3.5.0.1254</sonar.maven.plugin.version>
         <jacoco.maven.plugin.version>0.8.2</jacoco.maven.plugin.version>
+        <apache.poi.version>3.16</apache.poi.version>
+        <univocity.version>2.8.1</univocity.version>
         <!-- nimbus-core -->
         <parentDir>..</parentDir>
         <nimbus.version>2.0.0.BUILD-SNAPSHOT</nimbus.version>
@@ -398,11 +400,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web-services</artifactId>
 		</dependency>
+         <dependency>
+             <groupId>org.activiti</groupId>
+             <artifactId>activiti-spring-boot-starter</artifactId>
+             <version>${activiti-spring-boot.version}</version>
+         </dependency>
 		<dependency>
-		    <groupId>org.activiti</groupId>
-		    <artifactId>activiti-spring-boot-starter</artifactId>
-		</dependency>
-    		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>            
+    	<dependency>
     			<groupId>org.apache.commons</groupId>
     			<artifactId>commons-dbcp2</artifactId>
 		</dependency>
@@ -473,6 +480,10 @@
             <artifactId>querydsl-mongodb</artifactId>
         </dependency>
         <dependency>
+		    <groupId>com.querydsl</groupId>
+		    <artifactId>querydsl-jpa</artifactId>
+		</dependency>   
+        <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-apt</artifactId>
         </dependency>
@@ -481,10 +492,38 @@
             <artifactId>jackson-antpathfilter</artifactId>
             <version>1.0.2</version>
         </dependency>
+        <dependency>
+      		<groupId>org.springframework.boot</groupId>
+      		<artifactId>spring-boot-starter-activemq</artifactId>
+    	</dependency>
+		<dependency>
+		    <groupId>org.apache.qpid</groupId>
+		    <artifactId>qpid-jms-client</artifactId>
+		    <version>0.41.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.owasp.esapi</groupId>
     		<artifactId>esapi</artifactId>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+		<dependency>
+		<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>${apache.poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>${apache.poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.univocity</groupId>
+			<artifactId>univocity-parsers</artifactId>
+			<version>${univocity.version}</version>
+		</dependency>	
 	</dependencies>
 
     <distributionManagement>
@@ -704,7 +743,7 @@
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>${nexus-staging-maven-plugin}</version>
+                    <version>${nexus-staging-maven-plugin.version}</version>
                     <executions>
                         <execution>
                             <id>default-deploy</id>

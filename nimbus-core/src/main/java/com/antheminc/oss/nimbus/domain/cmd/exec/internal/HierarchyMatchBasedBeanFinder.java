@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class HierarchyMatchBasedBeanFinder implements ApplicationContextAware {
 	
 	ApplicationContext ctx;
 	
-	@Value("${process.key.regex}") 
+	@Value("${nimbus.process.key.regex:([A-Za-z0-9_\\-\\*~\\?=\\.\\$]+)}") 
 	private String processBeanRegex;
 	
 	public static final Pattern SPECIAL_REGEX_CHARS = Pattern.compile("[{}()\\[\\].+*?^$\\\\|]");

@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,8 +15,10 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -31,6 +33,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageGreen.SampleNestedGroup;
 
 /**
  * @author Soham Chakravarti
@@ -153,5 +156,85 @@ public class ActivateConditionalNoConversionTest extends AbstractStateEventHandl
 		
 		formwithgridsection.findParamByPath("/vfSearchForm/testEntry").setState("flip");
 		checkIsInactive(formwithgridsection.findParamByPath("/testGrid"));
+	}
+	
+	/**
+	 * <a href="https://anthemopensource.atlassian.net/browse/NIMBUS-121">https://anthemopensource.atlassian.net/browse/NIMBUS-121</a>
+	 * <p>Checks to ensure activate conditional works when targetting an unmapped nested param
+	 * that has children params in it's tree that are mapped.
+	 */
+	@Test
+	public void testUnmappedNestedParamWithMappedChildren() {
+		Param<String> p1 = _q.getRoot().findParamByPath("/sample_view/page_green/tile/view_sample_form/p1");
+		Param<SampleNestedGroup> unmappedNested = _q.getRoot().findParamByPath("/sample_view/page_green/tile/view_sample_form/unmappedNested");
+		Param<String> p2 = _q.getRoot().findParamByPath("/sample_view/page_green/tile/view_sample_form/unmappedNested/p2");
+		
+		checkIsInactive(unmappedNested);
+		checkIsInactive(p2);
+		assertNull(unmappedNested.getState());
+		assertNull(p2.getState());
+		
+		p1.setState("showit");
+		checkIsActive(unmappedNested);
+		checkIsActive(p2);
+		assertNull(unmappedNested.getState());
+		assertNull(p2.getState());
+		
+		p2.setState("p2 is set");
+		assertEquals("p2 is set", p2.getState());
+		
+		p1.setState(null);
+		checkIsInactive(unmappedNested);
+		checkIsInactive(p2);
+		assertNull(unmappedNested.getState());
+		assertNull(p2.getState());
+	}
+	
+	/**
+	 * <p>Checks to ensure activate conditional works when targetting an unmapped nested param
+	 * that has children params in it's tree that are mapped to a different domain than the parent mapping.
+	 */
+	@Test
+	public void testUnmappedNestedParamWithMultipleDomainMappedChildren() {
+		Param<String> p1 = _q.getRoot().findParamByPath("/sample_view/page_green/tile/view_sample_form/p1");
+		Param<String> p4 = _q.getRoot().findParamByPath("/sample_view/page_green/tile/view_sample_form/unmappedNested/group1/p4");
+		
+		checkIsInactive(p4);
+		assertNull(p4.getState());
+		
+		p1.setState("showit");
+		checkIsActive(p4);
+		assertNull(p4.getState());
+		
+		p4.setState("p4 is set");
+		assertEquals("p4 is set", p4.getState());
+		
+		p1.setState(null);
+		checkIsInactive(p4);
+		assertNull(p4.getState());
+	}
+	
+	/**
+	 * <p>Checks to ensure activate conditional works when targetting an unmapped nested param
+	 * that has children params in it's tree that are mapped to primitive types
+	 */
+	@Test
+	public void testUnmappedNestedParamWithMappedChildrenPrimitives() {
+		Param<String> p1 = _q.getRoot().findParamByPath("/sample_view/page_green/tile/view_sample_form/p1");
+		Param<Integer> p3 = _q.getRoot().findParamByPath("/sample_view/page_green/tile/view_sample_form/unmappedNested/p3");
+		
+		checkIsInactive(p3);
+		assertEquals(Integer.valueOf(0), p3.getState());
+		
+		p1.setState("showit");
+		checkIsActive(p3);
+		assertEquals(Integer.valueOf(0), p3.getState());
+		
+		p3.setState(42);
+		assertEquals(Integer.valueOf(42), p3.getState());
+		
+		p1.setState(null);
+		checkIsInactive(p3);
+		assertEquals(Integer.valueOf(0), p3.getState());
 	}
 }		

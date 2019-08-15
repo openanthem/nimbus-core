@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
@@ -102,7 +103,11 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 		if(cmdMsg.getCommand().isRootDomainOnly()) {
 			String idParamCode = p.findIfNested().getIdParam().getConfig().getCode();
 			ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(p.getConfig().getReferredClass(), idParamCode);
-			getJavaBeanHandler().setValue(va, newState, cmdMsg.getCommand().getRootDomainElement().getRefId());
+			
+			Long id = RefId.nullSafeGetId(cmdMsg.getCommand().getRootDomainElement().getRefId(),
+					()->new InvalidStateException("Expected to find refId for cmdMsg: "+cmdMsg+" with newState: "+newState));
+			
+			getJavaBeanHandler().setValue(va, newState, id);
 		}
 										
 		p.setState(newState);
@@ -140,7 +145,7 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 	
 	private QuadModel<?, ?> createNewQuad(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
 		// create new entity instance for core & view
-		Object entity = getOrInstantiateEntity(eCtx, rootDomainConfig);
+		Object entity = instantiateEntity(eCtx, rootDomainConfig);
 		
 		// unmapped	
 		if(!rootDomainConfig.isMapped())
@@ -179,7 +184,7 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 	
 	
 	private void updateCommandWithRefId(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, ExecutionEntity<?, ?> e) {
-		Long refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
+		RefId<Long> refId = RefId.with(getRootDomainRefIdByRepoDatabase(rootDomainConfig, e));
 		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
 	}
 	

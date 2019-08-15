@@ -6,11 +6,13 @@
             <!-- loop thru collection elements -->
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == componentTypes.cardDetail.toString()">
                 <nm-card-details 
+                    id="{{element.config?.code}}" 
                     [element]="element" 
                     [position]="!isLabelEmpty ? position+1 : position" 
                     [collectionElem]="card.collectionElem" 
                     [elemId]="card.elemId" 
-                    [nmPrint]="element">
+                    [nmPrint]="element"
+                    [ngClass]="element.config.uiStyles.attributes.cssClass">
                 </nm-card-details>
             </ng-template>
         </ng-template>

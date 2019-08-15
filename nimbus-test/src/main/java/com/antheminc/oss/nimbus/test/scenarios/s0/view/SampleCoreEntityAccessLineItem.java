@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 package com.antheminc.oss.nimbus.test.scenarios.s0.view;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
@@ -59,4 +60,7 @@ public class SampleCoreEntityAccessLineItem {
 	@Link(imgSrc = "edit.png")
 	@AccessConditional(whenAuthorities="?[#this == 'case_management'].empty", p=Permission.HIDDEN)
 	private String viewLink;
+	
+	@Path @GridColumn
+	private ZonedDateTime attr_ZonedDateTime1;
 }

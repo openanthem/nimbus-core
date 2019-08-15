@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.model.state.repo.ws;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorGet;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -50,7 +51,7 @@ public class ParamStateAtomicRemotePersistenceEventListener implements StateAndC
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean listen(ModelEvent<Param<?>> event) {
-		if(DefaultActionExecutorGet.TH_ACTION.get() == Action._get)
+		if(DefaultExecutionContextLoader.TH_ACTION.get() == Action._get)
 			return false;
 		
 		Param<?> p = (Param<?>) event.getPayload();

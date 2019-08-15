@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -440,15 +442,30 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 	}
 	
 	@Test
+	public void testLookupParamValueWithStringCode() {
+		List<SampleTask> expected = this.insertSampleTaskData();
+		Param<List<String>> actual = this.testLookupParamValueType("/page_green/tile/view_sample_form/comboboxWithStringId", "comboboxWithStringId");
+		Assert.assertEquals(2, actual.getValues().size());
+		Assert.assertEquals(expected.get(0).getTaskName(), actual.getValues().get(0).getCode());
+		Assert.assertEquals(expected.get(0).getTaskName(), actual.getValues().get(0).getLabel());
+		Assert.assertEquals(expected.get(1).getTaskName(), actual.getValues().get(1).getCode());
+		Assert.assertEquals(expected.get(1).getTaskName(), actual.getValues().get(1).getLabel());
+	}
+	
+	@Test
+	public void testLookupParamValueWithLongCode() {
+		List<SampleTask> expected = this.insertSampleTaskData();
+		Param<List<String>> actual = this.testLookupParamValueType("/page_green/tile/view_sample_form/unsortedDynamicValues", "unsortedDynamicValues");
+		Assert.assertEquals(2, actual.getValues().size());
+		Assert.assertEquals(expected.get(0).getId(), actual.getValues().get(0).getCode());
+		Assert.assertEquals(expected.get(0).getTaskName(), actual.getValues().get(0).getLabel());
+		Assert.assertEquals(expected.get(1).getId(), actual.getValues().get(1).getCode());
+		Assert.assertEquals(expected.get(1).getTaskName(), actual.getValues().get(1).getLabel());
+	}
+	
+	@Test
 	public void testLookupSort() {
-		SampleTask task1 = new SampleTask();
-		task1.setId(1L);
-		task1.setTaskName("Play");
-		SampleTask task2 = new SampleTask();
-		task2.setId(2L);
-		task2.setTaskName("Groom");
-		mongo.insert(task1, "sampletask");
-		mongo.insert(task2, "sampletask");
+		this.insertSampleTaskData();
 		
 		Long refId = createOrGetDomainRoot_RefId();
 		
@@ -461,9 +478,9 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		final Object unsortedResponse = controller.handlePost(unsortedRequest, null);
 		Param<List<String>> pUnsorted = ParamUtils.extractResponseByParamPath(unsortedResponse, "/unsortedDynamicValues");
 		Assert.assertEquals(2, pUnsorted.getValues().size());
-		Assert.assertEquals("1", pUnsorted.getValues().get(0).getCode());
+		Assert.assertEquals(1L, pUnsorted.getValues().get(0).getCode());
 		Assert.assertEquals("Play", pUnsorted.getValues().get(0).getLabel());
-		Assert.assertEquals("2", pUnsorted.getValues().get(1).getCode());
+		Assert.assertEquals(2L, pUnsorted.getValues().get(1).getCode());
 		Assert.assertEquals("Groom", pUnsorted.getValues().get(1).getLabel());
 		
 		final MockHttpServletRequest sortedRequest = MockHttpRequestBuilder
@@ -475,10 +492,35 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		final Object sortedResponse = controller.handlePost(sortedRequest, null);
 		Param<List<String>> pSorted = ParamUtils.extractResponseByParamPath(sortedResponse, "/sortedDynamicValues");
 		Assert.assertEquals(2, pSorted.getValues().size());
-		Assert.assertEquals("2", pSorted.getValues().get(0).getCode());
+		Assert.assertEquals(2L, pSorted.getValues().get(0).getCode());
 		Assert.assertEquals("Groom", pSorted.getValues().get(0).getLabel());
-		Assert.assertEquals("1", pSorted.getValues().get(1).getCode());
+		Assert.assertEquals(1L, pSorted.getValues().get(1).getCode());
 		Assert.assertEquals("Play", pSorted.getValues().get(1).getLabel());
+	}
+	
+	private Param<List<String>> testLookupParamValueType(String pathToCombobox, String fieldName) {
+		Long refId = createOrGetDomainRoot_RefId();
+		
+		final MockHttpServletRequest unsortedRequest = MockHttpRequestBuilder
+				.withUri(VIEW_PARAM_ROOT)
+				.addRefId(refId)
+				.addNested(pathToCombobox)
+				.addAction(Action._get)
+				.getMock();
+		Object response = controller.handlePost(unsortedRequest, null);
+		return ParamUtils.extractResponseByParamPath(response, "/" + fieldName);
+	}
+	
+	private List<SampleTask> insertSampleTaskData() {
+		SampleTask task1 = new SampleTask();
+		task1.setId(1L);
+		task1.setTaskName("Play");
+		SampleTask task2 = new SampleTask();
+		task2.setId(2L);
+		task2.setTaskName("Groom");
+		mongo.insert(task1, "sampletask");
+		mongo.insert(task2, "sampletask");
+		return Arrays.asList(task1, task2);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -606,5 +648,70 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		mongo.save(cu, "clientuser");
 		
 		return loginId;
+	}
+	
+	@Test
+	public void t06_GridZoneDateTimeFilter() throws Exception {
+		String userLoginId = createClientUserWithRoles("superman","intake","clinician");
+		ZoneId zoneId = ZoneId.of("UTC");
+		  
+		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
+		scea.setId(1L);
+		scea.setAttr_String("test1_string1");
+		scea.setAttr_String2("test2_string2");
+		scea.setAttr_LocalDate1(LocalDate.now());
+		scea.setAttr_ZonedDateTime1(ZonedDateTime.of(2019, 07, 19, 20, 10, 10, 1234, zoneId));
+		
+		SampleCoreNestedEntity nestedEntity = new SampleCoreNestedEntity();
+		nestedEntity.setNested_attr_String("nested_test1");
+		scea.setAccessConditional_Contains_Hidden1(nestedEntity);
+		
+		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
+		scea2.setId(2L);
+		scea2.setAttr_String("test2_string1");
+		scea2.setAttr_String2("test2_string2");
+		scea2.setAttr_LocalDate1(LocalDate.now().plusDays(2));
+		scea2.setAttr_ZonedDateTime1(ZonedDateTime.of(2019, 07, 20, 20, 10, 10, 1234, zoneId));
+		
+		SampleCoreNestedEntity nestedEntity2 = new SampleCoreNestedEntity();
+		nestedEntity2.setNested_attr_String("mested_test1");
+		scea2.setAccessConditional_Contains_Hidden1(nestedEntity2);
+		
+		mongo.save(scea, "sample_core_access");
+		mongo.save(scea2, "sample_core_access");
+		
+		
+		Param<?> p = excuteNewConfigView(userLoginId);
+		assertNotNull(p);
+		
+		Long refId = p.findStateByPath("/.m/id");
+		
+		final MockHttpServletRequest gridRequest = MockHttpRequestBuilder
+				.withUri(VIEW_PARAM_ACCESS_ROOT)
+				.addRefId(refId)
+				.addNested("/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSamplePageCoreEntityAccess/vgSamplePageCoreEntities")
+				//.addParam("pageCriteria", "pageSize=5&page=0&sortBy=attr_String,ASC")
+				.addParam("pageSize", "5")
+				.addParam("page", "0")
+				.addParam("sortBy", "attr_String,ASC")
+				.addAction(Action._get)
+				.getMock();
+		final Object gridResponse = controller.handlePost(gridRequest, "{\"filters\": [{\"code\":\"attr_ZonedDateTime1\", \"value\":\"2019-07-19T04:00:00.000Z\"}]}");
+		//final Object gridResponse = controller.handlePost(gridRequest, null);
+		assertNotNull(gridResponse);
+		
+		List<Output<?>> outputs = MultiOutput.class.cast(Holder.class.cast(gridResponse).getState()).getOutputs();
+		
+		assertNotNull(outputs);
+		
+		for(Output<?> op: outputs) {
+			if(op.getValue() instanceof ListParam<?>) {
+				ListParam<?> param = (ListParam<?>)op.getValue();
+				Page<?> pg = param.getPage();
+				assertNotNull(pg);
+				assertNotNull(pg.getContent());
+				assertEquals(1, pg.getContent().size());
+			}
+		}
 	}
 }

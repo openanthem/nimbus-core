@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016-2018 the original author or authors.
+ *  Copyright 2016-2019 the original author or authors.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -87,10 +87,17 @@ public class SampleCoreValuesEntity {
 		@ValuesConditional(targetPath = "/../contactStatus", resetOnChange = false, condition = {
 			@ValuesConditional.Condition(when = "state == 'changeit'", then = @Values(StatusPast.class))
 		})
+		@ValuesConditional(targetPath = "/../multiSelect", resetOnChange = false, condition = {
+				@ValuesConditional.Condition(when = "state == null", then = @Values(StatusFuture.class)),
+				@ValuesConditional.Condition(when = "state != null", then = @Values(StatusList.class))
+			})
 		private String contactType;
 		
 		@Values(StatusAll.class)
 		private Status contactStatus;
+		
+		@Values(StatusAll.class)
+		private String[] multiSelect;
 	}
 	
 	public static class SR_DEFAULT implements Source {
@@ -141,6 +148,26 @@ public class SampleCoreValuesEntity {
 		public List<ParamValue> getValues(String paramCode) {
 			final List<ParamValue> values = new ArrayList<>();
 			values.add(new ParamValue("PAST", "Past"));
+			return values;
+		}
+	}
+	
+	public static class StatusFuture implements Source {
+		@Override
+		public List<ParamValue> getValues(String paramCode) {
+			final List<ParamValue> values = new ArrayList<>();
+			values.add(new ParamValue("FUTURE", "Future"));
+			return values;
+		}
+	}
+	
+	public static class StatusList implements Source {
+		@Override
+		public List<ParamValue> getValues(String paramCode) {
+			final List<ParamValue> values = new ArrayList<>();
+			values.add(new ParamValue("FUTURE", "Future"));
+			values.add(new ParamValue("PAST", "Past"));
+			values.add(new ParamValue("CURRENT", "Current"));
 			return values;
 		}
 	}
