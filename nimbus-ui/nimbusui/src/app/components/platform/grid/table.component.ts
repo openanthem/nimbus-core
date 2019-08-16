@@ -379,7 +379,7 @@ export class DataTable extends BaseTableElement
       });
     }
 
-    this.subscribers.push(this.loaderservice.loaderUpdate.subscribe(
+    this.subscribers.push(this.loaderservice.gridLoaderUpdate.subscribe(
       (state: LoaderState) => {
         if(state.path === this.element.path) {
           this.loading = state.show;
