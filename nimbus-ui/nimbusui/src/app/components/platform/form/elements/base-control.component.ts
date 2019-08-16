@@ -65,12 +65,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
   }
 
   setState(val: any, frmInp: any) {
-
-    if (ParamUtils.isKnownDateType(frmInp.element.config.type.name)) {
-      frmInp.element.leafState = ParamUtils.convertDateToServerDate(val, frmInp.element.config.type.name);
-    } else {
-      frmInp.element.leafState = val;
-    }
+    frmInp.element.leafState = val;
     
     this.cd.markForCheck();
     if (val == null) {

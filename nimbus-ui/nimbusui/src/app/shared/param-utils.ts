@@ -123,7 +123,8 @@ export class ParamUtils {
       case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name: {
         var userDate = new Date(value);
         userDate.setMinutes(-value.getTimezoneOffset());
-        return JSON.stringify(userDate.toISOString().slice(0,10));
+        //return JSON.stringify(userDate).substring(0,11) + '"';
+        return userDate.toISOString().slice(0,10);
       }
 
       default: {

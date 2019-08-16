@@ -151,15 +151,15 @@ export class Param implements Serializable<Param, string> {
         }
         this.leafState = data;
       }
-    // } else if (
-    //   this.config &&
-    //   this.config.type &&
-    //   ParamUtils.isKnownDateType(this.config.type.name)
-    // ) {
-    //   this.leafState = ParamUtils.convertServerDateStringToDate(
-    //     inJson.leafState,
-    //     this.config.type.name
-    //   );
+    } else if (
+      this.config &&
+      this.config.type &&
+      ParamUtils.isKnownDateType(this.config.type.name)
+    ) {
+      this.leafState = ParamUtils.convertServerDateStringToDate(
+        inJson.leafState,
+        this.config.type.name
+      );
     } else {
       this.leafState = inJson.leafState;
       // Handle any transformations that need to be applied to the leaf state
