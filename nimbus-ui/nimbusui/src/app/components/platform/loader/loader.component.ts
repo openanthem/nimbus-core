@@ -48,7 +48,6 @@ export class LoaderComponent implements OnInit {
   ngOnInit() {
     this.subscription = this.loaderService.loaderUpdate.subscribe(
       (state: LoaderState) => {
-        if(!state.path)
         this.show = state.show;
       }
     );
