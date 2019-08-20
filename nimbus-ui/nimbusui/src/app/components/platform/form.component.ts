@@ -33,7 +33,7 @@ import { Model, Param } from '../../shared/param-state';
 import { BaseElement } from './base-element.component';
 import { FormElementsService } from './form-builder.service';
 import { ValidationUtils } from './validators/ValidationUtils';
-import { Constraint } from './../../shared/param-config';
+import { Constraint, ParamConfig } from './../../shared/param-config';
 import { ConstraintMapping } from './../../shared/validationconstraints.enum';
 import { Message } from './../../shared/message';
 import { ValidationConstraint } from './../../shared/validationconstraints.enum';
@@ -65,7 +65,7 @@ export class Form extends BaseElement implements OnInit, OnChanges {
   @Input() model: Model;
   id: string = 'nm-element' + uniqueId++;
   formId: string = 'nm-form' + uniqueId++;
-  form: FormGroup;
+  form: NimbusFormGroup;
   opened: Boolean = true;
   formModel: FormModel[];
   formElementType = FormElementType;
@@ -285,4 +285,8 @@ export class Form extends BaseElement implements OnInit, OnChanges {
       return '';
     }
   }
+}
+
+export class NimbusFormGroup extends FormGroup {
+  paramConfigs?: ParamConfig[];
 }

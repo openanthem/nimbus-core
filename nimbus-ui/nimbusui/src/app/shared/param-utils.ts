@@ -73,36 +73,6 @@ export class ParamUtils {
     );
   }
 
-  /**
-   * <p>Converts any date objects coming from the server (see:
-   * <tt>ParamUtils.DATE_TYPE_MAPPINGS.LOCAL_DATE</tt>) to an equivalent Javascript <tt>Date</tt>
-   * object.</p>
-   *
-   * <p>The server time string is under contract to always come back in the UTC time zone, in the
-   * ISO Date Format of yyyy-MM-ddThh:mm:ss.SSSZ. Consequently, the converted <tt>Date</tt> object will
-   * be converted to the browser's current time zone.</p>
-   *
-   * <p>This method will effectively ignore the time zone by adding the offset time
-   * between the UTC time zone and the browser time zone when doing the <tt>Date</tt> conversion. e.g. A
-   * <tt>LocalDate.of(1931, 2, 4)</tt> from the server would give:</p>
-   *
-   * <ul>
-   *  <li>Response from server: '1931-02-04T00:00:00.000Z'</li>
-   *  <li>*Converted <tt>Date</tt>: Wed Feb 04 1931 00:00:00 GMT-0500 (EST)</li>
-   * </ul>
-   *
-   * <p>instead of:</p>
-   *
-   * <ul>
-   *  <li>Response from server: '1931-02-04T00:00:00.000Z'</li>
-   *  <li>*Converted <tt>Date</tt>: Tue Feb 03 1931 19:00:00 GMT-0500 (EST)</li>
-   * </ul>
-   *
-   * <p>* Assumes browser is in EST timezone.</p>
-   *
-   * @param value the server date string
-   * @param typeClassMapping the class type of the server date object
-   */
   public static convertServerDateStringToDate(
     value: string,
     typeClassMapping: string
@@ -121,28 +91,83 @@ export class ParamUtils {
         );
       }
 
-      case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE_TIME.name: {
-        return new Date(
-          serverDateTime.getUTCFullYear(),
-          serverDateTime.getUTCMonth(),
-          serverDateTime.getUTCDate(),
-          serverDateTime.getHours(),
-          serverDateTime.getMinutes(),
-          serverDateTime.getSeconds()
-        );
+      case ParamUtils.DATE_TYPE_METADATA.ZONED_DATE_TIME.name: {
+        // TODO determine what to do with the zone information
+        return serverDateTime;
       }
 
       default: {
-        return new Date(
-          serverDateTime.getFullYear(),
-          serverDateTime.getMonth(),
-          serverDateTime.getDate(),
-          serverDateTime.getHours(),
-          serverDateTime.getMinutes(),
-          serverDateTime.getSeconds()
-        );
+        return serverDateTime;
       }
     }
+  }
+
+  public static convertDateToServerDate(value: Date, typeClassMapping: string): string {
+    if (!value) {
+      return null;
+    }
+
+    switch (typeClassMapping) {
+      case ParamUtils.DATE_TYPE_METADATA.ZONED_DATE_TIME.name: {
+      	var dd = value.getDate()
+        var mm = value.getMonth() + 1;
+        var yyyy = value.getFullYear();
+        
+        var hours = value.getHours();
+        var minutes = value.getMinutes();
+        var seconds = value.getSeconds();
+        var milliseconds = value.getMilliseconds();
+        return ParamUtils.getServerDateString(yyyy, mm, dd) + 'T' + ParamUtils.getServerTimeString(hours, minutes, seconds, milliseconds) + ParamUtils.getServerTimeZoneString(value);
+      }
+
+      case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name: {
+        var userDate = new Date(value);
+        userDate.setMinutes(-value.getTimezoneOffset());
+        return userDate.toISOString().slice(0,10);
+      }
+
+      default: {
+        return value.toISOString();
+      }
+    }
+  }
+
+  private static getServerDateString(yyyy, mm, dd): string {
+    let dateParts = [];
+    dateParts.push(yyyy);
+    dateParts.push(mm < 10 ? '0' + mm : mm);
+    dateParts.push(dd < 10 ? '0' + dd : dd);
+    return dateParts.join('-');
+  }
+  
+  private static getServerTimeString(hh, mm, ss, ms): string {
+    let dateParts = [];
+    dateParts.push(hh < 10 ? '0' + hh : hh);
+    dateParts.push(mm < 10 ? '0' + mm : mm);
+    dateParts.push(ss < 10 ? '0' + ss : ss);
+    if (ms < 10) {
+    	ms = '00' + ms;
+    } else if (ms < 100) {
+    	ms = '0' + ms;
+    }
+    return dateParts.join(':') + '.' + ms;
+  }
+
+  private static getServerTimeZoneString(value: Date): string {
+    let direction = '-';
+    let hours: any = value.getTimezoneOffset() / 60;
+    if (hours < 0) {
+      direction = '+';
+    }
+    let minutes: any = '' + (hours % 1);
+    hours = Math.abs(parseInt(hours));
+    if (minutes % 1 != 0) {
+      minutes = Math.abs(60 * minutes);
+    }
+    let timeParts = [];
+    timeParts.push(hours < 10 ? '0' + hours : hours);
+    timeParts.push(minutes < 10 ? '0' + minutes : minutes);
+    return direction + timeParts.join(':');
   }
 
   /**
