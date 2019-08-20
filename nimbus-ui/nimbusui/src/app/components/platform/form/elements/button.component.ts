@@ -372,15 +372,6 @@ export class Button extends BaseElement {
   onSubmit() {
     let item: GenericDomain = new GenericDomain();
     item = this.form.value;
-
-    Object.keys(item).forEach(key => {
-      if(item[key] && item[key] instanceof Date) {
-        var userDate = new Date(item[key]);
-        userDate.setMinutes(-userDate.getTimezoneOffset());
-        item[key] = userDate.toISOString().slice(0,10);
-      }
-    });
-
     // Check for File upload parameters ('fileControl').
     if (item['fileControl']) {
       let files: File[] = item['fileControl'];

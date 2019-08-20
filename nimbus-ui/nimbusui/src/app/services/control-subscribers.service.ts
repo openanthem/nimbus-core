@@ -134,17 +134,11 @@ export class ControlSubscribers {
           ($event.leafState == null ||
             this.previousLeafState !== $event.leafState)
         ) {
-          let leafState = $event.leafState;
-          if (ParamUtils.isKnownDateType($event.config.type.name)) {
-            leafState = ParamUtils.convertDateToServerDate(leafState, $event.config.type.name);
-            
-          } 
           this.pageService.postOnChange(
             $event.path,
             'state',
-            JSON.stringify(leafState)
+            JSON.stringify($event.leafState)
           );
-          
         } else if ($event.config.uiStyles.attributes.postButtonUrl) {
           let item: GenericDomain = new GenericDomain();
           this.pageService.processEvent(

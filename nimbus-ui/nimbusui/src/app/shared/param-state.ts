@@ -413,7 +413,7 @@ export abstract class TableBasedData {
   static fromJson(
     configSvc: ConfigService,
     param: Param,
-    colElemParamsJSON: Param[]
+    colElemParamsJSON: string[]
   ): TableBasedData {
     switch (param.config.uiStyles.attributes.alias) {
       case ViewComponent.grid.toString(): {
@@ -438,7 +438,7 @@ export abstract class TableBasedData {
    * @param useJson denotes to use json as the table data building strategy
    * @param colElemParamsJSON the "source" of data to transform
    */
-  from(baseParam: Param, useJson?: boolean, colElemParamsJSON?: Param[]): TableBasedData {
+  from(baseParam: Param, useJson?: boolean, colElemParamsJSON?: string[]): TableBasedData {
     if (!baseParam) {
       return this;
     }
@@ -452,11 +452,10 @@ export abstract class TableBasedData {
         // if JSON is given, deserialize the JSON into useable params
         for (let colElemParamJSON of colElemParamsJSON) {
           colElemParams.push(
-            // new Param(this.configSvc).deserialize(
-            //   colElemParamJSON,
-            //   baseParam.path
-            // )
-            colElemParamJSON
+            new Param(this.configSvc).deserialize(
+              colElemParamJSON,
+              baseParam.path
+            )
           );
         }
       }
@@ -535,18 +534,18 @@ export abstract class RowData {
       };
 
       // apply any needed transformations
-      // if (
-      //   cellParam.config &&
-      //   cellParam.config.type &&
-      //   ParamUtils.isKnownDateType(cellParam.config.type.name)
-      // ) {
-      //   this.values[
-      //     cellParam.config.code
-      //   ] = ParamUtils.convertServerDateStringToDate(
-      //     this.values[cellParam.config.code],
-      //     cellParam.config.type.name
-      //   );
-      // }
+      if (
+        cellParam.config &&
+        cellParam.config.type &&
+        ParamUtils.isKnownDateType(cellParam.config.type.name)
+      ) {
+        this.values[
+          cellParam.config.code
+        ] = ParamUtils.convertServerDateStringToDate(
+          this.values[cellParam.config.code],
+          cellParam.config.type.name
+        );
+      }
     }
     if (Object.keys(stateData).length > 0) {
       this.stateMap.push(stateData);
