@@ -178,13 +178,8 @@ export class Form extends BaseElement implements OnInit, OnChanges {
       if(this.form.errors) {
         for (var key in this.form.errors) {
           let constraintName = ConstraintMapping.getConstraintValue(key);
-          let constraint: Constraint = this.element.config.validation.constraints.find(
-            v => v.name == constraintName
-          );
           if(constraintName === ValidationConstraint._validationrule.value) {
             this.addErrorMessage(this.form.errors[key]);
-          } else {
-            this.addErrorMessages(constraint.attribute.message);
           }
         }
       }
