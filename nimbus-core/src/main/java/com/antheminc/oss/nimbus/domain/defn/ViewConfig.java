@@ -53,7 +53,7 @@ import lombok.Setter;
 public class ViewConfig {
 
 	/**
-	 * ** <p> Accordion groups a collection of contents in tabs.
+	 * <p> Accordion groups a collection of contents in tabs.
 	 * 
 	 * <p> <b>Expected Field Structure</b>
 	 * 
@@ -61,6 +61,9 @@ public class ViewConfig {
 	 * of the following components: <ul> <li>{@link Form}</li>
 	 * <li>{@link Section}</li> </ul>
 	 * 
+	 * <p>Accordion will render nested fields that are decorated with: <ul>
+	 * <li>{@link AccordionTab}</li> <li>Undecorated complex class (treated as
+	 * {@link AccordionTab})</li></ul>
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
@@ -86,19 +89,22 @@ public class ViewConfig {
 
 	/**
 	 * <p> AccordionTab contains a collection of contents for an individual
-	 * section within an Accordion.
+	 * section within an {@link Accordion}.
 	 * 
 	 * <p> <b>Expected Field Structure</b>
 	 * 
 	 * <p> AccordionTab should be used to decorate a field in a class that has
-	 * been decorated with Accordion. <p> <p> AccordionTab will render nested
-	 * fields in the same manner declared directly under a {@link Form}
-	 * component
+	 * been decorated with {@link Accordion}.
 	 * 
-	 * <p> AccordionTab used within a {@link Section} component, should contain
-	 * fields decorated with one or more of the following components: <ul>
-	 * <li>{@link CardDetail}</li> <li>{@link ButtonGroup}</li> <li>{@link Grid}
-	 *
+	 * <p><b>When the decorated field is nested within a {@link Form}</b></p>
+	 * <p>All components that are acceptable for a {@link Form} are available to
+	 * be configured within nested {@link AccordionTab} components.
+	 * 
+	 * <p><b>When the decorated field is nested within a {@link Section}</b></p>
+	 * <p>Nested {@link AccordionTab} components will render nested fields that
+	 * are decorated with: <ul> <li>{@link CardDetail}</li>
+	 * <li>{@link CardDetailsGrid}</li> <li>{@link ButtonGroup}</li>
+	 * <li>{@link Form}</li> <li>{@link Grid}</li> <li>{@link Link}</li></ul>
 	 * 
 	 * @since 1.0
 	 */
