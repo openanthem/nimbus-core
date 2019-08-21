@@ -378,7 +378,7 @@ export class Button extends BaseElement {
     Object.keys(item).forEach(key => {
       if(item[key]) {
         let associatedParamConfig: ParamConfig = this.form.paramConfigs.find(config => config.code == key);
-        if (associatedParamConfig && ParamUtils.isKnownDateType(associatedParamConfig.type.name)) {
+        if (associatedParamConfig && ParamUtils.isKnownDateType(associatedParamConfig.type.name) && (item[key] instanceof Date)) {
           item[key] = ParamUtils.convertDateToServerDate(item[key], associatedParamConfig.type.name);
         }
       }
