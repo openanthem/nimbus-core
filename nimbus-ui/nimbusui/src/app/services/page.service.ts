@@ -814,7 +814,7 @@ export class PageService {
    * Loop through the Param State and build the Grid
    */
   createTableBasedData(
-    colElemParamsJSON: string[],
+    colElemParamsJSON: Param[],
     gridParam: Param
   ): TableBasedData {
     return TableBasedData.fromJson(
@@ -856,6 +856,12 @@ export class PageService {
             }
             this.gridValueUpdate.next(param);
           }
+
+          //handle visible, enabled, activatevalidationgroups - the state above will always run if visible is true or false
+          let responseGridParam: Param = new Param(
+            this.configService
+          ).deserialize(eventModel.value, eventModel.value.path);
+          
           // Collection check - replace entire grid
           if (param.config.type.collection) {
             if (eventModel.value.page) {
@@ -865,15 +871,12 @@ export class PageService {
               param.page = page;
             }
             param.tableBasedData = this.createTableBasedData(
-              eventModel.value.type.model.params,
+              responseGridParam.type.model.params,
               param
             );
             this.gridValueUpdate.next(param);
           }
-          //handle visible, enabled, activatevalidationgroups - the state above will always run if visible is true or false
-          let responseGridParam: Param = new Param(
-            this.configService
-          ).deserialize(eventModel.value, eventModel.value.path);
+
           let config = this.configService.getViewConfigById(
             responseGridParam.configId
           );
