@@ -23,6 +23,7 @@ import { ServiceConstants } from '../services/service.constants';
 import { TableComponentConstants } from './../components/platform/grid/table.component.constants';
 import { LabelConfig, UiNature } from './param-config';
 import { Param } from './param-state';
+import * as moment from 'moment-timezone';
 
 /**
  * \@author Tony.Lopez
@@ -109,65 +110,19 @@ export class ParamUtils {
 
     switch (typeClassMapping) {
       case ParamUtils.DATE_TYPE_METADATA.ZONED_DATE_TIME.name: {
-      	var dd = value.getDate()
-        var mm = value.getMonth() + 1;
-        var yyyy = value.getFullYear();
-        
-        var hours = value.getHours();
-        var minutes = value.getMinutes();
-        var seconds = value.getSeconds();
-        var milliseconds = value.getMilliseconds();
-        return ParamUtils.getServerDateString(yyyy, mm, dd) + 'T' + ParamUtils.getServerTimeString(hours, minutes, seconds, milliseconds) + ParamUtils.getServerTimeZoneString(value);
+        return moment(value).format();
       }
 
       case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name: {
         var userDate = new Date(value);
         userDate.setMinutes(-value.getTimezoneOffset());
-        return userDate.toISOString().slice(0,10);
+        return userDate.toISOString().slice(0, 10);
       }
 
       default: {
         return value.toISOString();
       }
     }
-  }
-
-  private static getServerDateString(yyyy, mm, dd): string {
-    let dateParts = [];
-    dateParts.push(yyyy);
-    dateParts.push(mm < 10 ? '0' + mm : mm);
-    dateParts.push(dd < 10 ? '0' + dd : dd);
-    return dateParts.join('-');
-  }
-  
-  private static getServerTimeString(hh, mm, ss, ms): string {
-    let dateParts = [];
-    dateParts.push(hh < 10 ? '0' + hh : hh);
-    dateParts.push(mm < 10 ? '0' + mm : mm);
-    dateParts.push(ss < 10 ? '0' + ss : ss);
-    if (ms < 10) {
-    	ms = '00' + ms;
-    } else if (ms < 100) {
-    	ms = '0' + ms;
-    }
-    return dateParts.join(':') + '.' + ms;
-  }
-
-  private static getServerTimeZoneString(value: Date): string {
-    let direction = '-';
-    let hours: any = value.getTimezoneOffset() / 60;
-    if (hours < 0) {
-      direction = '+';
-    }
-    let minutes: any = '' + (hours % 1);
-    hours = Math.abs(parseInt(hours));
-    if (minutes % 1 != 0) {
-      minutes = Math.abs(60 * minutes);
-    }
-    let timeParts = [];
-    timeParts.push(hours < 10 ? '0' + hours : hours);
-    timeParts.push(minutes < 10 ? '0' + minutes : minutes);
-    return direction + timeParts.join(':');
   }
 
   /**
