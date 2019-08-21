@@ -23,7 +23,7 @@ import { ServiceConstants } from '../services/service.constants';
 import { TableComponentConstants } from './../components/platform/grid/table.component.constants';
 import { LabelConfig, UiNature } from './param-config';
 import { Param } from './param-state';
-import * as moment from 'moment-timezone';
+import * as moment from 'moment';
 
 /**
  * \@author Tony.Lopez
