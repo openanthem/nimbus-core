@@ -402,6 +402,25 @@ public class ViewConfig {
 			String cssClass() default "";
 		}
 
+		/**
+		 * <!--TODO Write Javadoc -->
+		 * 
+		 * @since 1.0
+		 */
+		@Retention(RetentionPolicy.RUNTIME)
+		@Target({ ElementType.FIELD })
+		@ViewStyle
+		public @interface Tag {
+			String alias() default "CardDetailsTag";
+
+			/**
+			 * <p>CSS classes added here will be added to a container element
+			 * surrounding this component. <p>This can be used to apply
+			 * additional styling, if necessary.
+			 */
+			String cssClass() default "";
+		}
+
 		String alias() default "CardDetail";
 
 		boolean border() default false;
@@ -1980,6 +1999,57 @@ public class ViewConfig {
 		}
 
 		Options value() default Options.Inherit;
+	}
+
+	/**
+	 * <!-- TODO Write javadoc -->
+	 * 
+	 * @since 1.0
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface MultiSelect {
+		String alias() default "MultiSelect";
+
+		String cols() default "";
+
+		/**
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
+		 */
+		String cssClass() default "";
+
+		String help() default "";
+
+		String labelClass() default "anthem-label";
+
+		boolean postEventOnChange() default false;
+
+		boolean dataEntryField() default true;
+
+	}
+
+	/**
+	 * <!-- TODO Write javadoc -->
+	 * 
+	 * @since 1.0
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface MultiSelectCard {
+		String alias() default "MultiSelectCard";
+
+		/**
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
+		 */
+		String cssClass() default "";
+
+		boolean dataEntryField() default true;
 	}
 
 	/**
