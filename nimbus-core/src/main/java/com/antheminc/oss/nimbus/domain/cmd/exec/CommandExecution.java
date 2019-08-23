@@ -170,23 +170,25 @@ public final class CommandExecution {
 			return getOutputs().get(0).getValue();
 		}
 		
+		@SuppressWarnings("unchecked")
 		@JsonIgnore
-		public List<Output<?>> findParamOutputsEndingWithPath(String path) {
-			List<Output<?>> result = new ArrayList<>();
+		public <T> List<Output<T>> findParamOutputsEndingWithPath(String path) {
+			List<Output<T>> result = new ArrayList<>();
 			for (Output<?> output : getOutputs()) {
 				if (output.getValue() instanceof Param) {
 					Param<?> param = (Param<?>) output.getValue();
 					if (!StringUtils.isEmpty(param.getPath()) && param.getPath().endsWith(path)) {
-						result.add(output);
+						result.add((Output<T>) output);
 					}
 				}
 			}
 			return result;
 		}
 		
+		@SuppressWarnings("unchecked")
 		@JsonIgnore
-		public Output<?> findFirstParamOutputEndingWithPath(String path) {
-			return Optional.ofNullable(findParamOutputsEndingWithPath(path).get(0)).orElse(null);
+		public <T> Output<T> findFirstParamOutputEndingWithPath(String path) {
+			return Optional.ofNullable((Output<T>) findParamOutputsEndingWithPath(path).get(0)).orElse(null);
 		}
 		
 	}
