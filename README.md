@@ -58,6 +58,8 @@ public class VRHomepage {
 }
 ```
 
+Check out the [Nimbus Getting Started Guide](https://openanthem.github.io/nimbus-docs/latest/getting-started) for more help in getting up and running quickly. 
+
 ## Project Documentation
 The latest documentation can be found [here](https://openanthem.github.io/nimbus-docs/latest). We recommend the [fundamentals section](https://openanthem.github.io/nimbus-docs/latest/fundamentals) for an in-depth guide regarding all Nimbus features.
 
