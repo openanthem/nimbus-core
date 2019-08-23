@@ -32,7 +32,6 @@ import {
 } from '../../../shared/param-annotations.enum';
 import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
-import { GenericDomain } from './../../../model/generic-domain.model';
 
 /**
  * \@author Dinakar.Meda
@@ -250,29 +249,9 @@ export class Accordion extends BaseElement {
 
   ngOnInit() {
     super.ngOnInit();
-    //initialize any configs on accordion
-    this.initializeCall(this.element);
-    if(this.element.type && this.element.type.model && this.element.type.model.params) {
-      //initialize any configs on accordion tabs
-      this.element.type.model.params.forEach(p => {
-        if(p.alias == ComponentTypes.accordiontab.toString()) {
-          this.initializeCall(p);
-        }
-      });
-    }
     this.buildTabDatum();
   }
 
-  initializeCall(param:Param) {
-    if (param.config && param.config.initializeComponent()) {
-      this.pageSvc.processEvent(
-        param.path,
-        '$execute',
-        new GenericDomain(),
-        'POST'
-      );
-    }
-  }
   /** Handling model changes to Accordions **/
   ngOnChanges(changes: SimpleChanges) {
     const model: SimpleChange = changes.model;
