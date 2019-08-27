@@ -18,6 +18,7 @@
  */
 package com.antheminc.oss.nimbus.app.extension.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
@@ -26,6 +27,10 @@ import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ChangeLogCommandEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositoryOptions;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByExampleOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByQueryOperation;
@@ -37,6 +42,8 @@ import com.antheminc.oss.nimbus.support.mongo.MongoConvertersBuilder;
  *
  */
 @Configuration
+// TODO replace with @ConditionalOnClass(MongoClient.class) once we separate out mongo into its own project
+@ConditionalOnProperty("spring.data.mongodb.port")
 @EnableMongoAuditing(dateTimeProviderRef="default.zdt.provider")
 public class DefaultMongoConfig {
 
@@ -56,5 +63,11 @@ public class DefaultMongoConfig {
 			.addSearchOperation(new MongoSearchByExampleOperation(mongoOps, domainConfigBuilder))
 			.addSearchOperation(new MongoSearchByQueryOperation(mongoOps, domainConfigBuilder))
 			.build();
+	}
+	
+	@Bean
+	public ChangeLogCommandEventHandler changeLogCommandEventHandler(BeanResolverStrategy beanResolver, ModelRepositoryFactory modelRepositoryFactory) {
+		ModelRepository modelRepository = modelRepositoryFactory.get(Repo.Database.rep_mongodb);
+		return new ChangeLogCommandEventHandler(beanResolver, modelRepository);
 	}
 }

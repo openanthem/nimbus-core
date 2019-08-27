@@ -64,7 +64,7 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 	
 	public DefaultStateEventDelegator(EntityStateAspectHandlers provider) {
 		this.provider = provider;
-		this.cmdHandler = provider.getBeanResolver().get(ChangeLogCommandEventHandler.class);
+		this.cmdHandler = provider.getBeanResolver().find(ChangeLogCommandEventHandler.class);
 	}
 
 	
@@ -112,12 +112,14 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 	@Override
 	public void onStopRootCommandExecution(Command cmd, ExecutionTxnContext txnCtx) {
 		Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents = aggregate(txnCtx);
-		cmdHandler.handleOnRootStop(new ChangeLog() {
-			@Override
-			public Class<? extends Annotation> annotationType() {
-				return ChangeLog.class;
-			}
-		}, cmd, aggregatedEvents);
+		if (null != getCmdHandler()) {
+			getCmdHandler().handleOnRootStop(new ChangeLog() {
+				@Override
+				public Class<? extends Annotation> annotationType() {
+					return ChangeLog.class;
+				}
+			}, cmd, aggregatedEvents);
+		}
 		
 		delegate(l->l.onStopRootCommandExecution(cmd, aggregatedEvents));
 		
@@ -133,12 +135,14 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 	@Override
 	public void onStopCommandExecution(Command cmd, ExecutionTxnContext txnCtx) {
 		Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents = aggregate(txnCtx);
-		cmdHandler.handleOnSelfStop(new ChangeLog() {
-			@Override
-			public Class<? extends Annotation> annotationType() {
-				return ChangeLog.class;
-			}
-		}, cmd, aggregatedEvents);
+		if (null != getCmdHandler()) {
+			getCmdHandler().handleOnSelfStop(new ChangeLog() {
+				@Override
+				public Class<? extends Annotation> annotationType() {
+					return ChangeLog.class;
+				}
+			}, cmd, aggregatedEvents);
+		}
 		
 		delegate(l->l.onStopCommandExecution(cmd, aggregatedEvents));
 	}
