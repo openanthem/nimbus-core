@@ -2925,6 +2925,8 @@ public class ViewConfig {
 		boolean readOnly() default false;
 
 		String type() default "text";
+		
+		boolean autofill() default false;
 
 	}
 	

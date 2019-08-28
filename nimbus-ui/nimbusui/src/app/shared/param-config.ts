@@ -251,6 +251,7 @@ export class UiAttribute implements Serializable<UiAttribute, string> {
   yearNavigator: boolean;
   yearRange: string;
   loaderIcon: string;
+  autofill: boolean;
 
   deserialize(inJson) {
     let obj = this;
