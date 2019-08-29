@@ -120,8 +120,9 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		this.pathVariableResolver = getBeanResolver().get(CommandPathVariableResolver.class);
 		this.eCtxPathVariableResolver = getBeanResolver().get(ExecutionContextPathVariableResolver.class);
 		this.domainConfigBuilder = getBeanResolver().get(DomainConfigBuilder.class);
-		this.cmdHandler = getBeanResolver().get(ChangeLogCommandEventHandler.class);
 		this.expressionEvaluator = getBeanResolver().get(ExpressionEvaluator.class);
+		// optional
+		this.cmdHandler = getBeanResolver().find(ChangeLogCommandEventHandler.class);
 	}
 
 	
@@ -154,7 +155,9 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			
 			if(lockId!=null) {
 				//TODO: Interim solution
-				getCmdHandler().handleOnRootStopEvents(cmdMsg.getCommand(), mOut);
+				if (null != getCmdHandler()) {
+					getCmdHandler().handleOnRootStopEvents(cmdMsg.getCommand(), mOut);
+				}
 
 				return createFlattenedOutput(mOut);
 			}
