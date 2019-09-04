@@ -74,6 +74,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 				jacksonObjectMapperBuilder.serializationInclusion(Include.NON_NULL);
 				jacksonObjectMapperBuilder.featuresToEnable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
 				jacksonObjectMapperBuilder.featuresToDisable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+				jacksonObjectMapperBuilder.featuresToDisable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
 
 				jacksonObjectMapperBuilder.deserializerByType(LocalDate.class, new CustomLocalDateDeserializer());
 				jacksonObjectMapperBuilder.serializerByType(LocalDate.class, new CustomLocalDateSerializer());

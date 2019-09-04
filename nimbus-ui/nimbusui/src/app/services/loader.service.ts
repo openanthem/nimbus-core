@@ -38,13 +38,24 @@ export class LoaderService {
   loaderUpdate = new Subject<LoaderState>();
   loaderUpdate$ = this.loaderUpdate.asObservable();
 
+  gridLoaderUpdate = new Subject<LoaderState>();
+  gridLoaderUpdate$ = this.gridLoaderUpdate.asObservable();
+
   constructor() {}
 
-  show(path: string) {
-    this.loaderUpdate.next(<LoaderState>{ show: true, path:path });
+  show() {
+    this.loaderUpdate.next(<LoaderState>{ show: true });
   }
 
-  hide(path: string) {
-    this.loaderUpdate.next(<LoaderState>{ show: false, path: path });
+  hide() {
+    this.loaderUpdate.next(<LoaderState>{ show: false });
+  }
+
+  showGridLoader(path: string) {
+    this.gridLoaderUpdate.next(<LoaderState>{ show: true, path:path });
+  }
+
+  hideGridLoader(path: string) {
+    this.gridLoaderUpdate.next(<LoaderState>{ show: false, path: path });
   }
 }

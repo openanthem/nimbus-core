@@ -95,10 +95,11 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 
 	@Override
 	public void handleOnRootStop(ChangeLog configuredAnnotation, Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
+		ModelRepository rep = getModelRepository();
 		
 		// log command : ALL
 		if(!cmd.isRootDomainOnly())
-			Handler.forCommand(cmd, getModelRepository(), getSessionProvider()).addUrl().save();		
+			Handler.forCommand(cmd, rep, getSessionProvider()).addUrl().save();		
 		
 		// log model
 //		aggregatedEvents.keySet().stream()
@@ -117,12 +118,14 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 		
 		if(aggregatedEvents==null || aggregatedEvents.isEmpty())
 			return;
+
+		ModelRepository rep = getModelRepository();
 		
 		// log parameter
 		aggregatedEvents.stream()
 			.filter(pe->!pe.getParam().isMapped()) // core
 			.filter(pe->pe.getParam().isLeafOrCollectionWithLeafElems()) // leaf
-				.forEach(pe->Handler.forParam(getModelRepository(), pe, getSessionProvider()).save());
+				.forEach(pe->Handler.forParam(rep, pe, getSessionProvider()).save());
 			
 	}
 	
@@ -146,9 +149,11 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 	
 	@Override
 	public void handleOnSelfStop(ChangeLog configuredAnnotation, Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
+		ModelRepository rep = getModelRepository();
+		
 		// log command : only root command CRUD actions
 		//if(cmd.isRootDomainOnly() && cmd.getAction().isCrud())
-			Handler.forCommand(cmd, getModelRepository(), getSessionProvider()).addUrl().save();
+			Handler.forCommand(cmd, rep, getSessionProvider()).addUrl().save();
 
 	}
 	

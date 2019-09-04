@@ -150,5 +150,5 @@ public @interface StyleConditional {
 	 * <p>Path of param to apply styles to when condition is satisfied. The path
 	 * is relative to param on which this annotation is declared.
 	 */
-	String targetPath();
+	String[] targetPath();
 }

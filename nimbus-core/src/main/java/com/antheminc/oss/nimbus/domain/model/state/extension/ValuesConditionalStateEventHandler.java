@@ -15,8 +15,9 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
-import java.util.ArrayList;
+import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
@@ -27,6 +28,7 @@ import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
+import com.antheminc.oss.nimbus.domain.model.state.extension.conditionals.AssignThenToTargetCaseConditionalHandler;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
@@ -52,7 +54,7 @@ import lombok.Setter;
 @EnableLoggingInterceptor
 @Getter(AccessLevel.PROTECTED)
 @Setter(AccessLevel.PROTECTED)
-public class ValuesConditionalStateEventHandler extends EvalExprWithCrudDefaults<ValuesConditional> {
+public class ValuesConditionalStateEventHandler extends AssignThenToTargetCaseConditionalHandler<ValuesConditional> {
 
 	protected static final JustLogit LOG = new JustLogit(ValuesConditionalStateEventHandler.class);
 	private final ParamValuesOnLoadHandler paramValuesHandler;
@@ -99,8 +101,9 @@ public class ValuesConditionalStateEventHandler extends EvalExprWithCrudDefaults
 			// if previously selected targetParam state is not in the list of
 			// new values. then reset to null.
 			Object state = targetParam.getState() != null ? targetParam.getState() : null;
-			if (state instanceof String && (null == targetParam.getValues() || (null != targetParam.getState() && !targetParam.getValues().stream()
-					.map(ParamValue::getCode).collect(Collectors.toList()).contains(state.toString())))) {
+			if (state instanceof String && (null == targetParam.getValues()
+					|| (null != targetParam.getState() && !targetParam.getValues().stream().map(ParamValue::getCode)
+							.collect(Collectors.toList()).contains(state.toString())))) {
 
 				targetParam.setState(null);
 			}
@@ -125,36 +128,21 @@ public class ValuesConditionalStateEventHandler extends EvalExprWithCrudDefaults
 				+ "'.");
 
 		// perform any after-execution logic needed
-		if (StateEventType.ON_CHANGE.equals(getStateEventType())) {
+		if (StateChangeEventType.ON_CHANGE.equals(getStateChangeEventType())) {
 			this.afterExecute(targetParam);
 		}
 	}
 
-	/**
-	 * <p>Reset the values for {@code targetParam} using the {@link Values} that
-	 * decorates the field representing it. <p>If the field represented by
-	 * {@code targetParam} does not have a {@link Values} decorator, the label
-	 * config for that param will be set to an empty {@link ArrayList}.
-	 * @param onChangeParam the param represented by the field decorated with
-	 *            {@link ValuesConditional}
-	 * @param targetParam the target parameter to execute against
-	 */
 	@Override
-	protected void executeDefault(Param<?> onChangeParam, Param<?> targetParam) {
-		applyValuesToState(targetParam.getConfig().getValues(), onChangeParam, targetParam);
+	protected void executeElse(Param<?> onChangeParam, Annotation configuredAnnotation, Set<Param<?>> targetParams) {
+		for(Param<?> targetParam : targetParams) {
+			applyValuesToState(targetParam.getConfig().getValues(), onChangeParam, targetParam);
+		}
 	}
 
-	/**
-	 * <p>Apply all {@link Values} within the configured annotation of
-	 * {@link ValuesConditional} to {@code targetParam}.
-	 * @param payload the {@link ValuesConditional.Condition#then()} value from
-	 *            the corresponding {@code true} condition that has been
-	 *            executed
-	 * @param onChangeParam the source parameter (annotated field)
-	 * @param targetParam the target parameter to execute against
-	 */
 	@Override
-	protected void executeOnWhenConditionTrue(Object payload, Param<?> onChangeParam, Param<?> targetParam) {
-		applyValuesToState((Values) payload, onChangeParam, targetParam);
+	protected void whenConditionTrue(Object thenValue, Param<?> onChangeParam, Param<?> targetParam) {
+		Values thenAnnotation = (Values) thenValue;
+		applyValuesToState(thenAnnotation, onChangeParam, targetParam);
 	}
 }

@@ -30,6 +30,7 @@ import { Param } from '../../shared/param-state';
 import { ParamUtils } from './../../shared/param-utils';
 import { CustomValidators } from './validators/custom.validators';
 import { ValidationUtils } from './validators/ValidationUtils';
+import { NimbusFormGroup } from './form.component';
 
 /**
  * \@author Dinakar.Meda
@@ -44,7 +45,7 @@ export class FormElementsService {
   constructor(private _fb: FormBuilder) {}
 
   toFormGroup(elements: Param[], formValidations: ValidatorFn[]) {
-    let group: FormGroup;
+    let group: NimbusFormGroup;
     if (formValidations.length > 0) {
       
       group = this._fb.group(this.buildFormGroup(elements), {
@@ -53,7 +54,7 @@ export class FormElementsService {
     }
       
     else group = this._fb.group(this.buildFormGroup(elements));
-
+    group.paramConfigs = elements.map(x => x.config);
     return group;
   }
 

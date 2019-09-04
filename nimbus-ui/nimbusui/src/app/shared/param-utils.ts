@@ -23,6 +23,7 @@ import { ServiceConstants } from '../services/service.constants';
 import { TableComponentConstants } from './../components/platform/grid/table.component.constants';
 import { LabelConfig, UiNature } from './param-config';
 import { Param } from './param-state';
+import * as moment from 'moment';
 
 /**
  * \@author Tony.Lopez
@@ -73,36 +74,6 @@ export class ParamUtils {
     );
   }
 
-  /**
-   * <p>Converts any date objects coming from the server (see:
-   * <tt>ParamUtils.DATE_TYPE_MAPPINGS.LOCAL_DATE</tt>) to an equivalent Javascript <tt>Date</tt>
-   * object.</p>
-   *
-   * <p>The server time string is under contract to always come back in the UTC time zone, in the
-   * ISO Date Format of yyyy-MM-ddThh:mm:ss.SSSZ. Consequently, the converted <tt>Date</tt> object will
-   * be converted to the browser's current time zone.</p>
-   *
-   * <p>This method will effectively ignore the time zone by adding the offset time
-   * between the UTC time zone and the browser time zone when doing the <tt>Date</tt> conversion. e.g. A
-   * <tt>LocalDate.of(1931, 2, 4)</tt> from the server would give:</p>
-   *
-   * <ul>
-   *  <li>Response from server: '1931-02-04T00:00:00.000Z'</li>
-   *  <li>*Converted <tt>Date</tt>: Wed Feb 04 1931 00:00:00 GMT-0500 (EST)</li>
-   * </ul>
-   *
-   * <p>instead of:</p>
-   *
-   * <ul>
-   *  <li>Response from server: '1931-02-04T00:00:00.000Z'</li>
-   *  <li>*Converted <tt>Date</tt>: Tue Feb 03 1931 19:00:00 GMT-0500 (EST)</li>
-   * </ul>
-   *
-   * <p>* Assumes browser is in EST timezone.</p>
-   *
-   * @param value the server date string
-   * @param typeClassMapping the class type of the server date object
-   */
   public static convertServerDateStringToDate(
     value: string,
     typeClassMapping: string
@@ -121,26 +92,35 @@ export class ParamUtils {
         );
       }
 
-      case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE_TIME.name: {
-        return new Date(
-          serverDateTime.getUTCFullYear(),
-          serverDateTime.getUTCMonth(),
-          serverDateTime.getUTCDate(),
-          serverDateTime.getHours(),
-          serverDateTime.getMinutes(),
-          serverDateTime.getSeconds()
-        );
+      case ParamUtils.DATE_TYPE_METADATA.ZONED_DATE_TIME.name: {
+        // TODO determine what to do with the zone information
+        return serverDateTime;
       }
 
       default: {
-        return new Date(
-          serverDateTime.getFullYear(),
-          serverDateTime.getMonth(),
-          serverDateTime.getDate(),
-          serverDateTime.getHours(),
-          serverDateTime.getMinutes(),
-          serverDateTime.getSeconds()
-        );
+        return serverDateTime;
+      }
+    }
+  }
+
+  public static convertDateToServerDate(value: Date, typeClassMapping: string): string {
+    if (!value) {
+      return null;
+    }
+
+    switch (typeClassMapping) {
+      case ParamUtils.DATE_TYPE_METADATA.ZONED_DATE_TIME.name: {
+        return moment(value).format();
+      }
+
+      case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name: {
+        var userDate = new Date(value);
+        userDate.setMinutes(-value.getTimezoneOffset());
+        return userDate.toISOString().slice(0, 10);
+      }
+
+      default: {
+        return value.toISOString();
       }
     }
   }

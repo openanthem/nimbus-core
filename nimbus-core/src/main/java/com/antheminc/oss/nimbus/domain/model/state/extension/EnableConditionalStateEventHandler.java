@@ -15,11 +15,12 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
-import java.util.Arrays;
+import java.util.function.Consumer;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.extension.EnableConditional;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.extension.conditionals.BooleanSetterConditionalHandler;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
@@ -27,21 +28,14 @@ import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
  *
  */
 @EnableLoggingInterceptor
-public class EnableConditionalStateEventHandler extends EvalExprWithCrudActions<EnableConditional> {
+public class EnableConditionalStateEventHandler extends BooleanSetterConditionalHandler<EnableConditional> {
 
 	public EnableConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}
-	
-	@Override	
-	protected void handleInternal(Param<?> onChangeParam, EnableConditional configuredAnnotation) {
-		boolean isTrue = evalWhen(onChangeParam, configuredAnnotation.when());
-		
-		// validate target param to enable
-		String[] targetPaths = configuredAnnotation.targetPath();
 
-		Arrays.asList(targetPaths).stream()
-			.forEach(targetPath -> handleInternal(onChangeParam, targetPath, targetParam->targetParam.setEnabled(isTrue)));
-		
+	@Override
+	protected Consumer<Boolean> setter(Param<?> targetParam) {
+		return targetParam::setEnabled;
 	}
 }
