@@ -21,6 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.activiti.engine.impl.persistence.deploy.DefaultDeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 
+import com.antheminc.oss.nimbus.support.JustLogit;
+
 /**
  * @author Jayant Chaudhuri
  *
@@ -29,15 +31,20 @@ public class ActivitiProcessDefinitionCache extends DefaultDeploymentCache<Proce
 	
 	private Map<String,ProcessDefinitionCacheEntry> processDefinitionCache = new ConcurrentHashMap<String,ProcessDefinitionCacheEntry>();
 	
+	protected final JustLogit logit = new JustLogit(ActivitiProcessDefinitionCache.class);
+
 	public ProcessDefinitionCacheEntry findByKey(String currentKey) {
+		logit.info(() -> "process lookup key: "+currentKey);
 		ProcessDefinitionCacheEntry entry = processDefinitionCache.get(currentKey);
 		if(entry != null)
 			return entry;
 		int version = 0;
 		for(String processDefinition:cache.keySet()) {
 			String key = processDefinition.split(":")[0];
+			logit.info(()-> "process definition: "+ processDefinition + "key: "+ key);
 			if(key.equals(currentKey)) {
 				ProcessDefinitionCacheEntry definitionEntry = cache.get(processDefinition);
+				logit.info(()-> "version: "+ definitionEntry.getProcessDefinition().getVersion());
 				if(definitionEntry.getProcessDefinition().getVersion() > version) {
 					entry = definitionEntry;
 					version = definitionEntry.getProcessDefinition().getVersion();
@@ -46,5 +53,11 @@ public class ActivitiProcessDefinitionCache extends DefaultDeploymentCache<Proce
 		}
 		processDefinitionCache.put(currentKey, entry);
 		return entry;
+	}
+	
+	@Override
+	public void add(String id, ProcessDefinitionCacheEntry obj) {
+		logit.info(()-> "adding entry into cache: "+ id);
+		super.add(id, obj);
 	}
 }
