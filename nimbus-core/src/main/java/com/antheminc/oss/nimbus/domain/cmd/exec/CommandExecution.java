@@ -185,10 +185,10 @@ public final class CommandExecution {
 			return result;
 		}
 		
-		@SuppressWarnings("unchecked")
 		@JsonIgnore
 		public <T> Output<T> findFirstParamOutputEndingWithPath(String path) {
-			return Optional.ofNullable((Output<T>) findParamOutputsEndingWithPath(path).get(0)).orElse(null);
+			List<Output<T>> results = findParamOutputsEndingWithPath(path);
+			return !CollectionUtils.isEmpty(results) ? results.get(0) : null;
 		}
 		
 	}
