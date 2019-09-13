@@ -928,7 +928,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	private boolean isPrimitive() {
-		return ClassUtils.isPrimitiveOrWrapper(getConfig().getReferredClass());
+		return getConfig().getReferredClass().isPrimitive();
 	}
 
 	@Override
