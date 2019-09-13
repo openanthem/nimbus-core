@@ -25,6 +25,8 @@ import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.CheckBox;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ComboBox;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Modal;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditionals;
@@ -153,6 +155,12 @@ public class SampleCoreEntity extends IdLong {
 	public static class SampleForm {
 //		@ActivateConditional(when="state=='Y'", targetPath="../nc_nested_level1")
 //		private String nc_attr1;
+		
+		@ActivateConditional(targetPath = { "../sample_checkBox"}, when = "state == 'Yes'")
+		private String sample_activate;
+		
+		private Boolean sample_checkBox;
+
 		
 		private SampleNoConversionEntity nc_nested0_Details;
 	}
