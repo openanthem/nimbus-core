@@ -237,4 +237,23 @@ public class ActivateConditionalNoConversionTest extends AbstractStateEventHandl
 		checkIsInactive(p3);
 		assertEquals(Integer.valueOf(0), p3.getState());
 	}
+	
+	@Test
+	public void test_activateConditionalOnPrimitives() {
+		Param<?> view_nc_form = _q.getRoot().findParamByPath(VIEW_PARAM_nc_form);
+		assertNotNull(view_nc_form);
+		Param<String> p1 = view_nc_form.findParamByPath("/sample_activate");
+		Param<Boolean> p2 = view_nc_form.findParamByPath("/sample_checkBox");
+		//show the checkbox by setting the value to 'Yes'
+		p1.setState("Yes");
+		checkIsActive(p2);
+		//set the checkboxv value
+		p2.setState(true);
+		//trigger activate conditional on p1 to reset state of p2
+		p1.setState("No");
+		
+		checkIsInactive(p2);
+		assertNull(p2.getState());
+	
+	}
 }		
