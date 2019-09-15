@@ -281,7 +281,7 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 		
 		
 		T elemToRemove = pElem.getState();
-		boolean isRemoved = currList.remove(elemToRemove);
+		boolean isRemoved = (elemToRemove==null) ? true : currList.remove(elemToRemove);
 		
 		// remove from collection model state
 		String elemId = pElem.getElemId();
