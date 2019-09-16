@@ -19,7 +19,9 @@ import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.entity.AbstractEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -28,6 +30,8 @@ import lombok.ToString;
  *
  */
 @Domain(value="name")
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter @Setter @ToString(callSuper=true)
 public class Name extends AbstractEntity.IdLong {
 	

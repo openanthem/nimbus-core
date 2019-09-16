@@ -20,7 +20,9 @@ import javax.validation.constraints.NotNull;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.entity.AbstractEntity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -28,9 +30,9 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-//@Domain(value="address", includeListeners={ListenerType.persistence})
-//@Repo(Database.rep_mongodb)
 @Domain(value="address")
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter @Setter @ToString(callSuper=true)
 public class Address extends AbstractEntity.IdLong {
 
