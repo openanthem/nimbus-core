@@ -271,6 +271,9 @@ export class DataTable extends BaseTableElement
     } else {
       // TODO handle the pagination when server-side pagination is enabled
     }
+    if(!this.value) {
+      this.value = [];
+    }
     this.value.unshift({});
     this.dt.initRowEdit(this.value[0]);
     // TODO focus the first field
