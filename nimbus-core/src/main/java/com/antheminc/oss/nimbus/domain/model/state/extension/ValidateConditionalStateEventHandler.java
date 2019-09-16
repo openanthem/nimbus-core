@@ -41,7 +41,7 @@ public class ValidateConditionalStateEventHandler extends EvalExprWithCrudAction
 	@Override
 	protected void handleInternal(Param<?> onChangeParam, ValidateConditional configuredAnnotation) {
 		
-		boolean isTrue = this.evalWhen(onChangeParam, configuredAnnotation.when());
+		boolean result = this.evaluate(configuredAnnotation.when(), onChangeParam);
 		
 		// retrieve the validation assignment strategy
 		ValidationAssignmentStrategy strategy = this.getValidationAssignmentStrategy(configuredAnnotation);
@@ -49,7 +49,7 @@ public class ValidateConditionalStateEventHandler extends EvalExprWithCrudAction
 		if (null == configuredAnnotation.targetPath() || configuredAnnotation.targetPath().length == 0) {
 			
 			// single scenario execution
-			strategy.execute(isTrue, onChangeParam, configuredAnnotation.targetGroup());
+			strategy.execute(result, onChangeParam, configuredAnnotation.targetGroup());
 		} else {
 			
 			// multiple scenario execution
@@ -58,10 +58,9 @@ public class ValidateConditionalStateEventHandler extends EvalExprWithCrudAction
 				if (null == targetParam) {
 					throw new InvalidConfigException("Failed to locate param with path: " + path);
 				}
-				strategy.execute(isTrue, targetParam, configuredAnnotation.targetGroup());
+				strategy.execute(result, targetParam, configuredAnnotation.targetGroup());
 			}
 		}
-		
 	}
 	
 	private ValidationAssignmentStrategy getValidationAssignmentStrategy(ValidateConditional configuredAnnotation) {

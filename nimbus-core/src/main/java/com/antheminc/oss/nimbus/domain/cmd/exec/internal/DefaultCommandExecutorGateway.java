@@ -72,6 +72,7 @@ import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.StateEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ChangeLogCommandEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.internal.BaseStateEventListener;
+import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultStateEventDelegator;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection.LogLevel;
 import com.antheminc.oss.nimbus.support.InjectSelf;
@@ -120,8 +121,9 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		this.pathVariableResolver = getBeanResolver().get(CommandPathVariableResolver.class);
 		this.eCtxPathVariableResolver = getBeanResolver().get(ExecutionContextPathVariableResolver.class);
 		this.domainConfigBuilder = getBeanResolver().get(DomainConfigBuilder.class);
-		this.cmdHandler = getBeanResolver().get(ChangeLogCommandEventHandler.class);
 		this.expressionEvaluator = getBeanResolver().get(ExpressionEvaluator.class);
+		// optional
+		this.cmdHandler = getBeanResolver().find(ChangeLogCommandEventHandler.class);
 	}
 
 	
@@ -154,7 +156,9 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			
 			if(lockId!=null) {
 				//TODO: Interim solution
-				getCmdHandler().handleOnRootStopEvents(cmdMsg.getCommand(), mOut);
+				if (null != getCmdHandler()) {
+					getCmdHandler().handleOnRootStopEvents(cmdMsg.getCommand(), mOut);
+				}
 
 				return createFlattenedOutput(mOut);
 			}
@@ -414,8 +418,10 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			StateEventListener cmdListener = new BaseStateEventListener() {
 
 				@Override
-				public void onEvent(ExecutionTxnContext txnCtx, ParamEvent event) { 
-					_aggregatedEvents.add(event);
+				public void onEvent(ExecutionTxnContext txnCtx, ParamEvent pe) {
+					Param<?> colParent = DefaultStateEventDelegator.findFirstCollectionNode(pe.getParam());
+					ParamEvent resolved = (colParent==null) ? pe : new ParamEvent(pe.getAction(), colParent);
+					_aggregatedEvents.add(resolved);
 				}
 				
 				@Override

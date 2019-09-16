@@ -28,6 +28,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
@@ -136,7 +137,7 @@ public class CommandExecutorTaskDelegateUnitTest {
 		CommandElement rootDomainElement = Mockito.mock(CommandElement.class);
 		Mockito.when(cmdMsg.getCommand()).thenReturn(cmd);
 		Mockito.when(cmd.getRootDomainElement()).thenReturn(rootDomainElement);
-		Mockito.when(rootDomainElement.getRefId().getId()).thenReturn(1L);
+		Mockito.when(rootDomainElement.getRefId()).thenReturn(Mockito.mock(RefId.class));
 		return new ExecutionContext(cmdMsg);
 	}
 }

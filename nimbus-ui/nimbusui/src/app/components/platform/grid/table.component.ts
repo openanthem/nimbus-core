@@ -271,6 +271,9 @@ export class DataTable extends BaseTableElement
     } else {
       // TODO handle the pagination when server-side pagination is enabled
     }
+    if(!this.value) {
+      this.value = [];
+    }
     this.value.unshift({});
     this.dt.initRowEdit(this.value[0]);
     // TODO focus the first field
@@ -379,7 +382,7 @@ export class DataTable extends BaseTableElement
       });
     }
 
-    this.subscribers.push(this.loaderservice.loaderUpdate.subscribe(
+    this.subscribers.push(this.loaderservice.gridLoaderUpdate.subscribe(
       (state: LoaderState) => {
         if(state.path === this.element.path) {
           this.loading = state.show;

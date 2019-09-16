@@ -120,6 +120,10 @@ public class VPSampleViewPageGreen {
 		@Values(url = "a/b/p/sampletask/_search?fn=lookup&projection.mapsTo=code:taskName,label:taskName")
 		private String comboboxWithStringId;
 		
+		@ComboBox
+		@Values(url = "/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/foo')")
+		private String comboBoxStaticCodeValuesLookup;
+		
 		@TextBox(postEventOnChange = true)
 		@Path
 		@ActivateConditional(when = "state == 'showit'", targetPath = "/../unmappedNested")

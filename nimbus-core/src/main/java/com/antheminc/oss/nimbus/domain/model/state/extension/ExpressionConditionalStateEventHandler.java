@@ -39,23 +39,15 @@ public class ExpressionConditionalStateEventHandler extends EvalExprWithCrudActi
 	
 	@Override
 	protected void handleInternal(Param<?> onChangeParam, ExpressionConditional configuredAnnotation) {
-		boolean isExecuteThen = evalWhen(onChangeParam, configuredAnnotation.when());
+		boolean result = evaluate(configuredAnnotation.when(), onChangeParam);
 		
-		if(isExecuteThen) {
+		if(result) {
 			String thenExpr = Optional.ofNullable(configuredAnnotation.then())
 								.filter(StringUtils::isNotEmpty)
 								.orElseThrow(()->new InvalidConfigException(configuredAnnotation+" must have valid expression to execute."));
 			
 			execute(onChangeParam, thenExpr);
-			return;
-		} 
-
-//		// else expression
-//		String elseExpr = StringUtils.trimToNull(configuredAnnotation.elseThen());
-//		if(elseExpr == null) 
-//			return;
-//		
-//		execute(onChangeParam, elseExpr);
+		}
 	}
 	
 	private void execute(Param<?> onChangeParam, String expr) {

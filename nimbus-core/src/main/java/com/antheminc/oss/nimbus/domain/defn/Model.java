@@ -68,6 +68,17 @@ public @interface Model {
 			Class<? extends Source> value() default EMPTY.class;
 			
 			String url() default "staticCodeValue";
+			
+			/**
+			 * <p>When {@code true}, attempts to retrieve
+			 * {@code "staticCodeValue"} calls made with {@link #url()} from the
+			 * "staticcodevalues" cache. <p>Note: There are other layers of
+			 * caching defined within the {@link Command} execution lifecycle,
+			 * but enabling this property will result in a more aggressive cache
+			 * retrieval strategy by fetching from the cache before the
+			 * {@link Command} has a chance to execute.
+			 */
+			boolean useParamValuesCacheOnLoad() default true;
 		}
 
 	}

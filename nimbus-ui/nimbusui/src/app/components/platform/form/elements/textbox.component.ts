@@ -53,17 +53,17 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
       [required]="requiredCss"
     >
     </nm-input-label>
-
     <input
       *ngIf="hidden != true && readOnly == false"
       [(ngModel)]="value"
+      [autocomplete]="element?.config?.uiStyles?.attributes?.autofill ? 'on' : undefined"
       [id]="element.config?.code"
       (focusout)="emitValueChangedEvent(this,value)"
       [value]="type"
       [disabled]="disabled"
       class="form-control text-input"
     />
-
+   
     <input
       *ngIf="hidden == true"
       [id]="element.config?.code"
@@ -82,7 +82,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 })
 export class InputText extends BaseControl<String> {
   @ViewChild(NgModel) model: NgModel;
-
   constructor(
     controlService: ControlSubscribers,
     cd: ChangeDetectorRef,

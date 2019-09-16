@@ -581,11 +581,15 @@ export class PageService {
       let flowNameWithId = flowName.concat(':' + rootDomainId);
       url = url.replace(flowName, flowNameWithId);
     }
-    this.executeHttp(url, method, model, showGridLoader?path:null);
+    this.executeHttp(url, method, model, path, showGridLoader);
   }
 
-  executeHttp(url: string, method: string, model: any, paramPath?: string) {
-    this.showLoader(paramPath);
+  executeHttp(url: string, method: string, model: any, paramPath?: string, showGridLoader?: boolean) {
+    if(showGridLoader) {
+      this.showGridLoader(paramPath);
+    } else {
+      this.showLoader();
+    }
     this.logger.info('http call' + url + 'started');
     if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
       this.executeHttpGet(url, paramPath);
@@ -653,7 +657,8 @@ export class PageService {
       this.postResponseProcessing.next(paramPath);
     }
     this.logError(err);
-    this.hideLoader(paramPath);
+    this.hideLoader();
+    this.hideGridLoader(paramPath);
   }
 
   invokeFinally(url: string, paramPath: string) {
@@ -661,7 +666,8 @@ export class PageService {
       this.postResponseProcessing.next(paramPath);
     }
     this.logger.info('http response for ' + url + ' processed successsfully');
-    this.hideLoader(paramPath);
+    this.hideLoader();
+    this.hideGridLoader(paramPath);
   }
 
   postOnChange(path: string, payloadAttr: string, payloadValue: string) {
@@ -808,7 +814,7 @@ export class PageService {
    * Loop through the Param State and build the Grid
    */
   createTableBasedData(
-    colElemParamsJSON: string[],
+    colElemParamsJSON: Param[],
     gridParam: Param
   ): TableBasedData {
     return TableBasedData.fromJson(
@@ -850,6 +856,12 @@ export class PageService {
             }
             this.gridValueUpdate.next(param);
           }
+
+          //handle visible, enabled, activatevalidationgroups - the state above will always run if visible is true or false
+          let responseGridParam: Param = new Param(
+            this.configService
+          ).deserialize(eventModel.value, eventModel.value.path);
+          
           // Collection check - replace entire grid
           if (param.config.type.collection) {
             if (eventModel.value.page) {
@@ -859,15 +871,12 @@ export class PageService {
               param.page = page;
             }
             param.tableBasedData = this.createTableBasedData(
-              eventModel.value.type.model.params,
+              responseGridParam.type.model.params,
               param
             );
             this.gridValueUpdate.next(param);
           }
-          //handle visible, enabled, activatevalidationgroups - the state above will always run if visible is true or false
-          let responseGridParam: Param = new Param(
-            this.configService
-          ).deserialize(eventModel.value, eventModel.value.path);
+
           let config = this.configService.getViewConfigById(
             responseGridParam.configId
           );
@@ -1105,14 +1114,27 @@ export class PageService {
   /*
    * show the loader icon the page
    */
-  private showLoader(paramPath: string): void {
-    this.loaderService.show(paramPath);
+  private showLoader(): void {
+    this.loaderService.show();
   }
 
   /*
    * hide the loader icon the page
    */
-  private hideLoader(paramPath: string): void {
-    this.loaderService.hide(paramPath);
+  private hideLoader(): void {
+    this.loaderService.hide();
+  }
+  /*
+   * show the grid loader icon the page
+   */
+  private showGridLoader(paramPath: string): void {
+    this.loaderService.showGridLoader(paramPath);
+  }
+
+  /*
+   * hide the grid loader icon the page
+   */
+  private hideGridLoader(paramPath: string): void {
+    this.loaderService.hideGridLoader(paramPath);
   }
 }

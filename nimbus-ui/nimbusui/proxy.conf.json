@@ -43,5 +43,10 @@
         "target" : "http://localhost:8086",
         "secure" : false,
         "logLevel": "debug"
+    },
+    "/claims/client/org/*" :{
+        "target" : "http://localhost:8082",
+        "secure" : false,
+        "logLevel": "debug"
     }
 }

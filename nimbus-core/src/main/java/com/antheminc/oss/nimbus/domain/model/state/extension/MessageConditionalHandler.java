@@ -25,7 +25,7 @@ public class MessageConditionalHandler extends EvalExprWithCrudActions<MessageCo
 	}
 	@Override
 	protected void handleInternal(Param<?> onChangeParam, MessageConditional configuredAnnotation) {
-		boolean isValid = this.evalWhen(onChangeParam, configuredAnnotation.when());
+		boolean isValid = this.evaluate(configuredAnnotation.when(), onChangeParam);
 		// Evaluate the msg as a spel expression
 		String evaluatedMessage = expressionEvaluator.getValue(configuredAnnotation.message(), new ParamStateHolder<>(onChangeParam), String.class);
 		

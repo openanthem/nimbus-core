@@ -30,7 +30,6 @@ nimbus:
       basePackages:
         - com.antheminc.oss.nimbus.entity
         - com.antheminc.oss.nimbus.test.scenarios.repo.rdbms.core
-        #- com.antheminc.oss.nimbus.test.scenarios.repo.rdbms.core
         - com.antheminc.oss.nimbus.domain.bpm
         - com.antheminc.oss.nimbus.domain.rules
       persistence:
