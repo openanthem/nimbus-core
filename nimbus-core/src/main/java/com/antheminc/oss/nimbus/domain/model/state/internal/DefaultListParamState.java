@@ -266,7 +266,7 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 		return mapsToParam.findIfCollectionElem();	
 	}
 	
-	protected boolean affectRemoveIfMappedOrUnMapped(ListElemParam<T> pElem) {
+	private boolean affectRemoveIfMappedOrUnMapped(ListElemParam<T> pElem) {
 		// remove from collection entity state
 		List<T> currList = getState();//instantiateOrGet();
 		
@@ -281,7 +281,7 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 		
 		
 		T elemToRemove = pElem.getState();
-		boolean isRemoved = (elemToRemove==null) ? true : currList.remove(elemToRemove);
+		boolean isRemoved = currList.remove(elemToRemove);
 		
 		// remove from collection model state
 		String elemId = pElem.getElemId();

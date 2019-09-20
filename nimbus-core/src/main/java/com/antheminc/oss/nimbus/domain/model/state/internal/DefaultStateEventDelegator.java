@@ -190,7 +190,7 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 		return root;
 	} 
 	
-	public static Param<?> findFirstCollectionNode(Param<?> currParam) {
+	private static Param<?> findFirstCollectionNode(Param<?> currParam) {
 		if(currParam.isCollection())
 			return currParam;
 		

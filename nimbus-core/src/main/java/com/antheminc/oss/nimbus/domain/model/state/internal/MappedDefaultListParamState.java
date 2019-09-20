@@ -22,9 +22,7 @@ import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.Notification;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListElemParam;
 import com.antheminc.oss.nimbus.domain.model.state.Notification.ActionType;
-import com.antheminc.oss.nimbus.support.pojo.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -103,18 +101,13 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 					String elemId = event.getEventParam().findIfCollectionElem().getElemId();
 					
 					ListModel<T> mappedColModel = (ListModel<T>)getType().findIfNested().getModel().findIfListModel();
-//					Param<?> mappedParamElem = mappedColModel.templateParams().remove(elemId);
-					Param<?> mappedParamElem = mappedColModel.templateParams().find(elemId);
+					Param<?> mappedParamElem = mappedColModel.templateParams().remove(elemId);
 					
-					removeMappedWithoutPropagation(event.getEventParam(), (ListElemParam<T>)mappedParamElem.findIfCollectionElem());
-//					// deregister mapped from mapsTo
-//					event.getEventParam().deregisterConsumer((MappedParam)mappedParamElem);
+					emitNotification(new Notification<>(mappedColModel.getAssociatedParam(), ActionType._deleteElem, mappedParamElem));
 					
-//					emitNotification(new Notification<>(mappedColModel.getAssociatedParam(), ActionType._deleteElem, mappedParamElem));
-//					
-//					if(getRootExecution().getExecutionRuntime().isStarted())
-//						emitEvent(Action._delete, mappedParamElem);
-//					
+					if(getRootExecution().getExecutionRuntime().isStarted())
+						emitEvent(Action._delete, mappedParamElem);
+					
 					logit.trace(()->"[onEventDeleteElem] removed mapped.ListParamElem: "+mappedParamElem.getPath());
 				});	
 			}
@@ -153,34 +146,6 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 		};
 
 		getMapsTo().registerConsumer(this);
-	}
-	
-	private boolean removeMappedWithoutPropagation(Param<?> mapsTo, final ListElemParam<T> pElem) {
-		clearPageMeta();
-		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
-		
-		return rLockTemplate.execute(()->{
-			
-			return changeStateTemplate((rt, h, lockId) -> {
-				boolean isRemoved =  affectRemoveIfMappedOrUnMapped(pElem);
-
-				// deregister mapped from mapsTo
-				mapsTo.deregisterConsumer((MappedParam)pElem);
-
-				if(isRemoved) {
-					// notify state
-					emitNotification(new Notification<>(this, ActionType._deleteElem, pElem));
-					
-					// emit event
-					if(rt.isStarted())
-						emitEvent(Action._delete, pElem);
-					
-					return true;
-				}
-
-				return false;
-			});
-		});
 	}
 	
 	@Override
