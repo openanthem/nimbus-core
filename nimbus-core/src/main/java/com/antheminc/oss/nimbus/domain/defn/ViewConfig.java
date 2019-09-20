@@ -1684,7 +1684,7 @@ public class ViewConfig {
 		String imgSrc() default "";
 		
 		/**
-		 * <p>When set to true the link menu will collapse on clickin a link
+		 * <p>When {@code true} the link menu will collapse on clicking a link
 		 */
 		boolean collapseOnClick() default false;
 
