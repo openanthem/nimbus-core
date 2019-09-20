@@ -70,6 +70,7 @@ import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.StateEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ChangeLogCommandEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.internal.BaseStateEventListener;
+import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultStateEventDelegator;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection.LogLevel;
 import com.antheminc.oss.nimbus.support.InjectSelf;
@@ -390,8 +391,10 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			StateEventListener cmdListener = new BaseStateEventListener() {
 
 				@Override
-				public void onEvent(ExecutionTxnContext txnCtx, ParamEvent event) { 
-					_aggregatedEvents.add(event);
+				public void onEvent(ExecutionTxnContext txnCtx, ParamEvent pe) {
+					Param<?> colParent = DefaultStateEventDelegator.findFirstCollectionNode(pe.getParam());
+					ParamEvent resolved = (colParent==null) ? pe : new ParamEvent(pe.getAction(), colParent);
+					_aggregatedEvents.add(resolved);
 				}
 				
 				@Override
