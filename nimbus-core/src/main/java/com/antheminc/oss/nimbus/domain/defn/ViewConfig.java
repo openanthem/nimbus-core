@@ -2262,6 +2262,9 @@ public class ViewConfig {
 	/**
 	 * <p>Paragraph is a container for displaying text content.
 	 * 
+	 * <p><b>Usage</b>
+	 * <p>Paragraph renders the text provided in an associated {@link Label} decoration.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Paragraph will be rendered when annotating a field nested under one of
