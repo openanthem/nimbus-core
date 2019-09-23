@@ -25,6 +25,33 @@ import javax.validation.Constraint;
 
 
 /**
+ * <p>A set of client-side validation rules to perform. When a given
+ * {@link RuleSet} evaluation evaluates to {@code false}, the UI will render the
+ * decorated form element as {@code invalid} and display the associated error
+ * message.</p> <p>ValidationRule should decorate a field also decorated with
+ * {@link Form}. <p><b>Usage</b><br></p>
+ * 
+ * <pre>
+ * &#64;ValidationRule(ruleset = {
+ *     &#64;RuleSet(rule = "findStateByPath('/endDate') > findStateByPath('/startDate')", message = "End date must be greater than start date")
+ * })
+ * &#64;Form
+ * private SampleForm sampleForm;
+ * 
+ * &#64;Model
+ * &#64;Data
+ * public static class SampleForm {
+ * 
+ *     &#64;Calendar
+ *     private LocalDate startDate;
+ * 
+ *     &#64;Calendar
+ *     private LocalDate endDate;
+ * }
+ * </pre>
+ * 
+ * </ul>
+ * 
  * @author Sandeep Mantha
  */
 @Documented
@@ -33,6 +60,11 @@ import javax.validation.Constraint;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidationRule {
 	
+	/**
+	 * <p>One or more client-side rule validations to evaluate against the
+	 * decorated {@link Form}. Rulesets that fail will have their failure
+	 * messages displayed atop the rendered form element.
+	 */
 	public RuleSet[] ruleset();
 
 	public @interface RuleSet1 {
