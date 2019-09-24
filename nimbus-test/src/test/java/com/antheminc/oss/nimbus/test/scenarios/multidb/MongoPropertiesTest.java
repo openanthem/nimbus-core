@@ -26,7 +26,7 @@ import lombok.Data;
  */
 @Data
 @ConfigurationProperties(prefix = "nimbus.mongodb")
-public class NimbusMongoProperties {
+public class MongoPropertiesTest {
     private MongoProperties primary = new MongoProperties();
     private MongoProperties secondary = new MongoProperties();
 }
