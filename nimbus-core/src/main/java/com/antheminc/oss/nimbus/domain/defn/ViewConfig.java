@@ -837,6 +837,9 @@ public class ViewConfig {
 	@Target({ ElementType.FIELD })
 	@ViewStyle
 	public @interface FileUpload {
+		public enum Type {
+			INTERNAL, EXTERNAL;
+		}
 		public enum ControlType {
 			FORMCONTROL
 		}
@@ -863,6 +866,10 @@ public class ViewConfig {
 		String type() default ".pdf,.png";
 
 		String url() default "";
+		
+		Type urlType() default Type.EXTERNAL;
+		
+		
 		
 		Behavior behavior() default Behavior.UPLOAD;
 		

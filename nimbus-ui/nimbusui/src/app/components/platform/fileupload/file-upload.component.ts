@@ -38,6 +38,7 @@ import { LoggerService } from './../../../services/logger.service';
 import { ServiceConstants } from './../../../services/service.constants';
 import { PageService } from './../../../services/page.service';
 import { FileUpload } from 'primeng/primeng';
+import { ComponentTypes } from '../../../shared/param-annotations.enum';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -190,9 +191,9 @@ export class FileUploadComponent extends BaseElement
           this.selectedFiles.push(file);
           this.value = this.selectedFiles;
 
-          file['postUrl'] = this.element.config.uiStyles.attributes.url
-            ? ServiceConstants.PLATFORM_BASE_URL + this.element.config.uiStyles.attributes.url
-            : ServiceConstants.PLATFORM_BASE_URL + '/event/upload';
+          file['postUrl'] = this.element.config.uiStyles.attributes.urlType === ComponentTypes.external.toString()
+            ?  this.element.config.uiStyles.attributes.url
+            : ServiceConstants.PLATFORM_BASE_URL + this.element.config.uiStyles.attributes.url;
         }
       }
     }
