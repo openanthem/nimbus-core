@@ -20,7 +20,9 @@ import java.util.List;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.entity.AbstractEntity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -29,6 +31,8 @@ import lombok.ToString;
  *
  */
 @Domain(value="person")
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter @Setter @ToString(callSuper=true)
 public abstract class Person<A extends Address, P extends Phone, N extends Name>
 		extends AbstractEntity.IdLong {
