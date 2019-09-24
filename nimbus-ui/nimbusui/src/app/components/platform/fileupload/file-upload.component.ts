@@ -191,7 +191,7 @@ export class FileUploadComponent extends BaseElement
           this.value = this.selectedFiles;
 
           file['postUrl'] = this.element.config.uiStyles.attributes.url
-            ? this.element.config.uiStyles.attributes.url
+            ? ServiceConstants.PLATFORM_BASE_URL + this.element.config.uiStyles.attributes.url
             : ServiceConstants.PLATFORM_BASE_URL + '/event/upload';
         }
       }

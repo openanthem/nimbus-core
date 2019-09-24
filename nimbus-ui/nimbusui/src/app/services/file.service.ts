@@ -56,7 +56,7 @@ export class FileService {
     const formData: FormData = new FormData();
     formData.append('pfu', file, file.name);
     this.metaData.forEach(item => formData.append(item, form.value[item]));
-
+    Object.keys(form.value).forEach(item=> formData.append(item,form.value[item]));
     var url = file['postUrl'];
 
     return this.http.postFileData(url, formData).pipe(

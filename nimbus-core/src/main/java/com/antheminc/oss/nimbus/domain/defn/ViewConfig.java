@@ -1624,7 +1624,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Link {
 		public enum Type {
-			DEFAULT, EXTERNAL, INLINE, MENU;
+			DEFAULT, EXTERNAL, INLINE, MENU,DOWNLOAD;
 		}
 
 		String alias() default "Link";
