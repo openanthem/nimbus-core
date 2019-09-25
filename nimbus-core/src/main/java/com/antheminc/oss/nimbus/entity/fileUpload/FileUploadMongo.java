@@ -31,13 +31,13 @@ public class FileUploadMongo implements FileUploadService{
 	
 	private MongoTemplate mongoTemplate;
 	
-	private GridFsOperations gridFsOperations ;
+	private GridFsTemplate gridFsTemplate ;
 	
 
 	
 	public FileUploadMongo(BeanResolverStrategy beanResolver) {
 		this.mongoTemplate = beanResolver.get(MongoTemplate.class);
-		this.gridFsOperations =  new GridFsTemplate(mongoTemplate.getMongoDbFactory(),mongoTemplate.getConverter());
+		this.gridFsTemplate =  new GridFsTemplate(mongoTemplate.getMongoDbFactory(),mongoTemplate.getConverter());
 		
 	}
 	
@@ -46,7 +46,7 @@ public class FileUploadMongo implements FileUploadService{
 		
 		ObjectId externalId;
 		try {
-			externalId = gridFsOperations.store(uploadFile.getInputStream(),uploadFile.getOriginalFilename());
+			externalId = gridFsTemplate.store(uploadFile.getInputStream(),uploadFile.getOriginalFilename());
 			return externalId.toString();
 		} catch (IOException e) {
 			throw new FrameworkRuntimeException("Unable to upload File to GridFs with FileName "+uploadFile.getOriginalFilename(),e );
@@ -57,12 +57,12 @@ public class FileUploadMongo implements FileUploadService{
 	@Override
 	public InputStream download(String downloadFileExternalId) {
 		Query q = new Query().addCriteria(Criteria.where("_id").is(downloadFileExternalId));
-		GridFSFile gridFsFile = gridFsOperations.findOne(q);
+		GridFSFile gridFsFile = gridFsTemplate.findOne(q);
 		if(null==gridFsFile) {
 			throw new FrameworkRuntimeException("Unable to find file with Id "+downloadFileExternalId );
 		}
 		else {
-			GridFsResource resource = gridFsOperations.getResource(gridFsFile.getFilename());
+			GridFsResource resource = gridFsTemplate.getResource(gridFsFile.getFilename());
 			try {
 
 				return resource.getInputStream();
