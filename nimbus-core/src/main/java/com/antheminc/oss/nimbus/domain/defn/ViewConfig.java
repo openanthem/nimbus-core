@@ -1682,6 +1682,11 @@ public class ViewConfig {
 		String cssClass() default "dropdownTrigger";
 
 		String imgSrc() default "";
+		
+		/**
+		 * <p>When {@code true} the link menu will collapse on clicking a link
+		 */
+		boolean collapseOnClick() default false;
 
 		Image.Type imgType() default Image.Type.FA;
 	}
