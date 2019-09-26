@@ -1,9 +1,7 @@
 package com.antheminc.oss.nimbus.entity.fileUpload;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.time.ZonedDateTime;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +11,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
@@ -38,6 +35,8 @@ public class FileHandler {
 	private static final String uploadAction = "/upload";
 	private static final String downloadAction = "/download";
 	private static final String newActionKey = "/_new";
+	private static final String getActionKey = "/_get";
+	private static final String updateActionKey = "/_update";
 	public static final String strategyParam = "/strategy";
 
 	protected final SessionProvider sessionProvider;
@@ -87,10 +86,23 @@ public class FileHandler {
 						"No File Upload Strategy found for defined strategy  " + fileUploadStrategyIdentifier);
 			} else {
 				String externalId = fileUploadImpl.upload(file);
+				Long internalId = (Long)newEntity.findStateByPath("/id");
 				newEntity.findParamByPath("/externalId").setState(externalId);
 				newEntity.findParamByPath("/" + strategyParam).setState(fileUploadStrategyIdentifier);
-
-				return newEntity.getState();
+				
+				// Figure out the target Path from request 
+				String targetPath = request.getParameter("targetPath");
+				String targetParamUriInital =  StringUtils.removeEnd(uriInitial, "/"+rootDomainAlias);
+				String targetBasePathUri = targetParamUriInital+targetPath;
+				String targetUpdateUri = targetBasePathUri+updateActionKey+"?rawPayload="+internalId;;
+				
+				Command targetPathUpdateCommand = builder.handleInternal(targetUpdateUri, null);
+				
+				MultiOutput targetPathUpdateMultiOutput = dispatcher.handle(targetPathUpdateCommand, internalId.toString());
+				
+				
+				
+				return targetPathUpdateMultiOutput;
 			}
 
 		}
@@ -186,7 +198,7 @@ public class FileHandler {
 				InputStream inputStream = fileUploadImpl.download(externalId);
 				// Set the content type and attachment header.
 		    	response.addHeader("filename", "filename="+fileName+"."+contentType);
-		    	response.addHeader("Content-disposition", "attachment");
+		    	response.addHeader("Content-disposition", "inline");
 		    	response.setContentType(contentType);
 				try {
 					IOUtils.copy(inputStream, response.getOutputStream());

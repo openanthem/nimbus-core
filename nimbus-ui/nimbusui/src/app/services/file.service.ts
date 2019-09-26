@@ -40,11 +40,19 @@ export class FileService {
 
   private _metaData: string[];
 
+  private _targetPath: string;
+
   get metaData(): string[] {
     return this._metaData;
   }
   set metaData(metaData: string[]) {
     this._metaData = metaData;
+  }
+  get targetPath(): string {
+    return this._targetPath;
+  }
+  set targetPath(targetPath: string) {
+    this._targetPath = targetPath;
   }
 
   constructor(public http: CustomHttpClient, private logger: LoggerService) {
@@ -55,6 +63,7 @@ export class FileService {
   uploadFile(file: File, form: FormGroup) {
     const formData: FormData = new FormData();
     formData.append('pfu', file, file.name);
+    formData.append('targetPath',this.targetPath);
     this.metaData.forEach(item => formData.append(item, form.value[item]));
     Object.keys(form.value).forEach(item=> formData.append(item,form.value[item]));
     var url = file['postUrl'];
