@@ -869,6 +869,8 @@ public class ViewConfig {
 		
 		Type urlType() default Type.EXTERNAL;
 		
+		String targetParam() default "";
+		
 		
 		
 		Behavior behavior() default Behavior.UPLOAD;

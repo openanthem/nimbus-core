@@ -253,6 +253,8 @@ export class UiAttribute implements Serializable<UiAttribute, string> {
   loaderIcon: string;
   autofill: boolean;
   urlType: string;
+  targetParam: string;
+  
   deserialize(inJson) {
     let obj = this;
     obj = Converter.convert(inJson, obj, { includeArrays: true });

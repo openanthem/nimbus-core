@@ -94,15 +94,23 @@ public class FileHandler {
 				String targetPath = request.getParameter("targetPath");
 				String targetParamUriInital =  StringUtils.removeEnd(uriInitial, "/"+rootDomainAlias);
 				String targetBasePathUri = targetParamUriInital+targetPath;
-				String targetUpdateUri = targetBasePathUri+updateActionKey+"?rawPayload="+internalId;;
+				String targetUpdateUri = targetBasePathUri+updateActionKey;
+				try {
+					String jsonPayloadForTargetParam = om.writeValueAsString(newEntity.getState());
+					Command targetPathUpdateCommand = builder.handleInternal(targetUpdateUri, null);
+					
+					MultiOutput targetPathUpdateMultiOutput = dispatcher.handle(targetPathUpdateCommand, jsonPayloadForTargetParam);
+					
+					
+					
+					return targetPathUpdateMultiOutput;
+				} catch (JsonProcessingException e) {
+					
+					throw new FrameworkRuntimeException(
+							"Failed to convert new file entity to json:  " , e);
+				}
 				
-				Command targetPathUpdateCommand = builder.handleInternal(targetUpdateUri, null);
 				
-				MultiOutput targetPathUpdateMultiOutput = dispatcher.handle(targetPathUpdateCommand, internalId.toString());
-				
-				
-				
-				return targetPathUpdateMultiOutput;
 			}
 
 		}

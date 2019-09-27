@@ -126,7 +126,7 @@ export class FileUploadComponent extends BaseElement
   ngOnInit() {
     this.selectedFiles = [];
     this.fileService.metaData =  this.element.config.uiStyles.attributes.metaData;
-    this.fileService.targetPath = this.element.path +this.element.config.uiStyles.attributes.metaData[0];
+    this.fileService.targetPath = this.element.path +this.element.config.uiStyles.attributes.targetParam;
     this.subscribers.push(
       this.fileService.errorEmitter$.subscribe(data => {
         this.pfu.files = [];
