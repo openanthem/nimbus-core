@@ -37,6 +37,7 @@ public class FileHandler {
 	private static final String newActionKey = "/_new";
 	private static final String getActionKey = "/_get";
 	private static final String updateActionKey = "/_update";
+	private static final String replaceActionKey = "/_replace";
 	public static final String strategyParam = "/strategy";
 
 	protected final SessionProvider sessionProvider;
@@ -94,7 +95,7 @@ public class FileHandler {
 				String targetPath = request.getParameter("targetPath");
 				String targetParamUriInital =  StringUtils.removeEnd(uriInitial, "/"+rootDomainAlias);
 				String targetBasePathUri = targetParamUriInital+targetPath;
-				String targetUpdateUri = targetBasePathUri+updateActionKey;
+				String targetUpdateUri = targetBasePathUri+replaceActionKey;
 				try {
 					String jsonPayloadForTargetParam = om.writeValueAsString(newEntity.getState());
 					Command targetPathUpdateCommand = builder.handleInternal(targetUpdateUri, null);
