@@ -79,7 +79,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	private StateType type;
 	
-	private ValidationResult validationResult;
+	private ValidationResult validationResult = new ValidationResult();
 	
 	@JsonIgnore
 	final private Model<?> parentModel;
