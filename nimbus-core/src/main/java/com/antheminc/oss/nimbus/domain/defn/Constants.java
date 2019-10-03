@@ -120,8 +120,10 @@ public enum Constants {
 	SEARCH_NAMED_QUERY_DELIMTER("~~"),
 	SEARCH_NAMED_QUERY_RESULT("result"),
 	
+	CACHE("cache"),
+
 	SERVER_AUTOSEARCH_MARKER("autocompletesearchvalue");
-	
+
 	
 	
 	public final String code;

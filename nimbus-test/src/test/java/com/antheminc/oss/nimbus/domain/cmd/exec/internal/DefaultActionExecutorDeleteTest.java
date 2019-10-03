@@ -27,17 +27,23 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultParamState;
 import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultTransientParamState;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
+import com.antheminc.oss.nimbus.test.domain.support.utils.ParamUtils;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
 
@@ -51,6 +57,9 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 	@Autowired
 	private SessionProvider sessionProvider;
 
+	@Autowired
+	MongoOperations mongoOps;
+	
 	@Test
 	public void t1_colElem_add() {
 		Long refId = createOrGetDomainRoot_RefId();
@@ -117,6 +126,10 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 		String sessionKey = new StringBuilder().append("{/").append(VIEW_DOMAIN_ALIAS).append(":").append(refId).append("}").toString();
 		assertNotNull(sessionProvider.getAttribute(sessionKey));
 		
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/page_green/audit_String").addAction(Action._update).getMock();
+		Object resp = controller.handlePut(request, null, converter.toJson("test"));
+		
 		MockHttpServletRequest req2 = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId).addParam("cache", "flush").addAction(Action._delete).getMock();
 		Object resp2 = controller.handleGet(req2, null);
 		assertNotNull(resp2);
@@ -129,5 +142,37 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 
 		assertNotNull(sessionProvider.getAttribute(sessionKey));
 
+	}
+	
+	@Test
+	public void t03_sessionDelete() {
+		Long refId = createOrGetDomainRoot_RefId();
+		MockHttpServletRequest req1 = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId).addAction(Action._get).getMock();
+		Object resp1 = controller.handleGet(req1, null);
+		assertNotNull(resp1);
+		
+		String sessionKey = new StringBuilder().append("{/").append(VIEW_DOMAIN_ALIAS).append(":").append(refId).append("}").toString();
+		assertNotNull(sessionProvider.getAttribute(sessionKey));
+		
+		
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/").addAction(Action._update).getMock();
+		Object resp = controller.handlePut(request, null, converter.toJson("test"));
+		assertNotNull(resp);
+		
+		MockHttpServletRequest req4 = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId).addParam("cache", "flush").addAction(Action._delete).getMock();
+		Object resp4 = controller.handleGet(req4, null);
+		assertNotNull(resp4);
+		
+		Query query = new Query(Criteria.where("_id").is(refId));
+		SampleCoreEntity sampleCore = mongoOps.findOne(query, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
+		sampleCore.setAttr_String("direct update");
+		mongoOps.save(sampleCore, CORE_DOMAIN_ALIAS);
+		
+		MockHttpServletRequest req3 = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId).addNested("/attr_String").addAction(Action._get).getMock();
+		Object resp3 = controller.handleGet(req3, null);
+		assertNotNull(resp3);
+		Param<List<String>> p = ParamUtils.extractResponseByParamPath(resp3, "/attr_String");
+		assertEquals(p.getState(),"direct update");
 	}
 }
