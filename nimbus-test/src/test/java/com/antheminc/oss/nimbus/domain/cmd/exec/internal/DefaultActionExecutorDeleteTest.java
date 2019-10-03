@@ -17,6 +17,7 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,11 +26,16 @@ import java.util.List;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
+import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultParamState;
+import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultTransientParamState;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
@@ -42,6 +48,9 @@ import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngerationPersistableTests {
 	
+	@Autowired
+	private SessionProvider sessionProvider;
+
 	@Test
 	public void t1_colElem_add() {
 		Long refId = createOrGetDomainRoot_RefId();
@@ -98,4 +107,27 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 
 	}
 
+	@Test
+	public void t02_sessionDelete() {
+		Long refId = createOrGetDomainRoot_RefId();
+		MockHttpServletRequest req1 = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId).addAction(Action._get).getMock();
+		Object resp1 = controller.handleGet(req1, null);
+		assertNotNull(resp1);
+		
+		String sessionKey = new StringBuilder().append("{/").append(VIEW_DOMAIN_ALIAS).append(":").append(refId).append("}").toString();
+		assertNotNull(sessionProvider.getAttribute(sessionKey));
+		
+		MockHttpServletRequest req2 = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId).addParam("cache", "flush").addAction(Action._delete).getMock();
+		Object resp2 = controller.handleGet(req2, null);
+		assertNotNull(resp2);
+		
+		assertNull(sessionProvider.getAttribute(sessionKey));
+		
+		MockHttpServletRequest req3 = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId).addAction(Action._get).getMock();
+		Object resp3 = controller.handleGet(req3, null);
+		assertNotNull(resp3);
+
+		assertNotNull(sessionProvider.getAttribute(sessionKey));
+
+	}
 }

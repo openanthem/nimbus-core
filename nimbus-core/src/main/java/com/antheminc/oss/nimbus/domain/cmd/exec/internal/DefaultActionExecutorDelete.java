@@ -18,12 +18,14 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 import javax.annotation.PostConstruct;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListElemParam;
@@ -54,13 +56,13 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 	@Override
 	protected Output<Boolean> executeInternal(Input input) {
 		ExecutionContext eCtx = input.getContext();
-		
+		Command cmd = eCtx.getCommandMessage().getCommand();
 		Param<Object> p = findParamByCommandOrThrowEx(eCtx);
-		
 		// handle domain root only 
-		if(eCtx.getCommandMessage().getCommand().isRootDomainOnly()) {
-			handleRootDelete(eCtx);
-			
+		if(cmd.isRootDomainOnly()) {
+			if(cmd.getFirstParameterValue(Constants.CACHE.code) == null) {	
+				handleRootDelete(eCtx);
+			}
 			loader.unload(eCtx);
 		}
 		else if(p.isCollection())
