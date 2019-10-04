@@ -252,6 +252,7 @@ export class UiAttribute implements Serializable<UiAttribute, string> {
   yearRange: string;
   loaderIcon: string;
   autofill: boolean;
+  collapseOnClick: boolean;
   urlType: string;
   targetParam: string;
   

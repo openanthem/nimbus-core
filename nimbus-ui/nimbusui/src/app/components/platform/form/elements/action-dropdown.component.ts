@@ -80,6 +80,7 @@ import { ServiceConstants } from '../../../../services/service.constants';
           <nm-action-link
             id="{{ (element?.type?.model?.params)[i]?.config?.code }}"
             [elementPath]="elementPath"
+            (linkClick)="reset($event)"
             [rowData]="rowData"
             [element]="(element?.type?.model?.params)[i]"
             *ngFor="let param of params; index as i"
@@ -135,7 +136,13 @@ export class ActionDropdown {
   }
 
   ngOnInit() {}
-
+  reset(param: Param) {
+    if(this.element.config.uiStyles.attributes.collapseOnClick) {
+      this.state = 'closedPanel';
+      this.isOpen = false;
+      this.isHidden = true;
+    }
+  }
   toggleOpen(event: MouseEvent): void {
     event.preventDefault();
     this.selectedItem = true;
@@ -217,6 +224,8 @@ export class ActionLink extends BaseElement {
   @Input() rowData: any;
   protected url: string;
   componentTypes = ComponentTypes;
+
+  @Output() linkClick = new EventEmitter<Param>();
   private baseAppUrl: string;
 
   constructor(private pageSvc: PageService) {
@@ -259,7 +268,7 @@ export class ActionLink extends BaseElement {
     if (undefined !== this.enabled && !this.enabled) {
       return;
     }
-
+    this.linkClick.emit(this.element);
     let item: GenericDomain = new GenericDomain();
     this.pageSvc.processEvent(
       this.elementPath + '/' + linkCode,
