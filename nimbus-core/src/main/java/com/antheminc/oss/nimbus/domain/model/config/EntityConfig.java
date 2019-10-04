@@ -33,7 +33,9 @@ public interface EntityConfig<T> {
 	
 	public <K> ParamConfig<K> findParamByPath(String path);
 	public <K> ParamConfig<K> findParamByPath(String[] pathArr);
-
+	
+	@JsonIgnore
+	public boolean isTransientData();
 	
 	default public boolean hasRules() {
 		return getRulesConfig()!=null;

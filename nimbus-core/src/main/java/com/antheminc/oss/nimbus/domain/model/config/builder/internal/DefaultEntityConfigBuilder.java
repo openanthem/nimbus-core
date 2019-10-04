@@ -64,7 +64,7 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 	 */
 	@Override
 	public <T> ModelConfig<T> load(Class<T> clazz, EntityConfigVisitor visitedModels) {
-		ModelConfig<T> mConfig = buildModel(clazz, visitedModels);
+		ModelConfig<T> mConfig = buildModel(clazz, visitedModels, null);
 		return mConfig;
 	}
 	
@@ -73,7 +73,7 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVisitor visitedModels) {
+	public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVisitor visitedModels, ParamConfig<?> pConfig) {
 		logit.trace(()->"building model for class: "+clazz);
 		
 		// skip if already built
@@ -81,7 +81,7 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 			return (ModelConfig<T>)visitedModels.get(clazz);
 		
 		
-		DefaultModelConfig<T> mConfig = createModel(clazz, visitedModels);
+		DefaultModelConfig<T> mConfig = createModel(clazz, visitedModels, pConfig);
 		visitedModels.set(clazz, mConfig);
 
 		
@@ -89,7 +89,7 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		if(mConfig.isMapped()) {
 			
 			//ensure mapped class config is already loaded
-			buildModel(mConfig.findIfMapped().getMapsToConfig().getReferredClass(), visitedModels);
+			buildModel(mConfig.findIfMapped().getMapsToConfig().getReferredClass(), visitedModels, pConfig);
 		}
 		
 		List<Field> fields = FieldUtils.getAllFieldsList(clazz);
@@ -164,7 +164,7 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 	@Override
 	protected <T, P> ParamConfigType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ParamConfigType.CollectionType colType, Class<?> pDirectOrColElemType, /*MapsTo.Path mapsToPath, */EntityConfigVisitor visitedModels) {
 		if(ParamConfigType.CollectionType.array==colType && isPrimitive(pDirectOrColElemType)) { // handle primitive array first
-			ParamConfigType type = createParamType(true, pDirectOrColElemType, mConfig, visitedModels);
+			ParamConfigType type = createParamType(true, pDirectOrColElemType, mConfig, pConfig, visitedModels);
 			return type;
 			
 		} else if(colType!=null) { //handle collections second
@@ -180,13 +180,13 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 			colModelType.setElementConfig(colElemParamConfig);
 
 			//create collection element type (and element model config)
-			ParamConfigType colElemType = createParamType(false, pDirectOrColElemType, colModelConfig, visitedModels);
+			ParamConfigType colElemType = createParamType(false, pDirectOrColElemType, colModelConfig, pConfig, visitedModels);
 			colElemParamConfig.setType(colElemType);
 			
 			return colModelType;
 			
 		} else {
-			ParamConfigType type = createParamType(false, pDirectOrColElemType, mConfig, visitedModels);
+			ParamConfigType type = createParamType(false, pDirectOrColElemType, mConfig, pConfig, visitedModels);
 			return type;
 		}
 	}

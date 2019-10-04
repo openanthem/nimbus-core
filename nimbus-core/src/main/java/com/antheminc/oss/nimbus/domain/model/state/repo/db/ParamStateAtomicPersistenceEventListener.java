@@ -16,9 +16,11 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.annotation.Transient;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -76,6 +78,10 @@ public class ParamStateAtomicPersistenceEventListener extends ParamStatePersiste
 		ModelRepository modelRepo = getRepoFactory().get(repo);
 		if(modelRepo == null) {
 			throw new InvalidConfigException("No repository implementation provided for the configured repository :"+repo.value().name()+ " for root model: "+p.getRootExecution());
+		}
+		
+		if(p.getConfig().isTransientData()) {
+			return false;
 		}
 		
 		Serializable coreStateId = (Serializable) rootModel.findParamByPath("/id").getState();

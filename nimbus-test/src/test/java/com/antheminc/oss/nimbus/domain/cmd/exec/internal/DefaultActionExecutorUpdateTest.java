@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -41,12 +42,16 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ParamUtils;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.InnerTestModel;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreLevel1_Entity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity.Level1;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleNoConversionEntity.NestedNoConversionLevel1;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.TestModel;
 import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageRed.Form_ConvertedNestedEntity;
+
+import junit.framework.Assert;
 
 /**
  * @author Soham Chakravarti, Tony Lopez
@@ -55,6 +60,10 @@ import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageRed.Form_
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngerationPersistableTests {
 	
+	protected static final String TEST_DOMAIN = PLATFORM_ROOT + "/testmodel_core";
+	protected static final String TEST_DOMAIN_VIEW = PLATFORM_ROOT + "/testmodelview";
+
+
 	@Test
 	public void t01_colElem_add() {
 		Long refId = createOrGetDomainRoot_RefId();
@@ -501,7 +510,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		List<String> expected = Arrays.asList("field 1", "field 2");
 		
 		// Invoke _update on the list with "field 1"
-		Object response1 = controller.handlePut(request, null, converter.toJson(expected.get(0)));
+		Object response1 = controller.handlePut(request, null, 	converter.toJson(expected.get(0)));
 		
 		// Validate list should have "field 1" only
 		Param<List<String>> viewParam = ParamUtils.extractResponseByParamPath(response1, "/attr_list_2_simple");
@@ -513,6 +522,52 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		// Validate list should have ["field 1", "field 2"]
 		viewParam = ParamUtils.extractResponseByParamPath(response2, "/attr_list_2_simple");
 		assertEquals(expected, viewParam.getState());
+	}
+	
+	private Long createTestDomain() {
+		MockHttpServletRequest home_newReq = MockHttpRequestBuilder.withUri(TEST_DOMAIN).addAction(Action._new).getMock();
+		Object home_newResp = controller.handleGet(home_newReq, null);
+		assertNotNull(home_newResp);
+		Long testDomainrefId = ExtractResponseOutputUtils.extractDomainRootRefId(home_newResp);	
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(TEST_DOMAIN).addRefId(testDomainrefId)
+				.addNested("/attr1").addAction(Action._update).getMock();
+		Object resp = controller.handlePut(request, null, converter.toJson("test"));
+		
+		return testDomainrefId;
+
+	}
+	
+	@Test
+	public void t13_transientUpdate() {		
+		Long testDomainrefId  = createTestDomain();
+		//String payload = "{ \"attr3\":\"test\" }";
+		TestModel core = mongo.findById(testDomainrefId, TestModel.class, "testmodel_core");
+		
+		MockHttpServletRequest request2 = MockHttpRequestBuilder.withUri(TEST_DOMAIN).addRefId(testDomainrefId)
+				.addNested("/attr3").addAction(Action._update).getMock();
+		Object resp2 = controller.handlePut(request2, null, converter.toJson("test"));
+		
+		TestModel core_afterUpdate = mongo.findById(testDomainrefId, TestModel.class, "testmodel_core");
+
+		assertEquals(core.getLastModifiedDate(), core_afterUpdate.getLastModifiedDate());
+		
+	}
+	
+	@Test
+	public void t14_transientModelUpdate() {		
+		Long testDomainrefId  = createTestDomain();
+		TestModel core = mongo.findById(testDomainrefId, TestModel.class, "testmodel_core");
+		InnerTestModel im = new InnerTestModel();
+		im.setInner_attr1("test_attr1");
+		im.setInner_attr2("test_attr2");
+		
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(TEST_DOMAIN).addRefId(testDomainrefId)
+				.addNested("/innerTestModel").addAction(Action._update).getMock();
+		Object resp = controller.handlePut(request, null, converter.toJson(im));
+		
+		TestModel core_afterUpdate = mongo.findById(testDomainrefId, TestModel.class, "testmodel_core");
+		assertEquals(core.getLastModifiedDate(), core_afterUpdate.getLastModifiedDate());
+		
 	}
 }
 

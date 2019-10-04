@@ -30,6 +30,7 @@ import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
 import com.antheminc.oss.nimbus.test.domain.support.utils.PathUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -53,6 +54,7 @@ public class MockParamConfig implements ParamConfig<Object> {
 	private ExecutionConfig executionConfig;
 	private boolean leaf;
 	private Map<String, ParamConfig<?>> paramConfigMap;
+	private boolean transientData;
 	private Class<Object> referredClass;
 	private List<AnnotationConfig> rules;
 	private RulesConfig rulesConfig;

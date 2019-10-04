@@ -29,6 +29,7 @@ import javax.validation.Constraint;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Page;
 import org.springframework.util.ClassUtils;
 
@@ -93,7 +94,7 @@ abstract public class AbstractEntityConfigBuilder {
 		this.executionConfigFactory = beanResolver.get(ExecutionConfigFactory.class);
 	}
 	
-	abstract public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVisitor visitedModels);
+	abstract public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVisitor visitedModels, ParamConfig<?> pConfig);
 	
 	abstract public <T> ParamConfig<?> buildParam(ModelConfig<T> mConfig, Field f, EntityConfigVisitor visitedModels);
 	
@@ -104,7 +105,7 @@ abstract public class AbstractEntityConfigBuilder {
 		return ClassUtils.isPrimitiveOrWrapper(determinedType) || String.class==determinedType;
 	}
 	
-	public <T> DefaultModelConfig<T> createModel(Class<T> referredClass, EntityConfigVisitor visitedModels) {
+	public <T> DefaultModelConfig<T> createModel(Class<T> referredClass, EntityConfigVisitor visitedModels, ParamConfig<?> pConfig) {
 		MapsTo.Type mapsToType = AnnotationUtils.findAnnotation(referredClass, MapsTo.Type.class);
 		
 		final DefaultModelConfig<T> created;
@@ -138,6 +139,11 @@ abstract public class AbstractEntityConfigBuilder {
 		
 		EventHandlerConfig eventConfig = eventHandlerConfigFactory.build(referredClass);
 		created.setEventHandlerConfig(eventConfig);
+		
+		// set transientData from parent
+		if (null != pConfig) {
+			created.setTransientData(pConfig.isTransientData());
+		}
 		
 		return created; 
 	}
@@ -459,6 +465,10 @@ abstract public class AbstractEntityConfigBuilder {
 			//created.setValues(values);
 		}
 		
+		if(AnnotatedElementUtils.isAnnotated(f, Transient.class) || mConfig.isTransientData()) {
+			created.setTransientData(true);
+		}
+		
 		if(AnnotatedElementUtils.isAnnotated(f, AssociatedEntity.class)) {
 			AssociatedEntity[] associatedEntityAnnotationArr = f.getAnnotationsByType(AssociatedEntity.class);
 			created.setAssociatedEntities(Arrays.asList(associatedEntityAnnotationArr));
@@ -508,7 +518,7 @@ abstract public class AbstractEntityConfigBuilder {
 		return nestedColType;
 	}
 	
-	protected <T, P> ParamConfigType createParamType(boolean isArray, Class<P> determinedType, ModelConfig<?> mConfig, EntityConfigVisitor visitedModels) {
+	protected <T, P> ParamConfigType createParamType(boolean isArray, Class<P> determinedType, ModelConfig<?> mConfig, ParamConfig<?> pConfig, EntityConfigVisitor visitedModels) {
 		final ParamConfigType pType;
 		if(isPrimitive(determinedType)) {	//Primitives bare or with wrapper & String
 			String name = ClassUtils.getShortNameAsProperty(ClassUtils.resolvePrimitiveIfNecessary(determinedType));
@@ -520,7 +530,7 @@ abstract public class AbstractEntityConfigBuilder {
 			
 		} else if(AnnotationUtils.findAnnotation(determinedType, Model.class)!=null) { 
 			String name = ClassUtils.getShortName(determinedType);
-			pType = createParamTypeNested(name, determinedType, mConfig, visitedModels);
+			pType = createParamTypeNested(name, determinedType, mConfig, pConfig, visitedModels);
 			
 		} else { //All others: Treat as field type instead of complex object that requires config traversal
 			pType = new ParamConfigType.Field(isArray, ClassUtils.getShortName(determinedType), determinedType);
@@ -529,7 +539,7 @@ abstract public class AbstractEntityConfigBuilder {
 		return pType;
 	}
 	
-	protected <P> ParamConfigType.Nested<P> createParamTypeNested(String typeName, Class<P> determinedType, ModelConfig<?> mConfig, EntityConfigVisitor visitedModels) {
+	protected <P> ParamConfigType.Nested<P> createParamTypeNested(String typeName, Class<P> determinedType, ModelConfig<?> mConfig, ParamConfig<?> pConfig, EntityConfigVisitor visitedModels) {
 		
 		final ParamConfigType.Nested<P> nestedParamType = new ParamConfigType.Nested<>(typeName, determinedType);
 		
@@ -541,7 +551,7 @@ abstract public class AbstractEntityConfigBuilder {
 			nmConfig = (ModelConfig<P>)visitedModels.get(determinedType);
 			
 		} else {
-			nmConfig = buildModel(determinedType, visitedModels);
+			nmConfig = buildModel(determinedType, visitedModels, pConfig);
 		}
 		
 		nestedParamType.setModelConfig(nmConfig);

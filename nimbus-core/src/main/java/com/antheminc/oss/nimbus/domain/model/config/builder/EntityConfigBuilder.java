@@ -24,7 +24,7 @@ public interface EntityConfigBuilder {
 
 	<T> ModelConfig<T> load(Class<T> clazz, EntityConfigVisitor visitedModels);
 
-	<T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVisitor visitedModels);
+	<T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVisitor visitedModels, ParamConfig<?> pConfig);
 
 	<T> ParamConfig<?> buildParam(ModelConfig<T> mConfig, Field f, EntityConfigVisitor visitedModels);
 
