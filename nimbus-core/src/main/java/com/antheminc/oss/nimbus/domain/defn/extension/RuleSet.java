@@ -3,12 +3,16 @@ package com.antheminc.oss.nimbus.domain.defn.extension;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
+
 import java.lang.annotation.RetentionPolicy;	
 
 
 
 
-/**	/**
+
+
+/**
+
  * <p>A validation rule to perform. When the provided {@link #rule() evaluates
  * to {@code false}, the UI will render the decorated form element as
  * {@code invalid} and display the provided {@link #message()}.</p>
@@ -35,21 +39,22 @@ import java.lang.annotation.RetentionPolicy;
  * 
  * </ul>
  * 
+
  * @author Sandeep Mantha	 
  */	 
-@Documented	
+	
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RuleSet {
 	
-
 
 	/**
 	 * <p>The message to be displayed when the {@link #rule()} expression
 	 * evaluates to {@code false}.
 	 */
+
 	String message() default "";		
 	
-
 
 	/**
 	 * <p>A typescript syntaxed evaluation to perform. <p><b>Syntax</b><br>
@@ -61,4 +66,6 @@ public @interface RuleSet {
 	 * param</li> </ul>
 	 */
 	String rule() default "";
+
 } 	
+
