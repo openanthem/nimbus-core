@@ -161,6 +161,8 @@ public class SampleCoreEntity extends IdLong {
 		
 		private Boolean sample_checkBox;
 
+		private boolean sample_prim_checkBox;
+
 		
 		private SampleNoConversionEntity nc_nested0_Details;
 	}
