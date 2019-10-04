@@ -199,7 +199,7 @@ export class ActionDropdown {
                 </a>
               </ng-template>
       </ng-template>
-      +<ng-template [ngIf]="value != componentTypes.external.toString() && value != componentTypes.download.toString()">
+      <ng-template [ngIf]="value != componentTypes.external.toString() && value != componentTypes.download.toString()">
         <!-- General Link -->
         <a
           [class]="cssClass"
