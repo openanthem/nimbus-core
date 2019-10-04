@@ -30,6 +30,7 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositor
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByExampleOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByQueryOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
+import com.antheminc.oss.nimbus.entity.fileUpload.FileUploadMongo;
 import com.antheminc.oss.nimbus.support.mongo.MongoConvertersBuilder;
 
 /**
@@ -37,24 +38,31 @@ import com.antheminc.oss.nimbus.support.mongo.MongoConvertersBuilder;
  *
  */
 @Configuration
-@EnableMongoAuditing(dateTimeProviderRef="default.zdt.provider")
+@EnableMongoAuditing(dateTimeProviderRef = "default.zdt.provider")
 public class DefaultMongoConfig {
 
 	@Bean
 	public MongoCustomConversions defaultMongoCustomConversions() {
 		return new MongoConvertersBuilder().addDefaults().build();
 	}
-	
-	@Bean(name="default.rep_mongodb")
-	public DefaultMongoModelRepository defaultMongoModelRepository(MongoOperations mongoOps, BeanResolverStrategy beanResolver, MongoDBModelRepositoryOptions options){
+
+	@Bean(name = "default.rep_mongodb")
+	public DefaultMongoModelRepository defaultMongoModelRepository(MongoOperations mongoOps,
+			BeanResolverStrategy beanResolver, MongoDBModelRepositoryOptions options) {
 		return new DefaultMongoModelRepository(mongoOps, beanResolver, options);
 	}
-	
+
 	@Bean
-	public MongoDBModelRepositoryOptions defaultMongoDBModelRepositoryOptions(MongoOperations mongoOps, DomainConfigBuilder domainConfigBuilder) {
+	public MongoDBModelRepositoryOptions defaultMongoDBModelRepositoryOptions(MongoOperations mongoOps,
+			DomainConfigBuilder domainConfigBuilder) {
 		return MongoDBModelRepositoryOptions.builder()
-			.addSearchOperation(new MongoSearchByExampleOperation(mongoOps, domainConfigBuilder))
-			.addSearchOperation(new MongoSearchByQueryOperation(mongoOps, domainConfigBuilder))
-			.build();
+				.addSearchOperation(new MongoSearchByExampleOperation(mongoOps, domainConfigBuilder))
+				.addSearchOperation(new MongoSearchByQueryOperation(mongoOps, domainConfigBuilder)).build();
+	}
+
+	@Bean(name = "default.fileUpload.rep_mongodb")
+	public FileUploadMongo fileUploadGridFs(BeanResolverStrategy beanResolver) throws Exception {
+		return new FileUploadMongo(beanResolver);
+
 	}
 }

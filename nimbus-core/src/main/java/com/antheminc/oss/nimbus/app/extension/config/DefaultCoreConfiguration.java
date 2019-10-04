@@ -46,6 +46,7 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.db.ParamStateAtomicPersi
 import com.antheminc.oss.nimbus.domain.model.state.repo.ws.DefaultWSModelRepository;
 import com.antheminc.oss.nimbus.domain.rules.DefaultRulesEngineFactoryProducer;
 import com.antheminc.oss.nimbus.domain.rules.drools.DroolsRulesEngineFactory;
+import com.antheminc.oss.nimbus.entity.fileUpload.FileHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerReflection;
 
@@ -139,6 +140,7 @@ public class DefaultCoreConfiguration {
 		return new ClassPropertyConverter();
 	}
 	
+	
 	@Bean("default.zdt.provider")
 	public DateTimeProvider defaultZDTProvider() {
 		return new DateTimeProvider() {
@@ -149,5 +151,9 @@ public class DefaultCoreConfiguration {
 			}
 		};
 	}
+	@Bean()
+		public FileHandler fileUploadHandler(BeanResolverStrategy beanResolver){
+			return new FileHandler(beanResolver);
+		}
 	
 }

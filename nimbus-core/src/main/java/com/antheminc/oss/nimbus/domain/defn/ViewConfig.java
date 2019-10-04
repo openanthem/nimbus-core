@@ -837,6 +837,9 @@ public class ViewConfig {
 	@Target({ ElementType.FIELD })
 	@ViewStyle
 	public @interface FileUpload {
+		public enum Type {
+			INTERNAL, EXTERNAL;
+		}
 		public enum ControlType {
 			FORMCONTROL
 		}
@@ -863,6 +866,12 @@ public class ViewConfig {
 		String type() default ".pdf,.png";
 
 		String url() default "";
+		
+		Type urlType() default Type.EXTERNAL;
+		
+		String targetParam() default "";
+		
+		
 		
 		Behavior behavior() default Behavior.UPLOAD;
 		
@@ -1624,7 +1633,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Link {
 		public enum Type {
-			DEFAULT, EXTERNAL, INLINE, MENU;
+			DEFAULT, EXTERNAL, INLINE, MENU,DOWNLOAD;
 		}
 
 		String alias() default "Link";
@@ -1682,7 +1691,7 @@ public class ViewConfig {
 		String cssClass() default "dropdownTrigger";
 
 		String imgSrc() default "";
-		
+
 		/**
 		 * <p>When {@code true} the link menu will collapse on clicking a link
 		 */

@@ -39,6 +39,7 @@ import { Param } from '../../../../shared/param-state';
 import { GenericDomain } from './../../../../model/generic-domain.model';
 import { Behavior } from './../../../../shared/command.enum';
 import { BaseElement } from './../../base-element.component';
+import { ServiceConstants } from '../../../../services/service.constants';
 
 /**
  * \@author Dinakar.Meda
@@ -135,7 +136,6 @@ export class ActionDropdown {
   }
 
   ngOnInit() {}
-
   reset(param: Param) {
     if(this.element.config.uiStyles.attributes.collapseOnClick) {
       this.state = 'closedPanel';
@@ -143,7 +143,6 @@ export class ActionDropdown {
       this.isHidden = true;
     }
   }
-
   toggleOpen(event: MouseEvent): void {
     event.preventDefault();
     this.selectedItem = true;
@@ -193,7 +192,21 @@ export class ActionDropdown {
           </a>
         </ng-template>
       </ng-template>
-      <ng-template [ngIf]="value != componentTypes.external.toString()">
+      <ng-template [ngIf]="value == componentTypes.download.toString()">
+              <!-- Downlaod Link: Enabled -->
+              <ng-template [ngIf]="enabled">
+                <a [href]="baseAppUrl +url" [class]="cssClass" [target]="target" [rel]="rel">
+                  {{ label }}
+                </a>
+             </ng-template>
+             <!-- Downlaod Link: Disabled -->
+              <ng-template [ngIf]="enabled !== undefined && !enabled">
+                <a [class]="cssClass" [class.disabled]="true" [rel]="rel">
+                  {{ label }}
+                </a>
+              </ng-template>
+      </ng-template>
+      <ng-template [ngIf]="value != componentTypes.external.toString() && value != componentTypes.download.toString()">
         <!-- General Link -->
         <a
           [class]="cssClass"
@@ -213,12 +226,14 @@ export class ActionLink extends BaseElement {
   componentTypes = ComponentTypes;
 
   @Output() linkClick = new EventEmitter<Param>();
+  private baseAppUrl: string;
 
   constructor(private pageSvc: PageService) {
     super();
   }
 
   ngOnInit() {
+    this.baseAppUrl = ServiceConstants.PLATFORM_BASE_URL;
     // replace parameters in url enclosed within {}
     if (
       this.element.config &&

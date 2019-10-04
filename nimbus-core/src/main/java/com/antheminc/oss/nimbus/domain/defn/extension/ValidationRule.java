@@ -52,14 +52,15 @@ import javax.validation.Constraint;
  * 
  * </ul>
  * 
- * @author Sandeep Mantha
- */
+ * @author Sandeep Mantha	
+ */	 
+
 @Documented
 @Constraint(validatedBy = {  })
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidationRule {
-	
+
 	/**
 	 * <p>One or more client-side rule validations to evaluate against the
 	 * decorated {@link Form}. Rulesets that fail will have their failure
