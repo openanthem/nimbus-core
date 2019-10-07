@@ -83,4 +83,20 @@ public @interface Model {
 
 	}
 	
+	/**
+	 * <p> Denotes that the generated param for the decorated field has a
+	 * transient usage within the Nimbus framework.
+	 * 
+	 * <p> This annotation is purely decorative and used for
+	 * descriptive/organizational purposes.
+	 * 
+	 * @author Tony Lopez
+	 * @since 2.0
+	 *
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	public @interface TransientParam {
+		
+	}
 }
