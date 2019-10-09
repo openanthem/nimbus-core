@@ -93,22 +93,26 @@ public class FileHandler {
 				
 				// Figure out the target Path from request 
 				String targetPath = request.getParameter("targetPath");
-				String targetParamUriInital =  StringUtils.removeEnd(uriInitial, "/"+rootDomainAlias);
-				String targetBasePathUri = targetParamUriInital+targetPath;
-				String targetUpdateUri = targetBasePathUri+replaceActionKey;
-				try {
-					String jsonPayloadForTargetParam = om.writeValueAsString(newEntity.getState());
-					Command targetPathUpdateCommand = builder.handleInternal(targetUpdateUri, null);
-					
-					MultiOutput targetPathUpdateMultiOutput = dispatcher.handle(targetPathUpdateCommand, jsonPayloadForTargetParam);
-					
-					
-					
-					return targetPathUpdateMultiOutput;
-				} catch (JsonProcessingException e) {
-					
-					throw new FrameworkRuntimeException(
-							"Failed to convert new file entity to json:  " , e);
+				if(StringUtils.isNotBlank(targetPath)) {
+						String targetParamUriInital =  StringUtils.removeEnd(uriInitial, "/"+rootDomainAlias);
+						String targetBasePathUri = targetParamUriInital+targetPath;
+						String targetUpdateUri = targetBasePathUri+replaceActionKey;
+						try {
+							String jsonPayloadForTargetParam = om.writeValueAsString(newEntity.getState());
+							Command targetPathUpdateCommand = builder.handleInternal(targetUpdateUri, null);
+							MultiOutput targetPathUpdateMultiOutput = dispatcher.handle(targetPathUpdateCommand, jsonPayloadForTargetParam);
+							return targetPathUpdateMultiOutput;
+						} catch (JsonProcessingException e) {
+							
+							throw new FrameworkRuntimeException("Failed to convert new file entity to json:  " , e);
+						}
+				}
+				else {
+					String getUriForNewEntity =  uriInitial +":"+internalId+ getActionKey;
+			
+					Command getCommand = builder.handleInternal(getUriForNewEntity, null);
+					MultiOutput updated = dispatcher.handle(getCommand, null);
+					return updated;
 				}
 				
 				
