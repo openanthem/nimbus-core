@@ -16,6 +16,7 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
 import com.mongodb.client.gridfs.model.GridFSFile;
 
 import lombok.Getter;
@@ -36,7 +37,8 @@ public class FileUploadMongo implements FileUploadService{
 
 	
 	public FileUploadMongo(BeanResolverStrategy beanResolver) {
-		this.mongoTemplate = beanResolver.get(MongoTemplate.class);
+		DefaultMongoModelRepository defaultMongoModelRepository = beanResolver.get(DefaultMongoModelRepository.class,"rep_mongodb");
+		this.mongoTemplate = (MongoTemplate) defaultMongoModelRepository.getMongoOps();
 		this.gridFsTemplate =  new GridFsTemplate(mongoTemplate.getMongoDbFactory(),mongoTemplate.getConverter());
 		
 	}
