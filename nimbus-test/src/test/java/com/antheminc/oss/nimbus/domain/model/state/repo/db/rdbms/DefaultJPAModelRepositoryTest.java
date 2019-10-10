@@ -178,6 +178,11 @@ public class DefaultJPAModelRepositoryTest extends AbstractRdbmsTest {
 		assertThat(_newResponse).isNotNull();
 		Long refId = _newResponse.findFirstParamOutputEndingWithPath("/person").getRootDomainId();
 		assertThat(refId).isNotNull();
+		
+		MultiOutput _saveResponse = commandGateway.execute(
+				CommandBuilder.withUri(PLATFORM_ROOT + "/person:" + refId).setAction(Action._save).getCommand(),
+				null);
+		assertThat(_saveResponse).isNotNull();
 
 		StringBuilder query = new StringBuilder(FH_SEARCH_BY_QUERY).append("&where=")
 				.append("person.lastName.eq('Doe-BasicQuery')");
@@ -210,6 +215,12 @@ public class DefaultJPAModelRepositoryTest extends AbstractRdbmsTest {
 		Param<PersonJPACoreEntity> pPerson = (Param<PersonJPACoreEntity>) _newResponse.getSingleResult();
 		assertThat(pPerson).isNotNull();
 		assertThat(pPerson.getState()).isEqualTo(expectedPerson);
+		Long refId = _newResponse.findFirstParamOutputEndingWithPath("/person").getRootDomainId();
+		
+		MultiOutput _saveResponse = commandGateway.execute(
+				CommandBuilder.withUri(PLATFORM_ROOT + "/person:" + refId).setAction(Action._save).getCommand(),
+				null);
+		assertThat(_saveResponse).isNotNull();
 
 		// retrieve nested entity by domain _get
 		Long addressId = pPerson.getState().getAddress().getId();
@@ -242,10 +253,20 @@ public class DefaultJPAModelRepositoryTest extends AbstractRdbmsTest {
 				CommandBuilder.withUri(PLATFORM_ROOT + "/person").setAction(Action._new).getCommand(),
 				jsonUtils.convert(person1));
 		assertThat(_newResponse1).isNotNull();
+		Long refId = _newResponse1.findFirstParamOutputEndingWithPath("/person").getRootDomainId();
+		MultiOutput _saveResponse1 = commandGateway.execute(
+				CommandBuilder.withUri(PLATFORM_ROOT + "/person:" + refId).setAction(Action._save).getCommand(),
+				null);
+		assertThat(_saveResponse1).isNotNull();
 		MultiOutput _newResponse2 = commandGateway.execute(
 				CommandBuilder.withUri(PLATFORM_ROOT + "/person").setAction(Action._new).getCommand(),
 				jsonUtils.convert(person2));
 		assertThat(_newResponse2).isNotNull();
+		refId = _newResponse2.findFirstParamOutputEndingWithPath("/person").getRootDomainId();
+		MultiOutput _saveResponse2 = commandGateway.execute(
+				CommandBuilder.withUri(PLATFORM_ROOT + "/person:" + refId).setAction(Action._save).getCommand(),
+				jsonUtils.convert(person2));
+		assertThat(_saveResponse2).isNotNull();
 
 		// do tuple retrieval
 		StringBuilder query = new StringBuilder(FH_SEARCH_BY_QUERY)
@@ -279,19 +300,34 @@ public class DefaultJPAModelRepositoryTest extends AbstractRdbmsTest {
 				CommandBuilder.withUri(PLATFORM_ROOT + "/person").setAction(Action._new).getCommand(),
 				jsonUtils.convert(person1));
 		assertThat(_newResponse1).isNotNull();
+		Long refId = _newResponse1.findFirstParamOutputEndingWithPath("/person").getRootDomainId();
+		MultiOutput _saveResponse1 = commandGateway.execute(
+				CommandBuilder.withUri(PLATFORM_ROOT + "/person:" + refId).setAction(Action._save).getCommand(),
+				null);
+		assertThat(_saveResponse1).isNotNull();
 		MultiOutput _newResponse2 = commandGateway.execute(
 				CommandBuilder.withUri(PLATFORM_ROOT + "/person").setAction(Action._new).getCommand(),
 				jsonUtils.convert(person2));
 		assertThat(_newResponse2).isNotNull();
+		refId = _newResponse2.findFirstParamOutputEndingWithPath("/person").getRootDomainId();
+		MultiOutput _saveResponse2 = commandGateway.execute(
+				CommandBuilder.withUri(PLATFORM_ROOT + "/person:" + refId).setAction(Action._save).getCommand(),
+				null);
+		assertThat(_saveResponse2).isNotNull();
 		MultiOutput _newResponse3 = commandGateway.execute(
 				CommandBuilder.withUri(PLATFORM_ROOT + "/person").setAction(Action._new).getCommand(),
 				jsonUtils.convert(person3));
 		assertThat(_newResponse3).isNotNull();
+		refId = _newResponse3.findFirstParamOutputEndingWithPath("/person").getRootDomainId();
+		MultiOutput _saveResponse3 = commandGateway.execute(
+				CommandBuilder.withUri(PLATFORM_ROOT + "/person:" + refId).setAction(Action._save).getCommand(),
+				null);
+		assertThat(_saveResponse3).isNotNull();
 
 		// do page 1 retrieval
 		Command cmdPage1 = CommandBuilder
 				.withUri(PLATFORM_ROOT
-						+ "/person/_search?fn=query&where=person.lastName.eq('Doe-Paginate')&page=0&pageSize=2&b=$state")
+						+ "/person/_search?fn=query&where=person.lastName.eq('Doe-Paginate')&page=0&pageSize=2")
 				.getCommand();
 		MultiOutput respPage1 = commandGateway.execute(cmdPage1, null);
 		assertThat(respPage1).isNotNull();
@@ -302,7 +338,7 @@ public class DefaultJPAModelRepositoryTest extends AbstractRdbmsTest {
 		// do page 2 retrieval
 		Command cmdPage2 = CommandBuilder
 				.withUri(PLATFORM_ROOT
-						+ "/person/_search?fn=query&where=person.lastName.eq('Doe-Paginate')&page=1&pageSize=2&b=$state")
+						+ "/person/_search?fn=query&where=person.lastName.eq('Doe-Paginate')&page=1&pageSize=2")
 				.getCommand();
 		MultiOutput respPage2 = commandGateway.execute(cmdPage2, null);
 		assertThat(respPage2).isNotNull();
@@ -331,14 +367,29 @@ public class DefaultJPAModelRepositoryTest extends AbstractRdbmsTest {
 				CommandBuilder.withUri(PLATFORM_ROOT + "/person").setAction(Action._new).getCommand(),
 				jsonUtils.convert(person1));
 		assertThat(_newResponse1).isNotNull();
+		Long refId = _newResponse1.findFirstParamOutputEndingWithPath("/person").getRootDomainId();
+		MultiOutput _saveResponse1 = commandGateway.execute(
+				CommandBuilder.withUri(PLATFORM_ROOT + "/person:" + refId).setAction(Action._save).getCommand(),
+				null);
+		assertThat(_saveResponse1).isNotNull();
 		MultiOutput _newResponse2 = commandGateway.execute(
 				CommandBuilder.withUri(PLATFORM_ROOT + "/person").setAction(Action._new).getCommand(),
 				jsonUtils.convert(person2));
 		assertThat(_newResponse2).isNotNull();
+		refId = _newResponse2.findFirstParamOutputEndingWithPath("/person").getRootDomainId();
+		MultiOutput _saveResponse2 = commandGateway.execute(
+				CommandBuilder.withUri(PLATFORM_ROOT + "/person:" + refId).setAction(Action._save).getCommand(),
+				null);
+		assertThat(_saveResponse2).isNotNull();
 		MultiOutput _newResponse3 = commandGateway.execute(
 				CommandBuilder.withUri(PLATFORM_ROOT + "/person").setAction(Action._new).getCommand(),
 				jsonUtils.convert(person3));
 		assertThat(_newResponse3).isNotNull();
+		refId = _newResponse3.findFirstParamOutputEndingWithPath("/person").getRootDomainId();
+		MultiOutput _saveResponse3 = commandGateway.execute(
+				CommandBuilder.withUri(PLATFORM_ROOT + "/person:" + refId).setAction(Action._save).getCommand(),
+				null);
+		assertThat(_saveResponse3).isNotNull();
 
 		// create a new view, get the refId
 		Command cmdNewView = CommandBuilder.withUri(VIEW_DOMAIN_ROOT).setAction(Action._new).getCommand();
@@ -352,10 +403,7 @@ public class DefaultJPAModelRepositoryTest extends AbstractRdbmsTest {
 		MultiOutput respFilterA = commandGateway.execute(cmdFilterA,
 				"{ \"filters\": [ { \"code\": \"lastName\", \"value\": \"Filter-A\" } ] }");
 		assertThat(respFilterA).isNotNull();
-		List<Param<PersonLineItem>> gridResultsFilterA = (List<Param<PersonLineItem>>) respFilterA.getSingleResult();
-		List<PersonJPACoreEntity> actualResults1 = gridResultsFilterA.stream()
-				.map(a -> new PersonJPACoreEntity(a.getState().getFirstName(), a.getState().getLastName()))
-				.collect(Collectors.toList());
+		List<PersonJPACoreEntity> actualResults1 = (List<PersonJPACoreEntity>) respFilterA.getSingleResult();
 		assertThat(actualResults1).isNotNull();
 		assertThat(CollectionUtils.isEqualCollection(actualResults1, expectedResults1)).isTrue();
 
@@ -364,10 +412,7 @@ public class DefaultJPAModelRepositoryTest extends AbstractRdbmsTest {
 		MultiOutput respFilterB = commandGateway.execute(cmdFilterB,
 				"{ \"filters\": [ { \"code\": \"lastName\", \"value\": \"Filter-B\" } ] }");
 		assertThat(respFilterB).isNotNull();
-		List<Param<PersonLineItem>> gridResultsFilterB = (List<Param<PersonLineItem>>) respFilterB.getSingleResult();
-		List<PersonJPACoreEntity> actualResults2 = gridResultsFilterB.stream()
-				.map(a -> new PersonJPACoreEntity(a.getState().getFirstName(), a.getState().getLastName()))
-				.collect(Collectors.toList());
+		List<PersonJPACoreEntity> actualResults2 = (List<PersonJPACoreEntity>) respFilterB.getSingleResult();
 		assertThat(actualResults2).isNotNull();
 		assertThat(CollectionUtils.isEqualCollection(actualResults2, expectedResults2)).isTrue();
 	}
