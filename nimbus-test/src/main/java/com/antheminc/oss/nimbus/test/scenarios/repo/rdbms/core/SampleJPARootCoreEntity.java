@@ -22,6 +22,7 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -35,10 +36,11 @@ import lombok.ToString;
 @Entity
 @Table(name="SAMPLE_JPA_CORE")
 @Getter @Setter @ToString
-public class SampleJPARootCoreEntity  extends IdLong {
+@EqualsAndHashCode(callSuper = false)
+public class SampleJPARootCoreEntity extends IdLong {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@GeneratedValue(generator=SEQ_GEN_NAME)
 	@GenericGenerator(name=SEQ_GEN_NAME, strategy=SEQ_GEN_STRATEGY, parameters=@Parameter(name=SEQ_GEN_PARAM_K_NM, value="SEQ_SAMPLE"))
@@ -49,4 +51,7 @@ public class SampleJPARootCoreEntity  extends IdLong {
 	
 	@Column
 	private String a1;
+	
+	@Column
+	private String a2;
 }
