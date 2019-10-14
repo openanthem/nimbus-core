@@ -15,6 +15,10 @@
  */
 package com.antheminc.oss.nimbus.domain.session;
 
+import java.util.List;
+
+import org.springframework.web.context.request.RequestAttributes;
+
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
@@ -27,14 +31,16 @@ public interface SessionProvider {
 	public String getSessionId();
 	
 	public <R> R getAttribute(String key);
-	
+		
 	public void setAttribute(String key, Object value);
 	public void setAttribute(Command cmd, Object value);
 	public boolean removeAttribute(String key);
 	
-	default public void clear() {
-		throw new FrameworkRuntimeException("Implementation class "+this.getClass().getName()+" needs to override the clear method");
-	}
+	public void clear();
+	
+//	default public void clear() {
+//		throw new FrameworkRuntimeException("Implementation class "+this.getClass().getName()+" needs to override the clear method");
+//	}
 	
 	public ClientUser getLoggedInUser();	
 	public void setLoggedInUser(ClientUser clientUser);
