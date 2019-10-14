@@ -15,16 +15,23 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
+import java.util.List;
 import java.util.Optional;
+
+import org.activiti.engine.impl.persistence.entity.AbstractEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutor;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
@@ -32,7 +39,9 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
+import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
+import com.antheminc.oss.nimbus.entity.LockEntity;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 import lombok.AccessLevel;
@@ -46,10 +55,12 @@ import lombok.Getter;
 @Getter(value=AccessLevel.PROTECTED)
 public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 
+	@Autowired
+	private CommandExecutorGateway commandExecutorGateway;
+	
 	private final DomainConfigBuilder domainConfigBuilder;
 	private final CommandExecutor<?> executorActionNew;
 	private final CommandExecutor<?> executorActionGet;
-
 	private final QuadModelBuilder quadModelBuilder;
 	
 	private final SessionProvider sessionProvider;
@@ -104,22 +115,48 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	private ExecutionContext loadEntity(ExecutionContext eCtx, CommandExecutor<?> executor) {
 		TH_ACTION.set(eCtx.getCommandMessage().getCommand().getAction());
 		try {
-			CommandMessage cmdMsg = eCtx.getCommandMessage();
-			String inputCmdUri = cmdMsg.getCommand().getAbsoluteUri();
-			
-			Input input = new Input(inputCmdUri, eCtx, cmdMsg.getCommand().getAction(), Behavior.$execute);
-			Output<?> output = executor.execute(input);
-			
-			// update context
-			eCtx = output.getContext();
-			ModelConfig<?> rootDomainConfig = getDomainConfigBuilder().getRootDomainOrThrowEx(cmdMsg.getCommand().getRootDomainAlias());
-			sessionPutIfApplicable(rootDomainConfig, eCtx);
-			eCtx.getRootModel().initState();
+			//boolean locked = evaluateLock(eCtx, executor);
+			//if(locked) {
+				CommandMessage cmdMsg = eCtx.getCommandMessage();
+				String inputCmdUri = cmdMsg.getCommand().getAbsoluteUri();
+				
+				Input input = new Input(inputCmdUri, eCtx, cmdMsg.getCommand().getAction(), Behavior.$execute);
+				Output<?> output = executor.execute(input);
+				
+				// update context
+				eCtx = output.getContext();
+				ModelConfig<?> rootDomainConfig = getDomainConfigBuilder().getRootDomainOrThrowEx(cmdMsg.getCommand().getRootDomainAlias());
+				sessionPutIfApplicable(rootDomainConfig, eCtx);
+				eCtx.getRootModel().initState();
+			//} else {
+			//	System.out.println("Entity is locked");
+			//}
 		}finally {
 			TH_ACTION.set(null);
 		}
 		
 		return eCtx;
+	}
+	
+	private boolean evaluateLock(ExecutionContext eCtx, CommandExecutor<?> executor) {
+		CommandMessage cmdMsg = eCtx.getCommandMessage();
+		ModelConfig<?> initialrootDomainConfig = getDomainConfigBuilder().getRootDomainOrThrowEx(cmdMsg.getCommand().getRootDomainAlias());
+		List<LockEntity> p = null;
+		if(initialrootDomainConfig.getLock() != null && !initialrootDomainConfig.getLock().root()) {
+			Command cmd = CommandBuilder.withUri("/anthem/client/org/p/lock/_search?fn=query&where=lock.domain.eq('"+eCtx.toString() +"')").getCommand();
+			
+			MultiOutput o = commandExecutorGateway.execute(new CommandMessage(cmd, null));
+			p = (List<LockEntity>) o.getOutputs().get(0).getValue();
+			if(p == null || p.size() == 0 ) {
+				cmd = CommandBuilder.withUri("/anthem/client/org/p/lock/_new?fn=_initEntity&target=/lockedBy&json=\"system\"&target=/domain&json=\""+eCtx.toString()+"\"").getCommand();
+
+			} 
+			else {
+				cmd = CommandBuilder.withUri("/anthem/client/org/p/lock:"+p.get(0).getId()+"/_update?rawPayload={\"lockedBy\":system1\",\"domain\":"+eCtx.toString()+"}").getCommand();
+			}
+			MultiOutput output = commandExecutorGateway.execute(new CommandMessage(cmd, null));
+		}
+		return false;
 	}
 	
 	protected boolean sessionPutIfApplicable(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
