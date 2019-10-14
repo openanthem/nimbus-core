@@ -5,7 +5,7 @@
 
 	<groupId>com.antheminc.oss</groupId>
 	<artifactId>nimbus-starter</artifactId>
-    <version>1.3.1.M6</version>
+    <version>1.3.1.M5</version>
 	<url>http://www.oss.antheminc.com/</url>
 	<developers>
 		<developer>
@@ -57,7 +57,7 @@
 	<description>framework starter project</description>
 
 	<properties>
-		<nimbus.version>1.3.1.M6</nimbus.version>
+		<nimbus.version>1.3.1.M5</nimbus.version>
 	</properties>
 
 	<dependencies>	
