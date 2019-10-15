@@ -78,6 +78,10 @@ public class ParamStateAtomicPersistenceEventListener extends ParamStatePersiste
 			throw new InvalidConfigException("No repository implementation provided for the configured repository :"+repo.value().name()+ " for root model: "+p.getRootExecution());
 		}
 		
+		if(p.getConfig().isTransientData()) {
+			return false;
+		}
+		
 		Serializable coreStateId = (Serializable) rootModel.findParamByPath("/id").getState();
 		if(coreStateId == null) {
 			modelRepo._new((ModelConfig<Object>) rootModel.getConfig(), rootModel.getState());

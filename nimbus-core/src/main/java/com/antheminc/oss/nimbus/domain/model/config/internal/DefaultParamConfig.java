@@ -87,6 +87,9 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	@JsonIgnore @Setter 
 	private List<AssociatedEntity> associatedEntities;
 
+	@JsonIgnore 
+	private boolean transientData;
+	
 	protected DefaultParamConfig(String code) {
 		this(code, code, generateNextId());
 	}

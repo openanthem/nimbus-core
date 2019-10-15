@@ -51,6 +51,9 @@ public interface EntityConfig<T> {
 		return null;
 	}
 
+	@JsonIgnore
+	public boolean isTransientData();
+	
 	public interface MappedConfig<T, M> extends EntityConfig<T> {
 		@Override
 		default boolean isMapped() {
