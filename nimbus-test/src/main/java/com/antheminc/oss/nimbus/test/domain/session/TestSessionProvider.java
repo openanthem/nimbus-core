@@ -49,7 +49,7 @@ public class TestSessionProvider extends AbstractSessionProvider {
 	@Override
 	public void clear() {
 		// TODO Auto-generated method stub
-		
+		sessionMap.clear();
 	}
 
 }

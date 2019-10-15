@@ -17,19 +17,28 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.core.session.SessionDestroyedEvent;
+import org.springframework.security.web.session.HttpSessionDestroyedEvent;
 
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
@@ -41,6 +50,12 @@ import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngerationPersistableTests {
+	
+	@Autowired
+	SessionProvider sessionProvider;
+	
+	@Autowired
+	ApplicationContext ctx;
 	
 	@Test
 	public void t1_colElem_add() {
@@ -98,4 +113,14 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 
 	}
 
+	@Test
+	public void sessionInvalidate_cacheDelete() {
+		MockHttpServletRequest home_newReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addAction(Action._new).getMock();
+		Object home_newResp = controller.handleGet(home_newReq, null);
+		assertNotNull(home_newResp);
+		HttpSession session = home_newReq.getSession();
+		domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(home_newResp);
+		ctx.publishEvent(new HttpSessionDestroyedEvent(session));
+		assertNull(sessionProvider.getAttribute("{/"+VIEW_DOMAIN_ALIAS+":"+domainRoot_refId+"}"));
+	}
 }
