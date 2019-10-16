@@ -276,6 +276,9 @@ public class ActivateConditionalNoConversionTest extends AbstractStateEventHandl
 		smForm.setSample_checkBox(null);
 		smForm.setSample_prim_checkBox(false);
 		
+		NestedCoreSample sampleCore = new NestedCoreSample();
+		smForm.setNestedCoreSample(sampleCore);
+		
 		Object response = controller.handlePut(request, null, converter.toJson(smForm));
 		Param<List<SampleForm>> viewParam = ExtractResponseOutputUtils.extractOutput(response, 1);
 
