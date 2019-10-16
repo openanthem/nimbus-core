@@ -162,9 +162,25 @@ public class SampleCoreEntity extends IdLong {
 		private Boolean sample_checkBox;
 
 		private boolean sample_prim_checkBox;
-
+		
+		@ActivateConditional(targetPath = { "../nestedCoreSample"}, when = "state == 'Yes'")
+		private String sample_nested_activate;
+		
+		private NestedCoreSample nestedCoreSample;
 		
 		private SampleNoConversionEntity nc_nested0_Details;
+	}
+	
+	@Model
+	@Getter @Setter
+	public static class NestedCoreSample {
+		
+		private String nested_attr1;
+		
+		private Boolean nested_checkbox_attr2;
+
+		private boolean nested_prim_attr3;
+
 	}
 	
 	private SampleCoreValuesEntity sampleCoreValuesEntity;
