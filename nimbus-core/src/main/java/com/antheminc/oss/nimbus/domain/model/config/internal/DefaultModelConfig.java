@@ -61,8 +61,6 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 	
 	@JsonIgnore	private transient ParamConfig<?> versionParamConfig;
 	
-	@JsonIgnore private boolean transientData;
-	
 	@JsonIgnore
 	private final transient CollectionsTemplate<List<ParamConfig<?>>, ParamConfig<?>> templateParamConfigs = new CollectionsTemplate<>(
 			() -> getParamConfigs(), (p) -> setParamConfigs(p), () -> new LinkedList<>());

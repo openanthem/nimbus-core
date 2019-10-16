@@ -50,9 +50,6 @@ public interface EntityConfig<T> {
 	default public MappedConfig<T, ?> findIfMapped() {
 		return null;
 	}
-
-	@JsonIgnore
-	public boolean isTransientData();
 	
 	public interface MappedConfig<T, M> extends EntityConfig<T> {
 		@Override
