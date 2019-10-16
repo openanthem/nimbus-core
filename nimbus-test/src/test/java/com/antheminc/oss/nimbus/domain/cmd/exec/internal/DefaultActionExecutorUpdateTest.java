@@ -17,6 +17,7 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -47,6 +48,7 @@ import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreLevel1_Entity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity.Level1;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleNoConversionEntity.NestedNoConversionLevel1;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SecondLevelNestedModel;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.TestModel;
 import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageRed.Form_ConvertedNestedEntity;
 
@@ -563,6 +565,38 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 
 		TestModel core_afterUpdate = mongo.findById(testDomainrefId, TestModel.class, "testmodel_core");
 		assertEquals(core.getLastModifiedDate(), core_afterUpdate.getLastModifiedDate());
+
+	}
+	
+	@Test
+	public void t14_transientNestedModelUpdate() {		
+		Long testDomainrefId  = createTestDomain();
+		TestModel core = mongo.findById(testDomainrefId, TestModel.class, "testmodel_core");
+	
+		SecondLevelNestedModel im = new SecondLevelNestedModel();
+		im.setNested3_attr1("test_attr1");
+		im.setNested3_attr2("test_attr2");
+
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(TEST_DOMAIN).addRefId(testDomainrefId)
+				.addNested("/innerTestModel/secondLevelNestedModel").addAction(Action._update).getMock();
+		Object resp = controller.handlePut(request, null, converter.toJson(im));
+
+		TestModel core_afterUpdate = mongo.findById(testDomainrefId, TestModel.class, "testmodel_core");
+		assertEquals(core.getLastModifiedDate(), core_afterUpdate.getLastModifiedDate());
+
+	}
+	
+	@Test
+	public void t15_ModelUpdate() {		
+		Long testDomainrefId  = createTestDomain();
+		TestModel core = mongo.findById(testDomainrefId, TestModel.class, "testmodel_core");
+
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(TEST_DOMAIN).addRefId(testDomainrefId)
+				.addNested("/attr2").addAction(Action._update).getMock();
+		Object resp = controller.handlePut(request, null, converter.toJson("test 2"));
+
+		TestModel core_afterUpdate = mongo.findById(testDomainrefId, TestModel.class, "testmodel_core");
+		assertNotEquals(core.getLastModifiedDate(), core_afterUpdate.getLastModifiedDate());
 
 	}
 }

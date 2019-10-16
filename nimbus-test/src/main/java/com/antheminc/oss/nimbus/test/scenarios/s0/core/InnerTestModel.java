@@ -33,4 +33,5 @@ public class InnerTestModel {
 
 	private String inner_attr2;
 
+	private SecondLevelNestedModel secondLevelNestedModel;
 }
