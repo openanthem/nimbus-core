@@ -30,6 +30,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.env.PropertyResolver;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.context.DefaultBeanResolverStrategy;
@@ -54,6 +55,7 @@ import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.internal.DefaultEntityStateBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.internal.DefaultQuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ChangeLogCommandEventHandler;
+import com.antheminc.oss.nimbus.domain.session.SessionDestroyListener;
 import com.antheminc.oss.nimbus.support.DefaultLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.SecurityUtils;
 
@@ -176,6 +178,16 @@ public class DefaultCoreBuilderConfig {
 	@Bean
 	public DefaultLoggingInterceptor defaultLoggingHandler() {
 		return new DefaultLoggingInterceptor();
+	}
+	
+	@Bean
+	public HttpSessionEventPublisher httpSessionEventPublisher() {
+	    return new HttpSessionEventPublisher();
+	}
+	
+	@Bean
+	public SessionDestroyListener sessionDestroyListener(BeanResolverStrategy beanResolver) {
+		return new SessionDestroyListener(beanResolver);
 	}
 
 }

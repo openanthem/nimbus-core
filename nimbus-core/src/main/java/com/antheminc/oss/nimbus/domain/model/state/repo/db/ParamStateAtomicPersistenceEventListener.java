@@ -78,6 +78,10 @@ public class ParamStateAtomicPersistenceEventListener extends ParamStatePersiste
 			throw new InvalidConfigException("No repository implementation provided for the configured repository :"+repo.value().name()+ " for root model: "+p.getRootExecution());
 		}
 		
+		if(p.getConfig().isTransientData() || checkIfAnyParentIsTransient(p)) {
+			return false;
+		}
+	
 		Serializable coreStateId = (Serializable) rootModel.findParamByPath("/id").getState();
 		if(coreStateId == null) {
 			modelRepo._new((ModelConfig<Object>) rootModel.getConfig(), rootModel.getState());
@@ -95,6 +99,17 @@ public class ParamStateAtomicPersistenceEventListener extends ParamStatePersiste
 		
 		modelRepo._update(repoAlias, coreStateId, rootModel.getBeanPath(), rootModel.getState());
 		return true;
+	}
+	
+	private boolean checkIfAnyParentIsTransient(Param<?> p) {
+		if(p.getParentModel()!= null) { 
+			if(p.getParentModel().getAssociatedParam().getConfig().isTransientData()) {
+				return true;
+			} else {
+				return checkIfAnyParentIsTransient(p.getParentModel().getAssociatedParam());
+			}
+		}
+		return false;
 	}
 
 }
