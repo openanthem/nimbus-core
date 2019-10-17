@@ -62,7 +62,7 @@ public class MockParamConfig implements ParamConfig<Object> {
 	private List<AnnotationConfig> validations;
 	private Values values;
 	private List<AnnotationConfig> extensions;
-
+	private boolean transientData;
 	/*
 	 * (non-Javadoc)
 	 * @see com.anthem.oss.nimbus.core.domain.model.config.EntityConfig#findParamByPath(java.lang.String)
