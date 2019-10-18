@@ -56,8 +56,10 @@ public class HttpSessionProvider extends AbstractSessionProvider {
 	@Override
 	public void clear() {
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-		String[] attr = requestAttributes.getAttributeNames(RequestAttributes.SCOPE_SESSION);
-		 Arrays.stream(attr) 
-         .forEach(e->removeAttribute(e));
+		if(requestAttributes != null) {
+			String[] attr = requestAttributes.getAttributeNames(RequestAttributes.SCOPE_SESSION);
+			 Arrays.stream(attr) 
+	         .forEach(e->removeAttribute(e));
+		}
 	}
 }
