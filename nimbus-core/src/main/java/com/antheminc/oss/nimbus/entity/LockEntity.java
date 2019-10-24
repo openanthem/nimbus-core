@@ -31,5 +31,6 @@ public class LockEntity extends AbstractEntity.IdLong {
 
 	private String domain;
 	private String lockedBy;
+	private String sessionId;
 	
 }

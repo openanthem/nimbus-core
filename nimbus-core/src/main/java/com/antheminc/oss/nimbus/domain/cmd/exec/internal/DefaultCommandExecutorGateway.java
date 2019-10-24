@@ -468,6 +468,9 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		
 		ExecutionContext loaderCtx = getLoader().load(domainRootCmd);
 		
+		if(loaderCtx.getQuadModel() == null) {
+			throw new FrameworkRuntimeException("Domain is currently locked");
+		}
 		// create context for passed in command and payload
 		ExecutionContext eCtx = new ExecutionContext(cmdMsg, loaderCtx.getQuadModel());
 		return eCtx;

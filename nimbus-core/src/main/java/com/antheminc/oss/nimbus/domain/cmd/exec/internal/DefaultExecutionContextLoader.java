@@ -15,17 +15,21 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.activiti.engine.impl.persistence.entity.AbstractEntity;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
@@ -79,7 +83,12 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	@Override
 	public final ExecutionContext load(Command rootDomainCmd) {
 		ExecutionContext eCtx = new ExecutionContext(rootDomainCmd);
-		
+		if(rootDomainCmd.isRootDomainOnly() && (rootDomainCmd.getAction()==Action._nav)) {
+			ModelConfig<?> initialrootDomainConfig = getDomainConfigBuilder().getRootDomainOrThrowEx(eCtx.getCommandMessage().getCommand().getRootDomainAlias());
+			if(initialrootDomainConfig.getLock().root()) {
+				removeLocksOnDomain(eCtx);
+			}
+		}
 		// _search: transient - just create shell 
 		if(isTransient(rootDomainCmd)) {
 			QuadModel<?, ?> q = getQuadModelBuilder().build(rootDomainCmd);
@@ -115,8 +124,8 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	private ExecutionContext loadEntity(ExecutionContext eCtx, CommandExecutor<?> executor) {
 		TH_ACTION.set(eCtx.getCommandMessage().getCommand().getAction());
 		try {
-			//boolean locked = evaluateLock(eCtx, executor);
-			//if(locked) {
+			boolean locked = evaluateLock(eCtx, executor);
+			if(!locked) {
 				CommandMessage cmdMsg = eCtx.getCommandMessage();
 				String inputCmdUri = cmdMsg.getCommand().getAbsoluteUri();
 				
@@ -128,9 +137,9 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 				ModelConfig<?> rootDomainConfig = getDomainConfigBuilder().getRootDomainOrThrowEx(cmdMsg.getCommand().getRootDomainAlias());
 				sessionPutIfApplicable(rootDomainConfig, eCtx);
 				eCtx.getRootModel().initState();
-			//} else {
-			//	System.out.println("Entity is locked");
-			//}
+			} else {	
+				throw new FrameworkRuntimeException("Unable to access Domain "+ eCtx.toString() + " as it is locked");
+			}
 		}finally {
 			TH_ACTION.set(null);
 		}
@@ -142,21 +151,37 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		CommandMessage cmdMsg = eCtx.getCommandMessage();
 		ModelConfig<?> initialrootDomainConfig = getDomainConfigBuilder().getRootDomainOrThrowEx(cmdMsg.getCommand().getRootDomainAlias());
 		List<LockEntity> p = null;
-		if(initialrootDomainConfig.getLock() != null && !initialrootDomainConfig.getLock().root()) {
-			Command cmd = CommandBuilder.withUri("/anthem/client/org/p/lock/_search?fn=query&where=lock.domain.eq('"+eCtx.toString() +"')").getCommand();
-			
+		String marker = cmdMsg.getCommand().buildUri(cmdMsg.getCommand().root(), Type.PlatformMarker);
+		if(sessionProvider.getLoggedInUser() != null && initialrootDomainConfig.getLock() != null && !initialrootDomainConfig.getLock().root()) {
+			Command cmd = CommandBuilder.withUri(marker+"/lock/_search?fn=query&where=lock.domain.eq('"+eCtx.toString() +"')").getCommand();
 			MultiOutput o = commandExecutorGateway.execute(new CommandMessage(cmd, null));
 			p = (List<LockEntity>) o.getOutputs().get(0).getValue();
 			if(p == null || p.size() == 0 ) {
-				cmd = CommandBuilder.withUri("/anthem/client/org/p/lock/_new?fn=_initEntity&target=/lockedBy&json=\"system\"&target=/domain&json=\""+eCtx.toString()+"\"").getCommand();
-
+				cmd = CommandBuilder.withUri(marker+"/lock/_new?fn=_initEntity&target=/lockedBy&json=\""+sessionProvider.getLoggedInUser().getLoginId()+"\"&target=/domain&json=\""+eCtx.toString()+"\"&target=/sessionId&json=\""+sessionProvider.getSessionId()+"\"").getCommand();
+				commandExecutorGateway.execute(new CommandMessage(cmd, null));
 			} 
 			else {
-				cmd = CommandBuilder.withUri("/anthem/client/org/p/lock:"+p.get(0).getId()+"/_update?rawPayload={\"lockedBy\":system1\",\"domain\":"+eCtx.toString()+"}").getCommand();
+				if(p.size() > 1 )
+					throw new FrameworkRuntimeException("Found more than 1 entry in the lock table for the domain "+ eCtx.toString());
+				else if(!StringUtils.equalsAnyIgnoreCase(p.get(0).getLockedBy(), sessionProvider.getLoggedInUser().getLoginId())) {
+					return true;
+				}
 			}
-			MultiOutput output = commandExecutorGateway.execute(new CommandMessage(cmd, null));
 		}
 		return false;
+	}
+	
+	private void removeLocksOnDomain(ExecutionContext eCtx) {
+		CommandMessage cmdMsg = eCtx.getCommandMessage();
+		String marker = cmdMsg.getCommand().buildUri(cmdMsg.getCommand().root(), Type.PlatformMarker);
+		Command cmd = CommandBuilder.withUri(marker+"/lock/_search?fn=query&where=lock.lockedBy.eq('"+sessionProvider.getLoggedInUser().getLoginId() +"')").getCommand();
+		MultiOutput o = commandExecutorGateway.execute(new CommandMessage(cmd, null));
+		List<LockEntity> p = null;
+		p = (List<LockEntity>) o.getOutputs().get(0).getValue();
+		p.stream().forEach(e-> {
+			Command cmddelete = CommandBuilder.withUri(marker+"/lock:"+e.getId().toString()+"/_delete").getCommand();
+			commandExecutorGateway.execute(new CommandMessage(cmd, null));
+	    });
 	}
 	
 	protected boolean sessionPutIfApplicable(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
