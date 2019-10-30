@@ -124,8 +124,8 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	private ExecutionContext loadEntity(ExecutionContext eCtx, CommandExecutor<?> executor) {
 		TH_ACTION.set(eCtx.getCommandMessage().getCommand().getAction());
 		try {
-			boolean locked = evaluateLock(eCtx, executor);
-			if(!locked) {
+			//boolean locked = evaluateLock(eCtx, executor);
+			//if(!locked) {
 				CommandMessage cmdMsg = eCtx.getCommandMessage();
 				String inputCmdUri = cmdMsg.getCommand().getAbsoluteUri();
 				
@@ -137,9 +137,9 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 				ModelConfig<?> rootDomainConfig = getDomainConfigBuilder().getRootDomainOrThrowEx(cmdMsg.getCommand().getRootDomainAlias());
 				sessionPutIfApplicable(rootDomainConfig, eCtx);
 				eCtx.getRootModel().initState();
-			} else {	
-				throw new FrameworkRuntimeException("Unable to access Domain "+ eCtx.toString() + " as it is locked");
-			}
+//			} else {	
+//				throw new FrameworkRuntimeException("Unable to access Domain "+ eCtx.toString() + " as it is locked");
+//			}
 		}finally {
 			TH_ACTION.set(null);
 		}
