@@ -71,5 +71,19 @@ public final class StateEvent {
 		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 
-
+	@Retention(RUNTIME)
+	@Target(ANNOTATION_TYPE)
+	@Event
+	@Inherited
+	public @interface OnRootParamLock {
+		int order() default Event.DEFAULT_ORDER_NUMBER;
+	}
+	
+	@Retention(RUNTIME)
+	@Target(ANNOTATION_TYPE)
+	@Event
+	@Inherited
+	public @interface OnRootParamUnlock {
+		int order() default Event.DEFAULT_ORDER_NUMBER;
+	}
 }

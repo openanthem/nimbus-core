@@ -15,18 +15,11 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.EmitUtils;
 import org.springframework.data.mongodb.core.MongoOperations;
 
-import com.antheminc.oss.nimbus.domain.cmd.Command;
-import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
-import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.entity.DomainEntityLock;
 import com.antheminc.oss.nimbus.entity.LockEntity;
 
 import lombok.RequiredArgsConstructor;
@@ -36,14 +29,14 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @RequiredArgsConstructor
-public class DefaultMongoDomainLockProvider extends AbstractLockWriter implements DomainEntityLockProvider{
+public class DefaultMongoDomainLockProvider extends AbstractLockService implements DomainEntityLockService{
 
 	private final MongoOperations mongoOps;
 	
 	private final CommandExecutorGateway commandExecutorGateway;
 	
 	@Override
-	public LockEntity getLock(Param p) {
+	public LockEntity getLock(Param<?> p) {
 		return null;
 //		mongoOps.findById(id, entityClass, collectionName)
 //		Command cmd = CommandBuilder.withUri(marker+"/lock/_search?fn=query&where=lock.domain.eq('"+eCtx.toString() +"')").getCommand();
@@ -53,8 +46,16 @@ public class DefaultMongoDomainLockProvider extends AbstractLockWriter implement
 //		return p;
 	}
 
-	public void createLockInternal(Param<?> p) {
-		//mongo insert
+	@Override
+	public DomainEntityLock<?> createLockInternal(Param<?> p) {
+		// TODO Auto-generated method stub
+		// mongo insert
+		return null;
+	}
+
+	@Override
+	void removeLockInternal(Param<?> p) {
+		// TODO Auto-generated method stub
 	}
 
 }
