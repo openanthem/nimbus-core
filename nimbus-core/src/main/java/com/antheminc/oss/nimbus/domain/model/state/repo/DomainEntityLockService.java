@@ -16,17 +16,19 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.entity.LockEntity;
+import com.antheminc.oss.nimbus.entity.DomainEntityLock;
 
 /**
  * @author Sandeep Mantha
  *
  */
-public interface DomainEntityLockProvider {
+public interface DomainEntityLockService {
 
-	LockEntity getLock(Param<?> p);
+	DomainEntityLock<?> getLock(Param<?> p);
 	
-	void createLock(Param<?> p);
+	DomainEntityLock<?> createLock(Param<?> p);
+
+	void removeLock(Param<?> p);
 }
 
 
