@@ -26,7 +26,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * @author ac97583
+ * @author Sandeep Mantha
  *
  */
 @Domain(value = "rootdomain", includeListeners = { ListenerType.websocket })
@@ -37,4 +37,4 @@ import lombok.ToString;
 public class RootTestModel {
 	
 	private String attr1;
-}
+}	

@@ -35,6 +35,8 @@ import com.antheminc.oss.nimbus.channel.web.WebCommandBuilder;
 import com.antheminc.oss.nimbus.channel.web.WebCommandDispatcher;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.ClassPropertyConverter;
+import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultDomainLockProvider;
+import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultDomainLockStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryDetached;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryLocal;
@@ -156,4 +158,13 @@ public class DefaultCoreConfiguration {
 			return new FileHandler(beanResolver);
 		}
 	
+	@Bean
+	public DefaultDomainLockStrategy defaultDomainLockStrategy(BeanResolverStrategy beanResolver) {
+		return new DefaultDomainLockStrategy(beanResolver);
+	}
+	
+	@Bean
+	public DefaultDomainLockProvider defaultMongoDomainLockProvider(BeanResolverStrategy beanResolver) {
+		return new DefaultDomainLockProvider(beanResolver);
+	}
 }

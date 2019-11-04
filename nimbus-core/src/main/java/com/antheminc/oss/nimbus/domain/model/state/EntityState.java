@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -290,6 +291,10 @@ public interface EntityState<T> {
 		
 		StateType getType();
 		
+		public default boolean isDomainRoot() {
+		      return Optional.ofNullable(getParentModel()).map(Model::isRoot).orElse(false);
+		}
+		
 		Class<? extends ValidationGroup>[] getActiveValidationGroups();
 		void setActiveValidationGroups(Class<? extends ValidationGroup>[] activeValidationGroups);
 		
@@ -555,6 +560,7 @@ public interface EntityState<T> {
 		
 		StyleState getStyle();
 		void setStyle(StyleState styleState);
+		
 		
 		@Getter @Setter @ToString 
 		public static class LabelState {

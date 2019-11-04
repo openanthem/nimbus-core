@@ -68,7 +68,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		this.javaBeanHandler = javaBeanHandler;
 		this.local = local;
 		this.detachedStateRepository = beanResolver.get(ParamStateRepository.class, "param.state.rep_detached");
-		
+		this.domainEntityLockStrategy = beanResolver.get(DefaultDomainLockStrategy.class);
 	}
 	
 	/*
@@ -84,9 +84,10 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		 * 2. If cache=false, then 
 		 */
 		@Override
-		public <P> P _get(Param<P> param) {
-			if(param.getParentModel().findIfRoot() != null) {
-				if(param.getParentModel().getConfig().getLock() != null && !param.getParentModel().getConfig().getLock().root()) {
+		public <P> P _get(Param<P> param) {	
+			//if(param.getType().findIfNested() != null && param.getRootDomain().equals(param.getType().findIfNested().getModel())) {
+			if(param.isDomainRoot()) {
+				if(param.getRootDomain().getConfig().getLock() != null && !param.getRootDomain().getConfig().getLock().root()) {
 					domainEntityLockStrategy.evalAndapply(param);
 				}
 			}

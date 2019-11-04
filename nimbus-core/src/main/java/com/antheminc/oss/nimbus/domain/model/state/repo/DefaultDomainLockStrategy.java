@@ -16,7 +16,9 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.session.HttpSessionProvider;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.LockEntity;
 
@@ -29,6 +31,11 @@ public class DefaultDomainLockStrategy implements DomainEntityLockStrategy {
 	private DomainEntityLockProvider domainEntityLockProvider;
 	
 	private SessionProvider sessionProvider;
+	
+	public DefaultDomainLockStrategy(BeanResolverStrategy beanResolverStrategy) {
+		this.domainEntityLockProvider = beanResolverStrategy.find(DomainEntityLockProvider.class);
+		this.sessionProvider = beanResolverStrategy.find(HttpSessionProvider.class);
+	}
 	
 	@Override
 	public void evalAndapply(Param<?> param) {
