@@ -36,6 +36,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.QuerySearchCriteria;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
+import com.antheminc.oss.nimbus.entity.DomainEntityLock;
 import com.antheminc.oss.nimbus.entity.LockEntity;
 
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,7 @@ import lombok.RequiredArgsConstructor;
  * @author Sandeep Mantha
  *
  */
-public class DefaultDomainLockProvider extends AbstractLockWriter implements DomainEntityLockProvider{
+public class DefaultDomainLockProvider extends AbstractLockService implements DomainEntityLockService{
 
 	private final ModelRepositoryFactory modelrepo;
 	
@@ -59,7 +60,7 @@ public class DefaultDomainLockProvider extends AbstractLockWriter implements Dom
 	}
 
 	@Override
-	public LockEntity getLock(Param p) {
+	public DomainEntityLock getLock(Param p) {
 		//domainConfigBuilder.getModel(LockEntity.class);
 		ModelRepository modelrepository = modelrepo.get(Repo.Database.rep_mongodb);
 		QuerySearchCriteria qs = new QuerySearchCriteria();
@@ -69,17 +70,23 @@ public class DefaultDomainLockProvider extends AbstractLockWriter implements Dom
 		return ls.size() == 1? ls.get(0) : null;
 	}
 
-	public void createLockInternal(Param<?> p) {
+	public DomainEntityLock<?> createLockInternal(Param<?> p) {
 		ModelRepository modelrepository = modelrepo.get(Repo.Database.rep_mongodb);
-		modelrepository._save("lock", createLockEntity());
+		return modelrepository._save("lock", createLockEntity());
 		
 	}
 
-	private LockEntity createLockEntity() {
+	private DomainEntityLock<?> createLockEntity() {
 		LockEntity le = new LockEntity();
 		le.setSessionId(sessionProvider.getSessionId());
 		//le.setLockedBy(lockedBy);
 		return le;
+	}
+
+	@Override
+	void removeLockInternal(Param<?> p) {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

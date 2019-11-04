@@ -31,6 +31,8 @@ import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
+import com.antheminc.oss.nimbus.domain.model.state.event.LockableHandlers.OnRootParamLockHandler;
+import com.antheminc.oss.nimbus.domain.model.state.event.LockableHandlers.OnRootParamUnlockHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadNewHandler;
@@ -47,6 +49,8 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 
 	// config handlers
 	private _InternalConfig<OnParamCreateHandler<Annotation>> onParamCreateHandlers = new _InternalConfig<>();
+	private _InternalConfig<OnRootParamLockHandler<Annotation>> onRootParamLockHandlers = new _InternalConfig<>();
+	private _InternalConfig<OnRootParamUnlockHandler<Annotation>> onRootParamUnlockHandlers = new _InternalConfig<>();
 	
 	// state handlers
 	private _InternalConfig<OnStateLoadHandler<Annotation>> onStateLoadHandlers = new _InternalConfig<>();
@@ -220,5 +224,36 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 	@Override
 	public OnStateChangeHandler<Annotation> getOnStateChangeHandler(Annotation a) throws InvalidConfigException {
 		return onStateChangeHandlers.getHandler(a);
+	}
+
+	@Override
+	public Set<Annotation> getOnRootParamLockAnnotations() {
+		return onRootParamLockHandlers.getAnnotations();
+	}
+
+	@Override
+	public Optional<OnRootParamLockHandler<Annotation>> findOnRootParamLockHandler(Annotation a) {
+		return onRootParamLockHandlers.findHandler(a);
+	}
+
+	@Override
+	public OnRootParamLockHandler<Annotation> getOnRootParamLockHandler(Annotation a) throws InvalidConfigException {
+		return onRootParamLockHandlers.getHandler(a);
+	}
+
+	@Override
+	public Set<Annotation> getOnRootParamUnlockAnnotations() {
+		return onRootParamUnlockHandlers.getAnnotations();
+	}
+
+	@Override
+	public Optional<OnRootParamUnlockHandler<Annotation>> findOnRootParamUnlockHandler(Annotation a) {
+		return onRootParamUnlockHandlers.findHandler(a);
+	}
+
+	@Override
+	public OnRootParamUnlockHandler<Annotation> getOnRootParamUnlockHandler(Annotation a)
+			throws InvalidConfigException {
+		return onRootParamUnlockHandlers.getHandler(a);
 	}
 }

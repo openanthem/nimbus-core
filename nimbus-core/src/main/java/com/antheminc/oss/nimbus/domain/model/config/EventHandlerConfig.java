@@ -21,6 +21,8 @@ import java.util.Set;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
+import com.antheminc.oss.nimbus.domain.model.state.event.LockableHandlers.OnRootParamLockHandler;
+import com.antheminc.oss.nimbus.domain.model.state.event.LockableHandlers.OnRootParamUnlockHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadNewHandler;
@@ -49,4 +51,11 @@ public interface EventHandlerConfig {
 	public Optional<OnStateChangeHandler<Annotation>> findOnStateChangeHandler(Annotation a);
 	public OnStateChangeHandler<Annotation> getOnStateChangeHandler(Annotation a) throws InvalidConfigException;
 	
+	public Set<Annotation> getOnRootParamLockAnnotations();
+	public Optional<OnRootParamLockHandler<Annotation>> findOnRootParamLockHandler(Annotation a);
+	public OnRootParamLockHandler<Annotation> getOnRootParamLockHandler(Annotation a) throws InvalidConfigException;
+	
+	public Set<Annotation> getOnRootParamUnlockAnnotations();
+	public Optional<OnRootParamUnlockHandler<Annotation>> findOnRootParamUnlockHandler(Annotation a);
+	public OnRootParamUnlockHandler<Annotation> getOnRootParamUnlockHandler(Annotation a) throws InvalidConfigException;
  }

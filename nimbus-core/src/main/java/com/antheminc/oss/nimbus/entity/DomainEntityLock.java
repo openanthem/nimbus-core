@@ -13,22 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.repo;
-
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+package com.antheminc.oss.nimbus.entity;
 
 /**
- * @author Sandeep Mantha
+ * @author Tony Lopez
  *
  */
-public abstract class AbstractLockWriter implements DomainEntityLockProvider{
+public interface DomainEntityLock<T> {
 
-	abstract void createLockInternal(Param<?> p);
-	
-	public void createLock(Param p) {
-		createLockInternal(p);
-		//emit event
-	}
+	T getId();
+	String getDomain();
+	String getLockedBy();
+	String getSessionId();
 }
-
-

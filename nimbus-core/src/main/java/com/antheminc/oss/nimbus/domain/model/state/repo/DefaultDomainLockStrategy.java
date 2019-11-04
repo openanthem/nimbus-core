@@ -20,7 +20,7 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.session.HttpSessionProvider;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
-import com.antheminc.oss.nimbus.entity.LockEntity;
+import com.antheminc.oss.nimbus.entity.DomainEntityLock;
 
 /**
  * @author Sandeep Mantha
@@ -28,30 +28,29 @@ import com.antheminc.oss.nimbus.entity.LockEntity;
  */
 public class DefaultDomainLockStrategy implements DomainEntityLockStrategy {
 
-	private DomainEntityLockProvider domainEntityLockProvider;
-	
+	private DomainEntityLockService domainEntityLockProvider;
+
 	private SessionProvider sessionProvider;
 	
 	public DefaultDomainLockStrategy(BeanResolverStrategy beanResolverStrategy) {
-		this.domainEntityLockProvider = beanResolverStrategy.find(DomainEntityLockProvider.class);
+		this.domainEntityLockProvider = beanResolverStrategy.find(DomainEntityLockService.class);
 		this.sessionProvider = beanResolverStrategy.find(HttpSessionProvider.class);
 	}
-	
+
 	@Override
 	public void evalAndapply(Param<?> param) {
-		
-		LockEntity lock = domainEntityLockProvider.getLock(param);
-		if(lock != null) {
-			if(sessionProvider.getSessionId().equals(lock.getSessionId())) {
-				throw new FrameworkRuntimeException("Domain locked for the command "+ param.getRootExecution().getRootCommand());
+
+		DomainEntityLock<?> lock = domainEntityLockProvider.getLock(param);
+		if (lock != null) {
+			if (sessionProvider.getSessionId().equals(lock.getSessionId())) {
+				throw new FrameworkRuntimeException(
+						"Domain locked for the command " + param.getRootExecution().getRootCommand());
 			}
 		} else {
 			domainEntityLockProvider.createLock(param);
-			
+
 		}
-		
+
 	}
 
 }
-
-
