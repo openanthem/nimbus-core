@@ -34,20 +34,16 @@ public class ActivitiProcessDefinitionCache extends DefaultDeploymentCache<Proce
 	protected final JustLogit logit = new JustLogit(ActivitiProcessDefinitionCache.class);
 
 	public ProcessDefinitionCacheEntry findByKey(String currentKey) {
-		logit.info(() -> "process lookup key: "+currentKey);
 		ProcessDefinitionCacheEntry entry = processDefinitionCache.get(currentKey);
 		if(entry != null)
 			return entry;
 		int version = 0;
-		for(String processDefinition:cache.keySet()) {
-			String key = processDefinition.split(":")[0];
-			logit.info(()-> "process definition: "+ processDefinition + "key: "+ key);
+		for(ProcessDefinitionCacheEntry processDefinitionEntry:cache.values()) {
+			String key = processDefinitionEntry.getProcess().getId();
 			if(key.equals(currentKey)) {
-				ProcessDefinitionCacheEntry definitionEntry = cache.get(processDefinition);
-				logit.info(()-> "version: "+ definitionEntry.getProcessDefinition().getVersion());
-				if(definitionEntry.getProcessDefinition().getVersion() > version) {
-					entry = definitionEntry;
-					version = definitionEntry.getProcessDefinition().getVersion();
+				if(processDefinitionEntry.getProcessDefinition().getVersion() > version) {
+					entry = processDefinitionEntry;
+					version = processDefinitionEntry.getProcessDefinition().getVersion();
 				}
 			}
 		}
@@ -57,7 +53,8 @@ public class ActivitiProcessDefinitionCache extends DefaultDeploymentCache<Proce
 	
 	@Override
 	public void add(String id, ProcessDefinitionCacheEntry obj) {
-		logit.info(()-> "adding entry into cache: "+ id);
 		super.add(id, obj);
 	}
+	
+
 }

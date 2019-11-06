@@ -58,7 +58,6 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection.LogLevel;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 
@@ -152,7 +151,7 @@ public class ActivitiBPMGateway implements BPMGateway {
 							+ param + " and process Execution Id: " + processExecutionId);
 		}
 		
-		UserTask userTask = (UserTask)cache.findByKey(getProcessKeyFromDefinitionId(processFlow.getProcessDefinitionId(), param)).getProcess().getFlowElementMap().get(task);
+		UserTask userTask = (UserTask)cache.findByKey(param.getRootDomain().getConfig().getDomainLifecycle()).getProcess().getFlowElementMap().get(task);
 		if(canComplete(param,userTask))
 			executeTask(param,processExecutionId,task);
 	}
@@ -233,7 +232,7 @@ public class ActivitiBPMGateway implements BPMGateway {
 	
 	private String getProcessKeyFromDefinitionId(String processDefinitionId, Param<?> param) {
 		return Optional.ofNullable(processDefinitionId)
-			.map(id -> id.split(":")[0])
+			.map(id -> id)
 			.orElseThrow(() -> new FrameworkRuntimeException("Process Definition Id cannot be null while trying to continue the process for param "+param+" execution"));
 		
 	}
