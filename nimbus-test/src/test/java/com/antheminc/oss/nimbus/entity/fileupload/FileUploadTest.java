@@ -13,6 +13,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.entity.fileUpload.FileAttributes;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
@@ -38,8 +40,10 @@ public class FileUploadTest extends AbstractFrameworkIntegrationTests {
             fileContent.getBytes(StandardCharsets.UTF_8));
 	
 	String uploadUri = PLATFORM_ROOT+"/fileAttribute/upload";
-	Holder uploadResponseHolder =  (Holder) controller.handleFileUpload(MockHttpRequestBuilder.withUri(uploadUri).getMock(), file);
-	FileAttributes uploadResponse =  (FileAttributes) uploadResponseHolder.getState();
+	Holder<MultiOutput>  uploadResponseHolder =  (Holder<MultiOutput> ) controller.handleFileUpload(MockHttpRequestBuilder.withUri(uploadUri).getMock(), file);
+	
+	Param<?> uploadResponseParam =  (Param<?>) uploadResponseHolder.getState().findFirstParamOutputEndingWithPath("/fileAttribute").getValue();
+	FileAttributes uploadResponse = (FileAttributes)uploadResponseParam.getState();
 	Long fileInternalId = uploadResponse.getId();
 	assertNotNull(uploadResponse.getId());
 	assertNotNull(uploadResponse.getExternalId());
