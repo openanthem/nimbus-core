@@ -24,6 +24,7 @@ import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.On
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadNewHandler;
+import com.antheminc.oss.nimbus.domain.model.state.repo.event.RepoEventHandlers.OnPersistHandler;
 
 /**
  * @author Soham Chakravarti
@@ -48,5 +49,10 @@ public interface EventHandlerConfig {
 	public Set<Annotation> getOnStateChangeAnnotations();
 	public Optional<OnStateChangeHandler<Annotation>> findOnStateChangeHandler(Annotation a);
 	public OnStateChangeHandler<Annotation> getOnStateChangeHandler(Annotation a) throws InvalidConfigException;
+	
+	
+	public Set<Annotation> getOnPersistAnnotations();
+	public Optional<OnPersistHandler<Annotation>> findOnPersistHandler(Annotation a);
+	public OnPersistHandler<Annotation> getOnPersistHandler(Annotation a) throws InvalidConfigException;
 	
  }

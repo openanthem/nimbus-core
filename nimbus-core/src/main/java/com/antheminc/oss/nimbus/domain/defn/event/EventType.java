@@ -17,6 +17,7 @@ package com.antheminc.oss.nimbus.domain.defn.event;
 
 import java.lang.annotation.Annotation;
 
+import com.antheminc.oss.nimbus.domain.defn.event.RepoEvent.OnPersist;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoadGet;
@@ -28,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * @author Rakesh Patel
- *
+ * @author Soham Chakravarti
  */
 @RequiredArgsConstructor @Getter
 public enum EventType {
@@ -37,7 +38,9 @@ public enum EventType {
 	OnStateChange(OnStateChange.class),
 	OnStateLoad(OnStateLoad.class),
 	OnStateLoadGet(OnStateLoadGet.class),
-	OnTxnExecute(OnTxnExecute.class);
+	OnTxnExecute(OnTxnExecute.class),
+	
+	OnPersist(OnPersist.class);
 	
 	
 		

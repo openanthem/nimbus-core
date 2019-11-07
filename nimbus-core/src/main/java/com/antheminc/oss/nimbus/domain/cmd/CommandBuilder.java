@@ -70,7 +70,7 @@ public class CommandBuilder {
 	}
 	
 	/**
-	 * Builds a CommandBuilder by appending a given platform path to a uri untill a given end CommandElementType 
+	 * Builds a CommandBuilder by appending a given platform path to a URI until a given end CommandElementType 
 	 * @param rootCmd
 	 * @param endWhenType
 	 * @param appendPath

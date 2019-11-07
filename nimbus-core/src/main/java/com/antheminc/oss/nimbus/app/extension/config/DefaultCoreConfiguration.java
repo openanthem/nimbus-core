@@ -47,6 +47,7 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepositoryGateway;
+import com.antheminc.oss.nimbus.domain.model.state.repo.RepoEventDelegator;
 import com.antheminc.oss.nimbus.domain.model.state.repo.SpringSecurityAuditorAware;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ws.DefaultWSModelRepository;
@@ -88,6 +89,11 @@ public class DefaultCoreConfiguration {
 		return new DefaultModelRepositoryFactory(beanResolver, repoBeanLookup);
 	}
 
+	@Bean
+	public RepoEventDelegator repoEventDelegator(BeanResolverStrategy beanResolver) {
+		return new RepoEventDelegator(beanResolver);
+	}
+	
 	@Bean(name="default.rep_ws")
 	public DefaultWSModelRepository defaultWSModelRepository(BeanResolverStrategy beanResolver, RestTemplateBuilder builder){
 		RestTemplate restTemplate = beanResolver.get(RestTemplate.class, "rep_ws.restTemplate");
