@@ -29,17 +29,22 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.persister.entity.EntityPersister;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
+import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.cmd.RefId.SyntheticKeyValueId;
+import com.antheminc.oss.nimbus.domain.defn.event.RepoEvent;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
@@ -48,6 +53,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
+import com.antheminc.oss.nimbus.domain.model.state.repo.RepoParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.DBSearchOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
@@ -64,7 +70,7 @@ import lombok.Getter;
  */
 @EnableAPIMetricCollection
 @Getter
-public class DefaultJpaModelRepository implements ModelRepository {
+public class DefaultJpaModelRepository implements ModelRepository, ApplicationContextAware {
 
 	//private final EntityManagerFactory entityManagerFactory;
 	private final JavaBeanHandler beanHandler;
@@ -74,10 +80,17 @@ public class DefaultJpaModelRepository implements ModelRepository {
 	@PersistenceContext
 	private EntityManager em;
 	
+	private ApplicationContext appCtx;
+	
 	public DefaultJpaModelRepository(EntityManagerFactory entityManagerFactory, JavaBeanHandler beanHandler, DBSearchOperation dbSearch) {
 		//this.entityManagerFactory = entityManagerFactory;
 		this.beanHandler = beanHandler;
 		this.dbSearch = dbSearch;
+	}
+	
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.appCtx = applicationContext;
 	}
 	
 	private EntityManager getOrCreateEntityManager() {
@@ -259,6 +272,9 @@ public class DefaultJpaModelRepository implements ModelRepository {
 			ExecutionEntity execEntity = (ExecutionEntity)execModel.getState();
 			execEntity.setCore(attachedState);
 		}
+		
+		// emit event
+		appCtx.publishEvent(new RepoParamEvent(Action._save, param));
 	}
 
 	@Transactional

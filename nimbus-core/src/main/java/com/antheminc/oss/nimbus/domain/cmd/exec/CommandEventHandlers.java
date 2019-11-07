@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.event;
+package com.antheminc.oss.nimbus.domain.cmd.exec;
 
 import java.lang.annotation.Annotation;
 import java.util.List;

@@ -19,6 +19,9 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -27,6 +30,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.RefId;
@@ -40,6 +44,7 @@ import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
 import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.MongoIdSequenceRepository;
+import com.antheminc.oss.nimbus.domain.model.state.repo.RepoParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositoryOptions;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBSearchOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
@@ -54,12 +59,14 @@ import lombok.Getter;
  *
  */
 @Getter
-public class DefaultMongoModelRepository implements ModelRepository {
+public class DefaultMongoModelRepository implements ModelRepository, ApplicationContextAware {
 
 	private final MongoOperations mongoOps;
 	private final IdSequenceRepository idSequenceRepo;
 	private final JavaBeanHandler beanHandler;
 	private final MongoDBModelRepositoryOptions options;
+	
+	private ApplicationContext appCtx;
 	
 	public DefaultMongoModelRepository(MongoOperations mongoOps, BeanResolverStrategy beanResolver, 
 			MongoDBModelRepositoryOptions options) {
@@ -68,6 +75,11 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		this.options = options;
 		
 		this.idSequenceRepo = new MongoIdSequenceRepository(mongoOps);
+	}
+	
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.appCtx = applicationContext;
 	}
 	
 	@Override
@@ -165,6 +177,9 @@ public class DefaultMongoModelRepository implements ModelRepository {
 			}
 			getMongoOps().upsert(query, update, repoAlias);
 		} 
+		
+		// emit event
+		appCtx.publishEvent(new RepoParamEvent(Action._save, param));
 		
 		return state;
 	}
