@@ -73,7 +73,7 @@ public final class StateEvent {
 
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)
-	@Event
+	@Event(eventType = EventType.OnRootParamLock)
 	@Inherited
 	public @interface OnRootParamLock {
 		int order() default Event.DEFAULT_ORDER_NUMBER;
@@ -81,7 +81,7 @@ public final class StateEvent {
 	
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)
-	@Event
+	@Event(eventType = EventType.OnRootParamUnlock)
 	@Inherited
 	public @interface OnRootParamUnlock {
 		int order() default Event.DEFAULT_ORDER_NUMBER;

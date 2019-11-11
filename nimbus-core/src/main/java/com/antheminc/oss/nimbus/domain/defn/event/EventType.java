@@ -17,6 +17,8 @@ package com.antheminc.oss.nimbus.domain.defn.event;
 
 import java.lang.annotation.Annotation;
 
+import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnRootParamLock;
+import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnRootParamUnlock;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoadGet;
@@ -37,8 +39,9 @@ public enum EventType {
 	OnStateChange(OnStateChange.class),
 	OnStateLoad(OnStateLoad.class),
 	OnStateLoadGet(OnStateLoadGet.class),
-	OnTxnExecute(OnTxnExecute.class);
-	
+	OnTxnExecute(OnTxnExecute.class),
+	OnRootParamLock(OnRootParamLock.class),
+	OnRootParamUnlock(OnRootParamUnlock.class);
 	
 		
 	final Class<? extends Annotation> annotationType;

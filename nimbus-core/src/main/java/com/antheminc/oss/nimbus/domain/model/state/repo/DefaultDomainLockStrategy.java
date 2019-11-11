@@ -18,7 +18,6 @@ package com.antheminc.oss.nimbus.domain.model.state.repo;
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.session.HttpSessionProvider;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.DomainEntityLock;
 
@@ -34,7 +33,7 @@ public class DefaultDomainLockStrategy implements DomainEntityLockStrategy {
 	
 	public DefaultDomainLockStrategy(BeanResolverStrategy beanResolverStrategy) {
 		this.domainEntityLockProvider = beanResolverStrategy.find(DomainEntityLockService.class);
-		this.sessionProvider = beanResolverStrategy.find(HttpSessionProvider.class);
+		this.sessionProvider = beanResolverStrategy.find(SessionProvider.class);
 	}
 
 	@Override
@@ -42,15 +41,20 @@ public class DefaultDomainLockStrategy implements DomainEntityLockStrategy {
 
 		DomainEntityLock<?> lock = domainEntityLockProvider.getLock(param);
 		if (lock != null) {
-			if (sessionProvider.getSessionId().equals(lock.getSessionId())) {
+			if (!sessionProvider.getSessionId().equals(lock.getSessionId())) {
 				throw new FrameworkRuntimeException(
-						"Domain locked for the command " + param.getRootExecution().getRootCommand());
+						"Domain locked for the absolute uri " + param.getRootExecution().getRootCommand().getAbsoluteUri());
 			}
 		} else {
 			domainEntityLockProvider.createLock(param);
 
 		}
 
+	}
+		
+	@Override
+	public void releaseLock() {
+		domainEntityLockProvider.removeLock();
 	}
 
 }

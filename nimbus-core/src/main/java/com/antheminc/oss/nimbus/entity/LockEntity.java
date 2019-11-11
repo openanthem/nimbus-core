@@ -1,5 +1,7 @@
 package com.antheminc.oss.nimbus.entity;
 
+import org.springframework.data.annotation.Id;
+
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
@@ -36,12 +38,14 @@ import lombok.ToString;
 @Domain(value="lock", includeListeners={ListenerType.persistence})
 @Repo(alias="lock", value=Database.rep_mongodb)
 @Getter @Setter @ToString(callSuper=true)
-public class LockEntity extends AbstractEntity.IdLong implements DomainEntityLock<Long> {
+public class LockEntity implements DomainEntityLock<String> {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	private String id;
 	private String domain;
 	private String lockedBy;
 	private String sessionId;

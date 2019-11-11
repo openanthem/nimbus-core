@@ -15,56 +15,45 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s0.view;
 
-import java.util.List;
-
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Lock;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
+import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
-import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Page;
-import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
-import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewRoot;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleLockableDomain;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author Soham Chakravarti
- * @author Sandeep Mantha - added a new page page_orange
+ * @author Sandeep Mantha
+ *
  */
-@Domain(value="sample_view", includeListeners={ListenerType.websocket})
-@MapsTo.Type(SampleCoreEntity.class)
-@Repo(Database.rep_none)
+@Domain(value = "rootdomain", includeListeners = { ListenerType.websocket })
+@Repo(value = Repo.Database.rep_none, cache = Repo.Cache.rep_device)
 @Getter @Setter
-public class VRSampleViewRootEntity {
-
-	@Page(route="sample_view_colors")
-	private VPSampleViewPageGreen page_green;
-
-	@Page(route="sample_view_colors")
-	private VPSampleViewPageBlue page_blue;
-
-	@Page(route="sample_view_colors")
-	private VPSampleViewPageRed page_red;
-
-	@Page(route="sample_view_colors")
-	private VPSampleViewPageOrange page_orange;
-	
-	@Page(route="sample_view_colors")
-	private VPSampleViewPageAqua page_aqua;
+@ViewRoot(layout = "")
+@MapsTo.Type(SampleLockableDomain.class)
+public class RootTestModel {
 	
 	@Path
-	private List<SampleCoreNestedEntity> attr_list_1_NestedEntity;
+	private String attr1;
 	
-	@Path
-	private List<String> attr_list_2_simple;
+	@Page(defaultPage = true)
+	private VPPage1 vpPage1;
 	
-	private List<String> tmp;
+	@Page
+	private VPPage2 vpPage2;
 	
-	private String[] arr;
+	@Model
+	@Getter @Setter
+	public static class VPPage1  {} 
 	
-	private SampleParamStateHolders paramStateHolders;
-}
+	@Model
+	@Getter @Setter
+	public static class VPPage2  {} 
+}	

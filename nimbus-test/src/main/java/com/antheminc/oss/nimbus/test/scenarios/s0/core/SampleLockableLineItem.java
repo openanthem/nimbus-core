@@ -13,22 +13,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.repo;
+package com.antheminc.oss.nimbus.test.scenarios.s0.core;
 
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.entity.DomainEntityLock;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Sandeep Mantha
  *
  */
-public interface DomainEntityLockService {
+@MapsTo.Type(SampleLockableDomain.class)
+@Getter @Setter
+public class SampleLockableLineItem {
 
-	DomainEntityLock<?> getLock(Param<?> p);
+	@Path
+	private String attr1;
 	
-	DomainEntityLock<?> createLock(Param<?> p);
-
-	void removeLock(Param<?> p);
+	@Path
+	private String attr2;
 	
-	void removeLock();
 }
+
+

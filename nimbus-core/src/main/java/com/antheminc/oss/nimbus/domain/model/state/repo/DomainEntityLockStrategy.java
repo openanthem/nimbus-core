@@ -24,6 +24,8 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 public interface DomainEntityLockStrategy {
 
 	void evalAndapply(Param<?> p);
+	
+	void releaseLock();
 }
 
 

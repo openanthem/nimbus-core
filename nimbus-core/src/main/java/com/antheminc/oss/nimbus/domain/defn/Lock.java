@@ -5,13 +5,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.antheminc.oss.nimbus.domain.Event;
+import com.antheminc.oss.nimbus.domain.defn.event.EventType;
+import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnRootParamLock;
+import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnRootParamUnlock;
+
 /**
  * @author Sandeep Mantha
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value=ElementType.TYPE)
-@Model
 public @interface Lock {
 	
 	boolean root() default false;

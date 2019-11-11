@@ -27,6 +27,7 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
@@ -60,11 +61,11 @@ public class DefaultDomainLockProvider extends AbstractLockService implements Do
 	}
 
 	@Override
-	public DomainEntityLock getLock(Param p) {
+	public DomainEntityLock getLock(Param<?> p) {
 		//domainConfigBuilder.getModel(LockEntity.class);
 		ModelRepository modelrepository = modelrepo.get(Repo.Database.rep_mongodb);
 		QuerySearchCriteria qs = new QuerySearchCriteria();
-		String refId = String.valueOf(p.getRootDomain().getIdParam().getState());
+		String refId = String.valueOf(p.getRootExecution().getRootCommand().getRefId(Type.DomainAlias));
 		qs.setWhere("lock.domain.eq('/"+ p.getConfig().getCode()+":"+refId+"')");
 		List<LockEntity> ls =  (List<LockEntity>) modelrepository._search(LockEntity.class, "lock", () -> qs);
 		return ls.size() == 1? ls.get(0) : null;
@@ -72,21 +73,29 @@ public class DefaultDomainLockProvider extends AbstractLockService implements Do
 
 	public DomainEntityLock<?> createLockInternal(Param<?> p) {
 		ModelRepository modelrepository = modelrepo.get(Repo.Database.rep_mongodb);
-		return modelrepository._save("lock", createLockEntity());
-		
+		return modelrepository._save("lock", createLockEntity(p));
 	}
 
-	private DomainEntityLock<?> createLockEntity() {
+	private DomainEntityLock<?> createLockEntity(Param<?> p) {
 		LockEntity le = new LockEntity();
+		le.setDomain("/"+p.getConfig().getCode()+":"+p.getRootExecution().getRootCommand().getRefId(Type.DomainAlias));
 		le.setSessionId(sessionProvider.getSessionId());
-		//le.setLockedBy(lockedBy);
+		le.setLockedBy(sessionProvider.getLoggedInUser().getLoginId());
 		return le;
 	}
 
 	@Override
-	void removeLockInternal(Param<?> p) {
-		// TODO Auto-generated method stub
-		
+	void removeLockInternal(Param<?> p) {}
+	
+	@Override
+	void removeLockInternal() {
+		ModelRepository modelrepository = modelrepo.get(Repo.Database.rep_mongodb);
+		QuerySearchCriteria qs = new QuerySearchCriteria();
+		qs.setWhere("lock.sessionId.eq('"+ sessionProvider.getSessionId()+"')");
+		List<LockEntity> ls =  (List<LockEntity>) modelrepository._search(LockEntity.class, "lock", () -> qs);
+		if(ls.size() == 1) {
+			modelrepository._delete(ls.get(0).getId(), LockEntity.class, "lock");
+		}
 	}
 }
 

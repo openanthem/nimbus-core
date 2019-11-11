@@ -33,6 +33,8 @@ public abstract class AbstractLockService implements DomainEntityLockService {
 	
 	abstract void removeLockInternal(Param<?> p);
 
+	abstract void removeLockInternal();
+	
 	@Override
 	public DomainEntityLock<?> createLock(Param<?> p) {
 		DomainEntityLock<?> domainEntityLock = createLockInternal(p);
@@ -51,6 +53,11 @@ public abstract class AbstractLockService implements DomainEntityLockService {
 		onUnlockEvent(p);
 	}
 
+	@Override
+	public void removeLock() {
+		removeLockInternal();
+		
+	}
 	// TODO : move to runtime.eventDelegate
 	protected static void onLockEvent(Param<?> actionParam, DomainEntityLock<?> domainEntityLock) {
 		EventHandlerConfig eventHandlerConfig = actionParam.getConfig().getEventHandlerConfig();
@@ -58,7 +65,7 @@ public abstract class AbstractLockService implements DomainEntityLockService {
 			eventHandlerConfig.getOnRootParamLockAnnotations().stream().forEach(ac -> {
 				OnRootParamLockHandler<Annotation> handler = eventHandlerConfig.getOnRootParamLockHandler(ac);
 				if (handler.shouldAllow(ac, actionParam)) {
-					handler.handleOnRootParamLock(actionParam, domainEntityLock);
+					handler.handleOnRootParamLock(ac, actionParam, domainEntityLock);
 				}
 			});
 		}
@@ -71,7 +78,7 @@ public abstract class AbstractLockService implements DomainEntityLockService {
 			eventHandlerConfig.getOnRootParamUnlockAnnotations().stream().forEach(ac -> {
 				OnRootParamUnlockHandler<Annotation> handler = eventHandlerConfig.getOnRootParamUnlockHandler(ac);
 				if (handler.shouldAllow(ac, actionParam)) {
-					handler.handleOnRootParamUnlock(actionParam);
+					handler.handleOnRootParamUnlock(ac, actionParam);
 				}
 			});
 		}

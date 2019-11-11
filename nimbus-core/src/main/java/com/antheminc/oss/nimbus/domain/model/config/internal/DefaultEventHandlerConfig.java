@@ -142,7 +142,9 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 			
 			onStateLoadHandlers.isEmpty() &&
 			onStateLoadNewHandlers.isEmpty() &&
-			onStateChangeHandlers.isEmpty()
+			onStateChangeHandlers.isEmpty() && 
+			onRootParamLockHandlers.isEmpty() && 
+			onRootParamUnlockHandlers.isEmpty()
 		;
  	}
 	
@@ -255,5 +257,13 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 	public OnRootParamUnlockHandler<Annotation> getOnRootParamUnlockHandler(Annotation a)
 			throws InvalidConfigException {
 		return onRootParamUnlockHandlers.getHandler(a);
+	}
+	
+	public void add(Annotation a, OnRootParamLockHandler<Annotation> handler) {
+		onRootParamLockHandlers.add(a, handler);
+	}
+	
+	public void add(Annotation a, OnRootParamUnlockHandler<Annotation> handler) {
+		onRootParamUnlockHandlers.add(a, handler);
 	}
 }

@@ -134,6 +134,8 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		   else
 			   update.set(path, state);
 		   getMongoOps().upsert(query, update, alias);
+		   
+		   
 	  } 
 	  return state;
 	 }
@@ -162,7 +164,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		T state = getMongoOps().findAndRemove(query, referredClass, alias);
 		return state;
 	}
-
+	
 	@Override
 	public <T> Object _search(Class<T> referredDomainClass, String alias, Supplier<SearchCriteria<?>> criteria) {
 		SearchCriteria<?> sc = criteria.get();

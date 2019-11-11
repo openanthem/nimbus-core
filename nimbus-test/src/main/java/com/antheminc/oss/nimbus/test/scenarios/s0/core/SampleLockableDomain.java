@@ -15,14 +15,12 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s0.core;
 
-import org.springframework.data.annotation.Transient;
-
 import com.antheminc.oss.nimbus.domain.defn.Domain;
-import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Lock;
-import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
-import com.antheminc.oss.nimbus.entity.AbstractEntity;
+import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewRoot;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,29 +30,19 @@ import lombok.ToString;
  * @author Sandeep Mantha
  *
  */
-
-@Domain(value="testmodel_core", includeListeners={ListenerType.persistence, ListenerType.update})
-@Repo(value=Repo.Database.rep_mongodb)
-@Getter @Setter @ToString(callSuper=true)
-public class TestModel extends AbstractEntity.IdLong {
-
+@Domain(value = "samplelockabledomain", includeListeners = { ListenerType.persistence, ListenerType.update })
+@Repo(value = Repo.Database.rep_mongodb, cache = Repo.Cache.rep_device)
+@Getter @Setter
+@Lock
+public class SampleLockableDomain extends IdLong{
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	private String attr1;
-
+	
 	private String attr2;
 
-	@Transient
-	private String attr3;
-
-	@Transient
-	private String attr4;
-
-	@Transient
-	private InnerTestModel innerTestModel;
-	
-	
-}
+}	

@@ -13,22 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.repo;
+package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
+
+import java.lang.annotation.Annotation;
 
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.event.LockableHandlers.OnRootParamLockHandler;
 import com.antheminc.oss.nimbus.entity.DomainEntityLock;
 
 /**
  * @author Sandeep Mantha
  *
  */
-public interface DomainEntityLockService {
+public class TestOnLockHandler implements OnRootParamLockHandler<TestOnRootLock>{
 
-	DomainEntityLock<?> getLock(Param<?> p);
-	
-	DomainEntityLock<?> createLock(Param<?> p);
+	@Override
+	public void handleOnRootParamLock(Annotation a, Param<?> actionParam, DomainEntityLock<?> domainEntityLock) {
+		System.out.println("Entity locked "+ domainEntityLock.getDomain());
+	}
 
-	void removeLock(Param<?> p);
-	
-	void removeLock();
 }
+
+

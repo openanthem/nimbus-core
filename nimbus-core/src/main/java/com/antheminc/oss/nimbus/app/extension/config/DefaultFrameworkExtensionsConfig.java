@@ -52,6 +52,7 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.VisibleConditionalS
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.ChildrenValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
+import com.antheminc.oss.nimbus.domain.model.state.repo.DisplayMessageOnRootLockHandler;
 
 /**
  * @author Soham Chakravarti
@@ -187,4 +188,9 @@ public class DefaultFrameworkExtensionsConfig {
 	public StaticCodeValueBasedCodeToLabelConverter staticCodeValueBasedCodeToLabelConverter(BeanResolverStrategy beanResolver) {
 		return new StaticCodeValueBasedCodeToLabelConverter(beanResolver);
 	}	
+	
+	@Bean
+	public DisplayMessageOnRootLockHandler displayMessageOnRootLockHandler() {
+		return new DisplayMessageOnRootLockHandler();
+	}
 }

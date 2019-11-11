@@ -35,6 +35,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.FilterFunctionH
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.SetByRuleFunctionalHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.SetFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.StatelessBPMFunctionHanlder;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.UnlockFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.UpdateFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.search.DefaultSearchFunctionHandlerExample;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.search.DefaultSearchFunctionHandlerLookup;
@@ -135,5 +136,10 @@ public class DefaultProcessConfig {
 	@Bean(name="default._process$execute?fn=_filter")
 	public FilterFunctionHandler filterFunctionHandler() {
 		return new FilterFunctionHandler();
+	}
+	
+	@Bean(name="default._process$execute?fn=_unlock")
+	public UnlockFunctionHandler unlockFunctionHandler(BeanResolverStrategy beanResolver) {
+		return new UnlockFunctionHandler(beanResolver);
 	}
 }
