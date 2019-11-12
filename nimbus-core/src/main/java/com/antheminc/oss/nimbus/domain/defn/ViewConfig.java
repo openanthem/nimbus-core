@@ -2941,12 +2941,30 @@ public class ViewConfig {
 
 		boolean readOnly() default false;
 
+		InputEvent[] inputEvent() default {};
+				
 		String type() default "text";
 		
 		boolean autofill() default false;
 
 	}
 	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	public @interface InputEvent {
+		
+		EventType eventType() default EventType.DEFAULT;
+		
+		String count() default "1";
+		
+		public enum EventType {
+
+			DEFAULT,
+
+			INPUT;
+		} 
+		
+	}
 	
 	/**
 	 * <p>InputMask is a text input component.

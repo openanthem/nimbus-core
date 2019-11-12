@@ -255,10 +255,14 @@ export class UiAttribute implements Serializable<UiAttribute, string> {
   collapseOnClick: boolean;
   urlType: string;
   targetParam: string;
-  
+  inputEvent: InputEvent[];
 
   deserialize(inJson) {
     let obj = this;
+    obj['inputEvent'] = [];
+    for (var p in inJson.inputEvent) {
+      obj['inputEvent'].push(new InputEvent().deserialize(inJson.inputEvent[p]));
+    }
     obj = Converter.convert(inJson, obj, { includeArrays: true });
     if (inJson['metaData'] || inJson['metaData'] === '') {
       obj['metaData'] =
@@ -411,6 +415,17 @@ export class Attribute implements Serializable<Attribute, string> {
 export class RuleSet implements Serializable<RuleSet, string> {
   message: string;
   rule: string;
+
+  deserialize(inJson) {
+    let obj = this;
+    obj = Converter.convert(inJson, obj);
+    return obj;
+  }
+}
+
+export class InputEvent implements Serializable<InputEvent, string> {
+  eventType: string;
+  count: number;
 
   deserialize(inJson) {
     let obj = this;

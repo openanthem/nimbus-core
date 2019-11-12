@@ -59,6 +59,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
       [autocomplete]="element?.config?.uiStyles?.attributes?.autofill ? 'on' : undefined"
       [id]="element.config?.code"
       (focusout)="emitValueChangedEvent(this,value)"
+      (input)="evalInput()"
       [value]="type"
       [disabled]="disabled"
       class="form-control text-input"
@@ -92,5 +93,15 @@ export class InputText extends BaseControl<String> {
 
   ngOnInit() {
     super.ngOnInit();
+  }
+
+  evalInput() {
+    this.element.config.uiStyles.attributes.inputEvent.forEach(evt => {
+      if(evt.eventType == "INPUT") {
+        if(evt.count == this.value.length) {
+          this.emitValueChangedEvent(this,this.value);
+        }
+      }
+    });
   }
 }
