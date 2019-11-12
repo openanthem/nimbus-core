@@ -3108,7 +3108,7 @@ public class ViewConfig {
 		
 		EventType eventType() default EventType.DEFAULT;
 		
-		String count() default "1";
+		int count() default 1;
 		
 		public enum EventType {
 
