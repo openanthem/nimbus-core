@@ -487,9 +487,15 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public boolean deregisterConsumer(MappedParam<?, T> subscriber) {
+		return deregisterConsumer(subscriber, false);
+	}
+	
+	@Override
+	public boolean deregisterConsumer(MappedParam<?, T> subscriber, boolean traverseToLeaf) {
 		boolean startNodeRemoved = degisterThis(subscriber);
 		
-//		traverse(subscriber);
+		if(traverseToLeaf)
+			traverse(subscriber);
 		return startNodeRemoved;
 	}
 	
