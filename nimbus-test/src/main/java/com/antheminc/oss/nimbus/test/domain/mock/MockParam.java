@@ -122,6 +122,11 @@ public class MockParam implements Param<Object> {
 	public boolean deregisterConsumer(MappedParam<?, Object> consumer) {
 		return this.consumers.remove(consumer);
 	}
+	
+	@Override
+	public boolean deregisterConsumer(MappedParam<?, Object> consumer, boolean traverseToLeaf) {
+		return this.consumers.remove(consumer);
+	}
 
 	/* (non-Javadoc)
 	 * @see com.anthem.oss.nimbus.core.domain.model.state.Notification.Dispatcher#emitNotification(com.anthem.oss.nimbus.core.domain.model.state.Notification)

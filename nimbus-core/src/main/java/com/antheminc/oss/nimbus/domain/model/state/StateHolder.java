@@ -437,6 +437,11 @@ public class StateHolder {
 		}
 		
 		@Override
+		public boolean deregisterConsumer(MappedParam<?, T> consumer, boolean traverseToLeaf) {
+			throw throwEx();
+		}
+		
+		@Override
 		public void emitNotification(Notification<T> event) {
 			throw throwEx();	
 		}

@@ -27,6 +27,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.defn.extension.AuditView;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig.MappedModelConfig;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
@@ -64,6 +65,9 @@ public class AuditViewHandler implements OnPersistHandler<AuditView> {
 		
 		QuadModel<?, ?> q = getQuadModelBuilder().build(cmd, mappedEntity, coreParam);
 		Object populatedMappedEntity = q.getView().getLeafState();
+		
+		MappedParam auditViewParam = q.getView().getAssociatedParam().findIfMapped();
+		coreParam.deregisterConsumer(auditViewParam, true);
 		
 		ModelRepository mRepo = getRepo(mappedModelConfig);
 		mRepo._save(mappedModelConfig.getAlias(), populatedMappedEntity);
