@@ -16,14 +16,12 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -34,7 +32,6 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
-import com.antheminc.oss.nimbus.domain.defn.Lock.DeleteStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
@@ -47,11 +44,8 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositor
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBSearchOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.QuerySearchCriteria;
-import com.antheminc.oss.nimbus.domain.session.HttpSessionProvider;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
-import com.antheminc.oss.nimbus.entity.DomainEntityLock;
 import com.antheminc.oss.nimbus.entity.LockEntity;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.ModifyCriteria;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 
