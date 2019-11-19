@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.antheminc.oss.nimbus.domain.EventHandler;
-import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnRootParamLock;
-import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnRootParamUnlock;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoadGet;
@@ -29,8 +27,6 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoadNew;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnTxnExecute;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.StateEventHandler;
-import com.antheminc.oss.nimbus.entity.DomainEntityLock;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 
