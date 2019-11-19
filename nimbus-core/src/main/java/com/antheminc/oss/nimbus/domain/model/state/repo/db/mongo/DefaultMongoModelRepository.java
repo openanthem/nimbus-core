@@ -16,11 +16,15 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -29,6 +33,8 @@ import org.springframework.data.mongodb.core.query.Update;
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
+import com.antheminc.oss.nimbus.domain.defn.Lock.DeleteStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
@@ -40,6 +46,12 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.MongoIdSequenceRepositor
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositoryOptions;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBSearchOperation;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.QuerySearchCriteria;
+import com.antheminc.oss.nimbus.domain.session.HttpSessionProvider;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
+import com.antheminc.oss.nimbus.entity.DomainEntityLock;
+import com.antheminc.oss.nimbus.entity.LockEntity;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.ModifyCriteria;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 
@@ -56,13 +68,14 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	private final IdSequenceRepository idSequenceRepo;
 	private final JavaBeanHandler beanHandler;
 	private final MongoDBModelRepositoryOptions options;
+	private final SessionProvider sessionProvider;
 	
 	public DefaultMongoModelRepository(MongoOperations mongoOps, BeanResolverStrategy beanResolver, 
 			MongoDBModelRepositoryOptions options) {
 		this.mongoOps = mongoOps;
 		this.beanHandler = beanResolver.get(JavaBeanHandler.class);
 		this.options = options;
-		
+		this.sessionProvider = beanResolver.find(SessionProvider.class);
 		this.idSequenceRepo = new MongoIdSequenceRepository(mongoOps);
 	}
 	
@@ -174,4 +187,40 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		}
 		return searchOperation.get().search(referredDomainClass, alias, sc);
 	}
+
+	@Override
+	public <T, R> T _deleteMulti(List<R> lst, Class<T> referredClass, String alias) {
+		if(lst.isEmpty()) {
+			return null;
+		}
+		Query query = new Query(Criteria.where("_id").in(lst));
+		return (T) getMongoOps().remove(query, alias);
+	}
+
+	@Override
+	public <T> Object _lock(Param<?> p) {
+		String refId = String.valueOf(p.getRootExecution().getRootCommand().getRefId(Type.DomainAlias));
+		Repo repo = p.getRootDomain().getConfig().getRepo();
+		Long id = getIdSequenceRepo().getNextSequenceId(repo.alias());
+		Query q = new Query(Criteria.where("domain").is(p.getConfig().getCode()+":"+refId));		
+		Update u = new Update().setOnInsert("id", id).setOnInsert("sessionId", sessionProvider.getSessionId()).setOnInsert("lockedBy", sessionProvider.getLoggedInUser().getLoginId()).setOnInsert("domain",  p.getConfig().getCode()+":"+refId).setOnInsert("status", "locked");
+		FindAndModifyOptions options = new FindAndModifyOptions();
+		options.returnNew(true);
+		options.upsert(true);
+		
+		T state = (T) getMongoOps().findAndModify(q, u, options, LockEntity.class, "lock");
+		return state;
+	}
+
+	@Override
+	public <T, R> void _unlock(T key) {
+		QuerySearchCriteria qs = new QuerySearchCriteria();
+		qs.setWhere("lock.sessionId.eq('"+ key +"')");
+		Query q = new Query(Criteria.where("sessionId").is(key));
+		List<LockEntity> ls =  (List<LockEntity>)_search(LockEntity.class, "lock", () -> qs);
+		List<R> idList = (List<R>) ls.stream().map(LockEntity::getId).collect(Collectors.toList());
+		_deleteMulti(idList, null , "lock");
+	}
+
+
 }

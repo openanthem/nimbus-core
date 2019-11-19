@@ -15,20 +15,35 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.entity.DomainEntityLock;
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 
 /**
  * @author Sandeep Mantha
  *
  */
-public interface DomainEntityLockService {
+public class LockException extends FrameworkRuntimeException{
 
-	DomainEntityLock<?> getLock(Param<?> p);
+private static final long serialVersionUID = 1L;
 	
-	DomainEntityLock<?> createLock(Param<?> p);
+	public LockException() { }
 
-	void removeLock(Param<?> p);
-	
-	void removeLock();
+    public LockException(String message) {
+		super(message);
+	}
+    
+    public LockException(Throwable cause) {
+		super(cause);
+	}
+
+    public LockException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public LockException(String message, Throwable cause, boolean enableSuppression,
+			boolean writableStackTrace) {
+		
+		super(message, cause, enableSuppression, writableStackTrace);
+	}
 }
+
+

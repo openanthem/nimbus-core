@@ -17,18 +17,12 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnRootParamUnlock;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value=ElementType.TYPE)
 public @interface Lock {
-	
-	boolean root() default false;
-	
-	String message() default "";
-	
+		
 	String alias() default "lock";
-	
-	Strategy strategy() default Strategy.message;
-	
-	enum Strategy {
-		message,
-		view
+		
+	public enum DeleteStrategy {
+		HARD,
+		SOFT
 		
 	}
 }

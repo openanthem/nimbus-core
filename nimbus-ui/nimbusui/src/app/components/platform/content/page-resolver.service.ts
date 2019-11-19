@@ -1,3 +1,4 @@
+import { Breadcrumb } from './../../../model/breadcrumb.model';
 /**
  * @license
  * Copyright 2016-2019 the original author or authors.
@@ -44,7 +45,7 @@ export class PageResolver implements Resolve<Param> {
     private _pageSvc: PageService,
     private _router: Router,
     private _breadcrumbService: BreadcrumbService,
-    private route: ActivatedRoute,
+    private activatedroute: ActivatedRoute,
     private _logger: LoggerService
   ) {}
 
@@ -55,6 +56,10 @@ export class PageResolver implements Resolve<Param> {
     let pageId = route.params['pageId'];
     //let flow = route.parent.data['domain'];
     let flow = route.parent.url[0]['path'];
+    let br:Breadcrumb = this._breadcrumbService.getHomeBreadcrumb();
+    if(br && br.url.includes('/'+flow+'/')) {
+      this._pageSvc.processEvent('/'+flow+'/'+pageId, null, null, 'GET');
+    }
     return this._pageSvc.getPageConfigById(pageId, flow).then(page => {
       if (page) {
         let labelText = ParamUtils.getLabelText(page);

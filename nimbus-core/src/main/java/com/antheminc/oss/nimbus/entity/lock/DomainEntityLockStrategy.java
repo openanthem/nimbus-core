@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.repo;
+package com.antheminc.oss.nimbus.entity.lock;
 
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
@@ -25,7 +25,7 @@ public interface DomainEntityLockStrategy {
 
 	void evalAndapply(Param<?> p);
 	
-	void releaseLock();
+	void releaseLock(String sessionId);
 }
 
 

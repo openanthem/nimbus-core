@@ -29,6 +29,8 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +40,11 @@ import org.springframework.web.client.RestTemplate;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ExternalModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.ModifyCriteria;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
@@ -176,5 +180,25 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 			throw new FrameworkRuntimeException(e.getMessage(), e);
 		}
 	}
+
+
+	@Override
+	public <T, R> T _deleteMulti(List<R> id, Class<T> referredClass, String alias) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> Object _lock(Param<?> p) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T, R> void _unlock(T key) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

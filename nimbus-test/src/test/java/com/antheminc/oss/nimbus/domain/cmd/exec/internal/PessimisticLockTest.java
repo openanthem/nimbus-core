@@ -49,7 +49,9 @@ public class PessimisticLockTest extends AbstractFrameworkIngerationPersistableT
 	@Autowired
 	SessionProvider sessionProvider;
 	
-	protected static final String ROOT_DOMAIN = PLATFORM_ROOT + "/rootdomain";
+	protected static final String ROOT_LANDING = PLATFORM_ROOT + "/rootlandingview";
+
+	protected static final String ROOT_DOMAIN_WITH_MAPSTO = PLATFORM_ROOT + "/rootdomain";
 	
 	protected static final String SAMPLE_LANDING_VIEW = PLATFORM_ROOT + "/samplelandingview";
 	
@@ -58,13 +60,13 @@ public class PessimisticLockTest extends AbstractFrameworkIngerationPersistableT
 	public void t01_domainLock() {
 		setSession("user1");
 		
-		MockHttpServletRequest home_newReq = MockHttpRequestBuilder.withUri(ROOT_DOMAIN).addAction(Action._new).getMock();
+		MockHttpServletRequest home_newReq = MockHttpRequestBuilder.withUri(ROOT_DOMAIN_WITH_MAPSTO).addAction(Action._new).getMock();
 		Object home_newResp = controller.handleGet(home_newReq, null);
 		assertNotNull(home_newResp);
 		
 		Long refId  = ExtractResponseOutputUtils.extractDomainRootRefId(home_newResp);
 		
-		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(ROOT_DOMAIN).addRefId(refId)
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(ROOT_DOMAIN_WITH_MAPSTO).addRefId(refId)
 				.addNested("/attr1").addAction(Action._update).getMock();
 		Object resp = controller.handlePut(request, null, converter.toJson("test 2"));
 		
@@ -73,7 +75,8 @@ public class PessimisticLockTest extends AbstractFrameworkIngerationPersistableT
 			Query query = new Query(new Criteria("sessionId").is(sessionProvider.getSessionId()));
 			Update update = new Update().set("sessionId", "session2");
 			mongo.updateFirst(query, update, "lock");
-			MockHttpServletRequest req2 = MockHttpRequestBuilder.withUri(ROOT_DOMAIN).addRefId(refId).addAction(Action._get).getMock();
+			setSession("user1");
+			MockHttpServletRequest req2 = MockHttpRequestBuilder.withUri(ROOT_DOMAIN_WITH_MAPSTO).addRefId(refId).addAction(Action._get).getMock();
 			Object resp2 = controller.handleGet(req2, null);
 			assertNotNull(home_newResp);
 		} catch(FrameworkRuntimeException e) {
@@ -86,17 +89,17 @@ public class PessimisticLockTest extends AbstractFrameworkIngerationPersistableT
 	public void t02_domainLock() {
 		setSession("user1");
 		
-		MockHttpServletRequest home_newReq = MockHttpRequestBuilder.withUri(ROOT_DOMAIN).addAction(Action._new).getMock();
+		MockHttpServletRequest home_newReq = MockHttpRequestBuilder.withUri(ROOT_DOMAIN_WITH_MAPSTO).addAction(Action._new).getMock();
 		Object home_newResp = controller.handleGet(home_newReq, null);
 		assertNotNull(home_newResp);
 		
 		Long refId  = ExtractResponseOutputUtils.extractDomainRootRefId(home_newResp);
 		
-		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(ROOT_DOMAIN).addRefId(refId)
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(ROOT_DOMAIN_WITH_MAPSTO).addRefId(refId)
 				.addNested("/attr1").addAction(Action._update).getMock();
 		Object resp = controller.handlePut(request, null, converter.toJson("test 2"));
 		
-		MockHttpServletRequest nav_req = MockHttpRequestBuilder.withUri(ROOT_DOMAIN).addRefId(refId).addAction(Action._nav).
+		MockHttpServletRequest nav_req = MockHttpRequestBuilder.withUri(ROOT_DOMAIN_WITH_MAPSTO).addRefId(refId).addAction(Action._nav).
 										addParam(Constants.KEY_NAV_ARG_PAGE_ID.code, "vpPage2").getMock();
 		Object nav_rsp = controller.handleGet(nav_req, null);
 		assertNotNull(nav_rsp);
@@ -110,13 +113,13 @@ public class PessimisticLockTest extends AbstractFrameworkIngerationPersistableT
 	@Test
 	public void t03_domainLock() {
 		setSession("user1");
-		MockHttpServletRequest home_newReq = MockHttpRequestBuilder.withUri(ROOT_DOMAIN).addAction(Action._new).getMock();
+		MockHttpServletRequest home_newReq = MockHttpRequestBuilder.withUri(ROOT_DOMAIN_WITH_MAPSTO).addAction(Action._new).getMock();
 		Object home_newResp = controller.handleGet(home_newReq, null);
 		assertNotNull(home_newResp);
 		
 		Long refId  = ExtractResponseOutputUtils.extractDomainRootRefId(home_newResp);
 		
-		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(ROOT_DOMAIN).addRefId(refId)
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(ROOT_DOMAIN_WITH_MAPSTO).addRefId(refId)
 				.addNested("/attr1").addAction(Action._update).getMock();
 		Object resp = controller.handlePut(request, null, converter.toJson("test 2"));
 
@@ -129,6 +132,7 @@ public class PessimisticLockTest extends AbstractFrameworkIngerationPersistableT
 		Object new_resp1 = controller.handleGet(new_req1, null);
 		
 		sessionProvider.clear();
+		setSession("user1");
 		Query query = new Query(new Criteria("sessionId").is(sessionProvider.getSessionId()));
 		Update update = new Update().set("sessionId", "session2");
 		mongo.updateFirst(query, update, "lock");
@@ -143,6 +147,41 @@ public class PessimisticLockTest extends AbstractFrameworkIngerationPersistableT
 		MockHttpServletRequest req1 = MockHttpRequestBuilder.withUri(SAMPLE_LANDING_VIEW).
 				addNested("/vpTest/vtTest/vsTestSearch/testgrid").addAction(Action._get).getMock();
 		Object resp1 = controller.handleGet(req1, null);
+	}
+	
+	
+	//1. _new on landing view with no mapsTo 2. _new on domain with mapsTo 3. _update on domain 4. mock ui redirection by _get to landing view followed by event to reset domains from UI
+	@Test
+	public void t04_domainLock() {
+		
+		setSession("user1");
+		MockHttpServletRequest home_newReq = MockHttpRequestBuilder.withUri(ROOT_LANDING).addAction(Action._new).getMock();
+		Object home_newResp = controller.handleGet(home_newReq, null);
+		assertNotNull(home_newResp);
+		
+		MockHttpServletRequest req1 = MockHttpRequestBuilder.withUri(ROOT_DOMAIN_WITH_MAPSTO).addAction(Action._new).getMock();
+		Object resp1 = controller.handleGet(req1, null);
+		assertNotNull(resp1);
+		
+		Long refId  = ExtractResponseOutputUtils.extractDomainRootRefId(resp1);
+		
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(ROOT_DOMAIN_WITH_MAPSTO).addRefId(refId)
+				.addNested("/attr1").addAction(Action._update).getMock();
+		Object resp = controller.handlePut(request, null, converter.toJson("test 2"));
+		
+		MockHttpServletRequest req2 = MockHttpRequestBuilder.withUri(ROOT_LANDING).addAction(Action._get).getMock();
+		Object resp2 = controller.handleGet(req2, null);
+		assertNotNull(home_newResp);
+		
+		List<LockEntity> lst = mongo.findAll(LockEntity.class, "lock");
+		assertEquals(lst.size(), 1);
+		
+		MockHttpServletRequest req3 = MockHttpRequestBuilder.withUri(ROOT_LANDING).addNested("/vpTest").addAction(Action._get).getMock();
+		Object resp3 = controller.handleGet(req3, null);
+		assertNotNull(home_newResp);
+		
+		List<LockEntity> lst2 = mongo.findAll(LockEntity.class, "lock");
+		assertEquals(lst2.size(), 0);
 	}
 	
 	private void setSession(String user) {

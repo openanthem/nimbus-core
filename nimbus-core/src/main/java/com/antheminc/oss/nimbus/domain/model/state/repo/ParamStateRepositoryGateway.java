@@ -27,6 +27,7 @@ import com.antheminc.oss.nimbus.InvalidArgumentException;
 import com.antheminc.oss.nimbus.UnsupportedScenarioException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.MappedParamConfig;
@@ -62,74 +63,76 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	
 	private ParamStateRepository detachedStateRepository;
 
-	private DomainEntityLockStrategy domainEntityLockStrategy;
+//	private DomainEntityLockStrategy domainEntityLockStrategy;
+	
+	private ParamStateRepository defaultRepStrategy;
 	
 	public ParamStateRepositoryGateway(JavaBeanHandler javaBeanHandler, ParamStateRepository local, BeanResolverStrategy beanResolver) {
 		this.javaBeanHandler = javaBeanHandler;
 		this.local = local;
 		this.detachedStateRepository = beanResolver.get(ParamStateRepository.class, "param.state.rep_detached");
-		this.domainEntityLockStrategy = beanResolver.get(DefaultDomainLockStrategy.class);
+//		this.domainEntityLockStrategy = beanResolver.get(DefaultDomainLockStrategy.class);
+		this.defaultRepStrategy = beanResolver.get(ParamStateRepository.class, "param.state.rep_db");
 	}
 	
-	/*
-	@Autowired	@Qualifier("default.param.state.rep_db")
-	private ParamStateRepository db;
-	*/
-	private ParamStateRepository defaultRepStrategy = new ParamStateRepository() {
-		
-		/**
-		 * Local is always kept, but follows behind cache if configured.
-		 * 
-		 * 1. If cache=true, then retrieve state from cache AND set to local before returning if local state is different
-		 * 2. If cache=false, then 
-		 */
-		@Override
-		public <P> P _get(Param<P> param) {	
-			//if(param.getType().findIfNested() != null && param.getRootDomain().equals(param.getType().findIfNested().getModel())) {
-			if(param.isDomainRoot()) {
-				if(param.getRootDomain().getConfig().getLock() != null && !param.getRootDomain().getConfig().getLock().root()) {
-					domainEntityLockStrategy.evalAndapply(param);
-				}
-			}
-			if(isCacheable()) {
-				P cachedState = session._get(param);
-				P localState  = local._get(param);
-				if(_equals(cachedState, localState) != null) {
-					local._set(param, cachedState);
-					localState = cachedState;
-				}
-				return localState;
-			} else {
-				P localState  = local._get(param);
-				return localState;
-			}
-		}
-		
-		@Override
-		public <P> Action _set(Param<P> param, P newState) {
-			P currState = _get(param);
-			if(_equals(newState, currState) == null) return null;
-			
-			if(isCacheable()) {
-				session._set(param, newState);
-			}
-			//_updateParatmStateTree(param, newState);
-			return local._set(param, newState);
-		}
-		
-		public boolean isCacheable() {
-			return false;
-		}
-		
-//		public boolean isPersistable() {
-//			return true;
+//	/*
+//	@Autowired	@Qualifier("default.param.state.rep_db")
+//	private ParamStateRepository db;
+//	*/
+//	private ParamStateRepository defaultRepStrategy = new ParamStateRepository() {
+//		
+//		/**
+//		 * Local is always kept, but follows behind cache if configured.
+//		 * 
+//		 * 1. If cache=true, then retrieve state from cache AND set to local before returning if local state is different
+//		 * 2. If cache=false, then 
+//		 */
+//		@Override
+//		public <P> P _get(Param<P> param) {	
+//			if(param.isDomainRoot()) {
+//				if(param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias)!= null && param.getRootDomain().getConfig().getLock() != null) {
+//					domainEntityLockStrategy.evalAndapply(param);
+//				}
+//			}
+//			if(isCacheable()) {
+//				P cachedState = session._get(param);
+//				P localState  = local._get(param);
+//				if(_equals(cachedState, localState) != null) {
+//					local._set(param, cachedState);
+//					localState = cachedState;
+//				}
+//				return localState;
+//			} else {
+//				P localState  = local._get(param);
+//				return localState;
+//			}
 //		}
-		
-		@Override
-		public String toString() {
-			return "Default Strategy";
-		}
-	};
+//		
+//		@Override
+//		public <P> Action _set(Param<P> param, P newState) {
+//			P currState = _get(param);
+//			if(_equals(newState, currState) == null) return null;
+//			
+//			if(isCacheable()) {
+//				session._set(param, newState);
+//			}
+//			//_updateParatmStateTree(param, newState);
+//			return local._set(param, newState);
+//		}
+//		
+//		public boolean isCacheable() {
+//			return false;
+//		}
+//		
+////		public boolean isPersistable() {
+////			return true;
+////		}
+//		
+//		@Override
+//		public String toString() {
+//			return "Default Strategy";
+//		}
+//	};
 	
 	@Override
 	public <T> T instantiate(Class<T> clazz) {

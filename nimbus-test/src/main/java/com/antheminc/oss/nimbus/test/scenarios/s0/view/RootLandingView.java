@@ -19,6 +19,7 @@ import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Lock;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Page;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Tile;
@@ -38,10 +39,10 @@ import lombok.Setter;
 @Repo(value = Repo.Database.rep_none, cache = Repo.Cache.rep_none)
 @Getter @Setter
 @ViewRoot(layout = "")
-@Lock(root=true)
 public class RootLandingView {
 	
 	@Page(defaultPage=true)
+	@Config(url = "/p/rootlandingview/_process?fn=_unlock")
     private VPTest vpTest;
 	
     @Model @Getter @Setter

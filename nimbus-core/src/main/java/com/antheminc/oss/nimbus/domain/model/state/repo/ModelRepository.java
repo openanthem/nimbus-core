@@ -21,6 +21,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -90,5 +92,11 @@ public interface ModelRepository {
 		
 	public <T> Object _search(Class<T> referredDomainClass, String alias, Supplier<SearchCriteria<?>> criteria);
 		
+	public <T, R> T _deleteMulti(List<R> id, Class<T> referredClass, String alias);
+	
+	public <T> Object _lock(Param<?> p);
+	
+	public <T, R> void _unlock(T key);
+
 
 }

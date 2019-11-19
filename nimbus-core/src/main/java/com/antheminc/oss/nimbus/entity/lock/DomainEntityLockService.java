@@ -13,16 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.entity;
+package com.antheminc.oss.nimbus.entity.lock;
+
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.entity.DomainEntityLock;
 
 /**
- * @author Tony Lopez
+ * @author Sandeep Mantha
  *
  */
-public interface DomainEntityLock<T> {
-
-	String getDomain();
-	String getLockedBy();
-	String getSessionId();
-	T getStatus();
+public interface DomainEntityLockService {
+	
+	DomainEntityLock<?> createLock(Param<?> p);
+	
+	void removeLock(String key);
 }

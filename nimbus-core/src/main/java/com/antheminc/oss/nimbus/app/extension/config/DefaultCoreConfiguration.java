@@ -35,11 +35,10 @@ import com.antheminc.oss.nimbus.channel.web.WebCommandBuilder;
 import com.antheminc.oss.nimbus.channel.web.WebCommandDispatcher;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.ClassPropertyConverter;
-import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultDomainLockProvider;
-import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultDomainLockStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryDetached;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryLocal;
+import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepositoryGateway;
@@ -49,6 +48,8 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.ws.DefaultWSModelReposit
 import com.antheminc.oss.nimbus.domain.rules.DefaultRulesEngineFactoryProducer;
 import com.antheminc.oss.nimbus.domain.rules.drools.DroolsRulesEngineFactory;
 import com.antheminc.oss.nimbus.entity.fileUpload.FileHandler;
+import com.antheminc.oss.nimbus.entity.lock.DefaultDomainLockProvider;
+import com.antheminc.oss.nimbus.entity.lock.DefaultDomainLockStrategy;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerReflection;
 
@@ -154,9 +155,15 @@ public class DefaultCoreConfiguration {
 		};
 	}
 	@Bean()
-		public FileHandler fileUploadHandler(BeanResolverStrategy beanResolver){
-			return new FileHandler(beanResolver);
-		}
+	public FileHandler fileUploadHandler(BeanResolverStrategy beanResolver){
+		return new FileHandler(beanResolver);
+	}
+	
+	
+	@Bean(name="default.param.state.rep_db")
+	public DefaultParamStateRepositoryStrategy defaultParamStateRepositoryStrategy(@Qualifier("default.param.state.rep_local") ParamStateRepository local, BeanResolverStrategy beanResolver){
+		return new DefaultParamStateRepositoryStrategy(local, beanResolver);
+	}
 	
 	@Bean
 	public DefaultDomainLockStrategy defaultDomainLockStrategy(BeanResolverStrategy beanResolver) {

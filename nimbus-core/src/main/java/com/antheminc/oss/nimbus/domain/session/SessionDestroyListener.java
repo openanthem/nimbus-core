@@ -19,7 +19,7 @@ import org.springframework.security.core.session.SessionDestroyedEvent;
  */
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultDomainLockStrategy;
+import com.antheminc.oss.nimbus.entity.lock.DefaultDomainLockStrategy;
 
 import lombok.Getter;
 
@@ -42,7 +42,7 @@ public class SessionDestroyListener implements ApplicationListener<SessionDestro
 	@Override
 	public void onApplicationEvent(SessionDestroyedEvent event) {
 		getSessionProvider().clear();
-		domainLockStrategy.releaseLock();
+		domainLockStrategy.releaseLock(event.getId());
 	}
 
 

@@ -20,7 +20,8 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.repo.DomainEntityLockStrategy;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
+import com.antheminc.oss.nimbus.entity.lock.DomainEntityLockStrategy;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 import lombok.Getter;
@@ -35,18 +36,16 @@ public class UnlockFunctionHandler implements FunctionHandler<Object, Param<Obje
 
 	private DomainEntityLockStrategy domainEntityLockStrategy;
 	
+	private final SessionProvider sessionProvider;
+
 	public UnlockFunctionHandler(BeanResolverStrategy beanResolver) {
 		this.domainEntityLockStrategy = beanResolver.find(DomainEntityLockStrategy.class);
+		this.sessionProvider = beanResolver.find(SessionProvider.class);
 	}
 	
 	@Override
 	public Param<Object> execute(ExecutionContext eCtx, Param<Object> actionParameter) {
-		Command cmd = eCtx.getCommandMessage().getCommand();
-		
-		if(eCtx.getRootModel().getConfig().getLock() != null && eCtx.getRootModel().getConfig().getLock().root()) {
-			domainEntityLockStrategy.releaseLock();
-		}
-		
+		domainEntityLockStrategy.releaseLock(sessionProvider.getSessionId());
 		return null;
 	}
 
