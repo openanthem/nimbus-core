@@ -132,6 +132,7 @@ import { GenericDomain } from './../../../model/generic-domain.model';
               <nm-frm-grp
                 [element]="frmElem"
                 [form]="form"
+                [hidden]="!frmElem.visible"
                 [ngClass]="getElementClass(elementCss, frmElem)"
                 [position]="position + 1"
               >
