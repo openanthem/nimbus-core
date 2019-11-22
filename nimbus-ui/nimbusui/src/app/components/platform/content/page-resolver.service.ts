@@ -30,6 +30,7 @@ import { PageService } from '../../../services/page.service';
 import { Param } from '../../../shared/param-state';
 import { ParamUtils } from './../../../shared/param-utils';
 import { LoggerService } from '../../../services/logger.service';
+import { Breadcrumb } from './../../../model/breadcrumb.model';
 
 /**
  * \@author Dinakar.Meda
@@ -55,6 +56,10 @@ export class PageResolver implements Resolve<Param> {
     let pageId = route.params['pageId'];
     //let flow = route.parent.data['domain'];
     let flow = route.parent.url[0]['path'];
+    let br:Breadcrumb = this._breadcrumbService.getHomeBreadcrumb();
+    if(br && br.url.includes('/'+flow+'/')) {
+      this._pageSvc.processEvent('/'+flow+'/'+pageId, null, null, 'GET');
+    }
     return this._pageSvc.getPageConfigById(pageId, flow).then(page => {
       if (page) {
         let labelText = ParamUtils.getLabelText(page);

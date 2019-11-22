@@ -44,6 +44,7 @@ import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Converters;
 import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
+import com.antheminc.oss.nimbus.domain.defn.Lock;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
@@ -127,6 +128,9 @@ abstract public class AbstractEntityConfigBuilder {
 		// handle repo
 		Repo rep = AnnotationUtils.findAnnotation(referredClass, Repo.class);
 		created.setRepo(rep);
+		
+		Lock lock = AnnotationUtils.findAnnotation(referredClass, Lock.class);
+		created.setLock(lock);
 		
 		// set alias from domain or model
 		assignDomainAndModel(created, created::setAlias);

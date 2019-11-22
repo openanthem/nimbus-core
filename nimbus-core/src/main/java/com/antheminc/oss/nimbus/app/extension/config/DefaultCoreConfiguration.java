@@ -38,6 +38,7 @@ import com.antheminc.oss.nimbus.domain.defn.ClassPropertyConverter;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryDetached;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryLocal;
+import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepositoryGateway;
@@ -156,4 +157,8 @@ public class DefaultCoreConfiguration {
 			return new FileHandler(beanResolver);
 		}
 	
+	@Bean(name="default.param.state.rep_db")
+	public DefaultParamStateRepositoryStrategy defaultParamStateRepositoryStrategy(@Qualifier("default.param.state.rep_local") ParamStateRepository local, BeanResolverStrategy beanResolver){
+		return new DefaultParamStateRepositoryStrategy(local, beanResolver);
+	}
 }

@@ -29,6 +29,8 @@ import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestEventNoOve
 import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestOnStateChangeNoOverrideHandler;
 import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestRedundantEventOverrideHandler;
 import com.antheminc.oss.nimbus.test.domain.session.TestSessionProvider;
+import com.antheminc.oss.nimbus.test.domain.support.LockFunctionHandler;
+import com.antheminc.oss.nimbus.test.domain.support.UnlockFunctionHandler;
 
 /**
  * @author Soham Chakravarti
@@ -74,6 +76,16 @@ public class FrameworkIntegrationTestScenariosApplication {
 	@Bean
 	TestRedundantEventOverrideHandler TestRedundantEventOverrideHandler(BeanResolverStrategy beanResolver) {
 		return new TestRedundantEventOverrideHandler(beanResolver);
+	}
+	
+	@Bean(name = "default._process$execute?fn=_unlock")
+	UnlockFunctionHandler UnlockFunctionHandler(BeanResolverStrategy beanResolver) {
+		return new UnlockFunctionHandler(beanResolver);
+	}
+	
+	@Bean(name = "default._process$execute?fn=_lock")
+	LockFunctionHandler LockFunctionHandler(BeanResolverStrategy beanResolver) {
+		return new LockFunctionHandler(beanResolver);
 	}
 	
 }

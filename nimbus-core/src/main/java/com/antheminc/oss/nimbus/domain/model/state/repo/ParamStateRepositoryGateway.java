@@ -60,68 +60,16 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	//@Autowired	@Qualifier("default.param.state.rep_session")
 	private ParamStateRepository session;
 	
+	private ParamStateRepository defaultRepStrategy;
+	
 	private ParamStateRepository detachedStateRepository;
 
 	public ParamStateRepositoryGateway(JavaBeanHandler javaBeanHandler, ParamStateRepository local, BeanResolverStrategy beanResolver) {
 		this.javaBeanHandler = javaBeanHandler;
 		this.local = local;
 		this.detachedStateRepository = beanResolver.get(ParamStateRepository.class, "param.state.rep_detached");
-		
+		this.defaultRepStrategy = beanResolver.get(ParamStateRepository.class, "param.state.rep_db");
 	}
-	
-	/*
-	@Autowired	@Qualifier("default.param.state.rep_db")
-	private ParamStateRepository db;
-	*/
-	private ParamStateRepository defaultRepStrategy = new ParamStateRepository() {
-		
-		/**
-		 * Local is always kept, but follows behind cache if configured.
-		 * 
-		 * 1. If cache=true, then retrieve state from cache AND set to local before returning if local state is different
-		 * 2. If cache=false, then 
-		 */
-		@Override
-		public <P> P _get(Param<P> param) {
-			if(isCacheable()) {
-				P cachedState = session._get(param);
-				P localState  = local._get(param);
-				if(_equals(cachedState, localState) != null) {
-					local._set(param, cachedState);
-					localState = cachedState;
-				}
-				return localState;
-			} else {
-				P localState  = local._get(param);
-				return localState;
-			}
-		}
-		
-		@Override
-		public <P> Action _set(Param<P> param, P newState) {
-			P currState = _get(param);
-			if(_equals(newState, currState) == null) return null;
-			
-			if(isCacheable()) {
-				session._set(param, newState);
-			}
-			//_updateParatmStateTree(param, newState);
-			return local._set(param, newState);
-		}
-		
-		public boolean isCacheable() {
-			return false;
-		}
-		
-//		public boolean isPersistable() {
-//			return true;
-//		}
-		
-		@Override
-		public String toString() {
-			return "Default Strategy";
-		}
-	};
 	
 	@Override
 	public <T> T instantiate(Class<T> clazz) {
