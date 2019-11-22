@@ -732,19 +732,22 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		
 		if (null == findIfNested().getParams()) {
 			return;
+		}  
+		
+		if(this.getConfig().getUiStyles()==null) {
+		
+			traverseChildren(p -> p.setVisible(visible));
+			
+			traverseChildren(p -> {
+				
+				if(!p.isStateInitialized())
+					p.onStateLoadEvent();
+				else
+					p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
+				
+			});
 		}
-		
-		traverseChildren(p -> p.setVisible(visible));
-		
-		traverseChildren(p -> {
-			
-			if(!p.isStateInitialized())
-				p.onStateLoadEvent();
-			else
-				p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
-			
-		});
-	}
+	} 
 	
 	@Override
 	public boolean isEnabled() {
@@ -752,7 +755,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(boolean enabled) {       
 		boolean changed = this.enabledState.setStateConditional(enabled, ()->isActive() || !enabled);
 		if (!changed)
 			return;
