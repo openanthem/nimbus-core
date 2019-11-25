@@ -3108,8 +3108,10 @@ public class ViewConfig {
 		
 		EventType eventType() default EventType.DEFAULT;
 		
-		int count() default 1;
+		int charCountToPostOnce() default 0;
 		
+		int count() default 0;
+
 		public enum EventType {
 
 			DEFAULT,
