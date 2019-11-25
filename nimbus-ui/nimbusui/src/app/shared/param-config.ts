@@ -255,7 +255,8 @@ export class UiAttribute implements Serializable<UiAttribute, string> {
   collapseOnClick: boolean;
   urlType: string;
   targetParam: string;
-  
+  maskcount: number;
+  maskchar: string;
 
   deserialize(inJson) {
     let obj = this;

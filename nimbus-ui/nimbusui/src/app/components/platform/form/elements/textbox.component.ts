@@ -21,12 +21,14 @@ import {
   ChangeDetectorRef,
   Component,
   forwardRef,
+  ElementRef,
   ViewChild
 } from '@angular/core';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { CounterMessageService } from './../../../../services/counter-message.service';
 import { BaseControl } from './base-control.component';
+import { Event } from './../../../../shared/param-annotations.enum';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -55,7 +57,10 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     </nm-input-label>
     <input
       *ngIf="hidden != true && readOnly == false"
-      [(ngModel)]="value"
+      (click)="showMask=!showMask"
+      (ngModelChange)="value = $event" 
+      (blur)="showMask = true"
+      [ngModel]="value | mask:showMask:element"
       [autocomplete]="element?.config?.uiStyles?.attributes?.autofill ? 'on' : undefined"
       [id]="element.config?.code"
       (focusout)="emitValueChangedEvent(this,value)"
@@ -82,6 +87,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 })
 export class InputText extends BaseControl<String> {
   @ViewChild(NgModel) model: NgModel;
+  showMask = true;
+
   constructor(
     controlService: ControlSubscribers,
     cd: ChangeDetectorRef,
