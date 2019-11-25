@@ -425,6 +425,7 @@ export class RuleSet implements Serializable<RuleSet, string> {
 
 export class InputEvent implements Serializable<InputEvent, string> {
   eventType: string;
+  charCountToPostOnce: number;
   count: number;
 
   deserialize(inJson) {

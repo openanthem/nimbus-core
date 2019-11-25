@@ -1,3 +1,4 @@
+import { Event } from './../../../../shared/param-annotations.enum';
 /**
  * @license
  * Copyright 2016-2019 the original author or authors.
@@ -60,7 +61,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
       [id]="element.config?.code"
       (focusout)="emitValueChangedEvent(this,value)"
       (input)="evalInput()"
-      [value]="type"
+      [type]="type"
       [disabled]="disabled"
       class="form-control text-input"
     />
@@ -97,8 +98,10 @@ export class InputText extends BaseControl<String> {
 
   evalInput() {
     this.element.config.uiStyles.attributes.inputEvent.forEach(evt => {
-      if(evt.eventType == "INPUT") {
-        if(evt.count == this.value.length) {
+      if(evt.eventType == Event._input.toString()) {
+        if(evt.charCountToPostOnce !=0 && evt.charCountToPostOnce == this.value.length) {
+          this.emitValueChangedEvent(this,this.value);
+        } else if(evt.count != 0 && this.value.length%evt.count == 0){
           this.emitValueChangedEvent(this,this.value);
         }
       }
