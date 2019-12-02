@@ -35,9 +35,6 @@ public interface ExternalModelRepository extends ModelRepository {
 		throw new UnsupportedOperationException("_new operation is not supported for Database.rep_ws repository");
 	}
 	
-	default public <ID extends Serializable, T> T _save(String alias, T state) {
-		return state;
-	}
 	
 	default public <ID extends Serializable, T> T _get(ID id, Class<T> referredClass, String alias){
 		throw new UnsupportedOperationException("_new operation is not supported for Database.rep_ws repository");
@@ -65,5 +62,13 @@ public interface ExternalModelRepository extends ModelRepository {
 	default public <ID extends Serializable, T> T _delete(ID id, Class<T> referredClass, String alias){
 		throw new UnsupportedOperationException("_delete operation is not supported for Database.rep_ws repository");
 	}
+	
+	@Override
+	default void _save(Param<?> param) {
+		throw new UnsupportedOperationException("_delete operation is not supported for Database.rep_ws repository");
+		
+	}
+	
+	
 	
 }

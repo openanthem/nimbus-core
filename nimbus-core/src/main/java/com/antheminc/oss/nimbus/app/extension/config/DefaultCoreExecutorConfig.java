@@ -33,6 +33,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorNa
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorNew;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorProcess;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorReplace;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorSave;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorSearch;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorUpdate;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultBehaviorExecutorState;
@@ -40,6 +41,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultCommandExecutorG
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultCommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextPathVariableResolver;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.EntityLockHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.HierarchyMatchBasedBeanFinder;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 import com.antheminc.oss.nimbus.support.expr.SpelExpressionEvaluator;
@@ -142,5 +144,20 @@ public class DefaultCoreExecutorConfig {
 	public CommandExecutor<?> defaultActionExecutorSearch(BeanResolverStrategy beanResolver){
 		return new DefaultActionExecutorSearch<>(beanResolver);
 	}	
+	
+	@Bean(name="default._save$execute")
+	public CommandExecutor<?> defaultActionExecutorSave(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorSave(beanResolver);
+	}
+	
+	@Bean(name="default.$save")
+	public CommandExecutor<?> defaultBehaviorExecutorSave(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorSave(beanResolver);
+	}
+	
+	@Bean	
+	public EntityLockHandler defaultEntityLockHandler(BeanResolverStrategy beanResolver){
+		return new EntityLockHandler(beanResolver);
+	}
 	
 }

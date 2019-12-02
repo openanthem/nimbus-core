@@ -27,6 +27,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.defn.Lock;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
@@ -145,6 +146,8 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 			
 			//TODO: change to client default 
 			setRepo(AnnotationUtils.findAnnotation(ExecutionEntity.class, Repo.class));
+			
+			setLock(AnnotationUtils.findAnnotation(ExecutionEntity.class, Lock.class));
 			
 			Objects.requireNonNull(exConfig.getCore(), "Core ModelConfig must be provided.");
 			this.coreParam = attachParams("c", exConfig.getCore());

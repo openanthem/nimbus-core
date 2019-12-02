@@ -17,16 +17,19 @@ package com.antheminc.oss.nimbus.test.domain.session;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import com.antheminc.oss.nimbus.domain.session.AbstractSessionProvider;
 
 public class TestSessionProvider extends AbstractSessionProvider {
 
 	private Map<String,Object> sessionMap = new HashMap<String, Object>();
+	
+	private String sessionID = UUID.randomUUID().toString();
 
 	@Override
 	public String getSessionId() {
-		return "test-session";
+		return sessionID;
 	}
 
 	@Override
@@ -48,8 +51,8 @@ public class TestSessionProvider extends AbstractSessionProvider {
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
+		sessionID = UUID.randomUUID().toString();
 		sessionMap.clear();
 	}
-
+	
 }

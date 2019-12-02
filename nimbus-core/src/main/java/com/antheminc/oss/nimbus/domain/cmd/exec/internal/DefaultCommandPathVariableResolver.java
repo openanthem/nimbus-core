@@ -151,8 +151,19 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			Long id = Optional.ofNullable(getSessionProvider().getLoggedInUser()).orElseGet(() -> new ClientUser()).getId();
 			return String.valueOf(id);
 		}
+		if(StringUtils.endsWith(pathToResolve, "id")) {
+			Long id = Optional.ofNullable(getSessionProvider().getLoggedInUser()).orElseGet(() -> new ClientUser()).getId();
+			return String.valueOf(id);
+		}
 		
 		return param.getRootExecution().getRootCommand().getElementSafely(Type.ClientAlias).getAlias();
+	}
+	
+	protected String mapSession(Param<?> param, String pathToResolve) {
+		if(StringUtils.endsWith(pathToResolve, "id")) {
+			return getSessionProvider().getSessionId();
+		}
+		return null;
 	}
 	
 	protected String mapEnvironment(Param<?> param, String pathToResolve) {
