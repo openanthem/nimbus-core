@@ -29,7 +29,6 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Lock;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
-import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
