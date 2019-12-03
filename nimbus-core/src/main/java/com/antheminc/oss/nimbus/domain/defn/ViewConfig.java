@@ -2946,6 +2946,10 @@ public class ViewConfig {
 		String type() default "text";
 		
 		boolean autofill() default false;
+		
+		int maskcount() default 0;
+		
+		String maskchar() default "";
 
 	}
 	
