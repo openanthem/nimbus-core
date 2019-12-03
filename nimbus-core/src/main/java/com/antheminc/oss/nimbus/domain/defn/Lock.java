@@ -49,14 +49,5 @@ public @interface Lock {
 	 */
 	public Config[] executeWhenLockNotAcquired() default {};
 	
-	
-	public LockedBy lockedBy();
-	
-	
-	enum LockedBy {
-		session,
-		user,
-		custom
-	}
 }
 

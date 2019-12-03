@@ -16,11 +16,10 @@
 package com.antheminc.oss.nimbus.test.scenarios.s15.core;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
-import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
-import com.antheminc.oss.nimbus.domain.defn.Lock.LockedBy;
 import com.antheminc.oss.nimbus.domain.defn.Lock;
+import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
@@ -32,7 +31,7 @@ import lombok.ToString;
 @Domain(value="samplelockedentity", includeListeners={ListenerType.persistence, ListenerType.update}) 
 @Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
 @Getter @Setter @ToString(callSuper=true)
-@Lock(lockedBy = LockedBy.session,
+@Lock(
 	executeToAcquireLock = { @Config(url = "/p/lockentry/_new?b=$executeAnd$save")},
 	executeWhenLockAcquired = {@Config(url = "/p/lockview/lockStatus/_replace?rawPayload=\"locked\"") },
 	executeWhenLockNotAcquired = {@Config(url = "/p/lockview/lockStatus/_replace?rawPayload=\"unableToLock\"") }

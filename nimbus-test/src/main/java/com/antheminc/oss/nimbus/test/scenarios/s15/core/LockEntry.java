@@ -23,6 +23,9 @@ import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
+import com.antheminc.oss.nimbus.domain.defn.event.EventType;
+import com.antheminc.oss.nimbus.domain.defn.extension.Script;
+import com.antheminc.oss.nimbus.domain.defn.extension.Script.Type;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
@@ -40,7 +43,9 @@ import lombok.ToString;
 @Document
 public class LockEntry extends IdLong {
 	private static final long serialVersionUID = 1L;
+	private String lockedBy;
+	@Script(type=Type.SPEL_INLINE, value="findParamByPath('/../lockedBy').setState(T(com.antheminc.oss.nimbus.test.scenarios.s15.core.TestLockUtils).getSessionID())",eventType=EventType.OnStateChange)
 	private String alias;
 	private Long refId;
-	private String lockedBy;
+
 }

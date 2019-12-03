@@ -159,13 +159,6 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 		return param.getRootExecution().getRootCommand().getElementSafely(Type.ClientAlias).getAlias();
 	}
 	
-	protected String mapSession(Param<?> param, String pathToResolve) {
-		if(StringUtils.endsWith(pathToResolve, "id")) {
-			return getSessionProvider().getSessionId();
-		}
-		return null;
-	}
-	
 	protected String mapEnvironment(Param<?> param, String pathToResolve) {
 		String property = pathToResolve.replace(Constants.MARKER_ENV.code+".", "");
 		return environment.getProperty(property);
