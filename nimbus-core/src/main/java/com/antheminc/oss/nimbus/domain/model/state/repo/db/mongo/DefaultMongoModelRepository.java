@@ -32,6 +32,7 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
@@ -89,9 +90,26 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	}
 
 	@Override
-	public <ID extends Serializable, T> T _save(String alias, T state) {
+	public <T> T _save(String alias, T state) {
 		getMongoOps().save(state, alias);
 		return state;
+	}
+	
+	@Override
+	public void _save(Param<?> param) {
+		@SuppressWarnings("unchecked")
+		Model<Object> mRoot = (Model<Object>)param.getRootDomain();
+		
+		String idParamCode = mRoot.getConfig().getIdParamConfig().getCode();
+		Serializable coreStateId = (Serializable)mRoot.findParamByPath(idParamCode).getState();
+		if(coreStateId == null) {
+			_new(mRoot.getConfig(), mRoot.getState());
+			return;
+		}
+		
+		Object pState = param.getState();
+		String alias = param.getRootDomain().getConfig().getAlias();
+		_update(alias,coreStateId,param.getBeanPath(), pState);
 	}
 	
 	@Override
