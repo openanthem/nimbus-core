@@ -65,7 +65,7 @@ public interface ExternalModelRepository extends ModelRepository {
 	
 	@Override
 	default void _save(Param<?> param) {
-		throw new UnsupportedOperationException("_delete operation is not supported for Database.rep_ws repository");
+		throw new UnsupportedOperationException("_save operation is not supported for Database.rep_ws repository");
 		
 	}
 	
