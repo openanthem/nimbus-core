@@ -1,3 +1,5 @@
+import { InputEvent } from './../../../../shared/param-config';
+import { Event } from './../../../../shared/param-annotations.enum';
 /**
  * @license
  * Copyright 2016-2019 the original author or authors.
@@ -59,7 +61,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
       [autocomplete]="element?.config?.uiStyles?.attributes?.autofill ? 'on' : undefined"
       [id]="element.config?.code"
       (focusout)="emitValueChangedEvent(this,value)"
-      [value]="type"
+      (input)="bindInputEvent ? onInput(): false"
+      [type]="type"
       [disabled]="disabled"
       class="form-control text-input"
     />
@@ -82,6 +85,9 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 })
 export class InputText extends BaseControl<String> {
   @ViewChild(NgModel) model: NgModel;
+  bindInputEvent: boolean = false;
+  inpEvt: InputEvent;
+
   constructor(
     controlService: ControlSubscribers,
     cd: ChangeDetectorRef,
@@ -92,5 +98,19 @@ export class InputText extends BaseControl<String> {
 
   ngOnInit() {
     super.ngOnInit();
+    this.element.config.uiStyles.attributes.inputEvent.forEach(evt => {
+      if(evt.eventType == Event._input.toString()) {
+        this.bindInputEvent = true;
+        this.inpEvt = evt;
+      }
+    });
+  }
+
+  onInput() {
+    if(this.inpEvt.charCountToPostOnce !=0 && this.inpEvt.charCountToPostOnce == this.value.length) {
+      this.emitValueChangedEvent(this,this.value);
+    } else if(this.inpEvt.count != 0 && this.value.length%this.inpEvt.count == 0){
+      this.emitValueChangedEvent(this,this.value);
+    }
   }
 }
