@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.UserTask;
@@ -205,7 +204,7 @@ public class ActivitiBPMGateway implements BPMGateway {
 				commandExecutor.execute((commandContext) -> {
 				          return Context.getProcessEngineConfiguration()
 				                        .getDeploymentManager()
-				                        .findDeployedLatestProcessDefinitionByKey(getProcessKeyFromDefinitionId(processDefinitionId, param));
+				                        .findDeployedLatestProcessDefinitionByKey(param.getRootDomain().getConfig().getDomainLifecycle());
 				});
 			}
 		}
@@ -230,13 +229,6 @@ public class ActivitiBPMGateway implements BPMGateway {
 		return extensionElement.getElementText();
 	}
 	
-	private String getProcessKeyFromDefinitionId(String processDefinitionId, Param<?> param) {
-		return Optional.ofNullable(processDefinitionId)
-			.map(id -> id)
-			.orElseThrow(() -> new FrameworkRuntimeException("Process Definition Id cannot be null while trying to continue the process for param "+param+" execution"));
-		
-	}
-
 	private void executeExitUrls(String urls, Param<?> param) {
 		String[] urlList = StringUtils.split(urls, "\r\n");
 		MultiOutput output = null;
