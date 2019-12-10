@@ -718,40 +718,60 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public boolean isVisible() {
-		return visibleState.getCurrState();
+	//	return visibleState.getCurrState();
+		
+		boolean isVisible = visibleState.getCurrState();
+		if(!isVisible)
+			return isVisible;
+		
+		// If the param is Visible navigate up to the top parent node - and assess if any node is set to Not Visible - then return parent node state
+		Param<?> parentParam = Optional.ofNullable(getParentModel())
+			.map(Model::getAssociatedParam)
+			.orElse(null);
+			
+		if(parentParam==null)
+			return isVisible;
+		
+		if(!parentParam.isVisible())
+			return false;
+		
+		return isVisible;
 	}
 	
 	public void setVisible(boolean visible) {
 		boolean changed = this.visibleState.setStateConditional(visible, ()->isActive() || !visible);
 		if (!changed)
 			return;
+		// No need to traverse children since html hides the children elements by default
 		
-		// handle nested
-		if(!isNested() /*|| (isTransient() && !findIfTransient().isAssinged())*/)
-			return;
+//		// handle nested
+//		if(!isNested() /*|| (isTransient() && !findIfTransient().isAssinged())*/)
+//			return;
+//		
+//		if (null == findIfNested().getParams()) {
+//			return;
+//		}  
 		
-		if (null == findIfNested().getParams()) {
-			return;
-		}  
+//		if(this.getConfig().getUiStyles()==null) {
 		
-		if(this.getConfig().getUiStyles()==null) {
-		
-			traverseChildren(p -> p.setVisible(visible));
-			
-			traverseChildren(p -> {
-				
-				if(!p.isStateInitialized())
-					p.onStateLoadEvent();
-				else
-					p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
-				
-			});
-		}
+//			traverseChildren(p -> p.setVisible(visible));
+//			
+//			traverseChildren(p -> {
+//				
+//				if(!p.isStateInitialized())
+//					p.onStateLoadEvent();
+//				else
+//					p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
+//				
+//			});
+//		}
 	} 
 	
 	@Override
 	public boolean isEnabled() {
 		return enabledState.getCurrState();
+		
+		
 	}
 	
 	@Override
