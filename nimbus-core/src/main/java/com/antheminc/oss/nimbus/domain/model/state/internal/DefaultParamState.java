@@ -743,28 +743,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if (!changed)
 			return;
 		// No need to traverse children since html hides the children elements by default
-		
-//		// handle nested
-//		if(!isNested() /*|| (isTransient() && !findIfTransient().isAssinged())*/)
-//			return;
-//		
-//		if (null == findIfNested().getParams()) {
-//			return;
-//		}  
-		
-//		if(this.getConfig().getUiStyles()==null) {
-		
-//			traverseChildren(p -> p.setVisible(visible));
-//			
-//			traverseChildren(p -> {
-//				
-//				if(!p.isStateInitialized())
-//					p.onStateLoadEvent();
-//				else
-//					p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
-//				
-//			});
-//		}
+
 	} 
 	
 	@Override
