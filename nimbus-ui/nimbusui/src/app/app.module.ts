@@ -178,7 +178,6 @@ import { FileService } from './services/file.service';
 import { GridService } from './services/grid.service';
 import { CustomHttpClientInterceptor } from './services/httpclient-interceptor.service';
 import { CustomHttpClient } from './services/httpclient.service';
-import { LayoutService } from './services/layout.service';
 import { LoaderService } from './services/loader.service';
 import { LoggerService } from './services/logger.service';
 import { PageService } from './services/page.service';
@@ -296,7 +295,6 @@ export function init_app(appinitservice: AppInitService) {
     TextArea,
     LandingPage,
     RichText,
-    LayoutService,
     ContentContainer,
     DomainFlowCmp,
     HeaderGlobal,
@@ -389,7 +387,6 @@ export function init_app(appinitservice: AppInitService) {
     BreadcrumbService,
     LoaderService,
     FileService,
-    LayoutService,
     WindowRefService,
     LoggerService,
     NmMessageService,

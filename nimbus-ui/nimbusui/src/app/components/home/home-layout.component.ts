@@ -46,8 +46,8 @@ import { ParamUtils } from './../../shared/param-utils';
  *
  */
 @Component({
-  templateUrl: './home-layout.component.html'
-  // providers: [ STOMPService ],
+  templateUrl: './home-layout.component.html',
+  providers: [ LayoutService ],
 })
 export class HomeLayoutCmp {
   public leftMenuItems: LinkConfig[];
