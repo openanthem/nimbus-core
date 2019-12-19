@@ -846,7 +846,9 @@ export class DataTable extends BaseTableElement
   paginate(e: any) {
     let first: number = parseInt(e.first);
     let rows: number = parseInt(e.rows);
-    this.rowStart = first + 1;
+    if (this.totalRecords != 0) {
+      this.rowStart = first + 1;
+    }
     if (first + rows < this.totalRecords) {
       this.rowEnd = first + rows;
     } else {
