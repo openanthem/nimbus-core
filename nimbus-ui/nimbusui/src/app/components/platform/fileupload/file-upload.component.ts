@@ -195,7 +195,7 @@ export class FileUploadComponent extends BaseElement
           this.selectedFiles = [];
           this.value = this.selectedFiles;
         }
-        if (this.pfu.validate(files[p])) {
+        if (this.pfu.accept && this.pfu['isFileTypeValid'](files[p])){  
           let file = files[p];
           this.selectedFiles.push(file);
           this.value = this.selectedFiles;
