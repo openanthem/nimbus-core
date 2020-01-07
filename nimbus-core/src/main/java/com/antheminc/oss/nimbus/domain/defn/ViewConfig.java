@@ -3100,6 +3100,10 @@ public class ViewConfig {
 				
 		String type() default "text";
 
+		int maskcount() default 0;
+		
+		String maskchar() default "";
+
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)

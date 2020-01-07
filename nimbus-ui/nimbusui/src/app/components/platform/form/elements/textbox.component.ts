@@ -1,5 +1,3 @@
-import { InputEvent } from './../../../../shared/param-config';
-import { Event } from './../../../../shared/param-annotations.enum';
 /**
  * @license
  * Copyright 2016-2019 the original author or authors.
@@ -23,12 +21,15 @@ import {
   ChangeDetectorRef,
   Component,
   forwardRef,
+  ElementRef,
   ViewChild
 } from '@angular/core';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { CounterMessageService } from './../../../../services/counter-message.service';
 import { BaseControl } from './base-control.component';
+import { InputEvent } from './../../../../shared/param-config';
+import { Event } from './../../../../shared/param-annotations.enum';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -58,7 +59,10 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 
     <input
       *ngIf="hidden != true && readOnly == false"
-      [(ngModel)]="value"
+      (click)="showMask=!showMask"
+      (ngModelChange)="value = $event" 
+      (blur)="showMask = true"
+      [ngModel]="value | mask:showMask:element"
       [id]="element.config?.code"
       (focusout)="emitValueChangedEvent(this,value)"
       (input)="bindInputEvent ? onInput(): false"
@@ -85,6 +89,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 })
 export class InputText extends BaseControl<String> {
   @ViewChild(NgModel) model: NgModel;
+  showMask = true;
   bindInputEvent: boolean = false;
   inpEvt: InputEvent;
 
