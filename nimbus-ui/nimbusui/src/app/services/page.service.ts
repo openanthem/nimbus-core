@@ -900,8 +900,9 @@ export class PageService {
                   eventModel.value.path
                 );
                 if (nestedElement && nestedElement.tableBasedData) {
+                  let innerparam = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
                   nestedElement['tableBasedData'] = this.createTableBasedData(
-                    eventModel.value.type.model.params,
+                    innerparam.type.model.params,
                     nestedElement
                   );
                   this.gridValueUpdate.next(nestedElement);
