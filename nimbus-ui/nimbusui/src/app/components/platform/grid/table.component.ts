@@ -420,18 +420,20 @@ export class DataTable extends BaseTableElement
           this.value = event.tableBasedData.values;
 
           // iterate over currently expanded rows and refresh the data
-          Object.keys(this.dt.expandedRowKeys).forEach(key => {
-            this.value.find((lineItem, index) => {
-              if (lineItem[this.element.elemId] == key) {
-                this._putNestedElement(
-                  event.tableBasedData.collectionParams,
-                  index,
-                  lineItem
-                );
-                return true;
-              }
+          if(this.value) {
+            Object.keys(this.dt.expandedRowKeys).forEach(key => {
+              this.value.find((lineItem, index) => {
+                if (lineItem[this.element.elemId] == key) {
+                  this._putNestedElement(
+                    event.tableBasedData.collectionParams,
+                    index,
+                    lineItem
+                  );
+                  return true;
+                }
+              });
             });
-          });
+          }
 
           // reset the table state in the session after primeNG upgrade.
           this.dt.expandedRowKeys = {};
