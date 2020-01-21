@@ -510,7 +510,7 @@ export class DataTable extends BaseTableElement
 
   getCellDisplayValue(rowData: any, col: ParamConfig) {
     let cellData = rowData[col.code];
-    if (cellData) {
+    if (cellData!=null) {
       if (super.isDate(col.type.name)) {
         return this.dtFormat.transform(
           cellData,
