@@ -110,7 +110,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		cmdMsg.setRawPayload(jsonPayload);
 		
 
-		this.mockServerDefaultWs.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerDefaultWs.expect(requestTo(new StringContains(true, requestUri)))
 		.andExpect(method(HttpMethod.POST))
 		.andExpect(queryParam("fn","example"))
 		.andRespond(withSuccess("[{\"client\": {\"code\": \"example\"}},{\"client\": {\"code\": \"example\" }}]", MediaType.APPLICATION_JSON));
@@ -142,7 +142,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		cmdMsg.setCommand(cmd);
 		
 
-		this.mockServerDefaultWs.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerDefaultWs.expect(requestTo(new StringContains(true, requestUri)))
 		.andExpect(method(HttpMethod.POST))
 		.andExpect(queryParam("fn","query"))
 		.andExpect(queryParam("where","ext_client.client.code.eq('7')"))
@@ -168,7 +168,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		cmdMsg.setCommand(cmd);
 		
 
-		this.mockServerDefaultWs.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerDefaultWs.expect(requestTo(new StringContains(true, requestUri)))
 		.andExpect(method(HttpMethod.POST))
 		.andExpect(queryParam("fn","query"))
 		.andExpect(queryParam("where","ext_client.client.code.eq('7')"))
@@ -235,7 +235,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		cmdMsg.setCommand(cmd);
 		
 		String jsonresp  = mockSingleGenericExecuteResponse_GetNewSearch();
-		this.mockServerRemoteWs.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, requestUri)))
 			.andRespond(withSuccess(jsonresp, MediaType.APPLICATION_JSON));
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
@@ -264,7 +264,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		cmdMsg.setCommand(cmd);
 		
 		String jsonresp  = mockGenericExecuteResponse_Search();
-		this.mockServerRemoteWs.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, requestUri)))
 		.andExpect(method(HttpMethod.POST))
 		.andExpect(queryParam("fn","query"))
 		.andExpect(queryParam("where","remote_repo.attr1.eq('example1')"))
@@ -296,7 +296,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		
 		String resp = mockSingleGenericExecuteResponse_GetNewSearch();
 
-		this.mockServerRemoteWs.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, requestUri)))
 		.andExpect(method(HttpMethod.POST))
 		.andExpect(queryParam("fn","query"))
 		.andExpect(queryParam("where","remote_repo.attr1.eq('example1')"))
@@ -324,7 +324,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		cmdMsg.setCommand(cmd);
 		
 		String response = mockGenericExecuteResponse_Search();
-		this.mockServerRemoteWs.expect(requestTo(new StringContains(requestUri)))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, requestUri)))
 		.andExpect(method(HttpMethod.POST))
 		.andExpect(queryParam("fn","example"))
 		.andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
@@ -351,10 +351,10 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		
 		final String remoteRequestUri = "piedpiper/encryption_3.9/p/remote_repo/_new";
 		String jsonresp  = mockSingleGenericExecuteResponse_GetNewSearch();
-		this.mockServerRemoteWs.expect(requestTo(new StringContains(remoteRequestUri)))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, remoteRequestUri)))
 			.andRespond(withSuccess(jsonresp, MediaType.APPLICATION_JSON));
 		
-		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(),requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:1/_update")))
+		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(),requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/remote_repo:1/_update")))
 		.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
 	
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
@@ -380,13 +380,13 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		
 		
 		String jsonresp  = mockSingleGenericExecuteResponse_GetNewSearch();
-		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_get")))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/remote_repo:12/_get")))
 			.andRespond(withSuccess(jsonresp, MediaType.APPLICATION_JSON));
 		
-		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(), requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_update")))
+		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(), requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/remote_repo:12/_update")))
 		.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
 		
-		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_delete")))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/remote_repo:12/_delete")))
 			.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
@@ -408,13 +408,13 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		
 		
 		String jsonresp  = mockSingleGenericExecuteResponse_GetNewSearch();
-		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_get")))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/remote_repo:12/_get")))
 			.andRespond(withSuccess(jsonresp, MediaType.APPLICATION_JSON));
 		
-		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(), requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_update")))
+		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(), requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/remote_repo:12/_update")))
 		.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
 		
-		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:12/_update")))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/remote_repo:12/_update")))
 			.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
@@ -436,10 +436,10 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		
 		final String remoteRequestUri = "piedpiper/encryption_3.9/p/remote_repo/_new";
 		String jsonresp  = mockSingleGenericExecuteResponse_GetNewSearch();
-		this.mockServerRemoteWs.expect(requestTo(new StringContains(remoteRequestUri)))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, remoteRequestUri)))
 			.andRespond(withSuccess(jsonresp, MediaType.APPLICATION_JSON));
 		
-		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(),requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:1/_update")))
+		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(),requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/remote_repo:1/_update")))
 		.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
 	
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
@@ -459,28 +459,28 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
-		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(), requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo:1/_update")))
+		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(), requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/remote_repo:1/_update")))
 			.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
 		
-		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/vr_remote_repo2/_new")))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true,"piedpiper/encryption_3.9/p/vr_remote_repo2/_new")))
 			.andRespond(withSuccess(mockSingleGenericExecuteResponse_GetNewSearch2(), MediaType.APPLICATION_JSON));
 
-		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo2/_new")))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/remote_repo2/_new")))
 			.andRespond(withSuccess(mockSingleGenericExecuteResponse_GetNewSearch2(), MediaType.APPLICATION_JSON));
 	
-		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(), requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo2:1/_update")))
+		this.mockServerRemoteWs.expect(ExpectedCount.manyTimes(), requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/remote_repo2:1/_update")))
 			.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
 
-		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/vr_remote_repo2:1/_get")))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/vr_remote_repo2:1/_get")))
 			.andRespond(withSuccess(mockSingleGenericExecuteResponse_GetNewSearch2(), MediaType.APPLICATION_JSON));
 		
-		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo2:1/_get")))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/remote_repo2:1/_get")))
 			.andRespond(withSuccess(mockSingleGenericExecuteResponse_GetNewSearch2(), MediaType.APPLICATION_JSON));
 	
-		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/vr_remote_repo2:1/_delete")))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/vr_remote_repo2:1/_delete")))
 			.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
 
-		this.mockServerRemoteWs.expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/remote_repo2:1/_delete")))
+		this.mockServerRemoteWs.expect(requestTo(new StringContains(true, "piedpiper/encryption_3.9/p/remote_repo2:1/_delete")))
 			.andRespond(withSuccess(mockSingleGenericExecuteResponse_update(), MediaType.APPLICATION_JSON));
 
 		multiOp = this.commandGateway.execute(cmdMsg);
