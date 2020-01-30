@@ -146,6 +146,13 @@ export class OrderablePickList extends BaseElement
           this.setState($event, this);
           // setting parent Picklist value manually
           let frmCtrl = this.form.controls[this.element.config.code];
+          if(frmCtrl!=null && frmCtrl.status === "DISABLED") {
+            if (this.element.enabled && this.element.visible) {
+              frmCtrl.enable();
+              this.counterMessageService.evalCounterMessage(true);
+              this.counterMessageService.evalFormParamMessages(this.element);
+            }
+          }
           if (frmCtrl) {
             if (frmCtrl.valid && this.sendEvent) {
               this.counterMessageService.evalCounterMessage(true);

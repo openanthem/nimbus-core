@@ -140,6 +140,13 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
       this.form.controls[this.element.config.code] != null
     ) {
       let frmCtrl = this.form.controls[this.element.config.code];
+      if(frmCtrl.status === "DISABLED") {
+        if (this.element.enabled && this.element.visible) {
+          frmCtrl.enable();
+          this.counterMessageService.evalCounterMessage(true);
+          this.counterMessageService.evalFormParamMessages(this.element);
+        }
+      }
       this.subscribers.push(
         frmCtrl.valueChanges.subscribe($event => {
           if (frmCtrl.valid && this.sendEvent) {
