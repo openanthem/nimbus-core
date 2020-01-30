@@ -152,6 +152,15 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
   ngOnInit() {
     super.ngOnInit();
     let frmCtrl = this.form.controls[this.element.config.code];
+    if(frmCtrl != null && frmCtrl.status === "DISABLED") {
+      if (this.element.enabled && this.element.visible) {
+        frmCtrl.enable();
+        this.counterMessageService.evalCounterMessage(true);
+        this.counterMessageService.evalFormParamMessages(this.element);
+      } else {
+        frmCtrl.disable();
+      }
+    }
     //rebind the validations as there are dynamic validations along with the static validations
     if (
       frmCtrl != null &&
