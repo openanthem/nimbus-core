@@ -157,8 +157,6 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
         frmCtrl.enable();
         this.counterMessageService.evalCounterMessage(true);
         this.counterMessageService.evalFormParamMessages(this.element);
-      } else {
-        frmCtrl.disable();
       }
     }
     //rebind the validations as there are dynamic validations along with the static validations

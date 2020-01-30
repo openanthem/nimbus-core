@@ -125,8 +125,6 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
           frmCtrl.enable();
           this.counterMessageService.evalCounterMessage(true);
           this.counterMessageService.evalFormParamMessages(this.element);
-        } else {
-          frmCtrl.disable();
         }
       }
       this.subscribers.push(

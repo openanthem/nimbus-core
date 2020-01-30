@@ -145,8 +145,6 @@ export class TreeGrid extends BaseTableElement implements ControlValueAccessor {
           frmCtrl.enable();
           this.counterMessageService.evalCounterMessage(true);
           this.counterMessageService.evalFormParamMessages(this.element);
-        } else {
-          frmCtrl.disable();
         }
       }
       this.subscribers.push(
