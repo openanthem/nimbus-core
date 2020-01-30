@@ -490,8 +490,6 @@ export class DataTable extends BaseTableElement
           frmCtrl.enable();
           this.counterMessageService.evalCounterMessage(true);
           this.counterMessageService.evalFormParamMessages(this.element);
-        } else {
-          frmCtrl.disable();
         }
       }
       this.subscribers.push(

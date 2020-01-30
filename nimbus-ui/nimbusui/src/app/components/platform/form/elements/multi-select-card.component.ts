@@ -156,8 +156,6 @@ export class MultiselectCard extends BaseElement
           frmCtrl.enable();
           this.counterMessageService.evalCounterMessage(true);
           this.counterMessageService.evalFormParamMessages(this.element);
-        } else {
-          frmCtrl.disable();
         }
       }
       frmCtrl.valueChanges.subscribe($event => {

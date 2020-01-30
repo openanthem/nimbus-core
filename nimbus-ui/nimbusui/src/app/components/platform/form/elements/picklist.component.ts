@@ -151,8 +151,6 @@ export class OrderablePickList extends BaseElement
               frmCtrl.enable();
               this.counterMessageService.evalCounterMessage(true);
               this.counterMessageService.evalFormParamMessages(this.element);
-            } else {
-              frmCtrl.disable();
             }
           }
           if (frmCtrl) {
