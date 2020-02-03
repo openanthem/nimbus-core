@@ -19,7 +19,7 @@
 
 import { Component, EventEmitter, Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { Result, ViewRoot } from '../shared/app-config.interface';
 import { UiAttribute } from '../shared/param-config';
@@ -50,32 +50,29 @@ import { URLUtils } from './../shared/url-utils';
  * \@howToUse
  *
  */
+@Component({
+  selector: 'nm-layout',
+  //conflict jit-aot,  below line has to be commented out for gulp-build
+  template: ''
+})
 @Injectable()
 export class LayoutService {
   layout$: EventEmitter<any>;
-  activeLayout: String;
+
   constructor(
     public http: CustomHttpClient,
     private pageSvc: PageService,
     private configSvc: ConfigService,
     private logger: LoggerService,
-    private route: ActivatedRoute,
     private router: Router,
     @Inject(CUSTOM_STORAGE) private sessionstore: SessionStoreService,
     private httpClient: HttpClient
   ) {
     this.layout$ = new EventEmitter<any>();
-    this.pageSvc.eventUpdate$.subscribe(param => {
-      let st = param.path.split('/')[1];
-      if(this.activeLayout == st) {
-        this.getLayout(st);
-      }
-    });
   }
 
   public getLayout(flowName: string) {
     let layoutConfig: ViewRoot = this.configSvc.getFlowConfig(flowName);
-    this.activeLayout = flowName;
     if (layoutConfig) {
       this.parseLayoutConfig(layoutConfig.model);
     } else {
