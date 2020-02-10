@@ -34,9 +34,13 @@ import { Param } from '../shared/param-state';
 export class MaskPipe implements PipeTransform {
   transform(value: any, showMask: boolean, element?: Param): any {
     if (value!=null) {
-      if(element.config.uiStyles.attributes.maskcount && showMask) {
-        let maskedSection = value.slice(0, -element.config.uiStyles.attributes.maskcount);
-        let visibleSection = value.slice(-element.config.uiStyles.attributes.maskcount);
+      if(element.config.uiStyles.attributes.maskcount >= 0 && showMask) {
+        let maskedSection = value;
+        let visibleSection = "";        
+        if (element.config.uiStyles.attributes.maskcount !== 0){
+          maskedSection = value.slice(0, -element.config.uiStyles.attributes.maskcount);
+          visibleSection = value.slice(-element.config.uiStyles.attributes.maskcount);
+        }       
         return maskedSection.replace(/./g, element.config.uiStyles.attributes.maskchar) + visibleSection;
       } else {
         return value;
