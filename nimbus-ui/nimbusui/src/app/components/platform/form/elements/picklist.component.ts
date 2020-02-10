@@ -149,6 +149,7 @@ export class OrderablePickList extends BaseElement
           if(frmCtrl!=null && frmCtrl.status === "DISABLED") {
             if (this.element.enabled && this.element.visible) {
               frmCtrl.enable();
+              frmCtrl.setValue(this.element.leafState);
               this.counterMessageService.evalCounterMessage(true);
               this.counterMessageService.evalFormParamMessages(this.element);
             }
