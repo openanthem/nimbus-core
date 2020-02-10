@@ -3100,7 +3100,7 @@ public class ViewConfig {
 				
 		String type() default "text";
 
-		int maskcount() default 0;
+		int maskcount() default -1;
 		
 		String maskchar() default "";
 
