@@ -87,10 +87,14 @@ public class QueryDslJpaRepositoryExtension<T, ID extends Serializable> extends 
 		return new PageRequestAndRespone<>(convertedResults, pageable, countQuery::fetchCount);
     }
 
-    public List<?> findAll(Predicate predicate, Class<?> outputClass, PathBuilder<?>[] projectionPaths, OrderSpecifier<?> orderBy) {
+    public List<?> findAll(Predicate predicate, Class<?> outputClass, PathBuilder<?>[] projectionPaths, OrderSpecifier<?> orderBy, Long limit) {
     	final JPQLQuery<?> query = createQuery(predicate, projectionPaths);
     	
     	final List<?> results;
+    	
+    	if(limit != null)
+    		query.limit(limit);
+    	
     	if(orderBy==null) 
     		results = query.fetch();
     	else
