@@ -15,19 +15,36 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.mock.web.MockHttpServletRequest;
 
+import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.support.CommandUtils;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
+import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
+import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
+import com.antheminc.oss.nimbus.test.domain.support.utils.ParamUtils;
 import com.antheminc.oss.nimbus.test.scenarios.repo.core.SampleRepoDifferentAlias;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s9.core.SampeS9core;
+import com.antheminc.oss.nimbus.test.scenarios.s9.view.VR_SampleMongoAudit;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -37,6 +54,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @EnableAutoConfiguration
 public class ParamStateAtomicPersistenceEventListenerTest extends AbstractFrameworkIntegrationTests {
+
+	protected static final String VIEW_PARAM_ROOT = PLATFORM_ROOT + "/sample_s9_view";
+	
+	protected static final String CORE_PARAM_ROOT = PLATFORM_ROOT + "/sample_s9_core";
+
 
 	@Autowired
 	@Qualifier("default.processGateway")
@@ -63,4 +85,72 @@ public class ParamStateAtomicPersistenceEventListenerTest extends AbstractFramew
 		// @Repo.alias, not @Domain.value
 		Assert.assertEquals(expected, mongo.findById(1L, SampleRepoDifferentAlias.class, expectedCollectionName));
 	}
+	
+	@Test
+	public void testView_update() {
+		MockHttpServletRequest newReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addAction(Action._new).getMock();
+		Object newResp = controller.handleGet(newReq, null);
+		assertNotNull(newResp);
+		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(newResp);
+		
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(domainRoot_refId)
+				.addNested("/vp/vt/vs/vf/attr1").addAction(Action._update).getMock();
+		Object response1 = controller.handlePut(request, null, converter.toJson("test1"));
+		Param<List<String>> viewParam = ParamUtils.extractResponseByParamPath(response1, "/vp/vt/vs/vf/attr1");
+		assertEquals("test1", viewParam.getState());
+		
+		List<VR_SampleMongoAudit> auditList = mongo.findAll(VR_SampleMongoAudit.class, "sample_s9_auditview");
+		assertEquals(auditList.size(), 1);
+		assertEquals(auditList.get(0).getAttr1(),"test1");
+		assertNull(auditList.get(0).getAttr2());
+
+		
+		MockHttpServletRequest request2 = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(domainRoot_refId)
+				.addNested("/vp/vt/vs/vf/attr2").addAction(Action._update).getMock();
+		Object response2 = controller.handlePut(request2, null, converter.toJson("test2"));
+		Param<List<String>> viewParam2 = ParamUtils.extractResponseByParamPath(response2, "/vp/vt/vs/vf/attr2");
+		assertEquals("test2", viewParam2.getState());
+		
+		List<VR_SampleMongoAudit> auditLst = mongo.findAll(VR_SampleMongoAudit.class, "sample_s9_auditview");
+		assertEquals(auditLst.size(), 2);
+		assertEquals(auditLst.get(0).getAttr1(),"test1");
+		assertNull(auditLst.get(0).getAttr2());
+		assertEquals(auditLst.get(1).getAttr1(),"test1");
+		assertEquals(auditLst.get(1).getAttr2(),"test2");
+
+	}
+	
+	@Test
+	public void testCore_save() {
+		MockHttpServletRequest newReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addAction(Action._new).getMock();
+		Object newResp = controller.handleGet(newReq, null);
+		assertNotNull(newResp);
+		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(newResp);
+		
+		Object resp_save = controller.handlePost(MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(domainRoot_refId)
+				.addNested("/attr1").addAction(Action._update).getMock(),  converter.toJson("test1"));
+		assertNotNull(resp_save);
+
+		List<VR_SampleMongoAudit> auditList = mongo.findAll(VR_SampleMongoAudit.class, "sample_s9_auditview");
+		assertEquals(auditList.size(), 1);
+		assertEquals(auditList.get(0).getAttr1(),"test1");
+		assertNull(auditList.get(0).getAttr2());
+		
+		SampeS9core core = mongo.findById(domainRoot_refId, SampeS9core.class, "sample_s9_core");
+		assertEquals(core.getAttr1(),"test1");
+		
+		Object resp_save1 = controller.handleGet(
+				MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(domainRoot_refId).addAction(Action._save).getMock(), null);
+		assertNotNull(resp_save1);
+		
+		SampeS9core core1 = mongo.findById(domainRoot_refId, SampeS9core.class, "sample_s9_core");
+		assertEquals(core1.getAttr1(),"test1");
+		
+		List<VR_SampleMongoAudit> auditLst = mongo.findAll(VR_SampleMongoAudit.class, "sample_s9_auditview");
+		assertEquals(auditLst.size(), 2);
+		assertEquals(auditLst.get(0).getAttr1(),"test1");
+		assertNull(auditLst.get(1).getAttr2());
+		
+	}
+	
 }
