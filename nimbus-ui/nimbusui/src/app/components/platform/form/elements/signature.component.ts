@@ -225,6 +225,10 @@ export class Signature extends BaseControl<string> {
           Signature.EVENT_NAMES.MOUSE_DOWN,
           Signature.EVENT_NAMES.MOUSE_UP
         );
+        this.registerCaptureOnEvent(
+          Signature.EVENT_NAMES.TOUCH_START,
+          Signature.EVENT_NAMES.TOUCH_END
+        );
         break;
       }
       case 'ON_CLICK': {
@@ -232,13 +236,28 @@ export class Signature extends BaseControl<string> {
           Signature.EVENT_NAMES.CLICK,
           Signature.EVENT_NAMES.CLICK
         );
+        this.registerCaptureOnEvent(
+          Signature.EVENT_NAMES.TOUCH_START,
+          Signature.EVENT_NAMES.TOUCH_END
+        );
+        break;
+      }
+      case 'DEFAULT_MOUSE_ONLY': {
+        this.registerCaptureOnEvent(
+          Signature.EVENT_NAMES.MOUSE_DOWN,
+          Signature.EVENT_NAMES.MOUSE_UP
+        );
+        break;
+      }
+      case 'ON_CLICK_MOUSE_ONLY': {
+        this.registerCaptureOnEvent(
+          Signature.EVENT_NAMES.CLICK,
+          Signature.EVENT_NAMES.CLICK
+        );
         break;
       }
     }
-    this.registerCaptureOnEvent(
-      Signature.EVENT_NAMES.TOUCH_START,
-      Signature.EVENT_NAMES.TOUCH_END
-    );
+    
   }
 
   /**
@@ -414,4 +433,3 @@ export class Signature extends BaseControl<string> {
     callExternalFn(this.canvasEl.toDataURL(), this.getUpdatedDataUrl);
   }
 }
-
