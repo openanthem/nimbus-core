@@ -2722,22 +2722,9 @@ public class ViewConfig {
 
 			/**
 			 * <p>Signature data is captured in between the mouse down and mouse
-			 * up events or between the touch start and touch end events.
-			 */
-			DEFAULT,
-
-			/**
-			 * <p>Signature data is captured upon the click event or between the 
-			 * touch start and touch end events. Capturing will continue until the 
-			 * click event is invoked a second time.
-			 */
-			ON_CLICK,
-
-			/**
-			 * <p>Signature data is captured only in between the mouse down and mouse
 			 * up events.
 			 */
-			DEFAULT_MOUSE_ONLY,
+			DEFAULT,
 
 			/**
 			 * <p>Signature data is captured only upon the click event. Capturing
