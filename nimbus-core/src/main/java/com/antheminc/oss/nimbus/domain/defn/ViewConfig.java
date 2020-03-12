@@ -2727,7 +2727,7 @@ public class ViewConfig {
 			DEFAULT,
 
 			/**
-			 * <p>Signature data is captured only upon the click event. Capturing
+			 * <p>Signature data is captured upon the click event. Capturing
 			 * will continue until the click event is invoked a second time.
 			 */
 			ON_CLICK,
