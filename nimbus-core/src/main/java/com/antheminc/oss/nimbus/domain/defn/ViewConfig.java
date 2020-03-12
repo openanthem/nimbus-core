@@ -26,9 +26,12 @@ import javax.validation.constraints.Past;
 
 import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
+import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
+import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 
 import lombok.Getter;
@@ -50,7 +53,7 @@ import lombok.Setter;
 public class ViewConfig {
 
 	/**
-	 * ** <p> Accordion groups a collection of contents in tabs.
+	 * <p> Accordion groups a collection of contents in tabs.
 	 * 
 	 * <p> <b>Expected Field Structure</b>
 	 * 
@@ -58,6 +61,9 @@ public class ViewConfig {
 	 * of the following components: <ul> <li>{@link Form}</li>
 	 * <li>{@link Section}</li> </ul>
 	 * 
+	 * <p>Accordion will render nested fields that are decorated with: <ul>
+	 * <li>{@link AccordionTab}</li> <li>Undecorated complex class (treated as
+	 * {@link AccordionTab})</li></ul>
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
@@ -83,19 +89,22 @@ public class ViewConfig {
 
 	/**
 	 * <p> AccordionTab contains a collection of contents for an individual
-	 * section within an Accordion.
+	 * section within an {@link Accordion}.
 	 * 
 	 * <p> <b>Expected Field Structure</b>
 	 * 
 	 * <p> AccordionTab should be used to decorate a field in a class that has
-	 * been decorated with Accordion. <p> <p> AccordionTab will render nested
-	 * fields in the same manner declared directly under a {@link Form}
-	 * component
+	 * been decorated with {@link Accordion}.
 	 * 
-	 * <p> AccordionTab used within a {@link Section} component, should contain
-	 * fields decorated with one or more of the following components: <ul>
-	 * <li>{@link CardDetail}</li> <li>{@link ButtonGroup}</li> <li>{@link Grid}
-	 *
+	 * <p><b>When the decorated field is nested within a {@link Form}</b></p>
+	 * <p>All components that are acceptable for a {@link Form} are available to
+	 * be configured within nested {@link AccordionTab} components.
+	 * 
+	 * <p><b>When the decorated field is nested within a {@link Section}</b></p>
+	 * <p>Nested {@link AccordionTab} components will render nested fields that
+	 * are decorated with: <ul> <li>{@link CardDetail}</li>
+	 * <li>{@link CardDetailsGrid}</li> <li>{@link ButtonGroup}</li>
+	 * <li>{@link Form}</li> <li>{@link Grid}</li> <li>{@link Link}</li></ul>
 	 * 
 	 * @since 1.0
 	 */
@@ -147,50 +156,6 @@ public class ViewConfig {
 		String text() default "";
 
 		Type value() default Type.ActionTray;
-	}
-
-	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface Assessment {
-		String alias() default "Assessment";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "text-sm-right";
-	}
-
-	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface BreadCrumb {
-		String alias() default "breadCrumb";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "";
-
-		String label();
-
-		int order();
-
-		boolean postEventOnChange() default false;
 	}
 
 	/**
@@ -370,8 +335,8 @@ public class ViewConfig {
 	 * 
 	 * <p>CardDetail will be rendered when annotating a field nested under one
 	 * of the following components: <ul> <li>{@link Accordion}</li>
-	 * <li>{@link AccordionTab}</li><!-- TODO Candidate for removal --!>
-	 * <li>{@link CardDetailsGrid}</li> <li>{@link Section}</li> </ul>
+	 * <li>{@link AccordionTab}</li> <li>{@link CardDetailsGrid}</li>
+	 * <li>{@link Section}</li> </ul>
 	 * 
 	 * <p>CardDetail will render nested fields that are decorated with: <ul>
 	 * <li>{@link CardDetailsHeader}</li> <li>{@link CardDetailsBody}</li> </ul>
@@ -438,7 +403,7 @@ public class ViewConfig {
 		}
 
 		/**
-		 * <!--TODO Candidate for removal-->
+		 * <!--TODO Write Javadoc -->
 		 * 
 		 * @since 1.0
 		 */
@@ -704,20 +669,6 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface ContentContainer {
-		String alias() default "ContentContainer";
-
-		String content() default "";
-	}
-
-	/**
 	 * <!--TODO Write javadoc-->
 	 *
 	 * @since 1.0
@@ -886,6 +837,9 @@ public class ViewConfig {
 	@Target({ ElementType.FIELD })
 	@ViewStyle
 	public @interface FileUpload {
+		public enum Type {
+			INTERNAL, EXTERNAL;
+		}
 		public enum ControlType {
 			FORMCONTROL
 		}
@@ -912,6 +866,12 @@ public class ViewConfig {
 		String type() default ".pdf,.png";
 
 		String url() default "";
+		
+		Type urlType() default Type.EXTERNAL;
+		
+		String targetParam() default "";
+		
+		
 		
 		Behavior behavior() default Behavior.UPLOAD;
 		
@@ -956,7 +916,7 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Candidate for removal-->
+	 * <!--TODO Write javadoc -->
 	 * 
 	 * @since 1.0
 	 */
@@ -993,7 +953,6 @@ public class ViewConfig {
 	 * <li>{@link Radio}</li>  <li>{@link RichText}</li> 
 	 * <li>{@link Signature}</li> <li>{@link TextArea}</li>
 	 * <li>{@link TextBox}</li> </ul>
-
 	 * 
 	 * <p><i>*Note: Nested class fields will <b>not</b> be rendered in the same
 	 * manner as fields declared directly under the Form decorated field. This
@@ -1133,27 +1092,6 @@ public class ViewConfig {
 		 * styling, if necessary.
 		 */
 		String cssClass() default "";
-	}
-
-	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface GlobalSection {
-		String alias() default "globalSection";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "";
-
-		String imgSrc() default "";
 	}
 
 	/**
@@ -1469,30 +1407,6 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface GridContainer {
-		String alias() default "GridContainer";
-	}
-
-	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(value = { ElementType.ANNOTATION_TYPE })
-	@Inherited
-	public @interface GridFilter {
-
-	}
-
-	/**
 	 * <p>GridRowBody is used to display additional content about the row data
 	 * within a {@link Grid}.
 	 * 
@@ -1562,7 +1476,7 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Write Javadoc -->
+	 * <!--TODO Write javadoc -->
 	 * 
 	 * @since 1.0
 	 */
@@ -1616,7 +1530,16 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Write javadoc-->
+	 * <p>Informs the UI framework to invoke a {@link Action#_get} call to the
+	 * parameter created for the decorated field once the page has been fully
+	 * rendered. {@link Initialize} is commonly used as a way to trigger
+	 * {@link Config} executions only after the page has loaded.
+	 * 
+	 * <p>This annotation is only supported when decorating fields that are also
+	 * decorated with the following: <ul> <li>{@link Section}</li></ul>
+	 *
+	 * <p>Decorating other fields will not result in an error, but no action
+	 * will occur.
 	 *
 	 * @since 1.0
 	 */
@@ -1625,25 +1548,6 @@ public class ViewConfig {
 	@ViewParamBehavior
 	public @interface Initialize {
 		String alias() default "initialize";
-	}
-
-	/**
-	 * <!-- TODO Candidate for removal -->
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface InPlaceEdit {
-		String alias() default "InPlaceEdit";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "";
-
-		String type() default "text";
 	}
 
 	/**
@@ -1708,29 +1612,6 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface LinearGauge {
-		String alias() default "LinearGauge";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "";
-
-		String labelClass() default "anthem-label";
-
-		boolean postEventOnChange() default false;
-	}
-
-	/**
 	 * <p>Link is a hyperlink component used for navigation or user interaction
 	 * of displayed text.
 	 * 
@@ -1751,7 +1632,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Link {
 		public enum Type {
-			DEFAULT, EXTERNAL, INLINE, MENU;
+			DEFAULT, EXTERNAL, INLINE, MENU,DOWNLOAD;
 		}
 
 		String alias() default "Link";
@@ -1809,6 +1690,11 @@ public class ViewConfig {
 		String cssClass() default "dropdownTrigger";
 
 		String imgSrc() default "";
+
+		/**
+		 * <p>When {@code true} the link menu will collapse on clicking a link
+		 */
+		boolean collapseOnClick() default false;
 
 		Image.Type imgType() default Image.Type.FA;
 	}
@@ -2113,7 +1999,7 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Write javadoc-->
+	 * <!--TODO Write javadoc -->
 	 *
 	 * @since 1.0
 	 */
@@ -2129,32 +2015,7 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Candidate for removal-->
-	 * 
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface MultiGrid {
-		String alias() default "MultiGrid";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "question-header";
-
-		String header() default "test";
-
-		String level() default "0";
-
-		boolean postEventOnChange() default false;
-	}
-
-	/**
-	 * <!-- TODO Candidate for removal -->
+	 * <!-- TODO Write javadoc -->
 	 * 
 	 * @since 1.0
 	 */
@@ -2178,13 +2039,13 @@ public class ViewConfig {
 		String labelClass() default "anthem-label";
 
 		boolean postEventOnChange() default false;
-		
+
 		boolean dataEntryField() default true;
 
 	}
 
 	/**
-	 * <!-- TODO Candidate for removal -->
+	 * <!-- TODO Write javadoc -->
 	 * 
 	 * @since 1.0
 	 */
@@ -2413,6 +2274,9 @@ public class ViewConfig {
 
 	/**
 	 * <p>Paragraph is a container for displaying text content.
+	 * 
+	 * <p><b>Usage</b>
+	 * <p>Paragraph renders the text provided in an associated {@link Label} decoration.
 	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
@@ -2879,7 +2743,12 @@ public class ViewConfig {
 			 * <p>Signature data is captured only upon the click event. Capturing
 			 * will continue until the click event is invoked a second time.
 			 */
-			ON_CLICK_MOUSE_ONLY;
+			ON_CLICK,
+            
+            /**
+             * <p>Signature data is captured in between the touch start and touch end events.
+             */
+            ON_TOUCH;
 		}
 
 		String acceptLabel() default "Save";
@@ -2889,8 +2758,18 @@ public class ViewConfig {
 		/**
 		 * <p>Control how the signature drawing will be captured.
 		 * @see com.antheminc.oss.nimbus.domain.defn.ViewConfig.Signature.CaptureType
-		 */
-		CaptureType captureType() default CaptureType.DEFAULT;
+		 * 
+         * <p>Token accepts an array of capture types so multiple types can be assigned 
+         * to the signature field. 
+         * <p><b>Example:</b>
+         * <pre>
+         * &#64;Signature(captureType = {CaptureType.DEFAULT, CaptureType.ON_TOUCH})
+         * </pre>
+         * <p><b>Note:</b>
+         * <p>DEFAULT and ON_CLICK are exclusive mouse events and should not be declared
+         * together in the same array.
+         */
+        CaptureType[] captureType() default {CaptureType.DEFAULT};
 
 		/**
 		 * <p>The label value displayed on the "clear" button.
@@ -2975,27 +2854,7 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!-- TODO Candidate for removal -->
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface SubHeader {
-		String alias() default "SubHeader";
-
-		/**
-		 * <p>CSS classes added here will be added to a container element
-		 * surrounding this component. <p>This can be used to apply additional
-		 * styling, if necessary.
-		 */
-		String cssClass() default "col-sm-6 pb-0 align-top"; // pb-0 is added
-																// for the demo.
-																// It is temp
-																// fix
-	}
-
-	/**
-	 * <!--TODO Javadoc-->
+	 * <!--TODO Write javadoc -->
 	 * 
 	 * @since 1.1
 	 */
@@ -3112,7 +2971,9 @@ public class ViewConfig {
 		InputEvent[] inputEvent() default {};
 				
 		String type() default "text";
-
+		
+		boolean autofill() default false;
+		
 		int maskcount() default -1;
 		
 		String maskchar() default "";
@@ -3332,9 +3193,17 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Write javadoc-->
+	 * <p>A low-level framework annotation that is used to decorate other
+	 * annotations as holding supplemental information that should provided
+	 * alongside a view parameter.
+	 * 
+	 * <p>Decorating an annotation with {@link ViewParamBehavior} will result in
+	 * the decorated annotation's metadata being added to the resulting
+	 * parameter object as an {@link AnnotationConfig}, accessible via
+	 * {@link ParamConfig#getUiNatures()}.
 	 *
 	 * @since 1.0
+	 * @see com.antheminc.oss.nimbus.domain.model.config.builder.internal.AbstractEntityConfigBuilder
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value = { ElementType.ANNOTATION_TYPE })
