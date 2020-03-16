@@ -411,4 +411,17 @@ describe('Signature', () => {
       expect(spy).toHaveBeenCalledWith('click', 'click');
     });
   });
+  
+  it('registerCaptureEvents() should call registerCaptureOnEvent() with touchstart, touchend', () => {
+    fixture.whenStable().then(() => {
+      (hostComponent as any).registerCaptureOnEvent = (a, b) => {};
+      const spy = spyOn(
+        hostComponent as any,
+        'registerCaptureOnEvent'
+      ).and.callThrough();
+      (hostComponent as any).registerCaptureEvents();
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledWith('touchstart', 'touchend');
+    });
+  });
 });
