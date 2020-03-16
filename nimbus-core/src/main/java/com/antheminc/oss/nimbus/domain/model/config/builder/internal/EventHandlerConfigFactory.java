@@ -20,6 +20,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import org.apache.commons.collections4.map.MultiKeyMap;
 import org.springframework.util.CollectionUtils;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
@@ -47,10 +48,13 @@ public class EventHandlerConfigFactory {
 	private final BeanResolverStrategy beanResolver;
 	
 	private AnnotationConfigHandler annotationConfigHandler;
+
+	private MultiKeyMap<Class<?>, Object> cache;
 	
 	public EventHandlerConfigFactory(BeanResolverStrategy beanResolver) {
 		this.beanResolver = beanResolver;
 		this.annotationConfigHandler = beanResolver.find(AnnotationConfigHandler.class, "eventAnnotationConfigBuilder");
+		this.cache = new MultiKeyMap<>();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -72,14 +76,19 @@ public class EventHandlerConfigFactory {
 		return eventConfig.isEmpty() ? null : eventConfig;
 	}
 
-	
+	@SuppressWarnings("unchecked")
 	protected <T> void buildInternal(AnnotatedElement aElem, Class<? extends Annotation> configuredAnnotationType, Class<T> handlerType, BiConsumer<Annotation, T> addHandlerCb) {
 		List<Annotation> annotations = getAnnotationConfigHandler().handleRepeatable(aElem, configuredAnnotationType);
 		if(!CollectionUtils.isEmpty(annotations)) { 
 			
 			annotations.stream()
 				.forEach(a->{
-					T handler = getBeanResolver().get(handlerType, a.annotationType());
+					Class<? extends Annotation> annotationType = a.annotationType();
+					T handler = (T) this.cache.get(handlerType, annotationType);
+					if (handler == null) {
+						handler = getBeanResolver().get(handlerType, annotationType);
+						this.cache.put(handlerType, annotationType, handler);
+					}
 					addHandlerCb.accept(a, handler);
 				});
 		}
