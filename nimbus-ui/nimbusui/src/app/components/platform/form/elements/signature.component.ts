@@ -26,7 +26,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { fromEvent as observableFromEvent } from 'rxjs';
+import { fromEvent as observableFromEvent, Observable } from 'rxjs';
 import { pairwise, switchMap, takeUntil } from 'rxjs/operators';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
 import { Param } from '../../../../shared/param-state';
@@ -121,7 +121,10 @@ export class Signature extends BaseControl<string> {
     CLICK: 'click',
     MOUSE_DOWN: 'mousedown',
     MOUSE_MOVE: 'mousemove',
-    MOUSE_UP: 'mouseup'
+    MOUSE_UP: 'mouseup',
+    TOUCH_START: 'touchstart',
+    TOUCH_MOVE: 'touchmove',
+    TOUCH_END:'touchend'
   };
 
   @ViewChild('canvas') canvas: ElementRef;
@@ -216,22 +219,26 @@ export class Signature extends BaseControl<string> {
    * of captureType.
    */
   private registerCaptureEvents() {
-    switch (this.captureType) {
-      case 'DEFAULT': {
+    this.captureType.forEach((type) => {
+      if(type == 'DEFAULT') {
         this.registerCaptureOnEvent(
           Signature.EVENT_NAMES.MOUSE_DOWN,
           Signature.EVENT_NAMES.MOUSE_UP
         );
-        break;
       }
-      case 'ON_CLICK': {
+      else if(type == 'ON_CLICK') {
         this.registerCaptureOnEvent(
           Signature.EVENT_NAMES.CLICK,
           Signature.EVENT_NAMES.CLICK
         );
-        break;
       }
-    }
+      if(type == 'ON_TOUCH') {
+        this.registerCaptureOnEvent(
+          Signature.EVENT_NAMES.TOUCH_START,
+          Signature.EVENT_NAMES.TOUCH_END
+        );
+      }
+    });
   }
 
   /**
@@ -299,23 +306,32 @@ export class Signature extends BaseControl<string> {
       $endEvent.subscribe(e => this.setIsCapturing(false));
     }
 
-    $startEvent
-      .pipe(
-        switchMap(e => {
-          return observableFromEvent(
-            this.canvasEl,
-            Signature.EVENT_NAMES.MOUSE_MOVE
-          ).pipe(
-            takeUntil($endEvent),
-            pairwise()
-          );
-        })
-      )
-      .subscribe((res: [MouseEvent, MouseEvent]) => {
-        if (this.isEditable() && this.isCapturing) {
-          this.drawOnCanvas(res[0], res[1]);
-        }
-      });
+    if(startEventName != Signature.EVENT_NAMES.TOUCH_START) {
+      this.captureEvent($startEvent, $endEvent, Signature.EVENT_NAMES.MOUSE_MOVE);
+    }
+    else {
+      this.captureEvent($startEvent, $endEvent, Signature.EVENT_NAMES.TOUCH_MOVE);
+    }
+  }
+     
+  private captureEvent($startEvent: Observable<Event>, $endEvent: Observable<Event>, eventName: string){
+    let event = $startEvent
+    .pipe(
+      switchMap(e => {
+        return observableFromEvent(
+          this.canvasEl,
+          eventName
+        ).pipe(
+          takeUntil($endEvent),
+          pairwise()
+        );
+      })
+    )
+    .subscribe((res: [MouseEvent | TouchEvent, MouseEvent | TouchEvent]) => {
+      if (this.isEditable() && this.isCapturing) {
+        this.drawOnCanvas(res[0], res[1]);
+      }
+    });
   }
 
   /**
@@ -342,17 +358,36 @@ export class Signature extends BaseControl<string> {
    * @param prevEvent the previous mouse event, containing position information
    * @param currentEvent the current mouse event, containing position information
    */
-  private drawOnCanvas(prevEvent: MouseEvent, currentEvent: MouseEvent) {
+  private drawOnCanvas(prevEvent: MouseEvent | TouchEvent, currentEvent: MouseEvent | TouchEvent) {
     const rect = this.canvasEl.getBoundingClientRect();
+    let prevClientX: number, prevClientY: number, currClientX: number, currClientY: number;
+    if(prevEvent instanceof MouseEvent && currentEvent instanceof MouseEvent) {
+      prevClientX = prevEvent.clientX;
+      prevClientY = prevEvent.clientY;
+      currClientX = currentEvent.clientX;
+      currClientY = currentEvent.clientY;
+    }
+    else if(prevEvent instanceof TouchEvent && currentEvent instanceof TouchEvent) {
+      let prevTouch = prevEvent.touches[0];
+      let currTouch = currentEvent.touches[0];
+      prevClientX = prevTouch.clientX;
+      prevClientY = prevTouch.clientY;
+      currClientX = currTouch.clientX;
+      currClientY = currTouch.clientY;
+    }
+    else {
+      this.logger.info('Invalid event state, prevEvent type: ' + prevEvent.type + ", currentEvent type: " + currentEvent.type);
+      return;
+    }
 
     const prevPos = {
-      x: (prevEvent.clientX - rect.left) / this.zoomFactor,
-      y: (prevEvent.clientY - rect.top) / this.zoomFactor
+      x: (prevClientX - rect.left) / this.zoomFactor,
+      y: (prevClientY - rect.top) / this.zoomFactor
     };
 
     const currentPos = {
-      x: (currentEvent.clientX - rect.left) / this.zoomFactor,
-      y: (currentEvent.clientY - rect.top) / this.zoomFactor
+      x: (currClientX - rect.left) / this.zoomFactor,
+      y: (currClientY - rect.top) / this.zoomFactor
     };
 
     let cx = this.canvasEl.getContext('2d');

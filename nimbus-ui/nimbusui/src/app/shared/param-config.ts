@@ -127,7 +127,7 @@ export class UiAttribute implements Serializable<UiAttribute, string> {
   border: boolean;
   breadcrumbLabel: string;
   browserBack: boolean = false;
-  captureType: string;
+  captureType: string[];
   charRegex: string;
   clearAllFilters: boolean;
   clearLabel: string;
