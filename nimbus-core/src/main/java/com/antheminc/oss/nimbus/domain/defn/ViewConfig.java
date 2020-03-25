@@ -2866,7 +2866,12 @@ public class ViewConfig {
 			 * <p>Signature data is captured upon the click event. Capturing
 			 * will continue until the click event is invoked a second time.
 			 */
-			ON_CLICK;
+			ON_CLICK,
+
+            /**
+             * <p>Signature data is captured in between the touch start and touch end events.
+             */
+            ON_TOUCH;
 		}
 
 		String acceptLabel() default "Save";
@@ -2876,8 +2881,18 @@ public class ViewConfig {
 		/**
 		 * <p>Control how the signature drawing will be captured.
 		 * @see com.antheminc.oss.nimbus.domain.defn.ViewConfig.Signature.CaptureType
-		 */
-		CaptureType captureType() default CaptureType.DEFAULT;
+		 * 
+		 * <p>Token accepts an array of capture types so multiple types can be assigned 
+         * to the signature field. 
+         * <p><b>Example:</b>
+         * <pre>
+         * &#64;Signature(captureType = {CaptureType.DEFAULT, CaptureType.ON_TOUCH})
+         * </pre>
+         * <p><b>Note:</b>
+         * <p>DEFAULT and ON_CLICK are exclusive mouse events and should not be declared
+         * together in the same array.
+         */
+        CaptureType[] captureType() default {CaptureType.DEFAULT};
 
 		/**
 		 * <p>The label value displayed on the "clear" button.
