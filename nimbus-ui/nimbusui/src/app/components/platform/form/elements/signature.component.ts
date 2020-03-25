@@ -219,8 +219,8 @@ export class Signature extends BaseControl<string> {
    * of captureType.
    */
   private registerCaptureEvents() {
-    this.captureType.forEach((type) => {
-      if(type == 'DEFAULT') {
+    switch (this.captureType) {
+      case 'DEFAULT': {
         this.registerCaptureOnEvent(
           Signature.EVENT_NAMES.MOUSE_DOWN,
           Signature.EVENT_NAMES.MOUSE_UP
@@ -229,20 +229,34 @@ export class Signature extends BaseControl<string> {
           Signature.EVENT_NAMES.TOUCH_START,
           Signature.EVENT_NAMES.TOUCH_END
         );
+        break;
       }
-      else if(type == 'ON_CLICK') {
+      case 'ON_CLICK': {
         this.registerCaptureOnEvent(
           Signature.EVENT_NAMES.CLICK,
           Signature.EVENT_NAMES.CLICK
         );
+        break;
       }
-      if(type == 'ON_TOUCH') {
+      case 'ON_TOUCH': {
         this.registerCaptureOnEvent(
           Signature.EVENT_NAMES.TOUCH_START,
           Signature.EVENT_NAMES.TOUCH_END
         );
+        break;
       }
-    });
+      case 'ON_CLICK_AND_TOUCH': {
+        this.registerCaptureOnEvent(
+          Signature.EVENT_NAMES.CLICK,
+          Signature.EVENT_NAMES.CLICK
+        );
+        this.registerCaptureOnEvent(
+          Signature.EVENT_NAMES.TOUCH_START,
+          Signature.EVENT_NAMES.TOUCH_END
+        );
+        break;
+      }
+    }
   }
 
   /**
