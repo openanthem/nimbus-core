@@ -17,6 +17,7 @@ package com.antheminc.oss.nimbus.domain.model.config;
 
 import java.util.List;
 
+import com.antheminc.oss.nimbus.domain.defn.Lock;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
 
@@ -31,6 +32,8 @@ public interface ModelConfig<T> extends EntityConfig<T> {
 	public String getDomainLifecycle();
 	
 	public Repo getRepo();
+	
+	public Lock getLock();
 
 	//@JsonIgnore
 	public List<? extends ParamConfig<?>> getParamConfigs();

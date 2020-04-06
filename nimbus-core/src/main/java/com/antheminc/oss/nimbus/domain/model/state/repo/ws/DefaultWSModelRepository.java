@@ -177,4 +177,9 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 		}
 	}
 
+	@Override
+	public <T> T _save(String alias, T state) {
+		return null;
+	}
+
 }

@@ -56,11 +56,13 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 	
 	private DomainConfigBuilder domainConfigBuilder;
 	
+	private EntityLockHandler entityLockHandler;
+	
 	public DefaultActionExecutorGet(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
-		
 		this.commandGateway = getBeanResolver().find(CommandExecutorGateway.class);
 		this.domainConfigBuilder = getBeanResolver().find(DomainConfigBuilder.class);
+		this.entityLockHandler = getBeanResolver().find(EntityLockHandler.class);
 	}
 	
 
@@ -76,6 +78,7 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 			return eCtx;
 
 		ModelConfig<?> rootDomainConfig = getRootDomainConfig(eCtx);
+		
 		QuadModel<?, ?> q =  createNewQuad(rootDomainConfig, eCtx);
 		
 		// set to context
@@ -98,6 +101,8 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 		// db - entity
 		if(Repo.Database.exists(repo) ) {
 			if (refId != null || Repo.Database.rep_ws.equals(repo.value())) { // root (view or core) is persistent
+				if(rootDomainConfig.getLock() != null)
+					entityLockHandler.createLock(eCtx, rootDomainConfig, resolvedRepAlias, refId);
 				entity = getRepositoryFactory().get(rootDomainConfig.getRepo())
 						._get(refId, rootDomainConfig.getReferredClass(), resolvedRepAlias, eCtx.getCommandMessage().getCommand().getAbsoluteUri());
 			} else {
@@ -121,7 +126,7 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 		
 		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);
 	}
-
+	
 	protected QuadModel<?, ?> handleMapped(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, Object mapped, Action action) {
 		ModelConfig<?> mapsToConfig = rootDomainConfig.findIfMapped().getMapsToConfig();
 

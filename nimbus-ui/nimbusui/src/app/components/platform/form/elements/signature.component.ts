@@ -219,8 +219,8 @@ export class Signature extends BaseControl<string> {
    * of captureType.
    */
   private registerCaptureEvents() {
-    switch (this.captureType) {
-      case 'DEFAULT': {
+    this.captureType.forEach((type) => {
+      if(type == 'DEFAULT') {
         this.registerCaptureOnEvent(
           Signature.EVENT_NAMES.MOUSE_DOWN,
           Signature.EVENT_NAMES.MOUSE_UP
@@ -231,12 +231,11 @@ export class Signature extends BaseControl<string> {
         );
         break;
       }
-      case 'ON_CLICK': {
+      else if(type == 'ON_CLICK') {
         this.registerCaptureOnEvent(
           Signature.EVENT_NAMES.CLICK,
           Signature.EVENT_NAMES.CLICK
         );
-        break;
       }
       case 'ON_TOUCH': {
         this.registerCaptureOnEvent(
@@ -337,6 +336,7 @@ export class Signature extends BaseControl<string> {
     .pipe(
       switchMap(e => {
         e.preventDefault()
+
         return observableFromEvent(
           this.canvasEl,
           eventName

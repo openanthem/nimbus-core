@@ -411,7 +411,7 @@ describe('Signature', () => {
       expect(spy).toHaveBeenCalledWith('click', 'click');
     });
   });
-
+  
   it('registerCaptureEvents() should call registerCaptureOnEvent() with touchstart, touchend', () => {
     fixture.whenStable().then(() => {
       (hostComponent as any).registerCaptureOnEvent = (a, b) => {};

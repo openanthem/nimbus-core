@@ -26,6 +26,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
@@ -60,12 +61,15 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 	
 	private DomainConfigBuilder domainConfigBuilder;
 	
+	private EntityLockHandler entityLockHandler;
+	
 	public DefaultActionExecutorNew(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 		
 		this.bpmGateway = beanResolver.get(BPMGateway.class);
 		this.commandGateway = getBeanResolver().find(CommandExecutorGateway.class);
 		this.domainConfigBuilder = getBeanResolver().find(DomainConfigBuilder.class);
+		this.entityLockHandler = getBeanResolver().find(EntityLockHandler.class);
 	}
 	
 	/**
@@ -114,6 +118,12 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 		
 		// set to context
 		eCtx.setQuadModel(q);
+		
+		if(rootDomainConfig.getLock() != null) {
+			final Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+			final String resolvedRepAlias = resolveEntityAliasByRepo(rootDomainConfig);			
+			entityLockHandler.createLock(eCtx, rootDomainConfig, resolvedRepAlias, refId);
+		}
 		
 		// hook up BPM
 		Param<?> rootDomainParam = getRootDomainParam(eCtx);

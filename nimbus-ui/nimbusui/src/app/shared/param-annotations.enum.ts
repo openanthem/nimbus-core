@@ -142,3 +142,7 @@ export class ComponentTypes extends Enum<string> {
     return keys;
   }
 }
+
+export class Event extends Enum<string> {
+  public static readonly _input = new Enum('INPUT');
+}

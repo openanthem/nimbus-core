@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
+import com.antheminc.oss.nimbus.domain.defn.Lock;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
@@ -54,6 +55,8 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 	@JsonIgnore private Model model;
 	
 	@JsonIgnore private Repo repo;
+	
+	@JsonIgnore private Lock lock;	
 	
 	private List<ParamConfig<?>> paramConfigs;
 	

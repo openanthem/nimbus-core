@@ -420,18 +420,20 @@ export class DataTable extends BaseTableElement
           this.value = event.tableBasedData.values;
 
           // iterate over currently expanded rows and refresh the data
-          Object.keys(this.dt.expandedRowKeys).forEach(key => {
-            this.value.find((lineItem, index) => {
-              if (lineItem[this.element.elemId] == key) {
-                this._putNestedElement(
-                  event.tableBasedData.collectionParams,
-                  index,
-                  lineItem
-                );
-                return true;
-              }
+          if(this.value) {
+            Object.keys(this.dt.expandedRowKeys).forEach(key => {
+              this.value.find((lineItem, index) => {
+                if (lineItem[this.element.elemId] == key) {
+                  this._putNestedElement(
+                    event.tableBasedData.collectionParams,
+                    index,
+                    lineItem
+                  );
+                  return true;
+                }
+              });
             });
-          });
+          }
 
           // reset the table state in the session after primeNG upgrade.
           this.dt.expandedRowKeys = {};
@@ -482,6 +484,13 @@ export class DataTable extends BaseTableElement
       this.form.controls[this.element.config.code] != null
     ) {
       let frmCtrl = this.form.controls[this.element.config.code];
+      if(frmCtrl.status === "DISABLED") {
+        if (this.element.enabled && this.element.visible) {
+          frmCtrl.enable();
+          this.counterMessageService.evalCounterMessage(true);
+          this.counterMessageService.evalFormParamMessages(this.element);
+        }
+      }
       this.subscribers.push(
         frmCtrl.valueChanges.subscribe($event => {
           if (frmCtrl.valid && this.sendEvent) {
@@ -507,7 +516,7 @@ export class DataTable extends BaseTableElement
 
   getCellDisplayValue(rowData: any, col: ParamConfig) {
     let cellData = rowData[col.code];
-    if (cellData) {
+    if (cellData!=null) {
       if (super.isDate(col.type.name)) {
         return this.dtFormat.transform(
           cellData,
