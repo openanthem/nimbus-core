@@ -68,6 +68,13 @@
                     [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs">
                 </nm-treegrid>
             </ng-template>
+              <!--Tree-->
+              <ng-template [ngIf]="element.alias == componentTypes.tree.toString()">
+                <nm-tree
+                    id="{{element.config?.code}}"
+                    [element]="element">
+                </nm-tree>
+            </ng-template>
             <!--Other buttons. Refactor item : to be triggred based on the buttongroup annotation-->
             <ng-template [ngIf]="element.alias == viewComponent.button.toString() && element?.visible == true">
                 <div class="text-sm-right">

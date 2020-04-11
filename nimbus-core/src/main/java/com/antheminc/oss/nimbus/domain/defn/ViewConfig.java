@@ -3149,6 +3149,27 @@ public class ViewConfig {
 		boolean dataEntryField() default true;
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface Tree {
+		String alias() default "Tree";
+		
+		String imgSrc() default "";
+				
+		String paramPath() default "";
+		
+		boolean postEventOnChange() default false;
+		/**
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
+		 */
+		String cssClass() default "";
+
+		boolean dataEntryField() default true;
+	}
+	
 	/**
 	 * <p>TreeGridChild is the recursive child of {@link TreeGrid} and is used
 	 * to display hierarchical data in tabular format.
