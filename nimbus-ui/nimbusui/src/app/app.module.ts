@@ -192,6 +192,9 @@ import { WindowRefService } from './services/window-ref.service';
 import { CustomErrorHandler } from './shared/custom.error.handler';
 import { GridUtils } from './shared/grid-utils';
 import { StyleGuideCmp } from './styleguide/style-guide.component';
+import {TreeModule} from 'primeng/tree';
+import { TreeDemo } from './components/platform/tree/tree.component';
+
 
 /**
  * \@author Dinakar.Meda
@@ -248,7 +251,8 @@ export function init_app(appinitservice: AppInitService) {
     ToastModule,
     InputSwitchModule,
     ChartModule,
-    EditorModule
+    EditorModule,
+    TreeModule
   ],
   declarations: [
     AppComponent,
@@ -344,6 +348,7 @@ export function init_app(appinitservice: AppInitService) {
     InputLegend,
     FormErrorMessage,
     BaseTableElement,
+    TreeDemo,
     EventPropagationDirective,
     TableHeader,
     NavigationComponent,
@@ -380,8 +385,8 @@ export function init_app(appinitservice: AppInitService) {
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     GridService,
     { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
-    { provide: 'JSNLOG', useValue: JL },
-    { provide: ErrorHandler, useClass: CustomErrorHandler },
+    // { provide: 'JSNLOG', useValue: JL },
+    // { provide: ErrorHandler, useClass: CustomErrorHandler },
     { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
     SessionStoreService,
     AutoCompleteService,
