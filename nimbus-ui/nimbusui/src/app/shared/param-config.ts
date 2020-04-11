@@ -257,6 +257,7 @@ export class UiAttribute implements Serializable<UiAttribute, string> {
   targetParam: string;
   maskcount: number;
   maskchar: string;
+  paramPath: string;
   inputEvent: InputEvent[];
 
   deserialize(inJson) {

@@ -9,6 +9,7 @@ import {MenuItem,TreeNode} from 'primeng/api';
 import {TreeDragDropService} from 'primeng/api';
 import {MessageService} from 'primeng/api';
 import { Tree } from 'primeng/tree';
+import { strictEqual } from 'assert';
 
 @Component({
     selector: 'nm-tree',
@@ -116,9 +117,16 @@ export class TreeDemo extends BaseTableElement {
         return data;
       }
    
-    nodeSelect(event) {
-        event.forEach(node => {
+      postSelectedValues() {
+        let selected = "";
+        this.selectedFiles2.forEach(node => {
             console.log(node.label);
+            selected = selected + ", " + node.data 
         });
+        this.pageSvc.postOnChange(
+            this.element.config.uiStyles.attributes.paramPath,
+            'state',
+            JSON.stringify(selected)
+          );
     }
 }
