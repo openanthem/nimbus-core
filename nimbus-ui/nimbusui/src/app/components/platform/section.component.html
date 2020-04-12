@@ -34,7 +34,7 @@
             <!-- Link Param -->
             <ng-template [ngIf]="element.config?.uiStyles?.isLink">
                 <div class="col-12 smallCardCenter">
-                    <nm-link id="{{element.config?.code}}" [element]="element" [root]="elements"></nm-link>
+                    <nm-link id="{{element.config?.code}}" [element]="element" [root]="element"></nm-link>
                 </div>
             </ng-template>
             <!-- Menu Param -->
@@ -57,6 +57,7 @@
                     [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs"
                     (onScrollEvent)="onScrollEvent()"
                     [position]="position+1"
+                    [ngClass]="element.config.uiStyles.attributes.cssClass"
                     [nmPrint]="element">
                 </nm-table>
             </ng-template>
