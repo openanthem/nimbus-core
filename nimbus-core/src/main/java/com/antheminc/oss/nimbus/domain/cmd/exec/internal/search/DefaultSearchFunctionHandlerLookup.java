@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal.search;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -128,24 +129,68 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		
 		List<String> list = new ArrayList<String>(projectCriteria.getMapsTo().values());
 
-		if(list.size() > 2)
+		if(list.size() > 3)
 			throw new InvalidConfigException("ParamValues lookup failed due to more than 2 fields provided in projection to create the param values for command: "+cmd);
 		
-		String cd = list.get(0).replaceAll(TO_REPLACE, REPLACE_WITH);
-		String lb = list.get(1).replaceAll(TO_REPLACE, REPLACE_WITH);
+		/*
+		 * key = abc,
+		 * value = pqr,
+		 * children:
+		 * 	[
+		 * 		key: gtu,
+		 * 		valye: opl
+		 * 	]
+		 */
+		String cd = projectCriteria.getMapsTo().get("code").replaceAll(TO_REPLACE, REPLACE_WITH);
+		String lb = projectCriteria.getMapsTo().get("label").replaceAll(TO_REPLACE, REPLACE_WITH);
+		
+		String nestedAttr= null;
+		if(projectCriteria.getMapsTo().get("children") != null) {
+			nestedAttr = projectCriteria.getMapsTo().get("children").replaceAll(TO_REPLACE, REPLACE_WITH);
+		}
+		
 		try {
 			List<ParamValue> paramValues = new ArrayList<>();
-			for(Object model: searchResult) {
-				Object code = this.expressionEvaluator.getValue(cd, model);
-				Object label = this.expressionEvaluator.getValue(lb, model);
-				if(code!= null && label !=null) {
-					paramValues.add(new ParamValue(code, label.toString()));
-				}
-			}
+//			for(Object model: searchResult) {
+//				Object code = this.expressionEvaluator.getValue(cd, model);
+//				Object label = this.expressionEvaluator.getValue(lb, model);
+//				if(code!= null && label !=null) {
+//					ParamValue pv = new ParamValue(code, label.toString());
+//					paramValues.add(pv);
+//					
+//					Object nestedAttrVal = this.expressionEvaluator.getValue(nestedAttr, model);
+//					if(nestedAttrVal instanceof Collection<?> && CollectionUtils.isNotEmpty((Collection<?>)nestedAttrVal)) {
+//						List<ParamValue> children = new ArrayList<>();
+//						pv.setChildren(children);
+//						iterateChildren(cd, lb, nestedAttr, (Collection<?>)nestedAttrVal, children);
+//					}
+//				}
+//			}
+			iterateChildren(cd, lb, nestedAttr, searchResult, paramValues);
 			return sortIfApplicable(paramValues, mConfig, cmd);
 		}
 		catch(Exception ex) {
 			throw new FrameworkRuntimeException("Failed to parse property - code: "+list.get(0)+" and label: "+list.get(1)+" for command: "+cmd, ex);
+		}
+	}
+	
+	private void iterateChildren(String cd, String lb, String nestedAttr, Collection<?> from, List<ParamValue> to) {
+		for(Object model: from) {
+			Object code = this.expressionEvaluator.getValue(cd, model);
+			Object label = this.expressionEvaluator.getValue(lb, model);
+			if(code!= null && label !=null) {
+				ParamValue pv = new ParamValue(code, label.toString());
+				to.add(pv);
+				
+				if(StringUtils.isNotBlank(nestedAttr)) {
+					Object nestedAttrVal = this.expressionEvaluator.getValue(nestedAttr, model);
+					if(nestedAttrVal instanceof Collection<?> && CollectionUtils.isNotEmpty((Collection<?>)nestedAttrVal)) {
+						List<ParamValue> children = new ArrayList<>();
+						pv.setChildren(children);
+						iterateChildren(cd, lb, nestedAttr, (Collection<?>)nestedAttrVal, children);
+					}
+				}
+			}
 		}
 	}
 	

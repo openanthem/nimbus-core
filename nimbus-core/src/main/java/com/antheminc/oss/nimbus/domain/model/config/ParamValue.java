@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.domain.model.config;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.antheminc.oss.nimbus.domain.defn.Model;
 
@@ -41,6 +42,8 @@ public class ParamValue implements Serializable {
 	private String desc;
 	
 	//private boolean isActive = true;
+	
+	private List<ParamValue> children;
 	
 	public ParamValue() {}
 	
