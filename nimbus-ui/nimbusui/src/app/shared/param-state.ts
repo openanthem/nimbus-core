@@ -234,11 +234,22 @@ export class Values implements Serializable<Values, string> {
   code: string;
   label: string;
   desc: string;
+  children : Values[];
 
   deserialize(inJson) {
     var obj = this;
     obj = Converter.convert(inJson, obj);
+    this.children = [];
+    for (var p in inJson.children) {
+      if (!ParamUtils.isEmpty(inJson.children[p])) {
+        this.children.push(
+          new Values().deserialize(inJson.children[p])
+        );
+      }
+    }
+    obj['children'] = this.children;
     return obj;
+    
   }
 
   static of(code: string, label: string): Values {
@@ -246,6 +257,30 @@ export class Values implements Serializable<Values, string> {
       code: code,
       label: label
     });
+  }
+}
+
+
+export class TreeData implements Serializable<TreeData, string> {
+
+  data: string;
+  label: string;
+  children : TreeData[];
+
+  deserialize(inJson) {
+    var obj = this;
+    obj["data"] = inJson.code;
+    obj["label"] = inJson.label;
+    this.children = [];
+    for (var p in inJson.children) {
+      if (!ParamUtils.isEmpty(inJson.children[p])) {
+        this.children.push(
+          new TreeData().deserialize(inJson.children[p])
+        );
+      }
+    }
+    obj['children'] = this.children;
+    return obj;
   }
 }
 

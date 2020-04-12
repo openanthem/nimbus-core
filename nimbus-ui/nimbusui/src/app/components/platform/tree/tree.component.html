@@ -1,0 +1,12 @@
+    
+  <nm-input-label
+     *ngIf="!isLabelEmpty && !this.hideLabel"
+     [element]="element"
+     [for]="element.config?.code"
+     [required]="requiredCss"
+   >
+   </nm-input-label>
+    <button (click)="postSelectedValues();">
+        <i class="{{element.config.uiStyles.attributes.imgSrc}}"></i>
+    </button>
+    <p-tree #nbtree [value]="treedata" selectionMode="checkbox" [(selection)]="selectedFields" ></p-tree>
