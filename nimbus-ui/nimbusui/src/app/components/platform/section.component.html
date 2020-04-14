@@ -103,6 +103,10 @@
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.type==componentTypes.textarea.toString()">
                 <nm-input-textarea id="{{element.config?.code}}" [element]="element" [(ngModel)]="element.leafState"></nm-input-textarea>
             </ng-template>
+             <!--Calendar -->
+             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.type==componentTypes.calendar.toString()">
+                <nm-input-calendar id="{{element.config?.code}}" [element]="element" [(ngModel)]="element.leafState"></nm-input-calendar>
+            </ng-template>
             <!--Tab-->
             <ng-template [ngIf]="element.alias == 'Tab'">
                 <nm-tab id="{{element.config?.code}}" [element]="element"></nm-tab>
