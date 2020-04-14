@@ -99,6 +99,10 @@
             <ng-template [ngIf]="element.alias == componentTypes.inputSwitch.toString()">
                 <nm-input-switch id="{{element.config?.code}}" [element]="element" [(ngModel)]="element.leafState"></nm-input-switch>
             </ng-template>
+            <!--TextArea -->
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.type==componentTypes.textarea.toString()">
+                <nm-input-textarea id="{{element.config?.code}}" [element]="element" [(ngModel)]="element.leafState"></nm-input-textarea>
+            </ng-template>
             <!--Tab-->
             <ng-template [ngIf]="element.alias == 'Tab'">
                 <nm-tab id="{{element.config?.code}}" [element]="element"></nm-tab>

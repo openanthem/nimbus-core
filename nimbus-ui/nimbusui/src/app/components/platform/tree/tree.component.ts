@@ -59,31 +59,15 @@ export class TreeDemo extends BaseTableElement {
         for (var p in this.element.values) {
             this.treedata.push(new TreeData().deserialize(this.element.values[p]));
         }
-        this.selectedFields=[];
-        if(this.element.leafState) {
-            this.element.leafState.split('/').forEach(e => {
-                this.selectedFields.push(this.filterData(this.element.values, function(f) {
-                    return e === f.code;
-                }));
+        //this.selectedFields=[];
+        // if(this.element.leafState) {
+        //     this.element.leafState.split('/').forEach(e => {
+        //         this.selectedFields.push(this.filterData(this.element.values, function(f) {
+        //             return e === f.code;
+        //         }));
 
-            });
-        }
-      
-        // this.treedata = [
-        //     {"label": "Accounting/Finance/Audting", "data": "Accounting", "children": []},
-        //     {"label": "Acturial", "data": "Acturial",  "children": []},
-        //     {"label": "Administrative support", "data": "Administrative support", "children": []},
-        //     {"label": "Business Development & Planning", "data": "Business Development & Planning",  "children": []},
-        //     {"label": "Claims", "data": "Claims",  "children": []},
-        //     {"label": "Customer Service", "data": "Customer Service", "children": []},
-        //     {"label": "Education & Training", "data": "Education & Training", "children": []},
-        //     {"label": "Facilities", "data": "Facilities", "children": []},
-        //     {"label": "Information Technology", "data": "Information Technology", 
-        //       "children": [ {"label": "Java", "data": "Java"},
-        //       {"label": ".NET", "data": ".NET"},
-        //       {"label": "Python", "data": "Python"}]}
-        // ]
-      
+        //     });
+        // }      
     }
    
 
@@ -104,11 +88,14 @@ export class TreeDemo extends BaseTableElement {
 
     ngAfterViewInit() {
         this.expandingTree.selectionChange.subscribe(e => {
-            let selected = "";
+            let selected = [];
             this.selectedFields.forEach(node => {
-                selected = selected=="" ? node.data : selected+","+node.data;
+                selected.push(node.data);
             });
             this.element.leafState = selected;
+            if(this.element.config.uiStyles.attributes.postEventOnChange) {
+                this.postSelectedValues();
+            }
         });
     }
     
