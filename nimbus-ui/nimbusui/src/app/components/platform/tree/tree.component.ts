@@ -15,7 +15,7 @@ import { Value } from './../form/elements/value.component';
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TreeData } from './../../../shared/param-state';
+import { TreeData, Values } from './../../../shared/param-state';
 import { PageService } from './../../../services/page.service';
 import { BaseTableElement } from './../base-table-element.component';
 import { Component, ViewChild, ChangeDetectorRef, Input } from '@angular/core';
@@ -45,6 +45,7 @@ export class TreeDemo extends BaseTableElement {
         
     loading: boolean;
     
+    tempList: String[];
     constructor(
         private pageSvc: PageService,
         protected cd: ChangeDetectorRef
@@ -59,32 +60,36 @@ export class TreeDemo extends BaseTableElement {
         for (var p in this.element.values) {
             this.treedata.push(new TreeData().deserialize(this.element.values[p]));
         }
-        //this.selectedFields=[];
-        // if(this.element.leafState) {
-        //     this.element.leafState.split('/').forEach(e => {
-        //         this.selectedFields.push(this.filterData(this.element.values, function(f) {
-        //             return e === f.code;
-        //         }));
-
-        //     });
-        // }      
+        this.selectedFields=[];
+        this.setState(this.element.leafState);     
     }
    
 
-    filterData(data, predicate) {
-
-        // if no data is sent in, return null, otherwise transform the data
-         return !!!data ? null : data.reduce((list, entry) => {
-            if (predicate(entry)) {
-                // if the object matches the filter, clone it as it is
-                return entry;
-            } else if (entry.children != null) {
-                // if the object has childrens, filter the list of children
-                return this.filterData(entry.children, predicate);
+    setState(val) {
+        if(val) {
+            if(this.selectedFields == null) {
+                this.selectedFields = [];
             }
-        }, [])
-
+            this.tempList = val;
+            this.tempList.forEach(item => {
+                let searchedItems: Array<any> = [];
+                this.selectedFields.push(this.search(this.treedata, item, searchedItems));
+            });
+        } 
     }
+
+    search(values: TreeNode[], key: String, searchedItems) {
+        values.forEach(val => {
+            if(val.data == key) {
+                searchedItems.push(val);
+            } else if(val.children) {
+                if(val.children.length > 0 ) {
+                    this.search(val.children, key, searchedItems);
+                }
+            }
+        });
+        return searchedItems[0];
+      }
 
     ngAfterViewInit() {
         this.expandingTree.selectionChange.subscribe(e => {
@@ -97,6 +102,14 @@ export class TreeDemo extends BaseTableElement {
                 this.postSelectedValues();
             }
         });
+
+        this.subscribers.push(
+            this.pageSvc.eventUpdate$.subscribe(event => {
+              if (event.path === this.element.path) {
+                this.setState(event.leafState);
+              }
+            })
+          );
     }
     
     postSelectedValues() {
