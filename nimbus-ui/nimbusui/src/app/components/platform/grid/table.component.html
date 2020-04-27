@@ -215,12 +215,13 @@
         </ng-template>
 
         <ng-template pTemplate="footer" *ngIf="element.config?.uiStyles?.attributes?.postButton">
-          
+            <div class="buttonGroup right">
+                <button (click)="postGridData(this)" type="button" class="btn mt-2 btn-secondary post-btn">
+                    {{element.config.uiStyles.attributes.postButtonLabel}}
+                </button>
+            </div>
         </ng-template>
     </p-table>
-    <div class="buttonGroup right">
-        <button (click)="postGridData(this)" type="button" class="btn btn-secondary post-btn">
-            {{element.config.uiStyles.attributes.postButtonLabel}}
-        </button>
-    </div>
+ 
 </div>
+
