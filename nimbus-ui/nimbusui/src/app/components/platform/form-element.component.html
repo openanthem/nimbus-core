@@ -1,7 +1,7 @@
 
 <div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.dataEntryField" [hidden]="!element?.visible" class="form-group">
    
-    <nm-input id="{{element.config?.code}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.text.toString()" [element]="element" [form]="form"></nm-input>
+    <nm-input id="{{element.config?.code}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias==componentTypes.textBox.toString()" [element]="element" [form]="form"></nm-input>
     <nm-input-mask id="{{element.config?.code}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias==componentTypes.mask.toString()" [element]="element" [form]="form"></nm-input-mask>
     <nm-input-rich-text id="{{element.config?.code}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.richText.toString()" [element]="element" [form]="form"></nm-input-rich-text>
     <nm-signature id="{{element.config?.code}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.signature.toString()" [element]="element" [form]="form"></nm-signature>
