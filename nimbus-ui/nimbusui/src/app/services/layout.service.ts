@@ -58,8 +58,6 @@ import { URLUtils } from './../shared/url-utils';
 @Injectable()
 export class LayoutService {
   layout$: EventEmitter<any>;
-  activeLayout: String;
-  initializeLayout: boolean;
 
   constructor(
     public http: CustomHttpClient,
@@ -71,25 +69,10 @@ export class LayoutService {
     private httpClient: HttpClient
   ) {
     this.layout$ = new EventEmitter<any>();
-    this.pageSvc.eventUpdate$.subscribe(param => {
-      let st = param.path.split('/')[1];
-      if(this.activeLayout == st) {
-        this.getLayout(st);
-      }
-    });
   }
 
   public getLayout(flowName: string) {
     let layoutConfig: ViewRoot = this.configSvc.getFlowConfig(flowName);
-    if (this.activeLayout === flowName){
-      this.initializeLayout = false;
-    }
-    else{
-      this.initializeLayout = true;
-      this.activeLayout = flowName;
-    }
-    console.log('flowName='+flowName);
-    console.log('initializeLayout='+this.initializeLayout);
     if (layoutConfig) {
       this.parseLayoutConfig(layoutConfig.model);
     } else {
@@ -204,8 +187,7 @@ export class LayoutService {
           accordions
         );
         // if param has initialize, execute the config
-        if (param.config && param.config.initializeComponent() && this.initializeLayout) {
-        //if (param.config && param.config.initializeComponent()) {
+        if (param.config && param.config.initializeComponent()) {
           this.pageSvc.processEvent(
             param.path,
             '$execute',
