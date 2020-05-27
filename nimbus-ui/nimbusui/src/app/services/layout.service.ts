@@ -202,7 +202,8 @@ export class LayoutService {
           accordions
         );
         // if param has initialize, execute the config
-        if (param.config && param.config.initializeComponent() && this.initializeLayout) {
+        // if (param.config && param.config.initializeComponent() && this.initializeLayout) {
+        if (param.config && param.config.initializeComponent()) {
           this.pageSvc.processEvent(
             param.path,
             '$execute',
