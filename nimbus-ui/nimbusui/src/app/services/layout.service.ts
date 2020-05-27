@@ -88,6 +88,8 @@ export class LayoutService {
       this.initializeLayout = true;
       this.activeLayout = flowName;
     }
+    console.log('flowName='+flowName);
+    console.log('initializeLayout='+this.initializeLayout);
     if (layoutConfig) {
       this.parseLayoutConfig(layoutConfig.model);
     } else {
@@ -202,8 +204,8 @@ export class LayoutService {
           accordions
         );
         // if param has initialize, execute the config
-        // if (param.config && param.config.initializeComponent() && this.initializeLayout) {
-        if (param.config && param.config.initializeComponent()) {
+        if (param.config && param.config.initializeComponent() && this.initializeLayout) {
+        //if (param.config && param.config.initializeComponent()) {
           this.pageSvc.processEvent(
             param.path,
             '$execute',
