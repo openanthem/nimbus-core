@@ -124,7 +124,7 @@ export class Signature extends BaseControl<string> {
     MOUSE_UP: 'mouseup',
     TOUCH_START: 'touchstart',
     TOUCH_MOVE: 'touchmove',
-    TOUCH_END:'touchend'
+    TOUCH_END: 'touchend'
   };
 
   @ViewChild('canvas') canvas: ElementRef;
@@ -219,26 +219,44 @@ export class Signature extends BaseControl<string> {
    * of captureType.
    */
   private registerCaptureEvents() {
-    this.captureType.forEach((type) => {
-      if(type == 'DEFAULT') {
+    switch(this.captureType) {
+      case 'DEFAULT': {
         this.registerCaptureOnEvent(
           Signature.EVENT_NAMES.MOUSE_DOWN,
           Signature.EVENT_NAMES.MOUSE_UP
         );
-      }
-      else if(type == 'ON_CLICK') {
-        this.registerCaptureOnEvent(
-          Signature.EVENT_NAMES.CLICK,
-          Signature.EVENT_NAMES.CLICK
-        );
-      }
-      if(type == 'ON_TOUCH') {
         this.registerCaptureOnEvent(
           Signature.EVENT_NAMES.TOUCH_START,
           Signature.EVENT_NAMES.TOUCH_END
         );
+        break;
       }
-    });
+      case 'ON_CLICK': {
+        this.registerCaptureOnEvent(
+          Signature.EVENT_NAMES.CLICK,
+          Signature.EVENT_NAMES.CLICK
+        );
+        break;
+      }
+      case 'ON_TOUCH': {
+        this.registerCaptureOnEvent(
+          Signature.EVENT_NAMES.TOUCH_START,
+          Signature.EVENT_NAMES.TOUCH_END
+        );
+        break;
+      }
+      case 'ON_CLICK_AND_TOUCH': {
+        this.registerCaptureOnEvent(
+          Signature.EVENT_NAMES.CLICK,
+          Signature.EVENT_NAMES.CLICK
+        );
+        this.registerCaptureOnEvent(
+          Signature.EVENT_NAMES.TOUCH_START,
+          Signature.EVENT_NAMES.TOUCH_END
+        );
+        break;
+      }
+    }
   }
 
   /**
@@ -318,6 +336,7 @@ export class Signature extends BaseControl<string> {
     let event = $startEvent
     .pipe(
       switchMap(e => {
+        e.preventDefault()
         return observableFromEvent(
           this.canvasEl,
           eventName
