@@ -720,7 +720,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		boolean changed = this.visibleState.setStateConditional(visible, ()->isActive() || !visible);
 		if (!changed)
 			return;
-		// handle nested
 		if(!isNested() /*|| (isTransient() && !findIfTransient().isAssinged())*/)
 			return;
 
