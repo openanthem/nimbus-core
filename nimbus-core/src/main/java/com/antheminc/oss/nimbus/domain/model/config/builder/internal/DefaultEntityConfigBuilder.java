@@ -128,14 +128,9 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		logit.trace(()->"Building Param for config class: "+mConfig.getReferredClass()+ " field : "+f.getName());
 		
 		/* handle ignore field */
-		try {
-			if(AnnotatedElementUtils.isAnnotated(f, ConfigNature.Ignore.class) && 
-					ArrayUtils.isEmpty(f.getAnnotation(ConfigNature.Ignore.class).listeners())) 
-				return null;
-		} catch (Exception e) {
-			logit.error(()->"attempting ignore for field: "+f.getName()+" in class"+f.getDeclaringClass());
+		if(AnnotatedElementUtils.isAnnotated(f, ConfigNature.Ignore.class) && 
+				ArrayUtils.isEmpty(f.getAnnotation(ConfigNature.Ignore.class).listeners())) 
 			return null;
-		}
 		
 		if("serialVersionUID".equals(f.getName())) 
 			return null;
