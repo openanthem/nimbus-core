@@ -15,6 +15,9 @@
  */
 package com.antheminc.oss.nimbus.domain.session;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -63,4 +66,13 @@ public class HttpSessionProvider extends AbstractSessionProvider {
 		return true;
 	}
 	
+	@Override
+	public void clear() {
+		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+		if(requestAttributes != null) {
+			String[] attr = requestAttributes.getAttributeNames(RequestAttributes.SCOPE_SESSION);
+			 Arrays.stream(attr) 
+	         .forEach(e->removeAttribute(e));
+		}
+	}
 }

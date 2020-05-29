@@ -44,6 +44,7 @@ import { EditorModule } from 'primeng/editor';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { MessageModule } from 'primeng/message';
 import { MessagesModule } from 'primeng/messages';
+import { MaskPipe } from './pipes/mask.pipe';
 import {
   AccordionModule,
   AutoCompleteModule,
@@ -345,7 +346,8 @@ export function init_app(appinitservice: AppInitService) {
     BaseTableElement,
     EventPropagationDirective,
     TableHeader,
-    NavigationComponent
+    NavigationComponent,
+    MaskPipe
   ],
   entryComponents: [
     FlowWrapper,

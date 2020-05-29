@@ -13,41 +13,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.entity.person;
+package com.antheminc.oss.nimbus.test.scenarios.s0.view;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
-import com.antheminc.oss.nimbus.entity.AbstractEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo;
+import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewRoot;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.TestModel;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
- * @author Soham Chakravarti
+ * @author Sandeep Mantha
  *
  */
-@Domain(value="name")
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter @Setter @ToString(callSuper=true)
-public class Name extends AbstractEntity.IdLong {
-	
-	private static final long serialVersionUID = 1L;
-	
-	private String firstName;
+@Domain(value="testmodelview", includeListeners={ListenerType.websocket})
+@ViewRoot(layout = "")
+@Repo(value = Repo.Database.rep_none, cache = Repo.Cache.rep_device)
+@Getter @Setter
+@MapsTo.Type(TestModel.class)
+public class VRTestModel {
 
-	private String lastName;
 
-	private String middleName;
-	
-	@JsonIgnore
-	private String fullName;
-	
-	public String getFullName() {
-		return firstName + ' ' + lastName;		
-	}
-	
 }

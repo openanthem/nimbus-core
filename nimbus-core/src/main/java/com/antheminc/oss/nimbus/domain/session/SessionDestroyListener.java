@@ -1,3 +1,7 @@
+package com.antheminc.oss.nimbus.domain.session;
+
+import org.springframework.context.ApplicationListener;
+import org.springframework.security.core.session.SessionDestroyedEvent;
 /**
  *  Copyright 2016-2019 the original author or authors.
  *
@@ -13,40 +17,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.entity.person;
 
-import com.antheminc.oss.nimbus.domain.defn.Domain;
-import com.antheminc.oss.nimbus.entity.AbstractEntity;
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
- * @author Soham Chakravarti
+ * @author Sandeep Mantha
  *
  */
-@Domain(value="phone")
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter @Setter @ToString(callSuper=true)
-public class Phone extends AbstractEntity.IdLong {
-	
-	private static final long serialVersionUID = 1L;
+@Getter
+public class SessionDestroyListener implements ApplicationListener<SessionDestroyedEvent> {
 
-	public enum Type {
-		CELL,
-		OFFICE,
-		HOME,
-		FAX;
+	private final SessionProvider sessionProvider;
+
+	public SessionDestroyListener(BeanResolverStrategy beanResolver) {
+		this.sessionProvider = beanResolver.get(SessionProvider.class);
 	}
 	
-	private Type type;
+	@Override
+	public void onApplicationEvent(SessionDestroyedEvent event) {
+		getSessionProvider().clear();
+	}
 
-	private String number;
-	
-	private String extension;
-	
+
 }

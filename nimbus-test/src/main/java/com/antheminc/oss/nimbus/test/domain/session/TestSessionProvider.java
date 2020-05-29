@@ -46,4 +46,10 @@ public class TestSessionProvider extends AbstractSessionProvider {
 		return true;
 	}
 
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+		sessionMap.clear();
+	}
+
 }

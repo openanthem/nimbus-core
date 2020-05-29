@@ -25,6 +25,8 @@ import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.CheckBox;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ComboBox;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Modal;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditionals;
@@ -154,7 +156,31 @@ public class SampleCoreEntity extends IdLong {
 //		@ActivateConditional(when="state=='Y'", targetPath="../nc_nested_level1")
 //		private String nc_attr1;
 		
+		@ActivateConditional(targetPath = { "../sample_checkBox"}, when = "state == 'Yes'")
+		private String sample_activate;
+		
+		private Boolean sample_checkBox;
+
+		private boolean sample_prim_checkBox;
+		
+		@ActivateConditional(targetPath = { "../nestedCoreSample"}, when = "state == 'Yes'")
+		private String sample_nested_activate;
+		
+		private NestedCoreSample nestedCoreSample;
+		
 		private SampleNoConversionEntity nc_nested0_Details;
+	}
+	
+	@Model
+	@Getter @Setter
+	public static class NestedCoreSample {
+		
+		private String nested_attr1;
+		
+		private Boolean nested_checkbox_attr2;
+
+		private boolean nested_prim_attr3;
+
 	}
 	
 	private SampleCoreValuesEntity sampleCoreValuesEntity;

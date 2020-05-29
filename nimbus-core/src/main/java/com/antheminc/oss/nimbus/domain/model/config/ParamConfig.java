@@ -57,6 +57,9 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	
 	public AnnotationConfig getUiStyles();
 	
+	@JsonIgnore
+	public boolean isTransientData();
+	
 	// TODO Soham: change to list of notification handler annotations
 	public List<AnnotationConfig> getRules();
 	

@@ -13,41 +13,47 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.entity.person;
+package com.antheminc.oss.nimbus.test.scenarios.s0.core;
+
+import org.springframework.data.annotation.Transient;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
+import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.defn.Model;
+import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.entity.AbstractEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 /**
- * @author Soham Chakravarti
+ * @author Sandeep Mantha
  *
  */
-@Domain(value="name")
-@AllArgsConstructor
-@NoArgsConstructor
+
+@Domain(value="testmodel_core", includeListeners={ListenerType.persistence, ListenerType.update})
+@Repo(value=Repo.Database.rep_mongodb)
 @Getter @Setter @ToString(callSuper=true)
-public class Name extends AbstractEntity.IdLong {
-	
+public class TestModel extends AbstractEntity.IdLong {
+
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-	
-	private String firstName;
 
-	private String lastName;
+	private String attr1;
 
-	private String middleName;
+	private String attr2;
+
+	@Transient
+	private String attr3;
+
+	@Transient
+	private String attr4;
+
+	@Transient
+	private InnerTestModel innerTestModel;
 	
-	@JsonIgnore
-	private String fullName;
-	
-	public String getFullName() {
-		return firstName + ' ' + lastName;		
-	}
 	
 }

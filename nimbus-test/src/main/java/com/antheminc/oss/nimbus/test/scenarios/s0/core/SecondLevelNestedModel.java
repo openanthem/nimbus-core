@@ -13,40 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.entity.person;
+package com.antheminc.oss.nimbus.test.scenarios.s0.core;
 
-import com.antheminc.oss.nimbus.domain.defn.Domain;
-import com.antheminc.oss.nimbus.entity.AbstractEntity;
+import com.antheminc.oss.nimbus.domain.defn.Model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
- * @author Soham Chakravarti
+ * @author Sandeep Mantha
  *
  */
-@Domain(value="phone")
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter @Setter @ToString(callSuper=true)
-public class Phone extends AbstractEntity.IdLong {
-	
-	private static final long serialVersionUID = 1L;
 
-	public enum Type {
-		CELL,
-		OFFICE,
-		HOME,
-		FAX;
-	}
+@Model
+@Getter @Setter
+public class SecondLevelNestedModel {
 	
-	private Type type;
+	private String nested3_attr1;
 
-	private String number;
+	private String nested3_attr2;
 	
-	private String extension;
 	
 }
