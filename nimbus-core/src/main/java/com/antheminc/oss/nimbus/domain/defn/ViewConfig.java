@@ -837,6 +837,9 @@ public class ViewConfig {
 	@Target({ ElementType.FIELD })
 	@ViewStyle
 	public @interface FileUpload {
+		public enum Type {
+			INTERNAL, EXTERNAL;
+		}
 		public enum ControlType {
 			FORMCONTROL
 		}
@@ -863,6 +866,12 @@ public class ViewConfig {
 		String type() default ".pdf,.png";
 
 		String url() default "";
+		
+		Type urlType() default Type.EXTERNAL;
+		
+		String targetParam() default "";
+		
+		
 		
 		Behavior behavior() default Behavior.UPLOAD;
 		
@@ -944,7 +953,6 @@ public class ViewConfig {
 	 * <li>{@link Radio}</li>  <li>{@link RichText}</li> 
 	 * <li>{@link Signature}</li> <li>{@link TextArea}</li>
 	 * <li>{@link TextBox}</li> </ul>
-
 	 * 
 	 * <p><i>*Note: Nested class fields will <b>not</b> be rendered in the same
 	 * manner as fields declared directly under the Form decorated field. This
@@ -1624,7 +1632,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Link {
 		public enum Type {
-			DEFAULT, EXTERNAL, INLINE, MENU;
+			DEFAULT, EXTERNAL, INLINE, MENU,DOWNLOAD;
 		}
 
 		String alias() default "Link";
@@ -1682,6 +1690,11 @@ public class ViewConfig {
 		String cssClass() default "dropdownTrigger";
 
 		String imgSrc() default "";
+
+		/**
+		 * <p>When {@code true} the link menu will collapse on clicking a link
+		 */
+		boolean collapseOnClick() default false;
 
 		Image.Type imgType() default Image.Type.FA;
 	}
@@ -2262,6 +2275,9 @@ public class ViewConfig {
 	/**
 	 * <p>Paragraph is a container for displaying text content.
 	 * 
+	 * <p><b>Usage</b>
+	 * <p>Paragraph renders the text provided in an associated {@link Label} decoration.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Paragraph will be rendered when annotating a field nested under one of
@@ -2714,7 +2730,12 @@ public class ViewConfig {
 			 * <p>Signature data is captured upon the click event. Capturing
 			 * will continue until the click event is invoked a second time.
 			 */
-			ON_CLICK;
+			ON_CLICK,
+            
+            /**
+             * <p>Signature data is captured in between the touch start and touch end events.
+             */
+            ON_TOUCH;
 		}
 
 		String acceptLabel() default "Save";
@@ -2724,8 +2745,18 @@ public class ViewConfig {
 		/**
 		 * <p>Control how the signature drawing will be captured.
 		 * @see com.antheminc.oss.nimbus.domain.defn.ViewConfig.Signature.CaptureType
-		 */
-		CaptureType captureType() default CaptureType.DEFAULT;
+		 * 
+         * <p>Token accepts an array of capture types so multiple types can be assigned 
+         * to the signature field. 
+         * <p><b>Example:</b>
+         * <pre>
+         * &#64;Signature(captureType = {CaptureType.DEFAULT, CaptureType.ON_TOUCH})
+         * </pre>
+         * <p><b>Note:</b>
+         * <p>DEFAULT and ON_CLICK are exclusive mouse events and should not be declared
+         * together in the same array.
+         */
+        CaptureType[] captureType() default {CaptureType.DEFAULT};
 
 		/**
 		 * <p>The label value displayed on the "clear" button.
@@ -2924,12 +2955,36 @@ public class ViewConfig {
 
 		boolean readOnly() default false;
 
+		InputEvent[] inputEvent() default {};
+				
 		String type() default "text";
 		
 		boolean autofill() default false;
+		
+		int maskcount() default -1;
+		
+		String maskchar() default "";
 
 	}
 	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	public @interface InputEvent {
+		
+		EventType eventType() default EventType.DEFAULT;
+		
+		int charCountToPostOnce() default 0;
+		
+		int count() default 0;
+
+		public enum EventType {
+
+			DEFAULT,
+
+			INPUT;
+		} 
+		
+	}
 	
 	/**
 	 * <p>InputMask is a text input component.

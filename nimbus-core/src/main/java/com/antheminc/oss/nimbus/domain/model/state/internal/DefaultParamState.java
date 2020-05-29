@@ -724,41 +724,43 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public boolean isVisible() {
-		return visibleState.getCurrState();
+	//	return visibleState.getCurrState();
+		
+		boolean isVisible = visibleState.getCurrState();
+		if(!isVisible)
+			return isVisible;
+		
+		// If the param is Visible navigate up to the top parent node - and assess if any node is set to Not Visible - then return parent node state
+		Param<?> parentParam = Optional.ofNullable(getParentModel())
+			.map(Model::getAssociatedParam)
+			.orElse(null);
+			
+		if(parentParam==null)
+			return isVisible;
+		
+		if(!parentParam.isVisible())
+			return false;
+		
+		return isVisible;
 	}
 	
 	public void setVisible(boolean visible) {
 		boolean changed = this.visibleState.setStateConditional(visible, ()->isActive() || !visible);
 		if (!changed)
 			return;
-		
-		// handle nested
-		if(!isNested() /*|| (isTransient() && !findIfTransient().isAssinged())*/)
-			return;
-		
-		if (null == findIfNested().getParams()) {
-			return;
-		}
-		
-		traverseChildren(p -> p.setVisible(visible));
-		
-		traverseChildren(p -> {
-			
-			if(!p.isStateInitialized())
-				p.onStateLoadEvent();
-			else
-				p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
-			
-		});
-	}
+		// No need to traverse children since html hides the children elements by default
+
+	} 
 	
 	@Override
 	public boolean isEnabled() {
 		return enabledState.getCurrState();
+		
+		
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(boolean enabled) {       
 		boolean changed = this.enabledState.setStateConditional(enabled, ()->isActive() || !enabled);
 		if (!changed)
 			return;
@@ -958,7 +960,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	private boolean isPrimitive() {
-		return ClassUtils.isPrimitiveOrWrapper(getConfig().getReferredClass());
+		return getConfig().getReferredClass().isPrimitive();
 	}
 
 	@Override

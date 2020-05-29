@@ -59,7 +59,17 @@ public @interface Repo {
 
 	/* 1nd level repository: cache (distributed session or sticky) */
 	public enum Cache {
+		/**
+		 * <p> Denotes that the domain entity should not participate in caching.
+		 */
 		rep_none,
+
+		/**
+		 * <p> Denotes that the domain entity should cache at the device level.
+		 * <p> Any domain entity configured with {@link #rep_device} will be
+		 * stored in the session cache.
+		 * @see com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextLoader
+		 */
 		rep_device;
 //		rep_user,
 //		rep_entity;

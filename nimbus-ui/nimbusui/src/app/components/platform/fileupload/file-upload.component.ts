@@ -38,6 +38,7 @@ import { LoggerService } from './../../../services/logger.service';
 import { ServiceConstants } from './../../../services/service.constants';
 import { PageService } from './../../../services/page.service';
 import { FileUpload } from 'primeng/primeng';
+import { ComponentTypes } from '../../../shared/param-annotations.enum';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -124,8 +125,17 @@ export class FileUploadComponent extends BaseElement
 
   ngOnInit() {
     this.selectedFiles = [];
-    this.fileService.metaData = this.element.config.uiStyles.attributes.metaData;
+    this.fileService.metaData =  this.element.config.uiStyles.attributes.metaData;
+    let elementPath = this.element.path;
 
+    let rootDomain = this.pageService.getFlowNameFromPath(elementPath);
+
+    let rootId = this.pageService.getFlowRootDomainId(rootDomain);
+    let replacedElementPath = elementPath;
+    if (rootId != null) {
+       replacedElementPath = elementPath.replace(rootDomain, rootDomain + ':' + rootId);
+     }
+    this.fileService.targetPath = replacedElementPath + this.element.config.uiStyles.attributes.targetParam;
     this.subscribers.push(
       this.fileService.errorEmitter$.subscribe(data => {
         this.pfu.files = [];
@@ -159,6 +169,13 @@ export class FileUploadComponent extends BaseElement
       this.form.controls[this.element.config.code] != null
     ) {
       let frmCtrl = this.form.controls[this.element.config.code];
+      if(frmCtrl.status === "DISABLED") {
+        if (this.element.enabled && this.element.visible) {
+          frmCtrl.enable();
+          this.counterMessageService.evalCounterMessage(true);
+          this.counterMessageService.evalFormParamMessages(this.element);
+        }
+      }
       this.subscribers.push(
         frmCtrl.valueChanges.subscribe($event => {
           if (frmCtrl.valid && this.sendEvent) {
@@ -185,14 +202,14 @@ export class FileUploadComponent extends BaseElement
           this.selectedFiles = [];
           this.value = this.selectedFiles;
         }
-        if (this.pfu.validate(files[p])) {
+        if (this.pfu.accept && this.pfu['isFileTypeValid'](files[p])){  
           let file = files[p];
           this.selectedFiles.push(file);
           this.value = this.selectedFiles;
 
-          file['postUrl'] = this.element.config.uiStyles.attributes.url
-            ? this.element.config.uiStyles.attributes.url
-            : ServiceConstants.PLATFORM_BASE_URL + '/event/upload';
+          file['postUrl'] = this.element.config.uiStyles.attributes.urlType === ComponentTypes.external.toString()
+            ?  this.element.config.uiStyles.attributes.url
+            : ServiceConstants.PLATFORM_BASE_URL + this.element.config.uiStyles.attributes.url;
         }
       }
     }

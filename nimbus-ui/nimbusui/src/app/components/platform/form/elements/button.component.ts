@@ -43,6 +43,7 @@ import { ParamUtils } from './../../../../shared/param-utils';
 import { PrintConfig } from './../../../../shared/print-event';
 import { NimbusFormGroup } from '../../form.component';
 import { ParamConfig } from '../../../../shared/param-config';
+import { LoaderService } from './../../../../services/loader.service';
 
 /**
  * \@author Dinakar.Meda
@@ -251,7 +252,8 @@ export class Button extends BaseElement {
     private logger: LoggerService,
     private differs: KeyValueDiffers,
     private printService: PrintService,
-    private cms: CounterMessageService
+    private cms: CounterMessageService,
+    private loaderService: LoaderService
   ) {
     super();
   }
@@ -389,10 +391,12 @@ export class Button extends BaseElement {
       let files: File[] = item['fileControl'];
       delete item['fileControl'];
       for (let p = 0; p < files.length; p++) {
+        this.loaderService.show();
         this.fileService.uploadFile(files[p], this.form).subscribe(
           data => {
             item['fileId'] = data;
             item['name'] = files[p]['name'];
+            this.loaderService.hide();
             this.pageService.processEvent(
               this.element.path,
               this.element.config.uiStyles.attributes.b,
@@ -400,8 +404,10 @@ export class Button extends BaseElement {
               'POST'
             );
           },
-          error => this.logger.error(error),
-          () => this.logger.info('File uploaded ..')
+          error => {this.loaderService.hide();
+                    this.logger.error(error);
+                  },
+          () => {this.logger.info('File uploaded ..');}
         );
       }
     } else {

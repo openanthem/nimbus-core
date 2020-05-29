@@ -29,6 +29,7 @@ import javax.validation.Constraint;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Page;
 import org.springframework.util.ClassUtils;
 
@@ -457,6 +458,10 @@ abstract public class AbstractEntityConfigBuilder {
 			//List<ParamValue> values = srcValues.getValues(created.getCode());
 			created.setValues(aVal);
 			//created.setValues(values);
+		}
+		
+		if(AnnotatedElementUtils.isAnnotated(f, Transient.class)) {
+			created.setTransientData(true);
 		}
 		
 		if(AnnotatedElementUtils.isAnnotated(f, AssociatedEntity.class)) {
