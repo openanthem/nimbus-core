@@ -58,6 +58,8 @@ public class Notification<T> {
 		public void registerConsumer(MappedParam<?, T> consumer);
 		
 		public boolean deregisterConsumer(MappedParam<?, T> consumer);
+		
+		public boolean deregisterConsumer(MappedParam<?, T> consumer, boolean traverseToLeaf);
 	}
 	
 	public interface Dispatcher<T> {

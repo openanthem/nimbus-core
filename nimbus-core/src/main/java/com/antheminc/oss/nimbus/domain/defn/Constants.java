@@ -112,6 +112,7 @@ public enum Constants {
 	SEARCH_REQ_ORDERBY_DESC_MARKER("desc()"),
 	SEARCH_REQ_ORDERBY_ASC_MARKER("asc()"),
 	SEARCH_REQ_WHERE_MARKER("where"),
+	SEARCH_REQ_LIMIT_MARKER("limit"),
 	
 	SEARCH_REQ_PAGINATION_SIZE("pageSize"),
 	SEARCH_REQ_PAGINATION_PAGE_NUM("page"),
@@ -119,9 +120,10 @@ public enum Constants {
 	
 	SEARCH_NAMED_QUERY_DELIMTER("~~"),
 	SEARCH_NAMED_QUERY_RESULT("result"),
+	HTTP_RESPONSEBODY_INTERCEPTOR_HEADER("responseBody"),
+	HTTP_RESPONSEBODY_INTERCEPTOR_HEADER_RAW("_raw"),	
 	
 	SERVER_AUTOSEARCH_MARKER("autocompletesearchvalue");
-	
 	
 	
 	public final String code;

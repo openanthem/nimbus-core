@@ -28,9 +28,13 @@ public interface ModelConfig<T> extends EntityConfig<T> {
 	
 	public String getAlias();
 	
+	public String getRepoAlias();
+	
 	public String getDomainLifecycle();
 	
 	public Repo getRepo();
+	
+	public boolean isRemote();
 
 	//@JsonIgnore
 	public List<? extends ParamConfig<?>> getParamConfigs();

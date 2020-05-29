@@ -43,6 +43,7 @@ import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.config.builder.EventAnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.ConstraintAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
+import com.antheminc.oss.nimbus.domain.model.config.EntityConfig.Scope;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultEntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultExecutionConfigProvider;
@@ -68,29 +69,26 @@ import lombok.Setter;
  */
 @Configuration
 @EnableConfigurationProperties
-@ConfigurationProperties(prefix="domain.model")
+@ConfigurationProperties(prefix="nimbus.domain.model")
 @Getter @Setter
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public class DefaultCoreBuilderConfig {
 	
-	private Map<String, String> typeClassMappings;
+	private Map<String, String> typeClassMappings = getDefaultTypeClassMappings();
 	
 	private List<String> basePackages;
 	
 	private List<String> basePackagesToExclude;
 	
-	@Value("${platform.config.secure.regex}")
+	private Map<Scope, List<String>> domainSet;
+	
+	@Value("${nimbus.config.secure.regex:'^[a-zA-Z0-9<>()\\[\\]@/: &.=?,$#_-]{1,1000}'}")
 	private String secureRegex;
 	
 	
 	@Bean	
 	public BeanResolverStrategy defaultBeanResolver(ApplicationContext appCtx) {
 		return new DefaultBeanResolverStrategy(appCtx);
-	}
-	
-	@Bean
-	public ChangeLogCommandEventHandler changeLogCommandEventHandler(BeanResolverStrategy beanResolver) {
-		return new ChangeLogCommandEventHandler(beanResolver);
 	}
 	
 	@Bean
@@ -156,8 +154,11 @@ public class DefaultCoreBuilderConfig {
 		if(typeClassMappings==null) {
 			typeClassMappings = new HashMap<>();
 		}
+		if(domainSet == null) {
+			domainSet = new HashMap<>();
+		}
 		
-		return new DefaultEntityConfigBuilder(beanResolver, typeClassMappings);
+		return new DefaultEntityConfigBuilder(beanResolver, typeClassMappings, domainSet);
 	}
 	
 	@Bean
@@ -188,6 +189,11 @@ public class DefaultCoreBuilderConfig {
 	@Bean
 	public SessionDestroyListener sessionDestroyListener(BeanResolverStrategy beanResolver) {
 		return new SessionDestroyListener(beanResolver);
+  }
+	protected Map<String, String> getDefaultTypeClassMappings() {
+		Map<String, String> rv = new HashMap<>();
+		rv.put("java.lang.String", "string");
+		return rv;
 	}
 
 }

@@ -36,7 +36,6 @@ import lombok.EqualsAndHashCode;
 @Repo(value = Database.rep_mongodb)
 public class SampleMultiDbDefaultEntity {
 
-		private static final long serialVersionUID = 1L;
 		@Ignore
 		private final String _class = this.getClass().getName(); 
 		@Id

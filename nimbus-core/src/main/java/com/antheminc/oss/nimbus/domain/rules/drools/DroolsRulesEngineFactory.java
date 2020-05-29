@@ -15,68 +15,67 @@
  */
 package com.antheminc.oss.nimbus.domain.rules.drools;
 
-import java.net.URL;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.drools.KnowledgeBase;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
+import org.apache.commons.collections.CollectionUtils;
 
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.InvalidConfigException;
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
 import com.antheminc.oss.nimbus.domain.model.state.RulesRuntime;
 import com.antheminc.oss.nimbus.domain.rules.RulesEngineFactory;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Soham Chakravarti
  * @author Jayant Chaudhuri
+ * @author Swetha Vemuri
  *
  */
+@Getter @Setter
 public class DroolsRulesEngineFactory implements RulesEngineFactory {
 
-	JustLogit logit = new JustLogit(getClass());
+	private final JustLogit logit = new JustLogit(DroolsRulesEngineFactory.class);
 	
-	Map<String,RulesConfig> ruleConfigurations = new ConcurrentHashMap<String,RulesConfig>();
+	private final Collection<DroolsConfigBuilderStrategy> strategies;
+	
+	public DroolsRulesEngineFactory(BeanResolverStrategy beanResolver) {
+		// lookup of multiple DroolsConfigBuilder Strategy implementation beans
+		this.strategies = beanResolver.getMultiple(DroolsConfigBuilderStrategy.class);
+		
+	}
 	
 	@Override
 	public RulesConfig createConfig(String alias) {
-		String path = alias + ".drl";
-		RulesConfig config = ruleConfigurations.get(path);
-		if(config != null)
-			return config;
 		
-		URL verifyUrl = getClass().getClassLoader().getResource(path);
-		if(verifyUrl==null) {
-			logit.trace(()->"No rules file found at location: "+path);
-			return null;
+		// Filter the strategies which are supported for the alias
+		List<DroolsConfigBuilderStrategy> supportedStrategies = 
+			strategies.stream()
+				.filter(strategy -> strategy.isSupported(alias))
+				.collect(Collectors.toList());
+		
+		//Cannot have more than one supported strategy for the same rule alias. Ex. test.drl and test.xls
+		if (CollectionUtils.size(supportedStrategies) > 1) {
+			throw new InvalidConfigException("Found muliple rule files with the same name: "+alias);	
 			
-		} else { 
-			logit.trace(()->"Rules file found at location: "+verifyUrl);
-		}
-		
-		KnowledgeBuilder kbBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbBuilder.add(ResourceFactory.newClassPathResource(path), ResourceType.DRL);
-		
-		KnowledgeBase kb = null;
-		try {
-			kb = kbBuilder.newKnowledgeBase();
-			kb.addKnowledgePackages(kbBuilder.getKnowledgePackages());
-		} catch (Exception e) {
-			throw new FrameworkRuntimeException("Could not build knowledgeBase, either correct or delete the drl file :"+path+": ", e);
-		}
-		config = new DroolsRulesConfig(path, kb);
-		ruleConfigurations.put(path, config);
-		return config;
+		} else if (CollectionUtils.isEmpty(supportedStrategies)) {
+			logit.trace(() -> "No rules file found with alias: "+alias);
+			return null;
+								
+		} else {
+			//Build config for the supported strategy
+			RulesConfig config = supportedStrategies.get(0).buildConfig(alias);
+			return config;		
+		} 
 	}
 
 	@Override
 	public RulesRuntime createRuntime(RulesConfig config) {
-		DroolsRulesRuntime runtime = new DroolsRulesRuntime(config);
-		return runtime;
+		return new DroolsRulesRuntime(config);
 	}
-
 }

@@ -22,112 +22,44 @@ spring:
         
 security:
     basic:
-      enabled: 
-              false
+      enabled: false
 
+nimbus:
+  domain:
+    model:
+      basePackages:
+        - com.antheminc.oss.nimbus.entity
+        - com.antheminc.oss.nimbus.**.core
+        - com.antheminc.oss.nimbus.**.view
+        - com.antheminc.oss.nimbus.domain.bpm
+        - com.antheminc.oss.nimbus.domain.rules
+      basePackagesToExclude:
+        - com.antheminc.oss.nimbus.test.exclude.core.*
+        
+      typeClassMappings:
+        java.time.LocalDate : 
+          date
+        java.lang.String : 
+          string
 
-ruleBasedRequestHandler:
-                     - defaultRuleBasedRequestHandler
-                     - defaultRuleBasedResponseHandler
-
-scriptBasedRequestHandler: defaultScriptBasedRequestHandler
-scriptBasedResponseHandler: defaultScriptBasedResponseHandler
-
-scriptHandlerType: cript
-customHandlerType: Custom
-
-stomp:
-    hostName: localhost
-    port: 61613
-
-domain:
-  model:
-    basePackages:
-      - com.antheminc.oss.nimbus.entity
-      - com.antheminc.oss.nimbus.**.core
-      - com.antheminc.oss.nimbus.**.view
-      - com.antheminc.oss.nimbus.domain.bpm
-      - com.antheminc.oss.nimbus.domain.rules
-    basePackagesToExclude:
-      - com.antheminc.oss.nimbus.test.exclude.core.*
-      
-    typeClassMappings:
-      java.time.LocalDate : 
-        date
-      java.lang.String : 
-        string
-    includeFilter: ['a','b']
-    persistenceStrategy: ATOMIC
-  action: abc
-    
-  validation:
-    markerAnnotations:
-      javax.validation.Constraint
-    markerInterfaces:
-   
-logging:
-  file: ${HOME}/Documents/nimbuslogs/test-nimbus.log
-user:
-  permissionToActions:
-    ACCESS:
-      _get,_info,_search,_new,_replace,_update,_delete,_nav,_process
-    READ:
-      _get,_info,_search,_getAll,_nav,_process
-    CREATE:
-      _new,_nav,_process
-    UPDATE:
-      _update,_replace,_nav,_process
-    DELETE:
-      _delete,_nav,_process
-  #authenticationStrategyBeans:
-     #jwtAuthenticationStrategy,ldapAuthenticationStrategy
-
-process:
-  key:
-    regex:
-     ([A-Za-z0-9_\\-\\*~\\?=\\.\\$]+)
-  database:
-    driver: 
-      embeddedH2
-    url: 
-      embeddedH2
-    username: 
-      embeddedH2
-    password: 
-      embeddedH2
-    taskUpdateQuery:
-      update ACT_RU_TASK set TASK_DEF_KEY_ = ?, NAME_ = ? WHERE ID_=?
-    executionUpdateQuery:
-      update ACT_RU_EXECUTION set ACT_ID_ = ?  WHERE ID_=? AND ACT_ID_=?   
-  history:
-    level: 
-      none  
-  definitions:
-   - classpath*:process-defs/**.xml          
-template:
-  definitions:
-    - path: e_post/*/comm/icr/p/flow_umcase/_findPatient/_process/_execute
-      id: flow_umcase_findPatient
-      criteria:  
-model:
-  persistence:
-    strategy:
-      mode:
-        ATOMIC
-dsl:
-  behavior:
-    extensions:
-      #$execute:
-        #$save
-
-platform:
-  config:
-    secure:
-      regex: "^[a-zA-Z0-9<>()\\[\\]@/: &.=?,$\n\r#_-]{1,}"
-ext:
-  repository:
-    targetUrl: 
-      ext_client: http://localhost:9095
+      domainSet:
+        remote: 
+          remote_repo, remote_repo2, vr_remote_repo2 
+  
+  ext:
+    repository:
+      targetUrl: 
+        ext_client: http://localhost:9095
+        
+  process:
+    history:
+      level: none
+        
+  search:
+    lookup:
+      inMemory:
+        sortThreshold: 100
+        exceptionIfOverSortThreshold: true  
       
 test:
   url:
@@ -137,10 +69,13 @@ test:
     initialize: some-alias
   key1: key1
   key2: key2
-search:
-  threshold:
-    1
-  lookup:
-    inMemory:
-      sortThreshold: 100
-      exceptionIfOverSortThreshold: true   
+
+remote:
+  repository:
+    serviceUrl:
+      remote_repo: http://remote-repo/contextpath
+      remote_repo2: http://remote_repo/contextpath
+      vr_remote_repo2: http://remote_repo/contextpath
+      remote_repo_withcontext: http://remote-repo/contextpath
+      cliententity: http://cliententity
+      client: http://client      

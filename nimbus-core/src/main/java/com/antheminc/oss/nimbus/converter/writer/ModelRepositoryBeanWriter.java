@@ -21,6 +21,7 @@ import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
+import com.antheminc.oss.nimbus.support.RefIdHolder;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,8 @@ public class ModelRepositoryBeanWriter<T> implements RowProcessingHandler<T> {
 			throw new FrameworkRuntimeException("Unable to find model config for " + bean);
 		}
 		ModelRepository modelRepository = getModelRepositoryFactory().get(modelConfig.getRepo());
-		T newState = modelRepository._new(modelConfig, bean);
+		RefIdHolder<T> refIdHolder = modelRepository._new(null, modelConfig, bean);
+		T newState = refIdHolder.getState();
 		modelRepository._save(modelConfig.getAlias(), newState);
 	}
 

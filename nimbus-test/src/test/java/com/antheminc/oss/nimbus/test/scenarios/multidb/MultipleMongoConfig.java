@@ -21,6 +21,7 @@ import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -31,7 +32,12 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
+import com.antheminc.oss.nimbus.app.extension.config.DefaultMongoConfig;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ChangeLogCommandEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositoryOptions;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
 import com.mongodb.MongoClient;
@@ -45,10 +51,10 @@ import lombok.RequiredArgsConstructor;
  */
 @Configuration
 @RequiredArgsConstructor
-@EnableConfigurationProperties(NimbusMongoProperties.class)
-public class MultipleMongoConfig {
+@EnableConfigurationProperties(MongoPropertiesTest.class)
+public class MultipleMongoConfig extends DefaultMongoConfig {
 
-	private final NimbusMongoProperties nimbusMongoProperties;
+	private final MongoPropertiesTest nimbusMongoProperties;
 	
 	@Autowired
 	private IMongodConfig embeddedMongoConfig;
@@ -65,7 +71,7 @@ public class MultipleMongoConfig {
 //		return useCustomConnections(mongoProperties);
 		return useEmbeddedConnection(mongoProperties);
 	}
-
+	
 	@Primary
 	@Bean("default.rep_dbPrimary")
 	public DefaultMongoModelRepository mongoModelRepositoryPrimary(
@@ -119,5 +125,13 @@ public class MultipleMongoConfig {
 	 */
 	private MongoDbFactory useEmbeddedConnection(MongoProperties mongoProperties) {
 		return new SimpleMongoDbFactory(new MongoClient(embeddedMongoConfig.net().getBindIp(), embeddedMongoConfig.net().getPort()), mongoProperties.getDatabase());
+	}
+	
+	@Bean
+	@DependsOn("default.rep_dbPrimary")
+	@Override
+	public ChangeLogCommandEventHandler changeLogCommandEventHandler(BeanResolverStrategy beanResolver, ModelRepositoryFactory modelRepositoryFactory) {
+		ModelRepository modelRepository = modelRepositoryFactory.get(Repo.Database.rep_custom, "rep_dbPrimary");
+		return new ChangeLogCommandEventHandler(beanResolver, modelRepository);
 	}
 }

@@ -51,6 +51,10 @@ public @interface Repo {
 			return exists(repo) && (repo.value() == Database.rep_mongodb || repo.value() == Database.rep_rdbms
 					|| repo.value() == Database.rep_custom);
 		}
+		
+		public static boolean isRefIdRequired(Repo repo) {
+			return repo != null && (Database.rep_ws != repo.value());
+		}
 	}
 
 	/* 1nd level repository: cache (distributed session or sticky) */
@@ -74,6 +78,11 @@ public @interface Repo {
 			return repo!=null && repo.cache()!=Repo.Cache.rep_none;
 		}
 	}
+	
+	public enum Remote {
+		rep_remote_ws,
+		rep_remote_none;
+	}
 
 	
 	String alias() default "";
@@ -81,6 +90,8 @@ public @interface Repo {
 	Database value();	
 	
 	Cache cache() default Cache.rep_device;	
+	
+	Remote remote() default Remote.rep_remote_ws;
 	
 	boolean autoSave() default true;
 	

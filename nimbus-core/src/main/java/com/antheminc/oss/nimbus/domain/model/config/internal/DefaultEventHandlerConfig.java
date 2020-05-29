@@ -34,6 +34,7 @@ import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.On
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadNewHandler;
+import com.antheminc.oss.nimbus.domain.model.state.repo.event.RepoEventHandlers.OnPersistHandler;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -53,6 +54,9 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 	private _InternalConfig<OnStateLoadNewHandler<Annotation>> onStateLoadNewHandlers = new _InternalConfig<>();
 	
 	private _InternalConfig<OnStateChangeHandler<Annotation>> onStateChangeHandlers = new _InternalConfig<>();
+	
+	// repo handlers
+	private _InternalConfig<OnPersistHandler<Annotation>> onPersistHandlers = new _InternalConfig<>();
 	
 	private static class _InternalConfig<T> {
 		private static final Comparator<Annotation> DEFAULT_ORDER_COMPARATOR = new Comparator<Annotation>() {
@@ -138,7 +142,9 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 			
 			onStateLoadHandlers.isEmpty() &&
 			onStateLoadNewHandlers.isEmpty() &&
-			onStateChangeHandlers.isEmpty()
+			onStateChangeHandlers.isEmpty() &&
+			
+			onPersistHandlers.isEmpty()
 		;
  	}
 	
@@ -220,5 +226,25 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 	@Override
 	public OnStateChangeHandler<Annotation> getOnStateChangeHandler(Annotation a) throws InvalidConfigException {
 		return onStateChangeHandlers.getHandler(a);
+	}
+	
+	/* onPersist */
+	@Override
+	public Set<Annotation> getOnPersistAnnotations() {
+		return onPersistHandlers.getAnnotations();
+	}
+	
+	public void add(Annotation a, OnPersistHandler<Annotation> handler) {
+		onPersistHandlers.add(a, handler);
+	}
+	
+	@Override
+	public Optional<OnPersistHandler<Annotation>> findOnPersistHandler(Annotation a) {
+		return onPersistHandlers.findHandler(a);
+	}
+	
+	@Override
+	public OnPersistHandler<Annotation> getOnPersistHandler(Annotation a) throws InvalidConfigException {
+		return onPersistHandlers.getHandler(a);
 	}
 }

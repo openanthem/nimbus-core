@@ -20,12 +20,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
-
+import org.junit.Assert;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +41,12 @@ import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTes
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * @author Soham Chakravarti
@@ -122,5 +126,140 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 		domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(home_newResp);
 		ctx.publishEvent(new HttpSessionDestroyedEvent(session));
 		assertNull(sessionProvider.getAttribute("{/"+VIEW_DOMAIN_ALIAS+":"+domainRoot_refId+"}"));
+  }
+	public void testMappedRootDBDeletion() {
+		Long refId = createOrGetDomainRoot_RefId();
+		
+		// Validate the entity was persisted in the before step.
+		Assert.assertNotNull(mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS));
+		
+		// Delete the state for sample_core:1
+		MockHttpServletRequest req_delete = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addAction(Action._delete).getMock();
+		controller.handleGet(req_delete, null);
+		
+		// Validate the state is null after deletion for sample_core:1
+		Assert.assertNull(mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS));
+	}
+	
+	// TODO Investigate why this is failing
+	@Ignore
+	@Test
+	public void testMappedRootDeleteAndRetrieval() {
+		Long refId = createOrGetDomainRoot_RefId();
+		
+		// Fetch and validate the state is set for sample_core:1
+		MockHttpServletRequest req_get = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addAction(Action._get).getMock();
+		
+		Object resp_get1 = controller.handleGet(req_get, null);
+		Param<Object> p1 = ExtractResponseOutputUtils.extractOutput(resp_get1);
+		Assert.assertNotNull(p1.getState());
+		
+		// Delete the state for sample_core:1
+		MockHttpServletRequest req_delete = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addAction(Action._delete).getMock();
+		controller.handleGet(req_delete, null);
+		
+		// Fetch and validate the state is null after deletion for sample_core:1
+		Object resp_get2 = controller.handleGet(req_get, null);
+		Param<Object> p2 = ExtractResponseOutputUtils.extractOutput(resp_get2);
+		Assert.assertNull(p2.getState());
+	}
+	
+	@Test
+	public void testCoreRootDBDeletion() {
+		Long refId = createOrGetDomainRoot_RefId();
+		
+		// Fetch and validate the state is set for sample_core:1
+		Assert.assertNotNull(mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS));
+		
+		// Delete the state for sample_core:1
+		MockHttpServletRequest req_delete = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
+				.addAction(Action._delete).getMock();
+		controller.handleGet(req_delete, null);
+		
+		// Fetch and validate the state is null after deletion for sample_core:1
+		Assert.assertNull(mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS));
+	}
+	
+	// TODO Investigate why this is failing
+	@Ignore
+	@Test
+	public void testCollectionDBDeletion() throws JsonProcessingException {
+		Long refId = createOrGetDomainRoot_RefId();
+		
+		// Set and verify the state of a collection element
+		MockHttpServletRequest req_set = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
+				.addNested("/attr_list_String").addAction(Action._replace).getMock();
+		List<String> state = Arrays.asList(new String[] { "one", "two" });
+		controller.handlePost(req_set, om.writeValueAsString(state));
+		Assert.assertEquals(state, mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS).getAttr_list_String());
+		
+		// Delete the collection element
+		MockHttpServletRequest req_delete = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
+				.addNested("/attr_list_String").addAction(Action._delete).getMock();
+		controller.handleGet(req_delete, null);
+		
+		// Fetch and validate the state is null after deletion for sample_core:1
+		Assert.assertNull(mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS).getAttr_list_String());
+	}
+	
+	// TODO Investigate why this is failing
+	@Ignore
+	@Test
+	public void testCollectionDelete() throws JsonProcessingException {
+		Long refId = createOrGetDomainRoot_RefId();
+		
+		// Set the state of a collection element
+		MockHttpServletRequest req_set = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
+				.addNested("/attr_list_String").addAction(Action._replace).getMock();
+		List<String> state = Arrays.asList(new String[] { "one", "two" });
+		controller.handlePost(req_set, om.writeValueAsString(state));
+		
+		// Verify the state of a collection element was set
+		MockHttpServletRequest req_get = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
+				.addNested("/attr_list_String").addAction(Action._get).getMock();
+		Object resp_get1 = controller.handleGet(req_get, null);
+		Param<List<String>> p1 = ExtractResponseOutputUtils.extractOutput(resp_get1);
+		Assert.assertEquals(state, p1.getState());
+		
+		// Delete the collection element
+		MockHttpServletRequest req_delete = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
+				.addNested("/attr_list_String").addAction(Action._delete).getMock();
+		controller.handleGet(req_delete, null);
+		
+		// Fetch and validate the state is null after deletion for sample_core:1
+		Object resp_get2 = controller.handleGet(req_get, null);
+		Param<List<String>> p2 = ExtractResponseOutputUtils.extractOutput(resp_get2);
+		Assert.assertNull(p2.getState());
+	}
+	
+	@Test
+	public void testParamDelete() throws JsonProcessingException {
+		Long refId = createOrGetDomainRoot_RefId();
+		
+		// Set the state of a collection element
+		MockHttpServletRequest req_set = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
+				.addNested("/q2").addAction(Action._replace).getMock();
+		String state = "one";
+		controller.handlePost(req_set, om.writeValueAsString(state));
+		
+		// Verify the state of a collection element was set
+		MockHttpServletRequest req_get = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
+				.addNested("/q2").addAction(Action._get).getMock();
+		Object resp_get1 = controller.handleGet(req_get, null);
+		Param<String> p1 = ExtractResponseOutputUtils.extractOutput(resp_get1);
+		Assert.assertEquals(state, p1.getState());
+		
+		// Delete the collection element
+		MockHttpServletRequest req_delete = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
+				.addNested("/q2").addAction(Action._delete).getMock();
+		controller.handleGet(req_delete, null);
+		
+		// Fetch and validate the state is null after deletion for sample_core:1
+		Object resp_get2 = controller.handleGet(req_get, null);
+		Param<String> p2 = ExtractResponseOutputUtils.extractOutput(resp_get2);
+		Assert.assertNull(p2.getState());
 	}
 }

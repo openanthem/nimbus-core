@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -27,17 +30,15 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
-import org.springframework.core.type.filter.TypeFilter;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.domain.model.config.ModelConfig.MappedModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.ClassLoadUtils;
-
-import java.util.regex.Pattern;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -50,6 +51,9 @@ import lombok.Getter;
 public class DomainConfigBuilder {
 
 	private final Map<String, ModelConfig<?>> cacheDomainRootModel;
+	private final Map<ModelConfig<?>, List<MappedModelConfig<?, ?>>> cachedMapsTo2MappedModel;
+	
+	
 	private final EntityConfigVisitor configVisitor;
 
 	private final EntityConfigBuilder configBuilder;
@@ -67,6 +71,8 @@ public class DomainConfigBuilder {
 								.orElseThrow(()->new InvalidConfigException("base packages must be configured for scanning domain models."));
 		
 		this.cacheDomainRootModel = new HashMap<>();
+		this.cachedMapsTo2MappedModel = new ConcurrentHashMap<>();
+		
 		this.configVisitor = new EntityConfigVisitor();
 		this.packagesToexclude=packagesToexclude;
 		this.scanner = new ClassPathScanningCandidateComponentProvider(false);
@@ -91,6 +97,21 @@ public class DomainConfigBuilder {
 	
 	public ModelConfig<?> getModel(Class<?> mClass) {
 		return getConfigVisitor().get(mClass);
+	}
+	
+	public List<MappedModelConfig<?, ?>> findMappedConfigs(ModelConfig<?> mapsTo) {
+		if(getCachedMapsTo2MappedModel().containsKey(mapsTo))
+			return getCachedMapsTo2MappedModel().get(mapsTo);
+		
+		List<MappedModelConfig<?, ?>> mappedList = getCacheDomainRootModel().values().stream()
+			.filter(ModelConfig::isMapped)
+			.map(ModelConfig::findIfMapped)
+			.filter(mapped->mapped.getMapsToConfig()==mapsTo)
+			.collect(Collectors.toList())
+			;
+		
+		getCachedMapsTo2MappedModel().put(mapsTo, mappedList);
+		return mappedList;
 	}
 	
 	@PostConstruct

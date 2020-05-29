@@ -15,11 +15,14 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,10 +39,13 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 
 	private final BeanResolverStrategy beanResolver;
 	
-	public DefaultModelRepositoryFactory(BeanResolverStrategy beanResolver) {
+	private final Map<String, ModelRepository> REPO_BEAN_LOOKUP;
+		
+	public DefaultModelRepositoryFactory(BeanResolverStrategy beanResolver, Map<String, ModelRepository> repoBeanLookup) {
 		this.beanResolver = beanResolver;
+		this.REPO_BEAN_LOOKUP = repoBeanLookup;
 	}
-	
+
 	@Override
 	public ModelRepository get(Repo repo) {
 		return repo != null ? get(repo.value(), repo.modelRepositoryBean()) : null;
@@ -48,7 +54,7 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 	@Override
 	public ModelRepository get(Repo.Database db, String extensionBean) {
 		if (!Repo.Database.rep_custom.equals(db)) {
-			return getBeanResolver().get(ModelRepository.class, db.name());
+			return REPO_BEAN_LOOKUP.get(db.name());
 		}
 
 		if (StringUtils.isEmpty(extensionBean)) {
@@ -59,6 +65,13 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 	}
 		
 	@Override
+	public ModelRepository get(ModelConfig<?> mConfig) {
+		if(mConfig.isRemote()) {
+			return REPO_BEAN_LOOKUP.get(mConfig.getRepo().remote().name());
+		} 			
+		return get(mConfig.getRepo());
+	}
+
 	public ModelRepository get(Repo.Database db) {
 		return get(db, null);
 	}

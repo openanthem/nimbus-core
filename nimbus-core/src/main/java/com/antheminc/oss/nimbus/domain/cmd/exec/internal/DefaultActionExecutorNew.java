@@ -22,10 +22,12 @@ import org.apache.commons.lang3.StringUtils;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
+import com.antheminc.oss.nimbus.domain.bpm.ProcessRepository;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
@@ -60,12 +62,15 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 	
 	private DomainConfigBuilder domainConfigBuilder;
 	
+	private ProcessRepository processRepo; // TODO this dependency is to support process state persistence, temporary, need to re-design
+	
 	public DefaultActionExecutorNew(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 		
 		this.bpmGateway = beanResolver.get(BPMGateway.class);
 		this.commandGateway = getBeanResolver().find(CommandExecutorGateway.class);
 		this.domainConfigBuilder = getBeanResolver().find(DomainConfigBuilder.class);
+		this.processRepo = getBeanResolver().find(ProcessRepository.class);
 	}
 	
 	/**
@@ -98,7 +103,11 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 		if(cmdMsg.getCommand().isRootDomainOnly()) {
 			String idParamCode = p.findIfNested().getIdParam().getConfig().getCode();
 			ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(p.getConfig().getReferredClass(), idParamCode);
-			getJavaBeanHandler().setValue(va, newState, cmdMsg.getCommand().getRootDomainElement().getRefId());
+			
+			Long id = RefId.nullSafeGetId(cmdMsg.getCommand().getRootDomainElement().getRefId(),
+					()->new InvalidStateException("Expected to find refId for cmdMsg: "+cmdMsg+" with newState: "+newState));
+			
+			getJavaBeanHandler().setValue(va, newState, id);
 		}
 										
 		p.setState(newState);
@@ -117,6 +126,7 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 		
 		// hook up BPM
 		Param<?> rootDomainParam = getRootDomainParam(eCtx);
+		
 		ProcessFlow processEntityState = startBusinessProcess(rootDomainParam);
 		
 		if(processEntityState==null)
@@ -174,7 +184,7 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 	
 	
 	private void updateCommandWithRefId(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, ExecutionEntity<?, ?> e) {
-		Long refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
+		RefId<Long> refId = RefId.with(getRootDomainRefIdByRepoDatabase(rootDomainConfig, e));
 		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
 	}
 	
@@ -188,17 +198,17 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 	}
 	
 	protected void saveProcessState(String resolvedEntityAlias, ProcessFlow processEntityState) {
-		ModelConfig<?> modelConfig = getDomainConfigBuilder().getModel(ProcessFlow.class);
-		Repo repo = modelConfig.getRepo();
+		ModelConfig<?> processModelConfig = getDomainConfigBuilder().getModel(ProcessFlow.class);
+		Repo repo = processModelConfig.getRepo();
 		
 		if(!Repo.Database.exists(repo))
 			throw new InvalidConfigException(ProcessFlow.class.getSimpleName()+" must have @Repo configured for db persistence, but found none.");
 		
-		String processStateAlias = StringUtils.isBlank(repo.alias()) ? modelConfig.getAlias() : repo.alias();
+		String processStateAlias = processModelConfig.getRepoAlias();
 		
 		String entityProcessAlias = resolvedEntityAlias + "_" + processStateAlias;
 		
-		getRepositoryFactory().get(repo)._save(entityProcessAlias, processEntityState);
+		getProcessRepo()._save(processEntityState, entityProcessAlias);
 	}
 	
 }

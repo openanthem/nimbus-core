@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.test.domain.support.utils;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -54,6 +55,24 @@ public final class MockHttpRequestBuilder {
 		return this;
 	}
 
+	public MockHttpRequestBuilder addRefMap(Map<String, String> refMap) {
+		StringBuilder uri = new StringBuilder(httpReq.getRequestURI() + ":");
+		
+		refMap.entrySet().stream()
+			.forEach(e->{
+				String k = e.getKey();
+				String v = e.getValue();
+				uri.append(k).append("=").append(v).append("&");
+			});
+		
+		String finalUri = uri.toString();
+		finalUri = finalUri.substring(0, finalUri.length()-1); 
+		
+		httpReq.setRequestURI(finalUri);
+		
+		return this;
+	}
+	
 	public MockHttpRequestBuilder addNested(String nestedPath) {
 		String uri = httpReq.getRequestURI() + nestedPath;
 		httpReq.setRequestURI(uri);

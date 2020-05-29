@@ -15,11 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.bpm.activiti;
 
-import java.util.ArrayList;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -31,8 +28,8 @@ import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
@@ -140,7 +137,7 @@ public class CommandExecutorTaskDelegateUnitTest {
 		CommandElement rootDomainElement = Mockito.mock(CommandElement.class);
 		Mockito.when(cmdMsg.getCommand()).thenReturn(cmd);
 		Mockito.when(cmd.getRootDomainElement()).thenReturn(rootDomainElement);
-		Mockito.when(rootDomainElement.getRefId()).thenReturn(1L);
+		Mockito.when(rootDomainElement.getRefId()).thenReturn(Mockito.mock(RefId.class));
 		return new ExecutionContext(cmdMsg);
 	}
 }

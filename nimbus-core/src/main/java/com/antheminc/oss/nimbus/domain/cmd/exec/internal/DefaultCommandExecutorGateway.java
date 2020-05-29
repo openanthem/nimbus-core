@@ -32,6 +32,8 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidArgumentException;
@@ -119,8 +121,9 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		this.pathVariableResolver = getBeanResolver().get(CommandPathVariableResolver.class);
 		this.eCtxPathVariableResolver = getBeanResolver().get(ExecutionContextPathVariableResolver.class);
 		this.domainConfigBuilder = getBeanResolver().get(DomainConfigBuilder.class);
-		this.cmdHandler = getBeanResolver().get(ChangeLogCommandEventHandler.class);
 		this.expressionEvaluator = getBeanResolver().get(ExpressionEvaluator.class);
+		// optional
+		this.cmdHandler = getBeanResolver().find(ChangeLogCommandEventHandler.class);
 	}
 
 	
@@ -153,7 +156,9 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			
 			if(lockId!=null) {
 				//TODO: Interim solution
-				getCmdHandler().handleOnRootStopEvents(cmdMsg.getCommand(), mOut);
+				if (null != getCmdHandler()) {
+					getCmdHandler().handleOnRootStopEvents(cmdMsg.getCommand(), mOut);
+				}
 
 				return createFlattenedOutput(mOut);
 			}
@@ -301,11 +306,33 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			return getSelf().execute(configCmdMsg);
 		
 		try {
+			Map<Object, Object> outerThreadResources = TransactionSynchronizationManager.getResourceMap();
+			boolean outerThreadTxnIsActive = TransactionSynchronizationManager.isActualTransactionActive();
+			List<TransactionSynchronization> outerThreadTxnSyncs = outerThreadTxnIsActive ? TransactionSynchronizationManager.getSynchronizations() : null;
+			
 			return Executors.newSingleThreadExecutor().submit(() -> {
 				try {
+					if(outerThreadResources!=null) {
+						outerThreadResources.keySet().stream()
+							.forEach(k->TransactionSynchronizationManager.bindResource(k, outerThreadResources.get(k)));
+					}
+
+					if(outerThreadTxnIsActive)
+						TransactionSynchronizationManager.setActualTransactionActive(outerThreadTxnIsActive);
+					
+					if(outerThreadTxnSyncs!=null) {
+						if(!TransactionSynchronizationManager.isSynchronizationActive())
+							TransactionSynchronizationManager.initSynchronization();
+						
+						outerThreadTxnSyncs.stream()
+							.forEach(t->TransactionSynchronizationManager.registerSynchronization(t));
+					}
+
+					
 					WebSessionIdLoggerInterceptor.addSessionIdIfAny();
 					return getSelf().execute(configCmdMsg);
 				} finally {
+					TransactionSynchronizationManager.clear();
 					WebSessionIdLoggerInterceptor.clearSessionIdIfAny();
 				}
 			}).get();

@@ -35,11 +35,11 @@ public @interface Domain {
 	
 	ListenerType[] includeListeners() default { };
 	
-	enum ListenerType {
+	public static enum ListenerType {
 		none,
 		websocket,
 		persistence,
-		update
-		
+		update,
+		MESSAGE_QUEUE
 	}
 }

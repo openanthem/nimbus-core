@@ -24,11 +24,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.util.CollectionUtils;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
@@ -118,6 +118,9 @@ public final class CommandExecution {
 			return output;
 		}
 		
+		private void setRootDomainId(RefId<?> refId) {
+			this.rootDomainId = RefId.nullSafeGetId(refId);
+		}
 		
 		@Override
 		public List<Behavior> getBehaviors() {
@@ -167,14 +170,15 @@ public final class CommandExecution {
 			return getOutputs().get(0).getValue();
 		}
 		
+		@SuppressWarnings("unchecked")
 		@JsonIgnore
-		public List<Output<?>> findParamOutputsEndingWithPath(String path) {
-			List<Output<?>> result = new ArrayList<>();
+		public <T> List<Output<T>> findParamOutputsEndingWithPath(String path) {
+			List<Output<T>> result = new ArrayList<>();
 			for (Output<?> output : getOutputs()) {
 				if (output.getValue() instanceof Param) {
 					Param<?> param = (Param<?>) output.getValue();
 					if (!StringUtils.isEmpty(param.getPath()) && param.getPath().endsWith(path)) {
-						result.add(output);
+						result.add((Output<T>) output);
 					}
 				}
 			}
@@ -182,8 +186,9 @@ public final class CommandExecution {
 		}
 		
 		@JsonIgnore
-		public Output<?> findFirstParamOutputEndingWithPath(String path) {
-			return Optional.ofNullable(findParamOutputsEndingWithPath(path).get(0)).orElse(null);
+		public <T> Output<T> findFirstParamOutputEndingWithPath(String path) {
+			List<Output<T>> results = findParamOutputsEndingWithPath(path);
+			return !CollectionUtils.isEmpty(results) ? results.get(0) : null;
 		}
 		
 	}

@@ -28,25 +28,38 @@ import org.springframework.web.context.request.RequestContextHolder;
 public class HttpSessionProvider extends AbstractSessionProvider {
 
 	public String getSessionId() {
-		return RequestContextHolder.getRequestAttributes().getSessionId();
+		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+		if (null == requestAttributes) {
+			return null;
+		}
+		return requestAttributes.getSessionId();
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <R> R getAttribute(String key) {
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+		if (null == requestAttributes) {
+			return null;
+		}
 		return (R)requestAttributes.getAttribute(key, RequestAttributes.SCOPE_SESSION);
 	}
 
 	@Override
 	public void setAttribute(String key, Object value) {
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+		if (null == requestAttributes) {
+			return;
+		}
 		requestAttributes.setAttribute(key, value, RequestAttributes.SCOPE_SESSION);
 	}
 	
 	@Override
 	public boolean removeAttribute(String key) {
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+		if (null == requestAttributes) {
+			return false;
+		}
 		if(requestAttributes.getAttribute(key,RequestAttributes.SCOPE_SESSION) == null)
 			return false;
 		requestAttributes.removeAttribute(key, RequestAttributes.SCOPE_SESSION);

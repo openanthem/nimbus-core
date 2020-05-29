@@ -59,10 +59,10 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 	
 	private ExpressionEvaluator expressionEvaluator;
 	
-	@Value(value="${search.lookup.inMemory.sortThreshold:500}")
+	@Value(value="${nimbus.search.lookup.inMemory.sortThreshold:500}")
 	private int inMemorySortThreshold;
 	
-	@Value(value="${search.lookup.inMemory.exceptionIfOverSortThreshold:false}")
+	@Value(value="${nimbus.search.lookup.inMemory.exceptionIfOverSortThreshold:false}")
 	private boolean exceptionIfOverSortThreshold;
 	
 	public DefaultSearchFunctionHandlerLookup(BeanResolverStrategy beanResolver) {

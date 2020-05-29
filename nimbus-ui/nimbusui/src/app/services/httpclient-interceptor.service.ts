@@ -35,6 +35,7 @@ import { ConfigService } from './config.service';
 import { ServiceConstants } from './service.constants';
 import { SessionStoreService } from './session.store';
 import { NmMessageService } from './toastmessage.service';
+import { Action } from '../shared/command.enum';
 /**
  * \@author Swetha.Vemuri
  * \@whatItDoes
@@ -111,8 +112,11 @@ export class CustomHttpClientInterceptor implements HttpInterceptor {
               execResp.result != null &&
               execResp.result[0] != null
             ) {
-              const exception: ExecuteException =
-                execResp.result[0].executeException;
+              const exception: ExecuteException = execResp.result[0].executeException;
+              if(req.url.search(Action._new.toString()) && err.status === 500){
+                  this.sessionStore.removeAll();
+                  window.location.href = `${ServiceConstants.ERROR_URL}`+'?uniqueId='+encodeURIComponent(exception.uniqueId)+'&code='+encodeURIComponent(exception.code);
+              }
               this.msgSvc.notifyErrorEvent(exception);
             }
           }

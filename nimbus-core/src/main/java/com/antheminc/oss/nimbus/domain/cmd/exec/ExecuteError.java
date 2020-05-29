@@ -49,16 +49,6 @@ public class ExecuteError implements Serializable {
 		
 	}
 	
-	public ExecuteError(String uniqueId, Class<? extends Throwable> exClass, String message) {
-		Assert.notNull(uniqueId, "uniqueId must not be null");
-		setUniqueId(uniqueId);
-		
-		Assert.notNull(exClass, "Exception class must not be null");
-		setCode(exClass.getName() + CODE_SUFFIX);
-		
-		setMessage(message);
-	}
-	
 	public ExecuteError(Class<? extends Throwable> exClass, String message) {
 		Assert.notNull(exClass, "Exception class must not be null");
 		setCode(exClass.getName() + CODE_SUFFIX);

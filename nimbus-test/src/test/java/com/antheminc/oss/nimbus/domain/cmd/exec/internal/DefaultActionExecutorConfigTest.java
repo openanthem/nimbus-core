@@ -60,11 +60,12 @@ public class DefaultActionExecutorConfigTest extends AbstractFrameworkIngeration
 		
 		return req;
 	}
-
+	
 	@Test
 	@WithMockUser(username="user", password="pwd")
 	public void t00_json() throws Exception {
-		 
+
+		
 		mvc.perform(post(createRequest(VIEW_PARAM_ROOT, Action._config).getRequestURI())
 				.with(csrf())
 					.content("{}")

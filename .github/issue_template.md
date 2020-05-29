@@ -1,5 +1,7 @@
 <!-- 
 Please fill the report below. Your issue will be added to the overall list of issues and will be reviewed on a first-come first-serve basis. 
+
+WARNING: CONTENT POSTED HERE IS PUBLIC! PLEASE REFRAIN FROM SUBMITTING ANYTHING PRODUCT SPECIFIC THAT MAY JEAPORDIZE THE INTEGRITY OF YOUR BUSINESS OR APPLICATION, INCLUDING (BUT NOT LIMITED TO): REFERENCES, COMMENTS, CODE, etc.
 -->
 
 # Issue Details
@@ -50,4 +52,3 @@ Please tell us the version of the framework was this issue found in.
 <!--
 Please list all browsers where this could be reproduced.
 -->
-

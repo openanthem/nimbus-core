@@ -15,30 +15,28 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.ws;
 
-import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.model.state.repo.ExternalModelRepository;
+import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElement;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
+import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.domain.model.state.repo.AbstractWSModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
@@ -48,133 +46,82 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * TODO: 
- * currently an open issue in spring-cloud-netflix: https://github.com/spring-cloud/spring-cloud-netflix/issues/1047
- * Once update is available, uncomment the feign client and remove direct restTemplate dependency.
+ * TODO: currently an open issue in spring-cloud-netflix:
+ * https://github.com/spring-cloud/spring-cloud-netflix/issues/1047 Once update
+ * is available, uncomment the feign client and remove direct restTemplate
+ * dependency.
  * 
- * In progress: Not all methods of ModelRepository are implemented yet, will be implemented as needed
+ * In progress: Not all methods of ModelRepository are implemented yet, will be
+ * implemented as needed
  * 
  * @author Rakesh Patel
  */
-@ConfigurationProperties(prefix="ext.repository")
+@ConfigurationProperties(prefix="nimbus.ext.repository")
 @Getter @Setter
 @EnableLoggingInterceptor
-public class DefaultWSModelRepository implements ExternalModelRepository {
+public class DefaultWSModelRepository extends AbstractWSModelRepository {
 
-	private final RestTemplate restTemplate;
-	
+	public static final JustLogit LOG = new JustLogit(DefaultWSModelRepository.class);
 	private Map<String, String> targetUrl;
-	
-	private final static JustLogit logit = new JustLogit(DefaultWSModelRepository.class);
-	
-	//private ExternalModelRepositoryClient externalRepositoryClient;
-	
-	public DefaultWSModelRepository(BeanResolverStrategy beanResolver) {
-		this.restTemplate = beanResolver.get(RestTemplate.class);
-		//this.externalRepositoryClient = beanResolver.get(ExternalModelRepositoryClient.class);
+
+	public DefaultWSModelRepository(BeanResolverStrategy beanResolver, RestTemplate restTemplate) {
+		super(beanResolver, restTemplate);
 	}
-	
+
 	@Override
-	public <ID extends Serializable, T> T _get(ID id, Class<T> referredClass, String alias, String url) {
-		if (null != id) {
-			logit.warn(() -> "A refId of \"" + id + "\" was provided for a _get on alias \"" + alias
+	public <T> T _get(Command cmd, ModelConfig<T> mConfig) {
+		RefId<?> refId = cmd.getRefId(CommandElement.Type.DomainAlias);
+		if (null != refId) {
+			LOG.warn(() -> "A refId of \"" + refId + "\" was provided for a _get on alias \"" + mConfig.getAlias()
 					+ "\". DefaultWSModelRepository does explicitely handle external object retrieval by using the refId. Consider removing refId.");
 		}
-		URI uri = createUriForAlias(alias, null);
-		if (uri == null)
-			return null;
-
-		try {
-			ResponseEntity<T> responseEntity = getRestTemplate().exchange(new RequestEntity<T>(HttpMethod.GET, uri),
-					referredClass);
-			return Optional.ofNullable(responseEntity).map((response) -> response.getBody()).orElse(null);
-		} catch (Exception e) {
-			handleException(e, uri);
-		}
-		return null;
+		URI uri = createUriForAlias(mConfig.getAlias(), null);
+		return handleGet(mConfig.getReferredClass(), uri);
 	}
-	
+
 	@Override
-	public <T> Object _search(Class<T> referredDomainClass, String alias, Supplier<SearchCriteria<?>> criteriaSupplier) {
-		SearchCriteria<?> searchCriteria = criteriaSupplier.get();
-		
-		URI uri = createUriForAlias(alias, searchCriteria.getCmd().getAbsoluteUri());
-		if(uri == null)
+	public String getTargetUrl(String alias) {
+		if (MapUtils.isEmpty(this.getTargetUrl())) {
 			return null;
-		
-		Object response = execute(() -> new RequestEntity<Object>(searchCriteria instanceof ExampleSearchCriteria ? searchCriteria.getWhere(): null, HttpMethod.POST, uri), 
-						() -> new ParameterizedTypeReference<List<T>>() {
-								public Type getType() {
-									return new CustomParameterizedTypeImpl((ParameterizedType) super.getType(), new Type[] {referredDomainClass});
-								}
-						});
+		}
+		return this.getTargetUrl().get(alias);
+	}
+
+	@Override
+	public <T> T handleGet(Class<?> referredClass, URI uri) {
+		ResponseEntity<T> responseEntity = (ResponseEntity<T>) getRestTemplate()
+				.exchange(new RequestEntity<T>(HttpMethod.GET, uri), referredClass);
+		return Optional.ofNullable(responseEntity).map((response) -> response.getBody()).orElse(null);
+	}
+
+	@Override
+	public <T> Object handleSearch(Class<?> referredDomainClass, Supplier<SearchCriteria<?>> criteriaSupplier,
+			URI uri) {
+		SearchCriteria<?> searchCriteria = criteriaSupplier.get();
+		Object response = execute(() -> new RequestEntity<Object>(
+				searchCriteria instanceof ExampleSearchCriteria ? searchCriteria.getWhere() : null, HttpMethod.POST,
+				uri), () -> new ParameterizedTypeReference<List<T>>() {
+					public Type getType() {
+						return new CustomParameterizedTypeImpl((ParameterizedType) super.getType(),
+								new Type[] { referredDomainClass });
+					}
+				});
 		return response;
 	}
-	
-	private Object execute(Supplier<RequestEntity<?>> reqEntitySupplier, Supplier<ParameterizedTypeReference<?>> responseTypeSupplier) {
-		 try {
-			ResponseEntity<?> responseEntity = getRestTemplate().exchange(reqEntitySupplier.get(), responseTypeSupplier.get());
-			return Optional.of(responseEntity).map((response)->response.getBody()).orElse(null);
-		} catch(Exception e) {
-			handleException(e, reqEntitySupplier.get().getUrl());
-		}			 
-		 return null;
+
+	@Override
+	protected <T> T handleDelete(URI uri) {
+		throw new UnsupportedOperationException("_delete operation is not supported for Database.rep_ws repository");
 	}
-	
-	private URI createUriForAlias(String alias, String url) {
-		
-		if(MapUtils.isEmpty(this.getTargetUrl())) {
-			return null;
-		}
-		String urlToConstruct = this.getTargetUrl().get(alias);
-		if(StringUtils.isEmpty(urlToConstruct)) {
-			return null;
-		}
-		if (!StringUtils.isEmpty(url)) {
-			urlToConstruct = urlToConstruct.concat(url);
-		}
-		try {
-			return new URI(urlToConstruct);
-		} catch (URISyntaxException e) {
-			throw new FrameworkRuntimeException("Cannot create URI from supplied url: "+url);
-		}
+
+	@Override
+	protected <T> T handleNew(Class<?> referredClass, URI uri) {
+		throw new UnsupportedOperationException("_new operation is not supported for Database.rep_ws repository");
 	}
-	
-	
-	public class CustomParameterizedTypeImpl implements ParameterizedType {
-	    private ParameterizedType delegate;
-	    private Type[] actualTypeArguments;
 
-	    CustomParameterizedTypeImpl(ParameterizedType delegate, Type[] actualTypeArguments) {
-	        this.delegate = delegate;
-	        this.actualTypeArguments = actualTypeArguments;
-	    }
-
-	    @Override
-	    public Type[] getActualTypeArguments() {
-	        return actualTypeArguments;
-	    }
-
-	    @Override
-	    public Type getRawType() {
-	        return delegate.getRawType();
-	    }
-
-	    @Override
-	    public Type getOwnerType() {
-	        return delegate.getOwnerType();
-	    }
-
-	}
-	
-	private void handleException(Exception e, URI uri) {
-		if(e instanceof HttpStatusCodeException) {
-			logit.error(() -> "@ HttpStatusCodeException for "+uri);
-			throw new FrameworkRuntimeException(((HttpStatusCodeException) e).getResponseBodyAsString(),e);
-		} else if(e instanceof RestClientException) {
-			logit.error(() -> "@ RestClient exception for "+uri);
-			throw new FrameworkRuntimeException(e.getMessage(), e);
-		}
+	@Override
+	protected <T> T handleUpdate(T state, URI uri) {
+		throw new UnsupportedOperationException("_update operation is not supported for Database.rep_ws repository");
 	}
 
 }

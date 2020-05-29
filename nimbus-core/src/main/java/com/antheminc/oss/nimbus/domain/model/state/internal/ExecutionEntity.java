@@ -27,6 +27,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
@@ -179,44 +180,6 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 			return pConfig;
 		} 
 	}
-
-	@ToString(callSuper=true)
-	public class ExParamLinked extends ExParam {
-		private static final long serialVersionUID = 1L;
-		
-		private final Param<?> linkedParam;
-		
-		public ExParamLinked(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig, Param<?> linkedParam) {
-			super(rootCommand, provider, exConfig);
-			this.linkedParam = linkedParam;
-		}
-		
-		@Override
-		public String getPath() {
-			String p = super.getPath();
-			
-			p = linkedParam.getPath() + p;
-			return p;
-		}
-		
-		@Override
-		public String getBeanPath() {
-			String p = super.getBeanPath();
-			
-			p = linkedParam.getBeanPath() + p;
-			return p;
-		}
-		
-		@Override
-		public boolean isLinked() {
-			return true;
-		}
-		
-		@Override
-		public Param<?> findIfLinked() {
-			return linkedParam;
-		}
-	}
 	
 	@Getter @Setter @ToString(callSuper=true, of="rootRefId")
 	public class ExParam extends DefaultParamState<ExecutionEntity<V, C>> {
@@ -224,7 +187,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 		
 		private final ExecutionModel<ExecutionEntity<V, C>> rootModel;
 		
-		private final Serializable rootRefId;
+		private final RefId<?> rootRefId;
 		
 		public ExParam(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig) {
 			super(null, new ExParamConfig(exConfig), provider);
@@ -285,6 +248,11 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 		@Override
 		public boolean isNew() {
 			return _this().isNew;
+		}
+		
+		@Override
+		public void setNew(boolean isNew) {
+			_this().setNew(isNew);
 		}
 		
 		@Override

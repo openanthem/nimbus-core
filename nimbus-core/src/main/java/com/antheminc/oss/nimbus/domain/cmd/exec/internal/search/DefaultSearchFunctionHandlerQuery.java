@@ -50,6 +50,10 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 		querySearchCriteria.setFetch(cmd.getFirstParameterValue(Constants.SEARCH_REQ_FETCH_MARKER.code));
 		querySearchCriteria.setAggregateCriteria(cmd.getFirstParameterValue(Constants.SEARCH_REQ_AGGREGATE_MARKER.code));
 		
+		String limit = cmd.getFirstParameterValue(Constants.SEARCH_REQ_LIMIT_MARKER.code);
+		if(StringUtils.isNotBlank(limit))
+			querySearchCriteria.setLimit(Long.valueOf(limit));
+		
 		querySearchCriteria.setProjectCriteria(buildProjectCriteria(cmd));
 		querySearchCriteria.setPageRequest(buildPageCriteria(cmd));
 		

@@ -15,17 +15,12 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
-import java.io.Serializable;
-
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextLoader;
-import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
-import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -42,14 +37,14 @@ import lombok.Setter;
  * @author Soham Chakravarti
  * @author Rakesh Patel
  */
-@ConfigurationProperties(prefix="model.persistence.strategy")
+@ConfigurationProperties(prefix="nimbus.domain.model.persistence.strategy")
 public class ParamStateAtomicPersistenceEventListener extends ParamStatePersistenceEventListener {
 
 	@Getter(value=AccessLevel.PROTECTED)
 	ModelRepositoryFactory repoFactory;
 
 	@Getter @Setter
-	private PersistenceMode mode;
+	private PersistenceMode mode = PersistenceMode.ATOMIC;
 	
 	public ParamStateAtomicPersistenceEventListener(ModelRepositoryFactory repoFactory) {
 		this.repoFactory = repoFactory;
@@ -57,47 +52,41 @@ public class ParamStateAtomicPersistenceEventListener extends ParamStatePersiste
 	
 	@Override
 	public boolean shouldAllow(EntityState<?> p) {
-		return super.shouldAllow(p) && PersistenceMode.ATOMIC == mode;
+		return super.shouldAllow(p) && !p.getRootDomain().getConfig().isRemote() && PersistenceMode.ATOMIC == mode;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean listen(ModelEvent<Param<?>> event) {
 		if(DefaultExecutionContextLoader.TH_ACTION.get() == Action._get)
 			return false;
 		
 		Param<?> p = (Param<?>) event.getPayload();
-		Model<?> rootModel = p.getRootDomain();
+		Model<Object> mRoot = (Model<Object>)p.getRootDomain();
+		Param<?> pRoot = mRoot.getAssociatedParam();
 		
-		Repo repo = rootModel.getConfig().getRepo();
+		Repo repo = mRoot.getConfig().getRepo();
 		if(repo == null) {
-			throw new InvalidConfigException("Core Persistent entity must be configured with "+Repo.class.getSimpleName()+" annotation. Not found for root model: "+p.getRootExecution());
+			throw new InvalidConfigException("Persistent entity must be configured with "+Repo.class.getSimpleName()+" annotation. Not found for root model: "+mRoot);
 		} 
 			
-		ModelRepository modelRepo = getRepoFactory().get(repo);
+		ModelRepository modelRepo = getRepoFactory().get(mRoot.getConfig());
+		
 		if(modelRepo == null) {
-			throw new InvalidConfigException("No repository implementation provided for the configured repository :"+repo.value().name()+ " for root model: "+p.getRootExecution());
+			throw new InvalidConfigException("No repository implementation provided for the configured repository :"+repo.value().name()+ " for root model: "+mRoot);
 		}
 		
 		if(p.getConfig().isTransientData() || checkIfAnyParentIsTransient(p)) {
 			return false;
 		}
 	
-		Serializable coreStateId = (Serializable) rootModel.findParamByPath("/id").getState();
+		Object coreStateId = mRoot.findParamByPath("/id").getState();
 		if(coreStateId == null) {
-			modelRepo._new((ModelConfig<Object>) rootModel.getConfig(), rootModel.getState());
+			modelRepo._new(pRoot.getRootExecution().getRootCommand(), mRoot.getConfig(), mRoot.getState());
 			return true;
 		}
 		
-		String repoAlias = repo.alias();
-		if (StringUtils.isBlank(repoAlias)) {
-			repoAlias = rootModel.getConfig().getAlias();
-			if (StringUtils.isBlank(repoAlias)) {
-				throw new InvalidConfigException("Core Persistent entity must be configured with "
-						+ Domain.class.getSimpleName() + " annotation. Not found for root model: " + rootModel);
-			}
-		}
-		
-		modelRepo._update(repoAlias, coreStateId, rootModel.getBeanPath(), rootModel.getState());
+		modelRepo._update(pRoot, pRoot.getState());
 		return true;
 	}
 	

@@ -21,8 +21,11 @@ import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.antheminc.oss.nimbus.channel.web.HttpRawResponseBodyHeaderInterceptor;
+import com.antheminc.oss.nimbus.channel.web.ResponseInterceptor;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
+import com.antheminc.oss.nimbus.domain.cmd.exec.MultiExecuteOutput;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
 import com.antheminc.oss.nimbus.domain.model.config.extension.GridStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.config.extension.LabelStateEventHandler;
@@ -31,6 +34,7 @@ import com.antheminc.oss.nimbus.domain.model.config.extension.TreeGridStateLoadH
 import com.antheminc.oss.nimbus.domain.model.state.extension.AccessConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ActivateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AuditStateChangeHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.AuditViewHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ConfigConditionalStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.DefaultParamValuesHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.DobToAgeConverter;
@@ -59,6 +63,11 @@ import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
  */
 @Configuration
 public class DefaultFrameworkExtensionsConfig {
+	
+	@Bean
+	public AuditViewHandler auditViewHandler(BeanResolverStrategy beanResolver) {
+		return new AuditViewHandler(beanResolver);
+	}
 	
 	@Bean
 	public LabelStateEventHandler labelConfigEventHandler(CommandPathVariableResolver cmdPathResolver) {
@@ -186,5 +195,11 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean
 	public StaticCodeValueBasedCodeToLabelConverter staticCodeValueBasedCodeToLabelConverter(BeanResolverStrategy beanResolver) {
 		return new StaticCodeValueBasedCodeToLabelConverter(beanResolver);
-	}	
+	}
+	
+	@Bean(name="default.httpresponsebodyinterceptor._raw")
+	public ResponseInterceptor<MultiExecuteOutput> remoteModelResponseInterceptor(BeanResolverStrategy beanResolver) {
+		return new HttpRawResponseBodyHeaderInterceptor();
+	}
+	
 }

@@ -22,10 +22,12 @@ import org.apache.commons.lang3.StringUtils;
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.bpm.ProcessRepository;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
@@ -56,11 +58,14 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 	
 	private DomainConfigBuilder domainConfigBuilder;
 	
+	private ProcessRepository processRepo;
+	
 	public DefaultActionExecutorGet(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 		
 		this.commandGateway = getBeanResolver().find(CommandExecutorGateway.class);
 		this.domainConfigBuilder = getBeanResolver().find(DomainConfigBuilder.class);
+		this.processRepo = getBeanResolver().find(ProcessRepository.class);
 	}
 	
 
@@ -89,26 +94,15 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 	}
 	
 	protected QuadModel<?, ?> createNewQuad(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
-		final Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
-		
-		final Object entity;
 		final Repo repo = rootDomainConfig.getRepo();
-		final String resolvedRepAlias = resolveEntityAliasByRepo(rootDomainConfig);
+		final Object entity;
 		
-		// db - entity
-		if(Repo.Database.exists(repo) ) {
-			if (refId != null || Repo.Database.rep_ws.equals(repo.value())) { // root (view or core) is persistent
-				entity = getRepositoryFactory().get(rootDomainConfig.getRepo())
-						._get(refId, rootDomainConfig.getReferredClass(), resolvedRepAlias, eCtx.getCommandMessage().getCommand().getAbsoluteUri());
-			} else {
-				/* Cannot make a get call without a entity reference Id */
-				throw new InvalidConfigException("Get call received for domain - " + rootDomainConfig.getAlias() + " without a refId. Execution Context: " + eCtx);
-			}
-			
+		if(Repo.Database.exists(repo)) { // root (view or core) is persistent
+			entity = getEntity(eCtx, rootDomainConfig);
 		} else {
-			entity = instantiateEntity(eCtx, rootDomainConfig);
+			entity = getOrInstantiateEntity(eCtx, rootDomainConfig);
 		}
-
+		
 		if (null == entity) {
 			throw new FrameworkRuntimeException("Entity not found for " + eCtx);
 		}
@@ -138,24 +132,30 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 	}
 	
 	protected ProcessFlow loadProcessState(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
+		if(rootDomainConfig.isRemote())
+			return null;
+		
 		String domainLifeCycle = rootDomainConfig.getDomainLifecycle();
 		
 		if(StringUtils.trimToNull(domainLifeCycle)==null)
 			return null;
 		
-		ModelConfig<?> modelConfig = getDomainConfigBuilder().getModel(ProcessFlow.class);
-		Repo repo = modelConfig.getRepo();
+		ModelConfig<?> processModelConfig = getDomainConfigBuilder().getModel(ProcessFlow.class);
+		Repo repo = processModelConfig.getRepo();
 		
 		if(!Repo.Database.exists(repo))
 			throw new InvalidConfigException(ProcessFlow.class.getSimpleName()+" must have @Repo configured for db persistence, but found none.");
 		
-		String processStateAlias = StringUtils.isBlank(repo.alias()) ? modelConfig.getAlias() : repo.alias();
-		
-		final String resolvedEntityAlias = resolveEntityAliasByRepo(rootDomainConfig);
+		String processStateAlias = processModelConfig.getRepoAlias();
+		String resolvedEntityAlias = rootDomainConfig.getRepoAlias();
 		String entityProcessAlias = resolvedEntityAlias + "_" + processStateAlias;
 		
-		final Long entityRefId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
-		ProcessFlow processEntityState = getRepositoryFactory().get(repo)._get(entityRefId, ProcessFlow.class, entityProcessAlias);
+		RefId<?> entityRefId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		Long processId = RefId.nullSafeGetId(entityRefId);
+		
+		ProcessFlow processEntityState = getProcessRepo()._get(processId, ProcessFlow.class, entityProcessAlias);
+		
 		return processEntityState;
+		
 	}
 }

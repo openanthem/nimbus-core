@@ -33,6 +33,7 @@ import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder
 
 /**
  * @author Jayant Chaudhuri
+ * @author Swetha Vemuri
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -63,4 +64,28 @@ public class RulesEngineTests extends AbstractFrameworkIngerationPersistableTest
 		assertEquals("Triggered", response.findStateByPath("/triggeredParameter"));
 	}	
 	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void t02_core_dtable_rules() {
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(DTABLE_CORE_PARAM_ROOT)
+				.addAction(Action._new)
+				.getMock();
+		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
+		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		assertNotNull(domainRoot_refId);
+		
+	
+		String updateUri = DTABLE_CORE_PARAM_ROOT + ":"+domainRoot_refId+"/triggerParameter";
+		MockHttpServletRequest request4 = MockHttpRequestBuilder.withUri(updateUri)
+				.addAction(Action._update)
+				.getMock();
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.toJson("Start"));		
+		MockHttpServletRequest request3 = MockHttpRequestBuilder.withUri(DTABLE_CORE_PARAM_ROOT).addRefId(domainRoot_refId)
+				.addAction(Action._get)
+				.getMock();
+		
+		holder = (Holder<MultiOutput>)controller.handlePost(request3, null);		
+		Param<?>  response = (Param<?>)holder.getState().getSingleResult();
+		assertEquals("Triggered", response.findStateByPath("/triggeredParameter"));
+	}
 }

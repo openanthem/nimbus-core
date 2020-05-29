@@ -64,4 +64,9 @@ public interface EntityConfig<T> {
 		
 		public EntityConfig<M> getMapsToConfig();
 	}
+	
+	public enum Scope {
+		LOCAL,
+		REMOTE;		
+	}
 }

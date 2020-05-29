@@ -34,7 +34,7 @@ public class JustLogit {
 	
 	private static HTMLEntityCodec htmlCodec = new HTMLEntityCodec(); 
 	
-	final char[] IMMUNE_HTML = { ',', '.', '-', '_', ' ', '*','[',']', '(', ')', '$', '=', '+', '\n','/',':', '?', '&', '\"', '{','}', '#', '!', '@', '\'' };
+	final char[] IMMUNE_HTML = { ',', '.', '-', '_', ' ', '\\' , '*','[',']', '(', ')', '$', '=', '+', '\n','/',':', '?', '&', '\"', '{','}', '#', '!', '@', '\'' };
 	
 	public JustLogit() {
 		this.log = LoggerFactory.getLogger(this.getClass());

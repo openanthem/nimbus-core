@@ -19,22 +19,21 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
-import com.antheminc.oss.nimbus.domain.cmd.CommandElementLinked;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
+import com.antheminc.oss.nimbus.domain.cmd.RefId;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
-import com.antheminc.oss.nimbus.domain.model.config.EntityConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
@@ -81,19 +80,6 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 	protected ModelConfig<?> getRootDomainConfig(ExecutionContext eCtx) {
 		return getDomainConfigBuilder().getRootDomainOrThrowEx(eCtx.getCommandMessage().getCommand().getRootDomainAlias());
 	}
-
-	protected EntityConfig<?> findConfigByCommand(ExecutionContext eCtx) {
-		Command cmd = eCtx.getCommandMessage().getCommand();
-		
-		ModelConfig<?> domainConfig = getRootDomainConfig(eCtx);
-		if(cmd.isRootDomainOnly()) 
-			return domainConfig;
-		
-		String path = cmd.buildAlias(cmd.getElementSafely(Type.DomainAlias).next());
-		
-		ParamConfig<?> nestedParamConfig = domainConfig.findParamByPath(path);
-		return nestedParamConfig;
-	}
 	
 	protected String resolveEntityAliasByRepo(ModelConfig<?> mConfig) {
 		String alias = mConfig.getRepo() != null && StringUtils.isNotBlank(mConfig.getRepo().alias()) 
@@ -102,14 +88,40 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		return alias;
 	}
 	
-	protected <T> T instantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
-		/*
-		if(eCtx.getCommandMessage().hasPayload())
-			return converter.convert(mConfig.getReferredClass(), eCtx.getCommandMessage());
-		*/
-		Repo repo = mConfig.getRepo();
+	protected <T> T getEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
+		ModelRepository mRepo = getRepositoryFactory().get(mConfig);
+		if (mRepo == null) 
+			return null;
 		
-		return (repo!=null && repo.value()!=Repo.Database.rep_none) ? getRepositoryFactory().get(repo)._new(mConfig) : javaBeanHandler.instantiate(mConfig.getReferredClass());
+		RefId<?> refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		if (Repo.Database.isRefIdRequired(mConfig.getRepo()) && null == refId) {
+			throw new InvalidConfigException("Get call received for domain - " 
+					+ mConfig.getAlias() + " without a refId. Execution Context: " + eCtx);
+		}
+		return mRepo._get(eCtx.getCommandMessage().getCommand(), mConfig);
+	}
+	
+	protected <T> T getOrInstantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
+		ModelRepository mRepo = getRepositoryFactory().get(mConfig);
+		
+		// non DB
+		if(mRepo==null) 
+			return javaBeanHandler.instantiate(mConfig.getReferredClass());
+		
+		RefId<?> refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		if(refId==null)
+			return instantiateEntity(eCtx, mConfig);
+		
+		
+		return mRepo._get(eCtx.getCommandMessage().getCommand(), mConfig);
+	}
+	
+	protected <T> T instantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
+		ModelRepository mRepo = getRepositoryFactory().get(mConfig);
+		if (null == mRepo) {
+			return javaBeanHandler.instantiate(mConfig.getReferredClass());
+		}
+		return mRepo._new(eCtx.getCommandMessage().getCommand(), mConfig).getState();
 	}
 	
 	public interface RepoDBCallback<T> {
@@ -155,25 +167,46 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 				.map(Long::valueOf)
 				.orElse(null);
 	}
-	
-	protected ModelConfig<?> getRootConfigByRepoDatabase(ModelConfig<?> rootDomainConfig) {
-		return determineByRepoDatabase(rootDomainConfig, new RepoDBCallback<ModelConfig<?>>() {
-			@Override
-			public ModelConfig<?> whenRootDomainHasRepo() {
-				return rootDomainConfig;
-			}
-			
-			@Override
-			public ModelConfig<?> whenMappedRootDomainHasRepo(ModelConfig<?> mapsToConfig) {
-				return mapsToConfig;
-			}
-		});
-	}
 
 	protected Object getRefId(ModelConfig<?> parentModelConfig, ParamConfig<?> pConfig, Object entity) {
 		ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(parentModelConfig.getReferredClass(), pConfig.getCode());
 		
 		Object refId = getJavaBeanHandler().getValue(va, entity);
 		return refId;
+	}
+	
+	
+	@Getter
+	protected static class RepoDatabaseResolution {
+		private Repo self;
+		private Repo mapsTo;
+		private ModelConfig<?> mapsToConfig;
+		
+		public boolean isSelfPersistable() {
+			return Repo.Database.isPersistable(self);
+		}
+		
+		public boolean isMapsToPersistable() {
+			return Repo.Database.isPersistable(mapsTo);
+		}
+	} 
+	
+	protected RepoDatabaseResolution resolveByRepoDatabase(ModelConfig<?> rootDomainConfig) {
+		RepoDatabaseResolution r = new RepoDatabaseResolution();
+		Repo repo = rootDomainConfig.getRepo();
+		
+		if(Repo.Database.exists(repo)) {
+			r.self = repo;
+		} 
+		
+		if(rootDomainConfig.isMapped()) {
+			r.mapsToConfig = rootDomainConfig.findIfMapped().getMapsToConfig();
+			Repo mapsToRepo = r.mapsToConfig.getRepo();
+			
+			if(Repo.Database.exists(mapsToRepo))
+				r.mapsTo = mapsToRepo;
+		}
+		
+		return r;
 	}
 }

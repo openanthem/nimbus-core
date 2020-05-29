@@ -25,16 +25,14 @@ import java.util.Set;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandEventHandlers.OnRootCommandExecuteHandler;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandEventHandlers.OnSelfCommandExecuteHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
-import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.extension.ChangeLog;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
-import com.antheminc.oss.nimbus.domain.model.state.event.CommandEventHandlers.OnRootCommandExecuteHandler;
-import com.antheminc.oss.nimbus.domain.model.state.event.CommandEventHandlers.OnSelfCommandExecuteHandler;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
-import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 
@@ -51,8 +49,8 @@ import lombok.ToString;
 @Getter(value=AccessLevel.PROTECTED)
 public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler<ChangeLog>, OnSelfCommandExecuteHandler<ChangeLog> {
 
-	private ModelRepositoryFactory repositoryFactory;
-	private SessionProvider sessionProvider;
+	private final ModelRepository modelRepository;
+	private final SessionProvider sessionProvider;
 	
 	@Getter @Setter @ToString
 	public static class ChangeLogEntry {
@@ -82,8 +80,8 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 		
 	}
 	
-	public ChangeLogCommandEventHandler(BeanResolverStrategy beanResolver) {
-		this.repositoryFactory = beanResolver.get(ModelRepositoryFactory.class);
+	public ChangeLogCommandEventHandler(BeanResolverStrategy beanResolver, ModelRepository modelRepository) {
+		this.modelRepository = modelRepository;
 		this.sessionProvider = beanResolver.get(SessionProvider.class);
 	}
 	
@@ -97,7 +95,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 
 	@Override
 	public void handleOnRootStop(ChangeLog configuredAnnotation, Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
-		ModelRepository rep = getResolvedRepo();
+		ModelRepository rep = getModelRepository();
 		
 		// log command : ALL
 		if(!cmd.isRootDomainOnly())
@@ -121,7 +119,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 		if(aggregatedEvents==null || aggregatedEvents.isEmpty())
 			return;
 
-		ModelRepository rep = getResolvedRepo();
+		ModelRepository rep = getModelRepository();
 		
 		// log parameter
 		aggregatedEvents.stream()
@@ -151,16 +149,12 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 	
 	@Override
 	public void handleOnSelfStop(ChangeLog configuredAnnotation, Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
-		ModelRepository rep = getResolvedRepo();
+		ModelRepository rep = getModelRepository();
 		
 		// log command : only root command CRUD actions
 		//if(cmd.isRootDomainOnly() && cmd.getAction().isCrud())
 			Handler.forCommand(cmd, rep, getSessionProvider()).addUrl().save();
 
-	}
-	
-	private ModelRepository getResolvedRepo() {
-		return getRepositoryFactory().get(Repo.Database.rep_mongodb);
 	}
 	
 	@RequiredArgsConstructor
@@ -180,7 +174,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			h.entry.setOn(Date.from(cmd.getCreatedInstant()));
 			
 			h.entry.setRoot(cmd.getRootDomainAlias());
-			h.entry.setRefId(cmd.getRootDomainElement().getRefId());
+			cmd.getRootDomainElement().doIfRefIdPresent(h.entry::setRefId);
 			h.entry.setAction(cmd.getAction());
 			
 			return h;
@@ -197,7 +191,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			h.entry.setOn(Date.from(pEvent.getCreatedInstant()));
 			
 			h.entry.setRoot(rootCmd.getRootDomainAlias());
-			h.entry.setRefId(rootCmd.getRootDomainElement().getRefId());
+			rootCmd.getRootDomainElement().doIfRefIdPresent(h.entry::setRefId);
 			
 			h.entry.setAction(pEvent.getAction());
 			h.entry.setPath(pEvent.getParam().getPath());

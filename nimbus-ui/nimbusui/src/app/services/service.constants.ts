@@ -73,6 +73,15 @@ export class ServiceConstants {
       this.APP_HOST_URL + this.APP_PORT + '/' + this.APP_CONTEXT + '/logout'
     );
   }
+  public static get ERROR_URL(): string { 
+    return (
+      this.APP_HOST_URL +
+      this.APP_PORT +
+      '/' +
+      this.APP_CONTEXT +
+      '/app/error'
+    );
+  }
   public static get APP_REFRESH(): string {
     return (
       this.APP_HOST_URL +

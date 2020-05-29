@@ -15,17 +15,21 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import com.antheminc.oss.nimbus.InvalidArgumentException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
@@ -66,7 +70,7 @@ public class CommandBuilder {
 	}
 	
 	/**
-	 * Builds a CommandBuilder by appending a given platform path to a uri untill a given end CommandElementType 
+	 * Builds a CommandBuilder by appending a given platform path to a URI until a given end CommandElementType 
 	 * @param rootCmd
 	 * @param endWhenType
 	 * @param appendPath
@@ -200,16 +204,8 @@ public class CommandBuilder {
 				
 			} 
 			else {
-				if (type == Type.DomainAlias && StringUtils.contains(val, Constants.SEPARATOR_URI_VALUE.code)) {
-					String codeAndRefId[] = StringUtils.split(val, Constants.SEPARATOR_URI_VALUE.code);
-
-					if (codeAndRefId.length != 2)
-						throw new InvalidConfigException(
-								"Command code and refId must have the format of /{domainAlias}:{refId}");
-
-					cmdElem = cmdElem.createNext(type, codeAndRefId[0]);
-					cmdElem.setRefId(Long.valueOf(codeAndRefId[1]));
-				} 
+				if (type == Type.DomainAlias /*&& StringUtils.contains(val, Constants.SEPARATOR_URI_VALUE.code)*/) 
+					cmdElem = buildDomainElement(val, cmdElem, type);
 				else {
                     cmdElem = cmdElem.createNext(type, val);
 				}
@@ -217,6 +213,57 @@ public class CommandBuilder {
 		}
 		
 		return this;
+	}
+	
+	private static CommandElementLinked buildDomainElement(String codeAndValue, CommandElementLinked currElem, Type type) {
+		return buildCommandElement(codeAndValue, (alias, refId)->{
+			CommandElementLinked cmdElemDomainSegment = currElem.createNext(type, alias);
+			cmdElemDomainSegment.setRefId(refId);
+			return cmdElemDomainSegment;
+		});
+	}
+	
+	public static CommandElementLinked buildCommandElement(String cmdElemVal, BiFunction<String, RefId<?>, CommandElementLinked> cb) {
+		int i = StringUtils.indexOf(cmdElemVal, Constants.SEPARATOR_URI_VALUE.code);
+		
+		// no refId
+		if(i == -1) 
+			return cb.apply(cmdElemVal, null);
+		
+		// has refId: use the first occurrence of ":"
+		String alias = StringUtils.substring(cmdElemVal, 0, i);
+		String refIdVal = StringUtils.substring(cmdElemVal, i+1);
+		
+		// refId with one value {alias}:{id}
+		if(!StringUtils.contains(refIdVal, "="))
+			return cb.apply(alias, RefId.with(refIdVal));
+		
+		// refId with multiple values {alias}:{k1=v1}{&k2=v2}
+		String[] keyValuePairs = StringUtils.split(refIdVal, "&");
+		
+		if(ArrayUtils.isEmpty(keyValuePairs))
+			throw new InvalidConfigException("Expected to find at least one key-value entry for refMap,"
+					+ " but found one for CommandElement value: "+cmdElemVal);
+		
+		MultiValueMap<String, String> mvMap = new LinkedMultiValueMap<>();
+		Arrays.asList(keyValuePairs).stream()
+			.map(kv->StringUtils.split(kv, "="))
+				.forEach(kvArr->{
+					if(ArrayUtils.isEmpty(kvArr) || kvArr.length!=2)
+						throw new InvalidConfigException("Expected to find key-value entry for refMap with pattern /{alias}:{k1=v1}{&k2=v2}, "
+								+ " but found an entry kv: "+Arrays.toString(kvArr)+" from CommandElement value: "+cmdElemVal);
+					
+					if(mvMap.containsKey(kvArr[0])) {
+						mvMap.get(kvArr[0]).add(kvArr[1]);
+					} else {
+						List<String> values = new ArrayList<>();
+						values.add(kvArr[1]);
+						mvMap.put(kvArr[0], values);										
+					}
+				});
+		
+		Map<String, String> refMap = mvMap.toSingleValueMap();
+		return cb.apply(alias, RefId.with(refMap));
 	}
 	
 	/**

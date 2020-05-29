@@ -36,18 +36,18 @@ public @interface AssociatedEntity {
 	
 	public Class<?> clazz() default Class.class;
 	
-	public AssociationType association() default AssociationType.none;
+	public AssociationType association() default AssociationType.NONE;
 	
 	public FetchType fetch() default FetchType.EAGER;
 	
 	public CascadeType cascade() default CascadeType.ALL;
 	
 	public enum AssociationType {
-		oneToOne,
-		oneToMany,
-		manyToOne,
-		manyToMany,
-		none;
+		ONE_TO_ONE,
+		ONE_TO_MANY,
+		MANY_TO_ONE,
+		MANY_TO_MANY,
+		NONE;
 	}
 	public enum FetchType {
 		EAGER,
