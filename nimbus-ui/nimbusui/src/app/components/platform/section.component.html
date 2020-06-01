@@ -61,6 +61,9 @@
                     [nmPrint]="element">
                 </nm-table>
             </ng-template>
+            <ng-template [ngIf]="element.alias == 'jsonviewer' ">
+                <json-viewer [json]="element.leafState"></json-viewer>
+            </ng-template>
             <!--Tree Grid-->
             <ng-template [ngIf]="element.alias == componentTypes.treeGrid.toString()">
                 <nm-treegrid

@@ -1828,6 +1828,14 @@ public class ViewConfig {
 		 */
 		String url() default "";
 	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface JsonViewer {
+		
+		String alias() default "jsonviewer";
+	}
 
 	/**
 	 * <p>MenuPanel is a hybrid of accordion-tree components.

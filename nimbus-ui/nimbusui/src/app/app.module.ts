@@ -194,6 +194,7 @@ import { GridUtils } from './shared/grid-utils';
 import { StyleGuideCmp } from './styleguide/style-guide.component';
 import {TreeModule} from 'primeng/tree';
 import { TreeDemo } from './components/platform/tree/tree.component';
+import { JsonViewComponnet } from './components/platform/form/elements/json-viewer.component';
 
 
 /**
@@ -349,6 +350,7 @@ export function init_app(appinitservice: AppInitService) {
     FormErrorMessage,
     BaseTableElement,
     TreeDemo,
+    JsonViewComponnet,
     EventPropagationDirective,
     TableHeader,
     NavigationComponent,

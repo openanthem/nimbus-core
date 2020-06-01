@@ -64,7 +64,7 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 	
 	public DefaultStateEventDelegator(EntityStateAspectHandlers provider) {
 		this.provider = provider;
-		this.cmdHandler = provider.getBeanResolver().get(ChangeLogCommandEventHandler.class);
+		this.cmdHandler = provider.getBeanResolver().get(ChangeLogCommandEventHandler.class, "changeLogCommandEventHandler");
 	}
 
 	
