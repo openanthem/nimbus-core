@@ -98,6 +98,9 @@
             <ng-template [ngIf]="element.alias == componentTypes.autocomplete.toString()">
                 <nm-autocomplete [element]="element" [(ngModel)]="element.leafState"></nm-autocomplete>
             </ng-template>
+            <ng-template [ngIf]="element.alias == 'jsonviewer' ">
+                <json-viewer [json]="element.leafState"></json-viewer>
+            </ng-template>
         </ng-template>
     </ng-template>
 </div>
