@@ -17,7 +17,9 @@ package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.script.Bindings;
@@ -28,6 +30,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -35,12 +38,15 @@ import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuer
 import org.springframework.data.querydsl.SimpleEntityPathResolver;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.LookupSearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.QuerySearchCriteria;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
+import com.mongodb.client.model.Collation;
+import com.mongodb.client.model.CollationStrength;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
@@ -58,9 +64,13 @@ import lombok.Setter;
 @EnableAPIMetricCollection
 @SuppressWarnings({ "rawtypes", "unchecked"})
 public class MongoSearchByQueryOperation extends MongoDBSearchOperation {
+	
+	@Autowired
+	CommandMessageConverter commandMessageConverter;
 
-	public MongoSearchByQueryOperation(MongoOperations mongoOps, DomainConfigBuilder domainConfigBuilder) {
+	public MongoSearchByQueryOperation(MongoOperations mongoOps, DomainConfigBuilder domainConfigBuilder,CommandMessageConverter commandMessageConverter) {
 		super(mongoOps, domainConfigBuilder);
+		this.commandMessageConverter=commandMessageConverter;
 	}
 
 	private static final ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
@@ -192,7 +202,20 @@ public class MongoSearchByQueryOperation extends MongoDBSearchOperation {
 		List<Document> pipeline = (List<Document>)query.get(Constants.SEARCH_REQ_AGGREGATE_PIPELINE.code);
 		String aggregateCollection = query.getString(Constants.SEARCH_REQ_AGGREGATE_MARKER.code);
 		List<Document> result = new ArrayList<Document>();
-		getMongoOps().getCollection(aggregateCollection).aggregate(pipeline).iterator().forEachRemaining(a -> result.add(a));
+		String collation=criteria.getCollation();
+		Collation collation1 = null;
+		
+		if (null != collation && !collation.isEmpty()) {
+			Map<String, Object> map= (Map<String, Object>) commandMessageConverter.toType(HashMap.class, collation);
+			collation1=Collation.builder().locale((String) map.get("locale")).collationStrength(CollationStrength.fromInt((int)map.get("strength"))).build();
+			getMongoOps().getCollection(aggregateCollection).aggregate(pipeline).collation(collation1).iterator()
+					.forEachRemaining(a -> result.add(a));
+
+		} else {
+			getMongoOps().getCollection(aggregateCollection).aggregate(pipeline).iterator()
+					.forEachRemaining(a -> result.add(a));
+		}
+		
 		if(CollectionUtils.isNotEmpty(result)) {
 			GenericType gt = getMongoOps().getConverter().read(GenericType.class, new org.bson.Document(GenericType.CONTENT_KEY, result));
 			output.addAll(gt.getContent());

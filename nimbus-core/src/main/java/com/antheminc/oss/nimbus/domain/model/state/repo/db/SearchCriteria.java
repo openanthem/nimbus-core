@@ -48,6 +48,7 @@ public abstract class SearchCriteria<T> implements Serializable {
 	protected ProjectCriteria projectCriteria;
 	protected String fetch;
 	protected Pageable pageRequest;
+	private String collation;
 	
 	private Command cmd;
 	

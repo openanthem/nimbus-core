@@ -132,7 +132,8 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 				Constants.SEARCH_REQ_FETCH_MARKER.code,Constants.SEARCH_REQ_AGGREGATE_MARKER.code,
 				Constants.SEARCH_REQ_PAGINATION_SIZE.code,Constants.SEARCH_REQ_PAGINATION_PAGE_NUM.code, 
 				Constants.SEARCH_REQ_PAGINATION_SORT_PROPERTY.code,
-				Constants.SEARCH_REQ_PROJECT_MAPPING_MARKER.code);
+				Constants.SEARCH_REQ_PROJECT_MAPPING_MARKER.code,
+				Constants.SEARCH_REQ_COLLATION_MARKER.code);
 	}
 
 }

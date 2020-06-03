@@ -25,6 +25,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoDBModelRepositoryOptions;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByExampleOperation;
@@ -54,10 +55,10 @@ public class DefaultMongoConfig {
 
 	@Bean
 	public MongoDBModelRepositoryOptions defaultMongoDBModelRepositoryOptions(MongoOperations mongoOps,
-			DomainConfigBuilder domainConfigBuilder) {
+			DomainConfigBuilder domainConfigBuilder,CommandMessageConverter commandMessageConverter) {
 		return MongoDBModelRepositoryOptions.builder()
 				.addSearchOperation(new MongoSearchByExampleOperation(mongoOps, domainConfigBuilder))
-				.addSearchOperation(new MongoSearchByQueryOperation(mongoOps, domainConfigBuilder)).build();
+				.addSearchOperation(new MongoSearchByQueryOperation(mongoOps, domainConfigBuilder,commandMessageConverter)).build();
 	}
 
 	@Bean(name = "default.fileUpload.rep_mongodb")

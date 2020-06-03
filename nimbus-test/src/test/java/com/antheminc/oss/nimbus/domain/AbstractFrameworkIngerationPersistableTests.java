@@ -65,6 +65,9 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 	protected static final String BPM_CORE_DOMAIN_ALIAS = "bpmtestmodel";
 	protected static final String BPM_CORE_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_CORE_DOMAIN_ALIAS;
 	
+	protected static final String MSQ_CORE_DOMAIN_ALIAS = "testmongosearchbyqueryoperationmodel";
+	protected static final String MSQ_CORE_PARAM_ROOT = PLATFORM_ROOT + "/" + MSQ_CORE_DOMAIN_ALIAS;
+	
 	protected static final String BPM_SF_DOMAIN_ALIAS = "bpmstatefulmodel";
 	protected static final String BPM_SF_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_SF_DOMAIN_ALIAS;
 	
