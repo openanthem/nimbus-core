@@ -1998,6 +1998,13 @@ public class ViewConfig {
 		String width() default "medium";
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface JsonViewer {
+
+		String alias() default "jsonviewer";
+	}
 	/**
 	 * <!--TODO Write javadoc -->
 	 *

@@ -1,3 +1,4 @@
+import { JsonViewComponent } from './components/platform/form/elements/json-viewer.component';
 /**
  * @license
  * Copyright 2016-2019 the original author or authors.
@@ -347,7 +348,8 @@ export function init_app(appinitservice: AppInitService) {
     EventPropagationDirective,
     TableHeader,
     NavigationComponent,
-    MaskPipe
+    MaskPipe,
+    JsonViewComponent
   ],
   entryComponents: [
     FlowWrapper,
