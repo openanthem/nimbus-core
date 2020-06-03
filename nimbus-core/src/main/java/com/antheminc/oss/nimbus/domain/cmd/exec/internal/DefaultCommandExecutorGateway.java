@@ -119,7 +119,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		this.pathVariableResolver = getBeanResolver().get(CommandPathVariableResolver.class);
 		this.eCtxPathVariableResolver = getBeanResolver().get(ExecutionContextPathVariableResolver.class);
 		this.domainConfigBuilder = getBeanResolver().get(DomainConfigBuilder.class);
-		this.cmdHandler = getBeanResolver().get(ChangeLogCommandEventHandler.class);
+		this.cmdHandler = getBeanResolver().get(ChangeLogCommandEventHandler.class, "changeLogCommandEventHandler");
 		this.expressionEvaluator = getBeanResolver().get(ExpressionEvaluator.class);
 	}
 
