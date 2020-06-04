@@ -88,7 +88,7 @@ public class DefaultCoreBuilderConfig {
 		return new DefaultBeanResolverStrategy(appCtx);
 	}
 	
-	@Bean
+	@Bean(name="default.changeLogCommandEventHandler")
 	public ChangeLogCommandEventHandler changeLogCommandEventHandler(BeanResolverStrategy beanResolver) {
 		return new ChangeLogCommandEventHandler(beanResolver);
 	}
