@@ -48,6 +48,7 @@ domain:
       - com.antheminc.oss.nimbus.**.view
       - com.antheminc.oss.nimbus.domain.bpm
       - com.antheminc.oss.nimbus.domain.rules
+      - com.antheminc.oss.nimbus.domain.model.state.repo.db
     basePackagesToExclude:
       - com.antheminc.oss.nimbus.test.exclude.core.*
       
