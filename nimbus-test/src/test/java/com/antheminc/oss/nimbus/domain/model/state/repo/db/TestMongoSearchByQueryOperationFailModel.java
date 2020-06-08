@@ -27,6 +27,6 @@ public class TestMongoSearchByQueryOperationFailModel extends IdLong {
 	@Config(url = "<!#this!>/_process?fn=_set&url=/p/covid19/_search?fn=query&collation={\"locale\":\"en\",\"strength\":2}&where="
 			+ " {aggregate: 'covid19'," + " pipeline: [{ $match: {continent: \"Asia\"}},\n"
 			+ "{$sort:{country: -1} }]}")
-	private List<Covid19> action;
+	private List<CovidData> action;
 }
 

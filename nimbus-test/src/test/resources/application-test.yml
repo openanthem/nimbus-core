@@ -70,7 +70,7 @@ domain:
     markerInterfaces:
    
 logging:
-  file: ${HOME}/Documents/nimbuslogs/test-nimbus.log
+  file: C:\AG34346\Fork_Branch\git_training\nimbus-core\nimbus-test/Documents/nimbuslogs/test-nimbus.log
 user:
   permissionToActions:
     ACCESS:
