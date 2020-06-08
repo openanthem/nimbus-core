@@ -15,7 +15,7 @@
     "prettier:check": "npm run prettier:base -- --list-different \"src/**/*.{ts,tsx}\"",
     "prettier:write": "npm run prettier:base -- --write \"src/**/*.{ts,tsx}\""
   },
-  "private": true,
+  "private": true, 
   "dependencies": {
     "@angular/animations": "7.2.11",
     "@angular/cdk": "^7.3.6",
