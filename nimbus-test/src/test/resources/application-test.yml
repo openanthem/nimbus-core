@@ -14,6 +14,9 @@
 #  limitations under the License.
 #
 spring: 
+  mongodb:
+    embedded:
+      version: 3.4.1  
   data:
     mongodb:  
       # Using 0 assigns a random port -- this is intended for testing purposes only. Some tests when run simultaneously will 
