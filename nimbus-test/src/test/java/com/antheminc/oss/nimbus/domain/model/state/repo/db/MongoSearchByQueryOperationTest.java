@@ -54,21 +54,21 @@ public class MongoSearchByQueryOperationTest extends AbstractFrameworkIngeration
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void search_by_aggregation() {
-		MockHttpServletRequest request = MockHttpRequestBuilder
+	public void search_by_aggregation_ascending() {
+		MockHttpServletRequest request1 = MockHttpRequestBuilder
 				.withUri("/anthem/thebox/p/testmongosearchbyqueryoperationfailmodel").addAction(Action._new).getMock();
 
-		Holder<MultiOutput> holder = (Holder<MultiOutput>) controller.handlePost(request, null);
+		Holder<MultiOutput> holder = (Holder<MultiOutput>) controller.handlePost(request1, null);
 		Long domainRoot_refId = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
 		assertNotNull(domainRoot_refId);
 
 		MockHttpServletRequest request2 = MockHttpRequestBuilder
-				.withUri("/anthem/thebox/p/testmongosearchbyqueryoperationfailmodel:1/action2/_get").getMock();
+				.withUri("/anthem/thebox/p/testmongosearchbyqueryoperationfailmodel:1/action1/_get").getMock();
 
 		holder = (Holder<MultiOutput>) controller.handlePost(request2, null);
 
 		request2 = MockHttpRequestBuilder
-				.withUri("/anthem/thebox/p/testmongosearchbyqueryoperationfailmodel:1/result/_get").getMock();
+				.withUri("/anthem/thebox/p/testmongosearchbyqueryoperationfailmodel:1/result1/_get").getMock();
 
 		holder = (Holder<MultiOutput>) controller.handlePost(request2, null);
 
@@ -82,5 +82,43 @@ public class MongoSearchByQueryOperationTest extends AbstractFrameworkIngeration
 		// Add valid assertion here to account for collated data
 
 	}
+	
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void search_by_aggregation_decending() {
+		MockHttpServletRequest request1 = MockHttpRequestBuilder
+				.withUri("/anthem/thebox/p/testmongosearchbyqueryoperationfailmodel").addAction(Action._new).getMock();
+
+		Holder<MultiOutput> holder = (Holder<MultiOutput>) controller.handlePost(request1, null);
+		Long domainRoot_refId = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		assertNotNull(domainRoot_refId);
+
+		MockHttpServletRequest request2 = MockHttpRequestBuilder
+				.withUri("/anthem/thebox/p/testmongosearchbyqueryoperationfailmodel:1/action2/_get").getMock();
+
+		holder = (Holder<MultiOutput>) controller.handlePost(request2, null);
+
+		request2 = MockHttpRequestBuilder
+				.withUri("/anthem/thebox/p/testmongosearchbyqueryoperationfailmodel:1/result2/_get").getMock();
+
+		holder = (Holder<MultiOutput>) controller.handlePost(request2, null);
+
+		Param<?> response = (Param<?>) holder.getState().getSingleResult();
+		List<CovidData> covidData = (List<CovidData>) response.getState();
+		List<String> actual = covidData.stream().map(CovidData::getCountry).collect(Collectors.toList());
+
+		List<String> expected = Arrays.asList(new String[] { "Iran", "India", "China" });
+
+		assertEquals(expected, actual);
+		// Add valid assertion here to account for collated data
+
+	}
+	
+	
+	
+	
+	
+	
 
 }

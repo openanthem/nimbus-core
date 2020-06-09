@@ -24,7 +24,7 @@ import lombok.ToString;
 public class TestMongoSearchByQueryOperationFailModel extends IdLong {
 	private static final long serialVersionUID = 1L;
 	
-	@Config(url="<!#this!>/../result/_process?fn=_set&url=/p/covid19/_search?fn=query&where={\n" + 
+	@Config(url="<!#this!>/../result1/_process?fn=_set&url=/p/covid19/_search?fn=query&where={\n" + 
 			"    aggregate: \"covid19\",\n" + 
 			"    pipeline: [\n" + 
 			"	    {\n" + 
@@ -33,8 +33,17 @@ public class TestMongoSearchByQueryOperationFailModel extends IdLong {
 			"			\n" + 
 			"		}]\n" + 
 			"}&collation={\"locale\":\"en\",\"strength\":2}")
+	private String action1;
+	
+	private List<CovidData> result1;
+	
+	@Config(url="<!#this!>/../result2/_process?fn=_set&url=/p/covid19/_search?fn=query&where={aggregate:\"covid19\",pipeline:[\r\n" + 
+			"{ $match: {\"continent\": \"Asia\"}},\r\n" + 
+			"{$sort:{\"country\" : -1} }\r\n" + 
+			"]}&collation:{\"locale\":\"en\",\"strength\":2}")
 	private String action2;
 	
-	private List<CovidData> result;
+	private List<CovidData> result2;
+	
 }
 
