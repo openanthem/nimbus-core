@@ -113,6 +113,8 @@ public enum Constants {
 	SEARCH_REQ_ORDERBY_ASC_MARKER("asc()"),
 	SEARCH_REQ_WHERE_MARKER("where"),
 	SEARCH_REQ_COLLATION_MARKER("collation"),
+	LOCALE_MARKER("locale"),
+	STRENGTH_MARKER("strength"),
 	
 	SEARCH_REQ_PAGINATION_SIZE("pageSize"),
 	SEARCH_REQ_PAGINATION_PAGE_NUM("page"),
