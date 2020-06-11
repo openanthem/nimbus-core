@@ -63,7 +63,7 @@ import lombok.Setter;
  *
  */
 @EnableAPIMetricCollection
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({ "rawtypes", "unchecked", "unlikely-arg-type"})
 public class MongoSearchByQueryOperation extends MongoDBSearchOperation {
 
 	@Autowired
@@ -209,14 +209,14 @@ public class MongoSearchByQueryOperation extends MongoDBSearchOperation {
 		List<Document> pipeline = (List<Document>) query.get(Constants.SEARCH_REQ_AGGREGATE_PIPELINE.code);
 		String aggregateCollection = query.getString(Constants.SEARCH_REQ_AGGREGATE_MARKER.code);
 		List<Document> result = new ArrayList<Document>();
-		String collation = criteria.getCollation();
-		Collation collation1 = null;
-		Optional<String> optional = Optional.ofNullable(collation);
+		String colValue = criteria.getCollation();
+		Collation collation = null;
+		Optional<String> optional = Optional.ofNullable(colValue);
 		if (optional.isPresent()) {
-			Map<String, Object> map = (Map<String, Object>) commandMessageConverter.toType(HashMap.class, collation);
-			collation1 = Collation.builder().locale((String) map.get(Constants.LOCALE_MARKER))
+			Map<String, Object> map = (Map<String, Object>) commandMessageConverter.toType(HashMap.class, colValue);
+			collation = Collation.builder().locale((String) map.get(Constants.LOCALE_MARKER))
 					.collationStrength(CollationStrength.fromInt((int) map.get(Constants.STRENGTH_MARKER))).build();
-			getMongoOps().getCollection(aggregateCollection).aggregate(pipeline).collation(collation1).iterator()
+			getMongoOps().getCollection(aggregateCollection).aggregate(pipeline).collation(collation).iterator()
 					.forEachRemaining(a -> result.add(a));
 
 		} else {

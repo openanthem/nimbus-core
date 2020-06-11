@@ -1,3 +1,19 @@
+/**
+ *  Copyright 2016-2019 the original author or authors.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import static org.junit.Assert.assertEquals;
@@ -21,6 +37,10 @@ import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 
+/**
+ * @author AG34346
+ *
+ */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MongoSearchByQueryOperationTest extends AbstractFrameworkIngerationPersistableTests {
 
@@ -29,27 +49,17 @@ public class MongoSearchByQueryOperationTest extends AbstractFrameworkIngeration
 
 	@Before
 	public void load() {
-		CovidData covidData1 = new CovidData();
-		covidData1.setCountry("India");
-		covidData1.setCases(199613);
-		covidData1.setContinent("Asia");
+		CovidData covidData1 = new CovidData("India", 199613,"Asia");
 		covidData1.setId(1L);
 		mongo.save(covidData1, "covid19");
 
-		CovidData covidData2 = new CovidData();
-		covidData2.setCountry("China");
-		covidData2.setCases(27549);
-		covidData2.setContinent("Asia");
+		CovidData covidData2 = new CovidData("China", 27549, "Asia");
 		covidData2.setId(2L);
 		mongo.save(covidData2, "covid19");
 
-		CovidData covidData3 = new CovidData();
-		covidData3.setCountry("Iran");
-		covidData3.setCases(157562);
-		covidData3.setContinent("Asia");
+		CovidData covidData3 = new CovidData("Iran", 157562, "Asia");
 		covidData3.setId(3L);
 		mongo.save(covidData3, "covid19");
-
 	}
 
 	@Test
@@ -79,10 +89,8 @@ public class MongoSearchByQueryOperationTest extends AbstractFrameworkIngeration
 		List<String> expected = Arrays.asList(new String[] { "India", "China", "Iran" });
 
 		assertEquals(expected, actual);
-		// Add valid assertion here to account for collated data
 
 	}
-	
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -111,14 +119,7 @@ public class MongoSearchByQueryOperationTest extends AbstractFrameworkIngeration
 		List<String> expected = Arrays.asList(new String[] { "Iran", "India", "China" });
 
 		assertEquals(expected, actual);
-		// Add valid assertion here to account for collated data
 
 	}
-	
-	
-	
-	
-	
-	
 
 }
