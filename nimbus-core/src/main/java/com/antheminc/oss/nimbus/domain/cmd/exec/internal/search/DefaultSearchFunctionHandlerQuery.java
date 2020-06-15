@@ -55,6 +55,8 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 		
 		querySearchCriteria.setCmd(executionContext.getCommandMessage().getCommand());
 		
+		querySearchCriteria.setCollation(cmd.getFirstParameterValue(Constants.SEARCH_REQ_COLLATION_MARKER.code));
+		
 		return querySearchCriteria;
 	}
 
