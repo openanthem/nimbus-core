@@ -19,6 +19,9 @@ import java.util.Collection;
 import java.util.Optional;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.Environment;
@@ -44,6 +47,7 @@ import lombok.Setter;
 public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 
 	private String beanPrefix = Constants.PREFIX_DEFAULT.code;
+	private String beanPrefix_delimiter = ".";
 	
 	private final ApplicationContext applicationContext;
 	
@@ -51,6 +55,13 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 		this.applicationContext = applicationContext;
 	}
 	
+	@Autowired
+    public void initBeanPrefix(@Value("${default.bean.prefix:#{null}}") String propertyValue) {
+		if(StringUtils.isNotBlank(propertyValue)) {
+			this.beanPrefix = StringUtils.appendIfMissing(propertyValue, beanPrefix_delimiter);
+		}
+    }
+	 
 	@Override
 	public Environment getEnvironment() {
 		return this.getApplicationContext().getEnvironment();
@@ -97,11 +108,7 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 		if(getApplicationContext().containsBean(bNm)) 
 			return getApplicationContext().getBean(bNm, type);
 		
-		// 2: check if prefix was overridden
-		if(Constants.PREFIX_DEFAULT.code.equals(getBeanPrefix()))
-			return null;
-		
-		// 3. find using initial default when bean not found using overridden prefix
+		// 2. find using initial default when bean not found using overridden prefix
 		String defaultBeanNm = defaultBeanName(qualifier);
 		return getApplicationContext().containsBean(defaultBeanNm) ? getApplicationContext().getBean(defaultBeanNm, type) : null;
 	}
@@ -115,6 +122,7 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 
 	}
 	
+	//TODO : max 2 for now, preference to overridden prefix then default - class loading issues so reverting for now. 
 	@Override
 	public <T> T find(Class<T> type, Class<?>...generics) {
 		String beanNames[] = getApplicationContext().getBeanNamesForType(ResolvableType.forClassWithGenerics(type, generics));

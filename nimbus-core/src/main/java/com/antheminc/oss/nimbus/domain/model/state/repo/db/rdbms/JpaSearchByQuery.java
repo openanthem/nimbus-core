@@ -84,7 +84,7 @@ public class JpaSearchByQuery extends AbstractDBSearchByQuery {
 			return queryDslExecutor.findAll(predicate, outputClass, criteria.getPageRequest(), projectionPaths, orderBy);
 		
 		else
-			return queryDslExecutor.findAll(predicate, outputClass, projectionPaths, orderBy);
+			return queryDslExecutor.findAll(predicate, outputClass, projectionPaths, orderBy, criteria.getLimit());
 	
 	}
 }

@@ -25,6 +25,7 @@ import org.springframework.util.CollectionUtils;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.config.builder.AnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.defn.event.ConfigEvent.OnParamCreate;
+import com.antheminc.oss.nimbus.domain.defn.event.RepoEvent.OnPersist;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoadNew;
@@ -34,6 +35,7 @@ import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultEventHandler
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadNewHandler;
+import com.antheminc.oss.nimbus.domain.model.state.repo.event.RepoEventHandlers.OnPersistHandler;
 
 import lombok.Getter;
 
@@ -68,6 +70,9 @@ public class EventHandlerConfigFactory {
 		
 		// onStateChange
 		buildInternal(aElem, OnStateChange.class, OnStateChangeHandler.class, (a,h)->eventConfig.add(a, h));
+		
+		// onPersist
+		buildInternal(aElem, OnPersist.class, OnPersistHandler.class, (a, h)->eventConfig.add(a, h));
 		
 		return eventConfig.isEmpty() ? null : eventConfig;
 	}

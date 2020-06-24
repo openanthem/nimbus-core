@@ -29,6 +29,9 @@ import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestEventNoOve
 import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestOnStateChangeNoOverrideHandler;
 import com.antheminc.oss.nimbus.test.domain.model.state.extension.TestRedundantEventOverrideHandler;
 import com.antheminc.oss.nimbus.test.domain.session.TestSessionProvider;
+import com.antheminc.oss.nimbus.test.support.pojo.MockInterface;
+import com.antheminc.oss.nimbus.test.support.pojo.MockInterfaceDefaultBean;
+import com.antheminc.oss.nimbus.test.support.pojo.MockInterfaceOverrideBean;
 
 /**
  * @author Soham Chakravarti
@@ -74,6 +77,16 @@ public class FrameworkIntegrationTestScenariosApplication {
 	@Bean
 	TestRedundantEventOverrideHandler TestRedundantEventOverrideHandler(BeanResolverStrategy beanResolver) {
 		return new TestRedundantEventOverrideHandler(beanResolver);
+	}
+	
+	@Bean(name="default.MockInterface")
+	public MockInterface mockDefaultBean(){
+		return new MockInterfaceDefaultBean();
+	}
+	
+	@Bean(name="testPrefix.MockInterface")
+	public MockInterface mockOverriddenBean(){
+		return new MockInterfaceOverrideBean();
 	}
 	
 }

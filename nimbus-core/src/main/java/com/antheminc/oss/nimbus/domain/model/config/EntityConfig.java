@@ -50,7 +50,7 @@ public interface EntityConfig<T> {
 	default public MappedConfig<T, ?> findIfMapped() {
 		return null;
 	}
-
+	
 	public interface MappedConfig<T, M> extends EntityConfig<T> {
 		@Override
 		default boolean isMapped() {

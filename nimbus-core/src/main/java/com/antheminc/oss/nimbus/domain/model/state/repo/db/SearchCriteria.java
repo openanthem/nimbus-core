@@ -49,6 +49,8 @@ public abstract class SearchCriteria<T> implements Serializable {
 	protected String fetch;
 	protected Pageable pageRequest;
 	
+	protected Long limit;
+
 	private Command cmd;
 	
 	@Getter @Setter

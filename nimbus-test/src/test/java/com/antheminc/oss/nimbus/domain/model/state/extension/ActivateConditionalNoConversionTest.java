@@ -21,18 +21,28 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.springframework.mock.web.MockHttpServletRequest;
 
+import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTests;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
+import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
+import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
+import com.antheminc.oss.nimbus.test.domain.support.utils.ParamUtils;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity.NestedCoreSample;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity.SampleForm;
 import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageGreen.SampleNestedGroup;
 
 /**
@@ -236,5 +246,170 @@ public class ActivateConditionalNoConversionTest extends AbstractStateEventHandl
 		p1.setState(null);
 		checkIsInactive(p3);
 		assertEquals(Integer.valueOf(0), p3.getState());
+	}
+	
+	@Test
+	public void test_activateConditionalOnPrimitives() {
+		Param<?> view_nc_form = _q.getRoot().findParamByPath(VIEW_PARAM_nc_form);
+		assertNotNull(view_nc_form);
+		Param<String> p1 = view_nc_form.findParamByPath("/sample_activate");
+		Param<Boolean> p2 = view_nc_form.findParamByPath("/sample_checkBox");
+		//show the checkbox by setting the value to 'Yes'
+		p1.setState("Yes");
+		checkIsActive(p2);
+		//set the checkboxv value
+		p2.setState(true);
+		//trigger activate conditional on p1 to reset state of p2
+		p1.setState("No");
+		
+		checkIsInactive(p2);
+		assertNull(p2.getState());
+	
+	}
+	
+	@Test
+	public void test_form_post() {
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(REF_ID)
+				.addNested("/page_green/tile/view_sample_form/view_nc_form").addAction(Action._update).getMock();
+		
+		SampleForm smForm = new SampleForm();
+		smForm.setSample_checkBox(null);
+		smForm.setSample_prim_checkBox(false);
+		
+		NestedCoreSample sampleCore = new NestedCoreSample();
+		smForm.setNestedCoreSample(sampleCore);
+		
+		Object response = controller.handlePut(request, null, converter.toJson(smForm));
+		Param<List<SampleForm>> viewParam = ExtractResponseOutputUtils.extractOutput(response, 1);
+
+		//sampple_prim_checkBox state will be false
+		assertNotNull(viewParam.getState());
+		
+		MockHttpServletRequest request1 = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(REF_ID)
+				.addNested("/page_green/tile/view_sample_form/view_nc_form").addAction(Action._get).getMock();
+		Object response1 = controller.handlePut(request1, null, converter.toJson(smForm));
+		
+		Param<List<SampleForm>> view_nc_form = ExtractResponseOutputUtils.extractOutput(response1, 0);
+		Param<String> p1 = view_nc_form.findParamByPath("/sample_checkBox");
+		Param<Boolean> p2 = view_nc_form.findParamByPath("/sample_prim_checkBox");
+		checkIsActive(p2);
+		checkIsInactive(p1);
+	}
+	
+	@Test
+	public void test02_form_post() {
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(REF_ID)
+				.addNested("/page_green/tile/view_sample_form/view_nc_form").addAction(Action._update).getMock();
+		
+		SampleForm smForm = new SampleForm();
+		smForm.setSample_activate("Yes");
+		smForm.setSample_checkBox(null);
+		
+		Object response = controller.handlePut(request, null, converter.toJson(smForm));
+		Param<List<SampleForm>> viewParam = ExtractResponseOutputUtils.extractOutput(response, 1);
+
+		//sample_checkBox state will be null
+		assertNull(viewParam.getState());
+		
+		MockHttpServletRequest request1 = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(REF_ID)
+				.addNested("/page_green/tile/view_sample_form/view_nc_form").addAction(Action._get).getMock();
+		Object response1 = controller.handlePut(request1, null, converter.toJson(smForm));
+		
+		Param<List<SampleForm>> view_nc_form = ExtractResponseOutputUtils.extractOutput(response1, 0);
+		Param<String> p1 = view_nc_form.findParamByPath("/sample_checkBox");
+		Param<Boolean> p2 = view_nc_form.findParamByPath("/sample_prim_checkBox");
+		checkIsActive(p2);
+		checkIsActive(p1);
+	}
+	
+	@Test
+	public void test03_form_post() {
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(REF_ID)
+				.addNested("/page_green/tile/view_sample_form/view_nc_form").addAction(Action._update).getMock();
+		
+		SampleForm smForm = new SampleForm();
+		smForm.setSample_activate("Yes");
+		smForm.setSample_checkBox(Boolean.TRUE);
+		
+		Object response = controller.handlePut(request, null, converter.toJson(smForm));
+		Param<List<SampleForm>> viewParam = ExtractResponseOutputUtils.extractOutput(response, 1);
+
+		//sample_checkBox state will be null
+		assertEquals(viewParam.getState(), Boolean.TRUE);
+		
+		MockHttpServletRequest request1 = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(REF_ID)
+				.addNested("/page_green/tile/view_sample_form/view_nc_form").addAction(Action._get).getMock();
+		Object response1 = controller.handlePut(request1, null, converter.toJson(smForm));
+		
+		Param<List<SampleForm>> view_nc_form = ExtractResponseOutputUtils.extractOutput(response1, 0);
+		Param<String> p1 = view_nc_form.findParamByPath("/sample_checkBox");
+		Param<Boolean> p2 = view_nc_form.findParamByPath("/sample_prim_checkBox");
+		checkIsActive(p2);
+		checkIsActive(p1);
+		
+	}
+	
+	@Test
+	public void test04_form_post() {
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(REF_ID)
+				.addNested("/page_green/tile/view_sample_form/view_nc_form").addAction(Action._update).getMock();
+		
+		SampleForm smForm = new SampleForm();
+		smForm.setSample_activate("Yes");
+		smForm.setSample_checkBox(Boolean.FALSE);
+		NestedCoreSample sampleCore = new NestedCoreSample();
+		sampleCore.setNested_attr1("No");
+		smForm.setNestedCoreSample(sampleCore);
+		
+		Object response = controller.handlePut(request, null, converter.toJson(smForm));
+		Param<List<SampleForm>> viewParam = ExtractResponseOutputUtils.extractOutput(response, 1);
+		
+		MockHttpServletRequest request1 = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(REF_ID)
+				.addNested("/page_green/tile/view_sample_form/view_nc_form").addAction(Action._get).getMock();
+		Object response1 = controller.handlePut(request1, null, converter.toJson(smForm));
+		
+		Param<List<SampleForm>> view_nc_form = ExtractResponseOutputUtils.extractOutput(response1, 0);
+		Param<String> p1 = view_nc_form.findParamByPath("/sample_checkBox");
+		Param<Boolean> p2 = view_nc_form.findParamByPath("/sample_prim_checkBox");
+
+		checkIsActive(p2);
+		checkIsActive(p1);
+		checkIsInactive(view_nc_form.findParamByPath("/nestedCoreSample/nested_prim_attr3"));
+		checkIsInactive(view_nc_form.findParamByPath("/nestedCoreSample/nested_checkbox_attr2"));
+		
+	}
+	
+	@Test
+	public void test05_form_post() {
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(REF_ID)
+				.addNested("/page_green/tile/view_sample_form/view_nc_form").addAction(Action._update).getMock();
+		
+		SampleForm smForm = new SampleForm();
+		smForm.setSample_activate("Yes");
+		smForm.setSample_checkBox(Boolean.FALSE);
+		smForm.setSample_nested_activate("Yes");
+		NestedCoreSample sampleCore = new NestedCoreSample();
+		sampleCore.setNested_attr1("Yes");
+		sampleCore.setNested_checkbox_attr2(Boolean.TRUE);
+		sampleCore.setNested_prim_attr3(true);
+		smForm.setNestedCoreSample(sampleCore);
+		
+		Object response = controller.handlePut(request, null, converter.toJson(smForm));
+		Param<List<SampleForm>> viewParam = ExtractResponseOutputUtils.extractOutput(response, 1);
+		
+		MockHttpServletRequest request1 = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(REF_ID)
+				.addNested("/page_green/tile/view_sample_form/view_nc_form").addAction(Action._get).getMock();
+		Object response1 = controller.handlePut(request1, null, converter.toJson(smForm));
+		
+		Param<List<SampleForm>> view_nc_form = ExtractResponseOutputUtils.extractOutput(response1, 0);
+		Param<String> p1 = view_nc_form.findParamByPath("/sample_checkBox");
+		Param<Boolean> p2 = view_nc_form.findParamByPath("/sample_prim_checkBox");
+	
+		checkIsActive(p2);
+		checkIsActive(p1);
+		checkIsActive(view_nc_form.findParamByPath("/nestedCoreSample/nested_prim_attr3"));
+		checkIsActive(view_nc_form.findParamByPath("/nestedCoreSample/nested_checkbox_attr2"));
+		checkIsActive(view_nc_form.findParamByPath("/nestedCoreSample/nested_attr1"));
+		
 	}
 }		

@@ -117,6 +117,7 @@ export class ComponentTypes extends Enum<string> {
   public static readonly cardDetailsGrid = new Enum('CardDetailsGrid');
   public static readonly menu = new Enum('Menu');
   public static readonly accordion = new Enum('Accordion');
+  public static readonly accordiontab = new Enum('AccordionTab')
   public static readonly textBox = new Enum('TextBox');
   public static readonly internal = new Enum('INTERNAL');
   public static readonly external = new Enum('EXTERNAL');
@@ -135,9 +136,14 @@ export class ComponentTypes extends Enum<string> {
   public static readonly link = new Enum('Link');
   public static readonly chart = new Enum('Chart');
   public static readonly richText = new Enum('RichText');
+  public static readonly download = new Enum('DOWNLOAD');
 
   static attributeList(): String[] {
     const keys = Object.keys(ComponentTypes);
     return keys;
   }
+}
+
+export class Event extends Enum<string> {
+  public static readonly _input = new Enum('INPUT');
 }

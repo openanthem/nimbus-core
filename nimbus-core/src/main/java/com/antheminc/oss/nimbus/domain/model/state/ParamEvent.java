@@ -25,6 +25,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Model;
+import com.antheminc.oss.nimbus.domain.defn.event.EventType;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -44,6 +45,13 @@ public class ParamEvent {
 	private Action action;
 	
 	private Param<?> param;
+	
+	private EventType type;
+	
+	public ParamEvent(Action action, Param<?> param) {
+		this.action = action;
+		this.param = param;
+	}
 	
 	@JsonIgnore
 	private final Instant createdInstant = Instant.now();

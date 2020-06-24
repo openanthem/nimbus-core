@@ -51,10 +51,10 @@ import lombok.RequiredArgsConstructor;
  */
 @Configuration
 @RequiredArgsConstructor
-@EnableConfigurationProperties(NimbusMongoProperties.class)
+@EnableConfigurationProperties(MongoPropertiesTest.class)
 public class MultipleMongoConfig extends DefaultMongoConfig {
 
-	private final NimbusMongoProperties nimbusMongoProperties;
+	private final MongoPropertiesTest nimbusMongoProperties;
 	
 	@Autowired
 	private IMongodConfig embeddedMongoConfig;
