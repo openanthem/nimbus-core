@@ -39,7 +39,7 @@
         <activiti-spring-boot.version>7.0.0.Beta1</activiti-spring-boot.version>
         <apache-dir-server.version>1.5.5</apache-dir-server.version>
         <jackson-mapper-asl.version>1.9.6</jackson-mapper-asl.version>
-        <quartz.version>2.2.3</quartz.version>
+        <quartz.version>2.3.2</quartz.version>
         
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
