@@ -539,7 +539,8 @@ export class PageService {
   }
 
   /** Process execute call - TODO revisit to make it more dynamic based on url completion */
-  processEvent(
+  processEventWithAction(
+    action: Action,
     processUrl: string,
     behavior: string,
     model: GenericDomain,
@@ -548,7 +549,7 @@ export class PageService {
     showGridLoader?: boolean
   ) {
     let path = processUrl;
-    processUrl = processUrl + '/' + Action._get.value;
+    processUrl = processUrl + '/' + action.value;
     let url = '';
     let serverUrl = '';
     let flowName = '';
@@ -582,6 +583,18 @@ export class PageService {
       url = url.replace(flowName, flowNameWithId);
     }
     this.executeHttp(url, method, model, path, showGridLoader);
+  }
+
+
+  processEvent(
+    processUrl: string,
+    behavior: string,
+    model: GenericDomain,
+    method: string,
+    queryParams?: string, 
+    showGridLoader?: boolean
+  ) {
+    this.processEventWithAction(Action._get,processUrl, behavior, model, method,queryParams,showGridLoader);
   }
 
   executeHttp(url: string, method: string, model: any, paramPath?: string, showGridLoader?: boolean) {

@@ -258,6 +258,7 @@ export class UiAttribute implements Serializable<UiAttribute, string> {
   maskcount: number;
   maskchar: string;
   inputEvent: InputEvent[];
+  retainGridState: boolean;
 
   deserialize(inJson) {
     let obj = this;

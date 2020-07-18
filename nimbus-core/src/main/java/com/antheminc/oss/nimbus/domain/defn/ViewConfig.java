@@ -1306,6 +1306,8 @@ public class ViewConfig {
 		boolean showHeader() default true;
 
 		String url() default "";
+		
+		boolean retainGridState() default false;
 	}
 
 	/**
