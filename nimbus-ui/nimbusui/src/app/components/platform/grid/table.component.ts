@@ -131,6 +131,8 @@ export class DataTable extends BaseTableElement
   clonedRowData: any[] = [];
   TableComponentConstants: any = TableComponentConstants;
   sendEvent: boolean = true;
+  firstRecordNum: number = 0;
+  initialLoad: boolean = true;
 
   get value() {
     return this._value;
@@ -328,6 +330,10 @@ export class DataTable extends BaseTableElement
         }
         this.showFilters = true;
       }
+      let savedfirstRecordNum = this.pageSvc.findParamByAbsolutePath(this.element.path+'GridState/firstRecordNum');
+      if(savedfirstRecordNum != undefined && savedfirstRecordNum.leafState != undefined){
+        this.firstRecordNum = savedfirstRecordNum.leafState;
+      }
     }  
     //initialize the loader icon based on the config of onload=true or lazyload=true
     if(this.element.config.uiStyles.attributes.lazyLoad || this.element.config.uiStyles.attributes.onLoad) {
@@ -468,39 +474,21 @@ export class DataTable extends BaseTableElement
           ) {
             // Server Pagination
             this.totalRecords = event.page.totalElements;
+            if(this.firstRecordNum > (this.totalRecords-1))
+              this.firstRecordNum = 0;
             if (event.page.first) {
               this.updatePageDetailsState();
               this.dt.first = 0;
             }
+            this.dt.first = this.firstRecordNum;
           } else {
             // Client Pagination
             this.totalRecords = this.value ? this.value.length : 0;
+            if(this.firstRecordNum > (this.totalRecords-1))
+              this.firstRecordNum = 0;            
             this.updatePageDetailsState();
-            this.dt.first = 0;
-            if(this.element.config.uiStyles.attributes.retainGridState){
-              if(this.filterState != undefined && this.filterState.length > 0){
-                if (this.params != null) {
-                  for(let elem in this.params){
-                    let element = this.params[elem];
-                    if (element != null) {
-                      if (
-                        element.uiStyles &&
-                        element.uiStyles.attributes &&
-                        this.filterState[elem] != undefined &&
-                        this.filterState[elem] != null &&
-                        this.filterState[elem] != ''
-                      ) {
-                        this.dt.filter(
-                          this.filterState[elem],
-                          element.code,
-                          element.uiStyles.attributes.filterMode
-                        );
-                      }
-                    }
-                  }
-                }
-              }
-            } 
+            //this.element.config.uiStyles.attributes.pageSize
+            this.dt.first = this.firstRecordNum;
           }
           if (!(<ViewRef>this.cd).destroyed) this.cd.detectChanges();
           this.resetMultiSelection();
@@ -523,6 +511,8 @@ export class DataTable extends BaseTableElement
       );
     }
   }
+
+
 
   evaluateErrorMessages() {
     if (
@@ -898,11 +888,17 @@ export class DataTable extends BaseTableElement
   paginate(e: any) {
     let first: number = parseInt(e.first);
     let rows: number = parseInt(e.rows);
+    this.firstRecordNum = first;
     this.rowStart = first + 1;
     if (first + rows < this.totalRecords) {
       this.rowEnd = first + rows;
     } else {
       this.rowEnd = this.totalRecords;
+    }
+    if(this.element.config.uiStyles.attributes.retainGridState){
+      let pageSt = new GenericDomain();
+      pageSt.addAttribute("firstRecordNum", first)
+      this.pageSvc.processEventWithAction(Action._update,this.element.path+'GridState', null, pageSt, 'POST');
     }
   }
 
@@ -929,7 +925,7 @@ export class DataTable extends BaseTableElement
     if(this.element.config.uiStyles.attributes.retainGridState){
       let filterSt = new GenericDomain();
       filterSt.addAttribute("filterState", this.filterState)
-      this.pageSvc.processEventWithAction(Action._replace,this.element.path+'GridState', null, filterSt, 'POST');
+      this.pageSvc.processEventWithAction(Action._update,this.element.path+'GridState', null, filterSt, 'POST');
     }
   }
 
@@ -971,6 +967,11 @@ export class DataTable extends BaseTableElement
     let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
     let pageIdx: number = 0;
     let first: number = event.first;
+    if(this.initialLoad){
+      first = this.firstRecordNum;
+      this.initialLoad = false;
+    }
+
     if (first != 0) {
       pageIdx = first / pageSize;
     } else {

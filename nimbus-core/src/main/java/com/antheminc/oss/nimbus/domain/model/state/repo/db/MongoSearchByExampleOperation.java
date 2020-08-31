@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -87,14 +88,23 @@ public class MongoSearchByExampleOperation extends MongoDBSearchOperation {
 	}
 	
 	private <T> PageRequestAndRespone<T> findAllPageable(Class<T> referredClass, String alias, Pageable pageRequest, Query query) {
+		long count = getMongoOps().count(query, referredClass, alias);
+		long totalPages = new Double(Math.ceil((double)count/(double)pageRequest.getPageSize())).intValue();
+		if(pageRequest.getPageNumber() > (totalPages-1)) {
+			if(pageRequest.getSort() != null)
+				pageRequest = new PageRequest(0, pageRequest.getPageSize(), pageRequest.getSort());
+			else
+				pageRequest = new PageRequest(0, pageRequest.getPageSize());
+		}
 		Query qPage = query.with(pageRequest);
 		
 		List<T> results = getMongoOps().find(qPage, referredClass, alias);
 		
+		
 		if(CollectionUtils.isEmpty(results))
 			return null;
 		
-		return new PageRequestAndRespone<T>(results, pageRequest, () -> getMongoOps().count(query, referredClass, alias));
+		return new PageRequestAndRespone<T>(results, pageRequest, () -> count);
 		
 	}
 

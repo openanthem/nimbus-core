@@ -8,4 +8,6 @@ import lombok.Setter;
 @Model @Getter @Setter
 public class GridState {
 	private String[] filterState;
+	private int firstRecordNum;
+	private String sortColumn;
 }

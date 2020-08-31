@@ -39,6 +39,10 @@ public class Name extends AbstractEntity.IdLong {
 
 	private String middleName;
 	
+	private String suffix;
+
+	private String prefix;
+	
 	@JsonIgnore
 	private String fullName;
 	
