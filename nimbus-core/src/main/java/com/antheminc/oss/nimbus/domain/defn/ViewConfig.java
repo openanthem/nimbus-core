@@ -1306,6 +1306,8 @@ public class ViewConfig {
 		boolean showHeader() default true;
 
 		String url() default "";
+		
+		boolean retainGridState() default false;
 	}
 
 	/**
@@ -2858,7 +2860,7 @@ public class ViewConfig {
 
 			/**
 			 * <p>Signature data is captured in between the mouse down and mouse
-			 * up events.
+			 * up events and by touch start and touch end.
 			 */
 			DEFAULT,
 
@@ -2866,7 +2868,17 @@ public class ViewConfig {
 			 * <p>Signature data is captured upon the click event. Capturing
 			 * will continue until the click event is invoked a second time.
 			 */
-			ON_CLICK;
+			ON_CLICK,
+
+            /**
+             * <p>Signature data is captured in between the touch start and touch end events.
+             */
+            ON_TOUCH,
+
+            /**
+			 * <p>Signature data is captured by ON_CLICK and ON_TOUCH events.
+			 */
+			ON_CLICK_AND_TOUCH;
 		}
 
 		String acceptLabel() default "Save";
@@ -2876,8 +2888,8 @@ public class ViewConfig {
 		/**
 		 * <p>Control how the signature drawing will be captured.
 		 * @see com.antheminc.oss.nimbus.domain.defn.ViewConfig.Signature.CaptureType
-		 */
-		CaptureType captureType() default CaptureType.DEFAULT;
+         */
+        CaptureType captureType() default CaptureType.DEFAULT;
 
 		/**
 		 * <p>The label value displayed on the "clear" button.
@@ -3096,10 +3108,34 @@ public class ViewConfig {
 
 		boolean readOnly() default false;
 
+		InputEvent[] inputEvent() default {};
+				
 		String type() default "text";
+
+		int maskcount() default -1;
+		
+		String maskchar() default "";
 
 	}
 	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	public @interface InputEvent {
+		
+		EventType eventType() default EventType.DEFAULT;
+		
+		int charCountToPostOnce() default 0;
+		
+		int count() default 0;
+
+		public enum EventType {
+
+			DEFAULT,
+
+			INPUT;
+		} 
+		
+	}
 	
 	/**
 	 * <p>InputMask is a text input component.

@@ -1,3 +1,4 @@
+import { Action } from './../../../shared/command.enum';
 /**
  * @license
  * Copyright 2016-2019 the original author or authors.
@@ -308,6 +309,26 @@ export class DataTable extends BaseTableElement
 
   ngOnInit() {
     super.ngOnInit();
+    if(this.element.config.uiStyles.attributes.retainGridState){
+      let savedGridState = this.pageSvc.findParamByAbsolutePath(this.element.path+'GridState/filterState');
+      if(savedGridState != undefined && savedGridState.leafState != undefined){
+        for(let elem in this.params){
+          if(savedGridState.leafState[elem] != undefined && 
+            savedGridState.leafState[elem] != null && 
+            savedGridState.leafState[elem] != ''){
+            if (super.isDate(this.params[elem].type.name)){
+                this.filterState[elem] =  ParamUtils.convertServerDateStringToDate(
+                  savedGridState.leafState[elem],
+                  this.params[elem].type.name
+                );
+            }else{
+              this.filterState[elem] = savedGridState.leafState[elem];
+            }
+          }
+        }
+        this.showFilters = true;
+      }
+    }  
     //initialize the loader icon based on the config of onload=true or lazyload=true
     if(this.element.config.uiStyles.attributes.lazyLoad || this.element.config.uiStyles.attributes.onLoad) {
       this.loading = true;
@@ -355,6 +376,7 @@ export class DataTable extends BaseTableElement
       this.dt.filterConstraints = customFilterConstraints;
     }
     this.updatePosition();
+
   }
 
   ngAfterViewInit() {
@@ -420,18 +442,20 @@ export class DataTable extends BaseTableElement
           this.value = event.tableBasedData.values;
 
           // iterate over currently expanded rows and refresh the data
-          Object.keys(this.dt.expandedRowKeys).forEach(key => {
-            this.value.find((lineItem, index) => {
-              if (lineItem[this.element.elemId] == key) {
-                this._putNestedElement(
-                  event.tableBasedData.collectionParams,
-                  index,
-                  lineItem
-                );
-                return true;
-              }
+          if(this.value) {
+            Object.keys(this.dt.expandedRowKeys).forEach(key => {
+              this.value.find((lineItem, index) => {
+                if (lineItem[this.element.elemId] == key) {
+                  this._putNestedElement(
+                    event.tableBasedData.collectionParams,
+                    index,
+                    lineItem
+                  );
+                  return true;
+                }
+              });
             });
-          });
+          }
 
           // reset the table state in the session after primeNG upgrade.
           this.dt.expandedRowKeys = {};
@@ -453,6 +477,30 @@ export class DataTable extends BaseTableElement
             this.totalRecords = this.value ? this.value.length : 0;
             this.updatePageDetailsState();
             this.dt.first = 0;
+            if(this.element.config.uiStyles.attributes.retainGridState){
+              if(this.filterState != undefined && this.filterState.length > 0){
+                if (this.params != null) {
+                  for(let elem in this.params){
+                    let element = this.params[elem];
+                    if (element != null) {
+                      if (
+                        element.uiStyles &&
+                        element.uiStyles.attributes &&
+                        this.filterState[elem] != undefined &&
+                        this.filterState[elem] != null &&
+                        this.filterState[elem] != ''
+                      ) {
+                        this.dt.filter(
+                          this.filterState[elem],
+                          element.code,
+                          element.uiStyles.attributes.filterMode
+                        );
+                      }
+                    }
+                  }
+                }
+              }
+            } 
           }
           if (!(<ViewRef>this.cd).destroyed) this.cd.detectChanges();
           this.resetMultiSelection();
@@ -482,6 +530,13 @@ export class DataTable extends BaseTableElement
       this.form.controls[this.element.config.code] != null
     ) {
       let frmCtrl = this.form.controls[this.element.config.code];
+      if(frmCtrl.status === "DISABLED") {
+        if (this.element.enabled && this.element.visible) {
+          frmCtrl.enable();
+          this.counterMessageService.evalCounterMessage(true);
+          this.counterMessageService.evalFormParamMessages(this.element);
+        }
+      }
       this.subscribers.push(
         frmCtrl.valueChanges.subscribe($event => {
           if (frmCtrl.valid && this.sendEvent) {
@@ -507,7 +562,7 @@ export class DataTable extends BaseTableElement
 
   getCellDisplayValue(rowData: any, col: ParamConfig) {
     let cellData = rowData[col.code];
-    if (cellData) {
+    if (cellData!=null) {
       if (super.isDate(col.type.name)) {
         return this.dtFormat.transform(
           cellData,
@@ -871,6 +926,11 @@ export class DataTable extends BaseTableElement
     if (this.element.config.uiStyles.attributes.rowSelection) {
       this.dt.toggleRowsWithCheckbox(e, true);
     }
+    if(this.element.config.uiStyles.attributes.retainGridState){
+      let filterSt = new GenericDomain();
+      filterSt.addAttribute("filterState", this.filterState)
+      this.pageSvc.processEventWithAction(Action._replace,this.element.path+'GridState', null, filterSt, 'POST');
+    }
   }
 
   export() {
@@ -933,14 +993,28 @@ export class DataTable extends BaseTableElement
     let filterCriteria: any[] = [];
     let filterKeys: string[] = [];
     if (event.filters) {
-      filterKeys = Object.keys(event.filters);
+      if(this.filterState != undefined && this.filterState.length > 0){
+        if (this.params != null) {
+          for(let elem in this.params){
+            let element = this.params[elem];
+            if (element != null) {
+              if (
+                element.uiStyles &&
+                element.uiStyles.attributes &&
+                this.filterState[elem] != undefined &&
+                this.filterState[elem] != null &&
+                this.filterState[elem] != ''
+              ) {
+                let filter: any = {};
+                filter['code'] = element.code;
+                filter['value'] = this.filterState[elem];
+                filterCriteria.push(filter);
+              }
+            }
+          }
+        }
+      }
     }
-    filterKeys.forEach(key => {
-      let filter: any = {};
-      filter['code'] = key;
-      filter['value'] = event.filters[key].value;
-      filterCriteria.push(filter);
-    });
     let payload: GenericDomain = new GenericDomain();
     if (filterCriteria.length > 0) {
       payload.addAttribute('filters', filterCriteria);

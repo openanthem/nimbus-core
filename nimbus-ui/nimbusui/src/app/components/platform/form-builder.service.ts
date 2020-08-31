@@ -131,7 +131,7 @@ export class FormElementsService {
     ) {
       leafState = param.tableBasedData.values;
     } else {
-      leafState = param.leafState || '';
+      leafState = param.leafState!=null? param.leafState:'';
     }
     return leafState;
   }

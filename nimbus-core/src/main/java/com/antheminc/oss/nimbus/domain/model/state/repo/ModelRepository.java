@@ -65,9 +65,8 @@ public interface ModelRepository {
 	/*SOHAM: f.w upgrade v0.3: END */
 	
 	// internally used, not exposed as an Action
-	default public <ID extends Serializable, T> T _save(String alias, T state) {
-		return state;
-	}
+	<T> T _save(String alias, T state);
+	void _save(Param<?> param);
 	
 	//Action._get
 	public <ID extends Serializable, T> T _get(ID id, Class<T> referredClass, String alias);

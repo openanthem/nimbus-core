@@ -32,7 +32,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.springframework.util.ClassUtils;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
@@ -721,26 +720,25 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		boolean changed = this.visibleState.setStateConditional(visible, ()->isActive() || !visible);
 		if (!changed)
 			return;
-		
-		// handle nested
 		if(!isNested() /*|| (isTransient() && !findIfTransient().isAssinged())*/)
 			return;
-		
+
 		if (null == findIfNested().getParams()) {
 			return;
 		}
-		
+
 		traverseChildren(p -> p.setVisible(visible));
-		
+
 		traverseChildren(p -> {
-			
+
 			if(!p.isStateInitialized())
 				p.onStateLoadEvent();
 			else
 				p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
-			
-		});
-	}
+
+		});		
+
+	} 
 	
 	@Override
 	public boolean isEnabled() {
