@@ -9,5 +9,6 @@ import lombok.Setter;
 public class GridState {
 	private String[] filterState;
 	private int firstRecordNum;
-	private String sortColumn;
+	private String sortField;
+	private int sortOrder;
 }

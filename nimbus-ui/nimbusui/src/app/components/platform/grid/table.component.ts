@@ -483,11 +483,13 @@ export class DataTable extends BaseTableElement
             this.dt.first = this.firstRecordNum;
           } else {
             // Client Pagination
+            this.assignSavedSortField();
             this.totalRecords = this.value ? this.value.length : 0;
             if(this.firstRecordNum > (this.totalRecords-1))
               this.firstRecordNum = 0;            
             this.updatePageDetailsState();
             //this.element.config.uiStyles.attributes.pageSize
+            
             this.dt.first = this.firstRecordNum;
           }
           if (!(<ViewRef>this.cd).destroyed) this.cd.detectChanges();
@@ -512,6 +514,29 @@ export class DataTable extends BaseTableElement
     }
   }
 
+
+  assignSavedSortField(){
+    let sortField = this.pageSvc.findParamByAbsolutePath(this.element.path+'GridState/sortField');
+    if(sortField != undefined && sortField.leafState != undefined){
+      let savedSortField = sortField.leafState;
+      let savedSortOrder = this.pageSvc.findParamByAbsolutePath(this.element.path+'GridState/sortOrder').leafState;
+      let table: any;
+      table = this.dt;
+      if(savedSortField){
+        if (this.params != null) {
+          for(let elem in this.params){
+            let element = this.params[elem];
+            if (element != null && element.code == savedSortField) {
+              table.sortField = element;
+              this.dt.sortOrder = savedSortOrder;
+              break;
+            }
+          }
+        }
+      }
+    }    
+
+  }
 
 
   evaluateErrorMessages() {
@@ -760,6 +785,7 @@ export class DataTable extends BaseTableElement
   }
 
   customSort(event: any) {
+    this.saveSortState(event);
     let fieldType: string = event.field.type.name;
     let sortAs: string = event.field.uiStyles.attributes.sortAs;
     if (this.isSortAsNumber(fieldType, sortAs)) {
@@ -792,7 +818,18 @@ export class DataTable extends BaseTableElement
 
         return value1.localeCompare(value2) * event.order;
       });
+      if(this.firstRecordNum && !this.element.config.uiStyles.attributes.lazyLoad)
+        this.dt.first = this.firstRecordNum;           
     }
+  }
+
+  saveSortState(event: any){
+    if(this.element.config.uiStyles.attributes.retainGridState && event.field.code){
+      let sortSt = new GenericDomain();
+      sortSt.addAttribute("sortField", event.field.code)
+      sortSt.addAttribute("sortOrder", event.order)
+      this.pageSvc.processEventWithAction(Action._update,this.element.path+'GridState', null, sortSt, 'POST');
+    }    
   }
 
   protected sortInternal(itemCallback: Function, event: any): Array<any> {
@@ -964,21 +1001,19 @@ export class DataTable extends BaseTableElement
   }
 
   loadDataLazy(event: any) {
+    if(!this.initialLoad && event.sortField){
+      let sortEvent: any = {};
+      let sf: any = {};
+      sf.code=event.sortField.code;
+      sortEvent.field=sf;
+      sortEvent.order=event.sortOrder;
+      this.saveSortState(sortEvent);
+      this.firstRecordNum = 0;
+    }
     let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
     let pageIdx: number = 0;
     let first: number = event.first;
-    if(this.initialLoad){
-      first = this.firstRecordNum;
-      this.initialLoad = false;
-    }
 
-    if (first != 0) {
-      pageIdx = first / pageSize;
-    } else {
-      pageIdx = 0;
-    }
-
-    // Sort Logic
     let sortBy: string = undefined;
     if (event.sortField) {
       let order: number = event.sortOrder;
@@ -989,6 +1024,32 @@ export class DataTable extends BaseTableElement
       }
       sortBy = sortField + ',' + sortOrder;
     }
+
+    if(this.initialLoad){
+      first = this.firstRecordNum;
+      let sortField = this.pageSvc.findParamByAbsolutePath(this.element.path+'GridState/sortField');
+      if(sortField != undefined && sortField.leafState != undefined){
+        let savedSortField = sortField.leafState;
+        let savedSortOrder = this.pageSvc.findParamByAbsolutePath(this.element.path+'GridState/sortOrder').leafState;
+        if(savedSortField){
+          if (savedSortOrder != 1)
+            savedSortOrder = 'DESC';
+          else
+            savedSortOrder = 'ASC';
+          sortBy = savedSortField + ',' + savedSortOrder;  
+        }
+      }
+      this.initialLoad = false;
+    }
+
+    if (first != 0) {
+      pageIdx = first / pageSize;
+    } else {
+      pageIdx = 0;
+    }
+
+    // Sort Logic
+
 
     // Filter Logic
     let filterCriteria: any[] = [];
