@@ -259,6 +259,7 @@ export class UiAttribute implements Serializable<UiAttribute, string> {
   maskchar: string;
   inputEvent: InputEvent[];
   retainGridState: boolean;
+  postInterval: number;
 
   deserialize(inJson) {
     let obj = this;

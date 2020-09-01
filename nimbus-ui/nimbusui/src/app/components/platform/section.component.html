@@ -95,6 +95,10 @@
             <ng-template [ngIf]="element.alias == 'Tab'">
                 <nm-tab id="{{element.config?.code}}" [element]="element"></nm-tab>
             </ng-template>
+            <!--Timer-->
+            <ng-template [ngIf]="element.alias == componentTypes.timer.toString()">
+                <nm-timer id="{{element.config?.code}}" [element]="element"></nm-timer>
+            </ng-template>
             <ng-template [ngIf]="element.alias == componentTypes.autocomplete.toString()">
                 <nm-autocomplete [element]="element" [(ngModel)]="element.leafState"></nm-autocomplete>
             </ng-template>

@@ -15,11 +15,16 @@
  */
 package com.antheminc.oss.nimbus.domain.defn;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Locale;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Past;
@@ -29,6 +34,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
+import com.antheminc.oss.nimbus.domain.defn.extension.Style;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 
 import lombok.Getter;
@@ -3416,5 +3422,29 @@ public class ViewConfig {
 		 */
 		String stepSize() default "";
 											
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface Timer {
+
+		public static final String DEFAULT_LOCALE_LANGUAGE_TAG = Locale.getDefault().toLanguageTag();
+
+		/**
+		 * <p>Defines custom style attributes for this label component.
+		 */
+		Style style() default @Style();
+
+		String format() default "";
+		
+		String alias() default "Timer";
+		
+		int postInterval() default Integer.MAX_VALUE;
+		
+		boolean postEventOnChange() default false;
+		
+		String display();
+
 	}
 }

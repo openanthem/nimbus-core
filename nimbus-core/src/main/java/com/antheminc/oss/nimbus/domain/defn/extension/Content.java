@@ -127,7 +127,8 @@ public final class Content {
 		 */
 		String localeLanguageTag() default "";
 	}
-
+	
+	
 	public static Locale getLocale(Label label) {
 		return Optional.ofNullable(label.localeLanguageTag()).filter(StringUtils::isNotEmpty)
 				.map(Locale::forLanguageTag).orElse(Locale.getDefault());

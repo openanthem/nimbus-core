@@ -1,3 +1,4 @@
+import { Timer } from './components/platform/content/timer.component';
 /**
  * @license
  * Copyright 2016-2019 the original author or authors.
@@ -347,7 +348,8 @@ export function init_app(appinitservice: AppInitService) {
     EventPropagationDirective,
     TableHeader,
     NavigationComponent,
-    MaskPipe
+    MaskPipe,
+    Timer
   ],
   entryComponents: [
     FlowWrapper,

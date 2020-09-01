@@ -136,6 +136,7 @@ export class ComponentTypes extends Enum<string> {
   public static readonly link = new Enum('Link');
   public static readonly chart = new Enum('Chart');
   public static readonly richText = new Enum('RichText');
+  public static readonly timer = new Enum('Timer');
 
   static attributeList(): String[] {
     const keys = Object.keys(ComponentTypes);
