@@ -25,6 +25,10 @@
                         <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
                             <nm-card-details-field id="{{field?.config?.code}}" [element]="field" [(value)]="field.leafState" [ngClass]="field.config.uiStyles.attributes.cssClass" [hidden]="!field.visible"></nm-card-details-field>
                         </ng-template>
+                         <!-- TImer-->
+                        <ng-template [ngIf]="element.alias == componentTypes.timer.toString()">
+                            <nm-timer id="{{element.config?.code}}" [element]="element"></nm-timer>
+                        </ng-template>
                     </span>
                 </ng-template>
             </div> 
@@ -55,6 +59,11 @@
                                 <nm-link id="{{field.config?.code}}" [element]="field"></nm-link>
                             </div>
                         </ng-template>
+                        <!-- TImer-->
+                        <ng-template [ngIf]="element.alias == componentTypes.timer.toString()">
+                            <nm-timer id="{{element.config?.code}}" [element]="element"></nm-timer>
+                        </ng-template>
+                        
                     </span>
                 </ng-template>
             </div>
