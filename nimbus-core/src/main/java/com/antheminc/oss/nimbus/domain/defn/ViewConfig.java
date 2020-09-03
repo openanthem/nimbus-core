@@ -3445,6 +3445,8 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		
 		String display();
+		
+		String cssClass() default "";
 
 	}
 }

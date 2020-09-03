@@ -32,8 +32,8 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 @Component({
   selector: 'nm-timer',
   template: `
-  <span>{{label}}</span>  
-  <span>{{timehh}}:{{timemm}}:{{timess}}</span>
+  <span [className]="cssClass">{{label}}</span>  
+  <span [className]="cssClass">{{timehh}}:{{timemm}}:{{timess}}</span>
   `
 })
 export class Timer implements OnInit, OnDestroy{
@@ -97,6 +97,10 @@ export class Timer implements OnInit, OnDestroy{
 
   public get label(): string {
     return this.element.config.uiStyles.attributes.display;
+  }
+
+  public get cssClass(): string {
+     return this.element.config.uiStyles.attributes.cssClass;
   }
   
   
