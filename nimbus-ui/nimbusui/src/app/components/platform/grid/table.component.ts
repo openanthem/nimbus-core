@@ -477,20 +477,20 @@ export class DataTable extends BaseTableElement
             if(this.firstRecordNum > (this.totalRecords-1))
               this.firstRecordNum = 0;
             if (event.page.first) {
-              this.updatePageDetailsState();
               this.dt.first = 0;
             }
             this.dt.first = this.firstRecordNum;
+            this.updatePageDetailsState();
           } else {
             // Client Pagination
             this.assignSavedSortField();
             this.totalRecords = this.value ? this.value.length : 0;
             if(this.firstRecordNum > (this.totalRecords-1))
               this.firstRecordNum = 0;            
-            this.updatePageDetailsState();
-            //this.element.config.uiStyles.attributes.pageSize
             
+            //this.element.config.uiStyles.attributes.pageSize
             this.dt.first = this.firstRecordNum;
+            this.updatePageDetailsState();
           }
           if (!(<ViewRef>this.cd).destroyed) this.cd.detectChanges();
           this.resetMultiSelection();
@@ -941,11 +941,10 @@ export class DataTable extends BaseTableElement
 
   updatePageDetailsState() {
     if (this.totalRecords != 0) {
-      this.rowStart = 1;
-      this.rowEnd =
-        this.totalRecords < +this.element.config.uiStyles.attributes.pageSize
-          ? this.totalRecords
-          : +this.element.config.uiStyles.attributes.pageSize;
+      this.rowStart = this.firstRecordNum + 1;
+      this.rowEnd = this.rowStart + this.element.config.uiStyles.attributes.pageSize;
+      if(this.rowEnd > this.totalRecords)
+        this.rowEnd = this.totalRecords;
     } else {
       this.rowStart = 0;
       this.rowEnd = 0;
