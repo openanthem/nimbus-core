@@ -102,6 +102,8 @@ export class Timer implements OnInit, OnDestroy{
   
   ngOnDestroy(){
     this.subscription.unsubscribe();
+    if(this.postSubscription)
+      this.postSubscription.unsubscribe();
   }
 
 }
