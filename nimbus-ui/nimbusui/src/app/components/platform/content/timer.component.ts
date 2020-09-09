@@ -41,7 +41,6 @@ export class Timer implements OnInit, OnDestroy{
   timer: Observable<number>;
   postTimer: Observable<number>;
   subscription: Subscription;
-  postSubscription: Subscription;
   time: number;
   timehh: string;
   timemm: string;
@@ -60,13 +59,6 @@ export class Timer implements OnInit, OnDestroy{
     })
     if(this.element.config.uiStyles.attributes.postEventOnChange){
       this.postTimer = timer(0,this.element.config.uiStyles.attributes.postInterval);
-      this.postSubscription = this.postTimer.subscribe((seconds) => {
-        this.pageSvc.postOnChange(
-          this.element.path,
-          'state',
-          JSON.stringify(this.time)
-        );
-      })
     }
   }
 
@@ -105,9 +97,13 @@ export class Timer implements OnInit, OnDestroy{
   
   
   ngOnDestroy(){
+    this.pageSvc.postOnChange(
+      this.element.path,
+      'state',
+      JSON.stringify(this.time)
+    );
     this.subscription.unsubscribe();
-    if(this.postSubscription)
-      this.postSubscription.unsubscribe();
+ 
   }
 
 }
