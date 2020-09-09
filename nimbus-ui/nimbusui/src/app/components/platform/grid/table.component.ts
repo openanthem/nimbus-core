@@ -491,6 +491,7 @@ export class DataTable extends BaseTableElement
             //this.element.config.uiStyles.attributes.pageSize
             this.dt.first = this.firstRecordNum;
             this.updatePageDetailsState();
+            this.assignSavedFilterState();
           }
           if (!(<ViewRef>this.cd).destroyed) this.cd.detectChanges();
           this.resetMultiSelection();
@@ -514,6 +515,32 @@ export class DataTable extends BaseTableElement
     }
   }
 
+  assignSavedFilterState(){
+    if(this.element.config.uiStyles.attributes.retainGridState){
+      if(this.filterState != undefined && this.filterState.length > 0){
+        if (this.params != null) {
+          for(let elem in this.params){
+            let element = this.params[elem];
+            if (element != null) {
+              if (
+                element.uiStyles &&
+                element.uiStyles.attributes &&
+                this.filterState[elem] != undefined &&
+                this.filterState[elem] != null &&
+                this.filterState[elem] != ''
+              ) {
+                this.dt.filter(
+                  this.filterState[elem],
+                  element.code,
+                  element.uiStyles.attributes.filterMode
+                );
+              }
+            }
+          }
+        }
+      }
+    } 
+  }
 
   assignSavedSortField(){
     let sortField = this.pageSvc.findParamByAbsolutePath(this.element.path+'GridState/sortField');
