@@ -15,10 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.defn;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -3439,10 +3436,6 @@ public class ViewConfig {
 		String format() default "";
 		
 		String alias() default "Timer";
-		
-		int postInterval() default Integer.MAX_VALUE;
-		
-		boolean postEventOnChange() default false;
 		
 		String display();
 		

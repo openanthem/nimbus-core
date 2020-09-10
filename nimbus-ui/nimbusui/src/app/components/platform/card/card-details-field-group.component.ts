@@ -40,6 +40,12 @@ import { BaseElement } from '../base-element.component';
         >
         </nm-input-legend>
         <ng-template ngFor let-field [ngForOf]="element?.type?.model?.params">
+
+        <!-- Timer-->
+        <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.timer.toString()">
+          <nm-timer id="{{field.config?.code}}" [element]="field"></nm-timer>
+        </ng-template>
+
           <!-- FieldValue-->
           <ng-template
             [ngIf]="
