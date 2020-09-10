@@ -41,7 +41,8 @@ export class Timer implements OnInit, OnDestroy{
   timer: Observable<number>;
   postTimer: Observable<number>;
   subscription: Subscription;
-  time: number;
+  time: number = 0;
+  timeReference: number = 0;
   timehh: string;
   timemm: string;
   timess: string;
@@ -52,9 +53,13 @@ export class Timer implements OnInit, OnDestroy{
   }
 
   ngOnInit(){
+    let lastSavedTime = this.element.leafState;
+    if(lastSavedTime){
+      this.timeReference=lastSavedTime;
+    }
     this.timer = timer(0, 1000);
     this.subscription = this.timer.subscribe((seconds) => {
-      this.time = seconds;
+      this.time = this.timeReference + seconds;
       this.formatTime();
     })
     if(this.element.config.uiStyles.attributes.postEventOnChange){
@@ -102,6 +107,7 @@ export class Timer implements OnInit, OnDestroy{
       'state',
       JSON.stringify(this.time)
     );
+    this.element.leafState=this.time;
     this.subscription.unsubscribe();
  
   }
