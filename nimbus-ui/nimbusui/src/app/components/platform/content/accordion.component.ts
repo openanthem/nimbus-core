@@ -91,6 +91,10 @@ import { GenericDomain } from './../../../model/generic-domain.model';
               </span>
             </ng-template>
 
+            <ng-template [ngIf]="tabDatum[tab.config.code]?.timer" let-timer>
+              <nm-timer id="{{timer.config?.code}}" [element]="timer"></nm-timer>
+            </ng-template>
+
             <ng-template [ngIf]="tabDatum[tab.config.code]?.image" let-image>
               <nm-image
                 *ngIf="image.visible"
@@ -347,6 +351,7 @@ export class Accordion extends BaseElement {
 export class TabData {
   tabInfo: Param;
   image: Param;
+  timer: Param;
 
   from(tabParam: Param): TabData {
     // find all the config within the tab params and assign the data to this instance
@@ -359,6 +364,10 @@ export class TabData {
       // collect only the first @Image found
       if (!this.image && param.alias === ViewComponent.image.toString()) {
         this.image = param;
+      }
+
+      if (!this.timer && param.alias === ViewComponent.timer.toString()) {
+        this.timer = param;
       }
 
       // if we've found everything we need, return
