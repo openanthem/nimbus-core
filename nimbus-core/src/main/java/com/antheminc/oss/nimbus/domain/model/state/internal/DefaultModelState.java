@@ -17,6 +17,7 @@ package com.antheminc.oss.nimbus.domain.model.state.internal;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,7 +77,7 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 
 	@Transient @JsonIgnore @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
 	private final transient CollectionsTemplate<List<EntityState.Param<? extends Object>>, EntityState.Param<? extends Object>> templateParams = new CollectionsTemplate<>(
-			() -> getParams(), (p) -> setParams(p), () -> Collections.synchronizedList(new LinkedList<>()));
+			() -> getParams(), (p) -> setParams(p), () -> Collections.synchronizedList(new ArrayList<>()));
 
 	@JsonIgnore @Override
 	public CollectionsTemplate<List<EntityState.Param<?>>, EntityState.Param<?>> templateParams() {
