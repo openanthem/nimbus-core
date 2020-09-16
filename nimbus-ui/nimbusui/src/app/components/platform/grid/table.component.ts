@@ -493,9 +493,16 @@ export class DataTable extends BaseTableElement
             this.dt.first = this.firstRecordNum;
             this.updatePageDetailsState();
             this.assignSavedFilterState();
+            if(this.element.config.uiStyles.attributes.retainGridState){
+              setTimeout(() => {
+                this.dt.first = this.firstRecordNum;   
+            }, 500)
+            }
           }
           if (!(<ViewRef>this.cd).destroyed) this.cd.detectChanges();
           this.resetMultiSelection();
+
+
         }
       })
     );
