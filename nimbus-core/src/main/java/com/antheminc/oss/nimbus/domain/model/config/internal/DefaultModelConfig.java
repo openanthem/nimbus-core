@@ -16,7 +16,7 @@
 package com.antheminc.oss.nimbus.domain.model.config.internal;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,7 +66,7 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 	
 	@JsonIgnore
 	private final transient CollectionsTemplate<List<ParamConfig<?>>, ParamConfig<?>> templateParamConfigs = new CollectionsTemplate<>(
-			() -> getParamConfigs(), (p) -> setParamConfigs(p), () -> new ArrayList<>());
+			() -> getParamConfigs(), (p) -> setParamConfigs(p), () -> new LinkedList<>());
 
 	@Override @JsonIgnore
 	public CollectionsTemplate<List<ParamConfig<?>>, ParamConfig<?>> templateParamConfigs() {
