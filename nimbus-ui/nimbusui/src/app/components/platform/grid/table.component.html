@@ -10,7 +10,7 @@
             <caption>{{label}}</caption>
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </p-header>
-        <div class="recordsDisplayed">Showing {{rowStart}}-{{rowEnd}} of {{totalRecords}}
+        <div class="recordsDisplayed">{{tableHeaderMessage(dt)}}
             <button *ngIf="element.config?.uiStyles?.attributes?.clearAllFilters" class="btn-plain ml-2" (click)="clearAll()">
                 <i class="fa fa-fw fa-times hidden-md-down" aria-hidden="true"></i>Clear Grid Filters</button>
             <button *ngIf="element.config?.uiStyles?.attributes?.export" class="btn-plain ml-2" (click)="export()">

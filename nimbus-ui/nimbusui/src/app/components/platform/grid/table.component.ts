@@ -318,6 +318,7 @@ export class DataTable extends BaseTableElement
           if(savedGridState.leafState[elem] != undefined && 
             savedGridState.leafState[elem] != null && 
             savedGridState.leafState[elem] != ''){
+            this.showFilters = true;
             if (super.isDate(this.params[elem].type.name)){
                 this.filterState[elem] =  ParamUtils.convertServerDateStringToDate(
                   savedGridState.leafState[elem],
@@ -328,7 +329,7 @@ export class DataTable extends BaseTableElement
             }
           }
         }
-        this.showFilters = true;
+        
       }
       let savedfirstRecordNum = this.pageSvc.findParamByAbsolutePath(this.element.path+'GridState/firstRecordNum');
       if(savedfirstRecordNum != undefined && savedfirstRecordNum.leafState != undefined){
@@ -513,6 +514,21 @@ export class DataTable extends BaseTableElement
         })
       );
     }
+  }
+
+  tableHeaderMessage(dataTable: DataTable){
+    if(this.dt){
+      if (this.totalRecords != 0) {
+        let rowStart = this.dt.first+1;
+        let rowEnd = rowStart + this.element.config.uiStyles.attributes.pageSize-1;
+        if(rowEnd > this.totalRecords)
+          rowEnd = this.totalRecords;
+        return 'Showing '+rowStart+'-'+rowEnd+' of '+this.totalRecords;
+      }else{
+        return 'Showing 0-0 of 0';
+      }
+    }
+    return '';
   }
 
   assignSavedFilterState(){
@@ -1024,6 +1040,22 @@ export class DataTable extends BaseTableElement
   ngOnDestroy() {
     if (this.mouseEventSubscription) this.mouseEventSubscription.unsubscribe();
     this.cd.detach();
+    if(this.element.config.uiStyles.attributes.retainGridState){
+      let domain = new GenericDomain();
+      if(this.filterState){
+        domain.addAttribute("filterState", this.filterState)
+      }
+      let sf: any;
+      sf = this.dt.sortField;
+      if(sf && sf.code){
+        domain.addAttribute("sortField", sf.code);
+        domain.addAttribute("sortOrder", this.dt.sortOrder);
+      }
+      if(this.dt.first){
+        domain.addAttribute("firstRecordNum", this.dt.first)
+      }
+      this.pageSvc.processEventWithAction(Action._replace,this.element.path+'GridState', null, domain, 'POST');
+    }
   }
 
   loadDataLazy(event: any) {
