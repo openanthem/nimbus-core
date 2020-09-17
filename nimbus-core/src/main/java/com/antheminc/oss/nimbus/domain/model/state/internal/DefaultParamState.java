@@ -99,6 +99,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	private List<ParamValue> values;
 	
 	@JsonIgnore
+	private String paramPath;
+	
+	@JsonIgnore
 	private RemnantState<Set<Message>> messageState = this.new RemnantState<Set<Message>>(null) {
 		@Override
 		public boolean hasChanged() {
@@ -204,15 +207,16 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public String getBeanPath() {
-		String parentPath = Optional.ofNullable(getParentModel()).map(Model::getBeanPath).orElse("");
-		
-		String p = new StringBuilder(parentPath)
-				.append(Constants.SEPARATOR_URI.code)
-				.append(getConfig().getBeanName())
-				.toString();
-		
-		p = StringUtils.replace(p, "//", "/");
-		return p;
+		if(paramPath == null) {
+			String parentPath = Optional.ofNullable(getParentModel()).map(Model::getBeanPath).orElse("");
+			String p = new StringBuilder(parentPath)
+					.append(Constants.SEPARATOR_URI.code)
+					.append(getConfig().getBeanName())
+					.toString();
+			p = StringUtils.replace(p, "//", "/");
+			paramPath = p;
+		}
+		return paramPath;
 	}
 	
 	@Override
