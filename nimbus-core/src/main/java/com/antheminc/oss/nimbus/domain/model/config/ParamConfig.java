@@ -47,6 +47,8 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	
 	public boolean isLeaf();
 	
+	public boolean isLazyLoad();
+	
 	public Set<Label> getLabels();
 	
 	public ExecutionConfig getExecutionConfig();

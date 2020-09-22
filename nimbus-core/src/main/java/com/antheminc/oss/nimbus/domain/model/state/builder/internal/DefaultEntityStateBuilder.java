@@ -156,7 +156,8 @@ public class DefaultEntityStateBuilder extends AbstractEntityStateBuilder implem
 			} else {
 				resolvedParamConfig = mpConfig;
 			}
-			
+			if(resolvedParamConfig.isLazyLoad())
+				continue;
 			final DefaultParamState<P> mpState = buildParam(aspectHandlers, mState, resolvedParamConfig, mapsToSAC);
 			 
 			/* add param state to model state in same order */
@@ -166,7 +167,9 @@ public class DefaultEntityStateBuilder extends AbstractEntityStateBuilder implem
 		return mState;
 	}
 	
-	private boolean requiresConversion(Param<?> p) {
+	
+	
+	public boolean requiresConversion(Param<?> p) {
 		Class<?> mappedClass = p.getConfig().getReferredClass();
 		Class<?> mapsToClass = p.findIfMapped().getMapsTo().getConfig().getReferredClass();
 		

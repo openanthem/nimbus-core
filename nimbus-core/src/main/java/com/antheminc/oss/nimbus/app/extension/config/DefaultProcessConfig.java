@@ -31,6 +31,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav.DefaultActionNewIni
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav.PageIdEchoNavHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.AddFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.EvalFunctionHandler;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.InstantiateParamFunctionalHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.SetByRuleFunctionalHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.SetFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.StatelessBPMFunctionHanlder;
@@ -129,5 +130,10 @@ public class DefaultProcessConfig {
 	@Bean(name="default._process$execute?fn=_eval")
 	public EvalFunctionHandler<?,?> evalFunctionHandler(ExpressionManager expressionManager){
 		return new EvalFunctionHandler(expressionManager);
+	}
+	
+	@Bean(name="default._process$execute?fn=_instantiate")
+	public InstantiateParamFunctionalHandler<?,?> instantiateFunctionHandler(){
+		return new InstantiateParamFunctionalHandler<>();
 	}
 }

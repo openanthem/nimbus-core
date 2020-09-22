@@ -63,6 +63,7 @@ public class MockParamConfig implements ParamConfig<Object> {
 	private Values values;
 	private List<AnnotationConfig> extensions;
 	private boolean transientData;
+	private boolean lazyLoad;
 	/*
 	 * (non-Javadoc)
 	 * @see com.anthem.oss.nimbus.core.domain.model.config.EntityConfig#findParamByPath(java.lang.String)

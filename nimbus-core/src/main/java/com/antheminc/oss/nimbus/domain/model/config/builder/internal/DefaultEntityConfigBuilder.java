@@ -23,12 +23,15 @@ import java.util.Map;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.ConfigNature;
+import com.antheminc.oss.nimbus.domain.defn.LazyLoad;
+import com.antheminc.oss.nimbus.domain.defn.Lock;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
@@ -146,6 +149,10 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		
 		ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(), pConfig.getBeanName());
 		type.setValueAccessor(va);
+		
+		
+		LazyLoad lazyLoad = f.getAnnotation(LazyLoad.class);
+		pConfig.setLazyLoad(lazyLoad != null);
 		
 		return pConfig;
 	}

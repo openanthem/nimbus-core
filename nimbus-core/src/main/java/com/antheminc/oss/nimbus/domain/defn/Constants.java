@@ -120,6 +120,9 @@ public enum Constants {
 	SEARCH_NAMED_QUERY_DELIMTER("~~"),
 	SEARCH_NAMED_QUERY_RESULT("result"),
 	
+	LAZY_LOAD_MODEL("model"),
+	LAZY_LOAD_PARAM("param"),
+	
 	SERVER_AUTOSEARCH_MARKER("autocompletesearchvalue");
 	
 	
