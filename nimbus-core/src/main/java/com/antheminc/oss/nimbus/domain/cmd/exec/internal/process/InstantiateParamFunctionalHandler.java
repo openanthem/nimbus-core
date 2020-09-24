@@ -75,6 +75,7 @@ public class InstantiateParamFunctionalHandler <T, R> extends AbstractFunctionHa
 				Model<?> mapsToSAC = findMapsToModel(model);
 				DefaultParamState<?> mpState = abstractEntityStateBuilder.buildParam(model.getAspectHandlers(), model, resolvedParamConfig, mapsToSAC);
 				model.templateParams().add(mpState);
+				mpState.initState();
 			}
 		}
 		
