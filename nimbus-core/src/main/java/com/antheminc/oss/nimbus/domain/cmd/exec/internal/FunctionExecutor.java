@@ -15,6 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -39,6 +41,8 @@ import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
  */
 @EnableLoggingInterceptor
 public class FunctionExecutor<T, R> extends AbstractCommandExecutor<R> {
+	
+	private Map<String, FunctionHandler<?,?>> functionBeans = new HashMap<String, FunctionHandler<?,?>>();
 
 	public FunctionExecutor(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
@@ -95,8 +99,21 @@ public class FunctionExecutor<T, R> extends AbstractCommandExecutor<R> {
 		return getHandler(functionName, handlerClass);
 	}
 
+	@SuppressWarnings("unchecked")
 	protected <F extends FunctionHandler<?, ?>> F getHandler(String functionName, Class<F> handlerClass) {
-		return findMatchingBean(handlerClass, functionName);
+		String key = getFunctionBeanKey(functionName, handlerClass);
+		FunctionHandler<?,?> fc = functionBeans.get(key);
+		if(fc == null) {
+			fc = findMatchingBean(handlerClass, functionName);
+			functionBeans.put(key, fc);
+		}
+		return (F)fc;
+	}
+	
+	private <F extends FunctionHandler<?, ?>> String getFunctionBeanKey(String functionName, Class<F> handlerClass) {
+		StringBuilder key = new StringBuilder();
+		key.append(handlerClass.getCanonicalName()).append("-").append(functionName);
+		return key.toString();
 	}
 
 }

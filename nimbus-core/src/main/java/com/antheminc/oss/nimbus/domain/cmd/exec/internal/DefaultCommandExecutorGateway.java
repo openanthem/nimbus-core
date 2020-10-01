@@ -58,10 +58,13 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ParamPathExpressionParser;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
+import com.antheminc.oss.nimbus.domain.defn.Execution.DetourConfig;
 import com.antheminc.oss.nimbus.domain.defn.builder.internal.ExecutionConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.ExecutionConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.builder.ExecutionConfigProvider;
+import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultExecutionConfigProvider;
+import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DetourExecutionConfigProvider;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
@@ -107,9 +110,14 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	
 	private static final ThreadLocal<String> cmdScopeInThread = new ThreadLocal<>();
 	
+	private DefaultExecutionConfigProvider defaultExecutionConfigProvider;
+	
+	private DetourExecutionConfigProvider detourExecutionConfigProvider;
+	
 	public DefaultCommandExecutorGateway(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 		this.executors = new HashMap<>();
+		
 		
 	}
 	
@@ -121,6 +129,8 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		this.domainConfigBuilder = getBeanResolver().get(DomainConfigBuilder.class);
 		this.cmdHandler = getBeanResolver().get(ChangeLogCommandEventHandler.class);
 		this.expressionEvaluator = getBeanResolver().get(ExpressionEvaluator.class);
+		this.defaultExecutionConfigProvider = getBeanResolver().get(DefaultExecutionConfigProvider.class);
+		this.detourExecutionConfigProvider = getBeanResolver().get(DetourExecutionConfigProvider.class);
 	}
 
 	
@@ -244,7 +254,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		
 		final List<MultiOutput> configExecOutputs = new ArrayList<>();
 		execConfigs.stream().forEach(ec-> {
-			final ExecutionConfigProvider<Annotation> execConfigProvider = getBeanResolver().get(ExecutionConfigProvider.class, ec.annotationType());
+			final ExecutionConfigProvider execConfigProvider = (ec.annotationType() == DetourConfig.class)? detourExecutionConfigProvider: defaultExecutionConfigProvider;
 			Config config = execConfigProvider.getMain(ec);
 			try {
 				boolean evalWhen = getExpressionEvaluator().getValue(config.when(), cmdParam, Boolean.class);
