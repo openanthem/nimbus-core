@@ -194,7 +194,6 @@ export class HeaderCheckBox {
   updateToggleRowsWithCheckbox() {
     this.dt.toggleRowsWithCheckbox = (event: Event, check: boolean) => {
       this.dt.preventSelectionSetterPropagation = true;
-      this.dt.updateSelectionKeys();
       this.dt.selectionChange.emit(this.dt.selection);
       this.dt.tableService.onSelectionChange();
       this.dt.onHeaderCheckboxToggle.emit({
