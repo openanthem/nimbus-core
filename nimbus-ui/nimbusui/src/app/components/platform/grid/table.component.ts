@@ -1004,7 +1004,6 @@ export class DataTable extends BaseTableElement
   filterCallBack(e: any) {
     this.totalRecords = e.filteredValue.length;
     this.updatePageDetailsState();
-    this.selectedRows.length = 0;
     if (this.element.config.uiStyles.attributes.rowSelection) {
       this.dt.toggleRowsWithCheckbox(e, true);
     }
