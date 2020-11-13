@@ -258,6 +258,9 @@ export class LayoutService {
             if (nature.attributes.value === 'NOTIFICATIONS') {
               branding['linkNotifications'] = element;
             }
+            if (nature.attributes.value === 'SELECTOR') {
+              branding['selector'] = element;
+            }
             // TODO Remove (not used)
             if (nature.attributes.value === 'NUMBEROFNOTIFICATIONS') {
               branding['numOfNotifications'] = element;

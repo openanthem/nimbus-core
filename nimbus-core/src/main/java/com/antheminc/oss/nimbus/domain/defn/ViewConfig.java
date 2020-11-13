@@ -2361,7 +2361,9 @@ public class ViewConfig {
 			 * param for the field decorated by this annotation will be used as
 			 * the rendered value.
 			 */
-			USERROLE;
+			USERROLE,
+			
+			SELECTOR;
 		}
 
 		Property value() default Property.DEFAULT;
