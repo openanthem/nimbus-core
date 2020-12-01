@@ -777,7 +777,7 @@ export class DataTable extends BaseTableElement
   }
 
   toggleFilter(event: any) {
-    this.showFilters = true;
+    this.showFilters = !this.showFilters;
   }
 
   postGridData(obj) {
