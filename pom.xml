@@ -33,7 +33,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <swagger.version>2.4.0</swagger.version>
         
-        <commons-io.version>2.4</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <drools.version>5.6.0.Final</drools.version>
         <commons-lang.version>3.7</commons-lang.version>
         <activiti-spring-boot.version>7.0.0.Beta1</activiti-spring-boot.version>
