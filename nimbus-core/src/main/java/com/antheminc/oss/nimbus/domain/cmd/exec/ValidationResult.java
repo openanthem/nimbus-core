@@ -70,8 +70,11 @@ public class ValidationResult {
 			e.setModelAlias(null);
 			e.setMsg(c.getMessage());
 			
-			this.template.add(e);
+			this.addValidationError(e);
 		}
 	}
 	
+	public void addValidationError(ValidationError violation) {
+		this.template.add(violation);
+	}
 }

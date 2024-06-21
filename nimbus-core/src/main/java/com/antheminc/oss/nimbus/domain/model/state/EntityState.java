@@ -35,6 +35,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationResult;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.config.EntityConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
@@ -679,6 +680,8 @@ public interface EntityState<T> {
 		
 		void onStateLoadEvent();
 		void onStateChangeEvent(ExecutionTxnContext txnCtx, Action a);
+		
+		ValidationResult getValidationResult();
 	}
 	
 	public interface LeafParam<T> extends Param<T> {
