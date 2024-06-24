@@ -28,6 +28,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
@@ -55,6 +56,13 @@ public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctio
 		ModelConfig<?> mConfig = getRootDomainConfig(executionContext);
 		
 		ModelRepository rep = getRepFactory().get(mConfig);
+		if (null == rep) {
+			StringBuilder suggestion = new StringBuilder();
+			if (null != mConfig.getRepo() && null != mConfig.getRepo().value()) {
+				 suggestion.append(" Was the model repository for [").append(mConfig.getRepo().value()).append("] successfully created?");
+			}
+			throw new FrameworkRuntimeException("Unable to determine model repository for model config: " + mConfig + "." + suggestion.toString());
+		}
 		
 		return (R)rep._search(actionParameter, () -> this.createSearchCriteria(executionContext, mConfig, actionParameter));
 	}
